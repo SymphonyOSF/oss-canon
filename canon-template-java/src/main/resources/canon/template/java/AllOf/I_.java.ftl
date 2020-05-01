@@ -1,0 +1,1 @@
+<#include "/template/java/Object/I_.java.ftl">
