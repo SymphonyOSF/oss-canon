@@ -8,7 +8,8 @@ import javax.servlet.ServletOutputStream;
 import javax.servlet.WriteListener;
 
 import org.symphonyoss.s2.canon.runtime.exception.CanonException;
-import org.symphonyoss.s2.fugue.core.trace.ITraceContext;
+
+import com.symphony.oss.fugue.core.trace.ITraceContext;
 
 public abstract class ResponseOnlyRequestManager<A, R extends IBaseEntity>
 extends AbstractRequestManager<A,Void,R>

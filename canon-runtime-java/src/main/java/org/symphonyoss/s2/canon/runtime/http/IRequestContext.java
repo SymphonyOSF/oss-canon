@@ -32,10 +32,10 @@ import java.util.List;
 import org.symphonyoss.s2.canon.runtime.IBaseEntity;
 import org.symphonyoss.s2.canon.runtime.IEntity;
 import org.symphonyoss.s2.canon.runtime.TypeDefBuilder;
-import org.symphonyoss.s2.fugue.core.trace.ITraceContext;
 
 import com.symphony.oss.commons.immutable.ImmutableByteArray;
 import com.symphony.oss.commons.type.provider.IValueProviderBuilder;
+import com.symphony.oss.fugue.core.trace.ITraceContext;
 
 public interface IRequestContext
 {

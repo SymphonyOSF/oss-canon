@@ -30,7 +30,8 @@ import javax.servlet.ServletInputStream;
 import javax.servlet.ServletOutputStream;
 
 import org.symphonyoss.s2.canon.runtime.exception.CanonException;
-import org.symphonyoss.s2.fugue.core.trace.ITraceContext;
+
+import com.symphony.oss.fugue.core.trace.ITraceContext;
 
 public abstract class EmptyRequestManager<A>
 extends AbstractRequestManager<A,Void,IBaseEntity>

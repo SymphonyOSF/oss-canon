@@ -39,12 +39,12 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.symphonyoss.s2.fugue.core.trace.ITraceContext;
-import org.symphonyoss.s2.fugue.core.trace.ITraceContextTransaction;
-import org.symphonyoss.s2.fugue.core.trace.ITraceContextTransactionFactory;
-import org.symphonyoss.s2.fugue.core.trace.log.LoggerTraceContextTransactionFactory;
-import org.symphonyoss.s2.fugue.http.HttpServer;
-import org.symphonyoss.s2.fugue.http.HttpServerBuilder;
+import com.symphony.oss.fugue.core.trace.ITraceContext;
+import com.symphony.oss.fugue.core.trace.ITraceContextTransaction;
+import com.symphony.oss.fugue.core.trace.ITraceContextTransactionFactory;
+import com.symphony.oss.fugue.core.trace.log.LoggerTraceContextTransactionFactory;
+import com.symphony.oss.fugue.http.HttpServer;
+import com.symphony.oss.fugue.http.HttpServerBuilder;
 
 public class AsyncServer
 {

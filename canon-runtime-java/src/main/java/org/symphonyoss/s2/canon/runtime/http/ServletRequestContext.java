@@ -37,7 +37,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.symphonyoss.s2.canon.runtime.IModelRegistry;
-import org.symphonyoss.s2.fugue.core.trace.ITraceContext;
+
+import com.symphony.oss.fugue.core.trace.ITraceContext;
 
 public class ServletRequestContext extends AbstractRequestContext implements IAsyncRequestContext
 {

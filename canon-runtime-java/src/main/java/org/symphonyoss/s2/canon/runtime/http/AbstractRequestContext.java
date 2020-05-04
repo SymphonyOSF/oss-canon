@@ -44,12 +44,12 @@ import org.symphonyoss.s2.canon.runtime.TypeDefBuilder;
 import org.symphonyoss.s2.canon.runtime.exception.BadRequestException;
 import org.symphonyoss.s2.common.dom.json.ImmutableJsonObject;
 import org.symphonyoss.s2.common.dom.json.JsonValue;
-import org.symphonyoss.s2.fugue.core.trace.ITraceContext;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.symphony.oss.commons.immutable.ImmutableByteArray;
 import com.symphony.oss.commons.type.provider.IValueProviderBuilder;
+import com.symphony.oss.fugue.core.trace.ITraceContext;
 
 public abstract class AbstractRequestContext implements IRequestContext
 {

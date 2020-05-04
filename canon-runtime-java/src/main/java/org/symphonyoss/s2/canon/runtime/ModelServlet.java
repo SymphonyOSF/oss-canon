@@ -37,9 +37,10 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.symphonyoss.s2.canon.runtime.http.HttpMethod;
 import org.symphonyoss.s2.canon.runtime.http.ServletRequestContext;
-import org.symphonyoss.s2.fugue.core.trace.ITraceContext;
-import org.symphonyoss.s2.fugue.core.trace.ITraceContextTransaction;
-import org.symphonyoss.s2.fugue.core.trace.ITraceContextTransactionFactory;
+
+import com.symphony.oss.fugue.core.trace.ITraceContext;
+import com.symphony.oss.fugue.core.trace.ITraceContextTransaction;
+import com.symphony.oss.fugue.core.trace.ITraceContextTransactionFactory;
 
 public class ModelServlet extends HttpServlet implements IModelServlet
 {

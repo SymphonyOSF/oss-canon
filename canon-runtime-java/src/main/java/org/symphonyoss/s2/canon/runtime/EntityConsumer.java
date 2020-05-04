@@ -8,9 +8,9 @@ package org.symphonyoss.s2.canon.runtime;
 
 import java.io.Reader;
 
-import org.symphonyoss.s2.fugue.core.trace.ITraceContext;
-import org.symphonyoss.s2.fugue.pipeline.IThreadSafeConsumer;
-import org.symphonyoss.s2.fugue.pipeline.IThreadSafeErrorConsumer;
+import com.symphony.oss.fugue.core.trace.ITraceContext;
+import com.symphony.oss.fugue.pipeline.IThreadSafeConsumer;
+import com.symphony.oss.fugue.pipeline.IThreadSafeErrorConsumer;
 
 public abstract class EntityConsumer<P, E extends IEntity, C extends IThreadSafeConsumer<E>> implements IThreadSafeConsumer<P> 
 {

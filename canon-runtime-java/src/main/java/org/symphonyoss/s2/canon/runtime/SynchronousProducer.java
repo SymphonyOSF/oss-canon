@@ -21,8 +21,9 @@ import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.symphonyoss.s2.fugue.core.trace.ITraceContext;
-import org.symphonyoss.s2.fugue.pipeline.IConsumer;
+
+import com.symphony.oss.fugue.core.trace.ITraceContext;
+import com.symphony.oss.fugue.pipeline.IConsumer;
 
 /**
  * A simple implementation of IProducer which calls

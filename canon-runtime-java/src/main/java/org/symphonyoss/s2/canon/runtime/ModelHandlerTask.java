@@ -29,8 +29,8 @@ import java.util.concurrent.ExecutorService;
 
 import javax.annotation.Nullable;
 
-import org.symphonyoss.s2.fugue.core.trace.ITraceContext;
-import org.symphonyoss.s2.fugue.pipeline.IConsumer;
+import com.symphony.oss.fugue.core.trace.ITraceContext;
+import com.symphony.oss.fugue.pipeline.IConsumer;
 
 public abstract class ModelHandlerTask<T> implements Runnable, IConsumer<T>
 {

@@ -23,7 +23,7 @@
 
 package org.symphonyoss.s2.canon.runtime;
 
-import org.symphonyoss.s2.fugue.core.trace.ITraceContextTransactionFactory;
+import com.symphony.oss.fugue.core.trace.ITraceContextTransactionFactory;
 
 public interface IAsyncHandlerContainerFactory
 {

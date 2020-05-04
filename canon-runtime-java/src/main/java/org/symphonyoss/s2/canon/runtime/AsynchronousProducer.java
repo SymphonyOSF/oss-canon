@@ -20,10 +20,9 @@ import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-import org.symphonyoss.s2.fugue.core.trace.ITraceContext;
-import org.symphonyoss.s2.fugue.pipeline.IConsumer;
-
 import com.symphony.oss.commons.concurrent.NamedThreadFactory;
+import com.symphony.oss.fugue.core.trace.ITraceContext;
+import com.symphony.oss.fugue.pipeline.IConsumer;
 
 /**
  * An implementation of IProducer which calls

@@ -25,19 +25,16 @@ package org.symphonyoss.s2.canon.test.oneofeverything;
 
 import java.io.IOException;
 
-import org.symphonyoss.s2.fugue.FugueServer;
+import com.symphony.oss.fugue.server.http.FugueHttpServer;
 
-public class OneOfEverythingServer extends FugueServer
+public class OneOfEverythingServer
 {
-  public OneOfEverythingServer()
-  {
-    super("OneOfEverythingServer", 7009);
-  }
-
-
   public static void main(String[] argv) throws IOException
   {
-    OneOfEverythingServer server = new OneOfEverythingServer();
+    FugueHttpServer server = new FugueHttpServer.Builder()
+        .withApplicationName("OneOfEverythingServer")
+        .withHttpPort(7009)
+        .build();
     
     server.start();
     

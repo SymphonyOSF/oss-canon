@@ -26,8 +26,8 @@ package org.symphonyoss.s2.canon.runtime;
 import java.io.Reader;
 import java.io.StringReader;
 
-import org.symphonyoss.s2.fugue.pipeline.IThreadSafeConsumer;
-import org.symphonyoss.s2.fugue.pipeline.IThreadSafeErrorConsumer;
+import com.symphony.oss.fugue.pipeline.IThreadSafeConsumer;
+import com.symphony.oss.fugue.pipeline.IThreadSafeErrorConsumer;
 
 public class StringEntityConsumer<E extends IEntity, C extends IThreadSafeConsumer<E>> extends EntityConsumer<String, E, C>
 {
