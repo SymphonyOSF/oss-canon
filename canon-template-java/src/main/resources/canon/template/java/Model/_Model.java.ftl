@@ -1,6 +1,6 @@
 <#include "/template/java/canon-template-java-Prologue.ftl">
 
-import org.symphonyoss.s2.canon.runtime.IEntityFactory;
+import com.symphony.oss.canon.runtime.IEntityFactory;
 
 public class ${model.camelCapitalizedName}Model
 { 

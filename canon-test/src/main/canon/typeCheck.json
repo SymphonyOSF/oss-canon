@@ -6,11 +6,11 @@
       "name": "Apache2"
     }
   },
-  "id": "org.symphonyoss.s2.canon.test.typeCheck",
+  "id": "com.symphony.oss.canon.test.typeCheck",
   "version": "1.0",
   "model": {
-    "javaGenPackage":  "org.symphonyoss.s2.canon.test.typeCheck",
-    "javaFacadePackage":  "org.symphonyoss.s2.canon.test.typeCheck.facade"
+    "javaGenPackage":  "com.symphony.oss.canon.test.typeCheck",
+    "javaFacadePackage":  "com.symphony.oss.canon.test.typeCheck.facade"
   },
   "components": {
     "schemas": {
@@ -53,7 +53,7 @@
           "so I have as much space as I need."
         ],
         "x-canon-attributes": {
-          "javaExternalPackage":  "org.symphonyoss.s2.canon.test.oneofeverything",
+          "javaExternalPackage":  "com.symphony.oss.canon.test.oneofeverything",
           "javaExternalType":     "TestHash"
         }
       },
@@ -62,7 +62,7 @@
         "type": "string",
         "format": "byte",
         "x-canon-attributes": {
-          "javaExternalPackage":  "org.symphonyoss.s2.canon.test.oneofeverything",
+          "javaExternalPackage":  "com.symphony.oss.canon.test.oneofeverything",
           "javaExternalType":     "DirectHash",
           "isDirectExternal":     "true"
         }

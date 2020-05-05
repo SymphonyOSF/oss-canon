@@ -6,11 +6,11 @@ import javax.annotation.concurrent.Immutable;
 
 import com.symphony.oss.commons.immutable.ImmutableByteArray;
 
-import org.symphonyoss.s2.common.dom.json.ImmutableJsonObject;
-import org.symphonyoss.s2.common.dom.json.MutableJsonObject;
+import com.symphony.oss.common.dom.json.ImmutableJsonObject;
+import com.symphony.oss.common.dom.json.MutableJsonObject;
 
-import org.symphonyoss.s2.canon.runtime.IEntity;
-import org.symphonyoss.s2.canon.runtime.IModelRegistry;
+import com.symphony.oss.canon.runtime.IEntity;
+import com.symphony.oss.canon.runtime.IModelRegistry;
 
 <@importFieldTypes model false/>
 

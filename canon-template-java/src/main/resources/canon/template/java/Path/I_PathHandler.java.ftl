@@ -5,9 +5,9 @@ import java.util.List;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-import org.symphonyoss.s2.canon.runtime.exception.CanonException;
-import org.symphonyoss.s2.canon.runtime.http.IRequestAuthenticator;
-import org.symphonyoss.s2.canon.runtime.IEntityHandler;
+import com.symphony.oss.canon.runtime.exception.CanonException;
+import com.symphony.oss.canon.runtime.http.IRequestAuthenticator;
+import com.symphony.oss.canon.runtime.IEntityHandler;
 import com.symphony.oss.fugue.core.trace.ITraceContext;
 
 <@importFieldTypes model true/>

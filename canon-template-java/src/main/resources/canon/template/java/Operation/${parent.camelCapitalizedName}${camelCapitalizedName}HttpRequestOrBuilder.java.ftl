@@ -3,9 +3,9 @@
 <@setJavaMethod model/>
 import javax.annotation.concurrent.Immutable;
 
-import org.symphonyoss.s2.common.dom.json.JsonArray;
+import com.symphony.oss.common.dom.json.JsonArray;
 
-import org.symphonyoss.s2.canon.runtime.http.client.HttpRequestOrBuilder;
+import com.symphony.oss.canon.runtime.http.client.HttpRequestOrBuilder;
 
 <#list model.parameters as parameter>
   <@setJavaType parameter.schema/>

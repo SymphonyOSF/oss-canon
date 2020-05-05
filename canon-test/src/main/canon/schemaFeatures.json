@@ -11,11 +11,11 @@
 			"name": "Apache2"
 		}
 	},
-	"id": "org.symphonyoss.s2.canon.test.schema",
+	"id": "com.symphony.oss.canon.test.schema",
   "version": "1.0",
 	"model": {
-		"javaGenPackage": "org.symphonyoss.s2.canon.test.schema",
-		"javaFacadePackage": "org.symphonyoss.s2.canon.test.schema.facade"
+		"javaGenPackage": "com.symphony.oss.canon.test.schema",
+		"javaFacadePackage": "com.symphony.oss.canon.test.schema.facade"
 	},
   "methods": {
     "/objects/{objectHash}": {

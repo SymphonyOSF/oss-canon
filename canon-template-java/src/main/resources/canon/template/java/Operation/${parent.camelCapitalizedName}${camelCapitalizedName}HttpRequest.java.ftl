@@ -21,18 +21,18 @@ import org.apache.http.client.utils.URLEncodedUtils;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
 
-import org.symphonyoss.s2.common.dom.json.ImmutableJsonList;
-import org.symphonyoss.s2.common.dom.json.ImmutableJsonSet;
+import com.symphony.oss.common.dom.json.ImmutableJsonList;
+import com.symphony.oss.common.dom.json.ImmutableJsonSet;
 
-import org.symphonyoss.s2.canon.runtime.IEntity;
-import org.symphonyoss.s2.canon.runtime.JsonArrayParser;
-import org.symphonyoss.s2.canon.runtime.exception.BadRequestException;
-import org.symphonyoss.s2.canon.runtime.exception.PermissionDeniedException;
-import org.symphonyoss.s2.canon.runtime.exception.ServerErrorException;
-import org.symphonyoss.s2.canon.runtime.http.ParameterLocation;
-import org.symphonyoss.s2.canon.runtime.http.IRequestContext;
-import org.symphonyoss.s2.canon.runtime.http.client.HttpParameter;
-import org.symphonyoss.s2.canon.runtime.http.client.IAuthenticationProvider;
+import com.symphony.oss.canon.runtime.IEntity;
+import com.symphony.oss.canon.runtime.JsonArrayParser;
+import com.symphony.oss.canon.runtime.exception.BadRequestException;
+import com.symphony.oss.canon.runtime.exception.PermissionDeniedException;
+import com.symphony.oss.canon.runtime.exception.ServerErrorException;
+import com.symphony.oss.canon.runtime.http.ParameterLocation;
+import com.symphony.oss.canon.runtime.http.IRequestContext;
+import com.symphony.oss.canon.runtime.http.client.HttpParameter;
+import com.symphony.oss.canon.runtime.http.client.IAuthenticationProvider;
 
 <#list model.parameters as parameter>
   <@setJavaType parameter.schema/>

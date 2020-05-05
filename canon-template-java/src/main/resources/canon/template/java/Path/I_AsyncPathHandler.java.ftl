@@ -3,8 +3,8 @@
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-import org.symphonyoss.s2.canon.runtime.exception.CanonException;
-import org.symphonyoss.s2.canon.runtime.IAsyncEntityHandler;
+import com.symphony.oss.canon.runtime.exception.CanonException;
+import com.symphony.oss.canon.runtime.IAsyncEntityHandler;
 import com.symphony.oss.fugue.core.trace.ITraceContext;
 import com.symphony.oss.fugue.pipeline.IConsumer;
 

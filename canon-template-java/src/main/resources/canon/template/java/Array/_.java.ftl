@@ -3,9 +3,9 @@
 <@setPrologueJavaType model/>
 import javax.annotation.concurrent.Immutable;
 
-import org.symphonyoss.s2.canon.runtime.IEntity${modelJavaCardinality};
-import org.symphonyoss.s2.common.dom.json.ImmutableJsonList;
-import org.symphonyoss.s2.common.dom.json.ImmutableJsonSet;
+import com.symphony.oss.canon.runtime.IEntity${modelJavaCardinality};
+import com.symphony.oss.common.dom.json.ImmutableJsonList;
+import com.symphony.oss.common.dom.json.ImmutableJsonSet;
 
 <@importFieldTypes model false/>
 <@importFacadePackages model/>

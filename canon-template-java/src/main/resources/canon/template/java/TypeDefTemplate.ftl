@@ -13,8 +13,8 @@ import com.symphony.oss.commons.type.provider.IDoubleProvider;
 import com.symphony.oss.commons.type.provider.IImmutableByteArrayProvider;
 import com.symphony.oss.commons.type.provider.IValueProvider;
 
-import org.symphonyoss.s2.canon.runtime.TypeDef;
-import org.symphonyoss.s2.canon.runtime.${modelJavaFieldClassName}TypeDefBuilder;
+import com.symphony.oss.canon.runtime.TypeDef;
+import com.symphony.oss.canon.runtime.${modelJavaFieldClassName}TypeDefBuilder;
 <#if model.baseSchema.isGenerateFacade>
 import ${javaFacadePackage}.${modelJavaClassName};
 </#if>

@@ -6,9 +6,9 @@ import java.net.URL;
 import javax.annotation.Nullable;
 import javax.annotation.concurrent.Immutable;
 
-import org.symphonyoss.s2.canon.runtime.IModelRegistry;
-import org.symphonyoss.s2.canon.runtime.http.client.HttpModelClient;
-import org.symphonyoss.s2.canon.runtime.http.client.IAuthenticationProvider;
+import com.symphony.oss.canon.runtime.IModelRegistry;
+import com.symphony.oss.canon.runtime.http.client.HttpModelClient;
+import com.symphony.oss.canon.runtime.http.client.IAuthenticationProvider;
 
 /**
  * 

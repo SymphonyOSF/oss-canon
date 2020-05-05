@@ -6,11 +6,11 @@
 			"name": "Apache2"
 		}
 	},
-	"id": "org.symphonyoss.s2.canon.test.simpleRpc",
+	"id": "com.symphony.oss.canon.test.simpleRpc",
   "version": "1.0",
 	"model": {
-		"javaGenPackage": "org.symphonyoss.s2.canon.test.unit",
-		"javaFacadePackage": "org.symphonyoss.s2.canon.test.unit.facade"
+		"javaGenPackage": "com.symphony.oss.canon.test.unit",
+		"javaFacadePackage": "com.symphony.oss.canon.test.unit.facade"
 	},
 	"methods": {
     "/keystore/cryptoRotationInfo/multiple": {
