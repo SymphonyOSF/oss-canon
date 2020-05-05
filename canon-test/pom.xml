@@ -37,6 +37,17 @@
       <artifactId>canon-runtime-java</artifactId>
       <version>${project.version}</version>
     </dependency>
+    
+    <dependency>
+      <groupId>com.symphony.oss.fugue</groupId>
+      <artifactId>fugue-core</artifactId>
+      <version>${oss.fugue.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>com.symphony.oss.fugue</groupId>
+      <artifactId>fugue-http</artifactId>
+      <version>${oss.fugue.version}</version>
+    </dependency>
 
     <dependency>
       <groupId>com.symphony.oss.commons</groupId>
@@ -47,16 +58,6 @@
       <groupId>com.symphony.oss.commons</groupId>
       <artifactId>commons-dom</artifactId>
       <version>${oss.commons.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>com.symphony.oss.commons</groupId>
-      <artifactId>commons-dom-jackson</artifactId>
-      <version>${oss.commons.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>com.symphony.oss.fugue</groupId>
-      <artifactId>fugue-core</artifactId>
-      <version>${oss.fugue.version}</version>
     </dependency>
     
     <dependency>

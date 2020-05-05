@@ -33,7 +33,7 @@ import org.symphonyoss.s2.canon.runtime.exception.ServerErrorException;
 import org.symphonyoss.s2.canon.runtime.http.IRequestAuthenticator;
 import org.symphonyoss.s2.canon.runtime.http.ParameterLocation;
 import org.symphonyoss.s2.canon.runtime.http.IAsyncRequestContext;
-import org.symphonyoss.s2.fugue.pipeline.IConsumer;
+import com.symphony.oss.fugue.pipeline.IConsumer;
 
 <@importFieldTypes model true/>
 <@importFacadePackages model/>

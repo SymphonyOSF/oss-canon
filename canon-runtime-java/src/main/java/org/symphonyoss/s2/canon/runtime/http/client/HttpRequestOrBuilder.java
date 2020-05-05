@@ -32,7 +32,6 @@ import org.symphonyoss.s2.canon.runtime.exception.NotFoundException;
 import org.symphonyoss.s2.canon.runtime.exception.PermissionDeniedException;
 import org.symphonyoss.s2.canon.runtime.exception.ServerErrorException;
 
-import com.google.protobuf.ByteString;
 import com.symphony.oss.commons.immutable.ImmutableByteArray;
 
 public class HttpRequestOrBuilder<MC extends HttpModelClient>
@@ -47,11 +46,6 @@ public class HttpRequestOrBuilder<MC extends HttpModelClient>
   public MC getCanonClient()
   {
     return canonClient_;
-  }
-
-  public String asString(ByteString byteString)
-  {
-    return Base64.encodeBase64URLSafeString(byteString.toByteArray());
   }
   
   public String asString(ImmutableByteArray byteString)

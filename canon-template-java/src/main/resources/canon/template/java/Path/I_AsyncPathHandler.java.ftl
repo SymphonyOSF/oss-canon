@@ -5,8 +5,8 @@ import javax.annotation.Nullable;
 
 import org.symphonyoss.s2.canon.runtime.exception.CanonException;
 import org.symphonyoss.s2.canon.runtime.IAsyncEntityHandler;
-import org.symphonyoss.s2.fugue.core.trace.ITraceContext;
-import org.symphonyoss.s2.fugue.pipeline.IConsumer;
+import com.symphony.oss.fugue.core.trace.ITraceContext;
+import com.symphony.oss.fugue.pipeline.IConsumer;
 
 <@importFieldTypes model true/>
 <@importFacadePackages model/>
