@@ -8,7 +8,7 @@ import javax.annotation.Nullable;
 import com.symphony.oss.canon.runtime.exception.CanonException;
 import com.symphony.oss.canon.runtime.http.IRequestAuthenticator;
 import com.symphony.oss.canon.runtime.IEntityHandler;
-import com.symphony.oss.fugue.core.trace.ITraceContext;
+import com.symphony.oss.fugue.trace.ITraceContext;
 
 <@importFieldTypes model true/>
 <@importFacadePackages model/>

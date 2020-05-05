@@ -16,8 +16,8 @@ import javax.servlet.AsyncContext;
 import javax.servlet.ServletInputStream;
 import javax.servlet.ServletOutputStream;
 
-import com.symphony.oss.common.dom.json.ImmutableJsonObject;
-import com.symphony.oss.common.dom.json.JsonValue;
+import com.symphony.oss.commons.dom.json.ImmutableJsonObject;
+import com.symphony.oss.commons.dom.json.JsonValue;
 
 import com.symphony.oss.canon.runtime.AsyncPathHandler;
 import com.symphony.oss.canon.runtime.EmptyRequestManager;

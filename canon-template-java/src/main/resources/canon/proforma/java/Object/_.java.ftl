@@ -6,8 +6,8 @@ import javax.annotation.concurrent.Immutable;
 
 import com.symphony.oss.commons.immutable.ImmutableByteArray;
 
-import com.symphony.oss.common.dom.json.ImmutableJsonObject;
-import com.symphony.oss.common.dom.json.MutableJsonObject;
+import com.symphony.oss.commons.dom.json.ImmutableJsonObject;
+import com.symphony.oss.commons.dom.json.MutableJsonObject;
 
 import com.symphony.oss.canon.runtime.IEntity;
 import com.symphony.oss.canon.runtime.IModelRegistry;

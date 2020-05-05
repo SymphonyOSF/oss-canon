@@ -5,8 +5,8 @@ import javax.annotation.concurrent.Immutable;
 
 import com.symphony.oss.canon.runtime.IEntity;
 import com.symphony.oss.canon.runtime.IEntity${modelJavaCardinality};
-import com.symphony.oss.common.dom.json.ImmutableJsonList;
-import com.symphony.oss.common.dom.json.ImmutableJsonSet;
+import com.symphony.oss.commons.dom.json.ImmutableJsonList;
+import com.symphony.oss.commons.dom.json.ImmutableJsonSet;
 
 <@importFieldTypes model false/>
 import ${javaGenPackage}.*;

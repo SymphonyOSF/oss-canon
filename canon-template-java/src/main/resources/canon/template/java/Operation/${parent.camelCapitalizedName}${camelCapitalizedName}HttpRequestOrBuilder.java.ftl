@@ -3,7 +3,7 @@
 <@setJavaMethod model/>
 import javax.annotation.concurrent.Immutable;
 
-import com.symphony.oss.common.dom.json.JsonArray;
+import com.symphony.oss.commons.dom.json.JsonArray;
 
 import com.symphony.oss.canon.runtime.http.client.HttpRequestOrBuilder;
 

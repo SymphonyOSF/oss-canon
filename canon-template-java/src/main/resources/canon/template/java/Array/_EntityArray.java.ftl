@@ -14,13 +14,13 @@ import com.google.common.collect.ImmutableSet;
 import com.symphony.oss.canon.runtime.IEntity${modelJavaCardinality};
 import com.symphony.oss.canon.runtime.EntityArrayFactory;
 
-import com.symphony.oss.common.dom.json.IImmutableJsonDomNode;
-import com.symphony.oss.common.dom.json.ImmutableJsonList;
-import com.symphony.oss.common.dom.json.ImmutableJsonSet;
-import com.symphony.oss.common.dom.json.IJsonDomNode;
-import com.symphony.oss.common.dom.json.Json${modelJavaCardinality};
-import com.symphony.oss.common.dom.json.MutableJsonList;
-import com.symphony.oss.common.dom.json.MutableJsonSet;
+import com.symphony.oss.commons.dom.json.IImmutableJsonDomNode;
+import com.symphony.oss.commons.dom.json.ImmutableJsonList;
+import com.symphony.oss.commons.dom.json.ImmutableJsonSet;
+import com.symphony.oss.commons.dom.json.IJsonDomNode;
+import com.symphony.oss.commons.dom.json.Json${modelJavaCardinality};
+import com.symphony.oss.commons.dom.json.MutableJsonList;
+import com.symphony.oss.commons.dom.json.MutableJsonSet;
 
 import com.symphony.oss.canon.runtime.Entity${modelJavaCardinality};
 

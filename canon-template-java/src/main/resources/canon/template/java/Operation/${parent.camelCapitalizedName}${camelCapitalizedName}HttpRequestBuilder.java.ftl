@@ -6,9 +6,9 @@ import javax.annotation.concurrent.Immutable;
 
 import java.util.Collection;
 
-import com.symphony.oss.common.dom.json.ImmutableJsonList;
-import com.symphony.oss.common.dom.json.ImmutableJsonSet;
-import com.symphony.oss.common.dom.json.MutableJsonList;
+import com.symphony.oss.commons.dom.json.ImmutableJsonList;
+import com.symphony.oss.commons.dom.json.ImmutableJsonSet;
+import com.symphony.oss.commons.dom.json.MutableJsonList;
 
 import com.symphony.oss.canon.runtime.exception.BadRequestException;
 import com.symphony.oss.canon.runtime.http.ParameterLocation;
