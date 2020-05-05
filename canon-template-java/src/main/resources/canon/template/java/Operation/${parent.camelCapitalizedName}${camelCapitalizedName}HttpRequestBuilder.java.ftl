@@ -6,13 +6,13 @@ import javax.annotation.concurrent.Immutable;
 
 import java.util.Collection;
 
-import org.symphonyoss.s2.common.dom.json.ImmutableJsonList;
-import org.symphonyoss.s2.common.dom.json.ImmutableJsonSet;
-import org.symphonyoss.s2.common.dom.json.MutableJsonList;
+import com.symphony.oss.commons.dom.json.ImmutableJsonList;
+import com.symphony.oss.commons.dom.json.ImmutableJsonSet;
+import com.symphony.oss.commons.dom.json.MutableJsonList;
 
-import org.symphonyoss.s2.canon.runtime.exception.BadRequestException;
-import org.symphonyoss.s2.canon.runtime.http.ParameterLocation;
-import org.symphonyoss.s2.canon.runtime.http.client.HttpParameter;
+import com.symphony.oss.canon.runtime.exception.BadRequestException;
+import com.symphony.oss.canon.runtime.http.ParameterLocation;
+import com.symphony.oss.canon.runtime.http.client.HttpParameter;
 
 <@importFieldTypes model true/>
 <@importFacadePackages model/>

@@ -3,10 +3,10 @@
 <@setPrologueJavaType model/>
 import javax.annotation.concurrent.Immutable;
 
-import org.symphonyoss.s2.canon.runtime.IEntity;
-import org.symphonyoss.s2.canon.runtime.IEntity${modelJavaCardinality};
-import org.symphonyoss.s2.common.dom.json.ImmutableJsonList;
-import org.symphonyoss.s2.common.dom.json.ImmutableJsonSet;
+import com.symphony.oss.canon.runtime.IEntity;
+import com.symphony.oss.canon.runtime.IEntity${modelJavaCardinality};
+import com.symphony.oss.commons.dom.json.ImmutableJsonList;
+import com.symphony.oss.commons.dom.json.ImmutableJsonSet;
 
 <@importFieldTypes model false/>
 import ${javaGenPackage}.*;

@@ -16,24 +16,24 @@ import javax.servlet.AsyncContext;
 import javax.servlet.ServletInputStream;
 import javax.servlet.ServletOutputStream;
 
-import org.symphonyoss.s2.common.dom.json.ImmutableJsonObject;
-import org.symphonyoss.s2.common.dom.json.JsonValue;
+import com.symphony.oss.commons.dom.json.ImmutableJsonObject;
+import com.symphony.oss.commons.dom.json.JsonValue;
 
-import org.symphonyoss.s2.canon.runtime.AsyncPathHandler;
-import org.symphonyoss.s2.canon.runtime.EmptyRequestManager;
-import org.symphonyoss.s2.canon.runtime.PayloadOnlyRequestManager;
-import org.symphonyoss.s2.canon.runtime.PayloadResponseRequestManager;
-import org.symphonyoss.s2.canon.runtime.ResponseOnlyRequestManager;
-import org.symphonyoss.s2.canon.runtime.ModelRegistry;
-import org.symphonyoss.s2.canon.runtime.exception.BadRequestException;
-import org.symphonyoss.s2.canon.runtime.exception.CanonException;
-import org.symphonyoss.s2.canon.runtime.exception.NotFoundException;
-import org.symphonyoss.s2.canon.runtime.exception.PermissionDeniedException;
-import org.symphonyoss.s2.canon.runtime.exception.ServerErrorException;
-import org.symphonyoss.s2.canon.runtime.http.IRequestAuthenticator;
-import org.symphonyoss.s2.canon.runtime.http.ParameterLocation;
-import org.symphonyoss.s2.canon.runtime.http.IAsyncRequestContext;
-import org.symphonyoss.s2.fugue.pipeline.IConsumer;
+import com.symphony.oss.canon.runtime.AsyncPathHandler;
+import com.symphony.oss.canon.runtime.EmptyRequestManager;
+import com.symphony.oss.canon.runtime.PayloadOnlyRequestManager;
+import com.symphony.oss.canon.runtime.PayloadResponseRequestManager;
+import com.symphony.oss.canon.runtime.ResponseOnlyRequestManager;
+import com.symphony.oss.canon.runtime.ModelRegistry;
+import com.symphony.oss.canon.runtime.exception.BadRequestException;
+import com.symphony.oss.canon.runtime.exception.CanonException;
+import com.symphony.oss.canon.runtime.exception.NotFoundException;
+import com.symphony.oss.canon.runtime.exception.PermissionDeniedException;
+import com.symphony.oss.canon.runtime.exception.ServerErrorException;
+import com.symphony.oss.canon.runtime.http.IRequestAuthenticator;
+import com.symphony.oss.canon.runtime.http.ParameterLocation;
+import com.symphony.oss.canon.runtime.http.IAsyncRequestContext;
+import com.symphony.oss.fugue.pipeline.IConsumer;
 
 <@importFieldTypes model true/>
 <@importFacadePackages model/>

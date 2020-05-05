@@ -33,6 +33,22 @@
     </dependency>
     
     <dependency>
+      <groupId>com.symphony.oss.commons</groupId>
+      <artifactId>commons-core</artifactId>
+      <version>${oss.commons.version}</version>
+    </dependency>
+    
+     <dependency>
+      <groupId>org.apache.httpcomponents</groupId>
+      <artifactId>httpclient</artifactId>
+     </dependency>
+    
+    <dependency>
+      <groupId>commons-codec</groupId>
+      <artifactId>commons-codec</artifactId>
+    </dependency>
+    
+    <dependency>
         <groupId>io.jsonwebtoken</groupId>
         <artifactId>jjwt</artifactId>
         <version>0.6.0</version>
@@ -55,5 +71,10 @@
       <version>0.10.5</version>
       <scope>runtime</scope>
     </dependency> -->
+    
+    <dependency>
+      <groupId>javax.servlet</groupId>
+      <artifactId>javax.servlet-api</artifactId>
+    </dependency>
   </dependencies>
 </project>

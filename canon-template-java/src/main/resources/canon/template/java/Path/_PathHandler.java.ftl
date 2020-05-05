@@ -9,16 +9,16 @@ import java.io.IOException;
 import java.util.Iterator;
 import java.util.List;
 
-import org.symphonyoss.s2.canon.runtime.PathHandler;
-import org.symphonyoss.s2.canon.runtime.ModelRegistry;
-import org.symphonyoss.s2.canon.runtime.exception.BadRequestException;
-import org.symphonyoss.s2.canon.runtime.exception.CanonException;
-import org.symphonyoss.s2.canon.runtime.exception.NotFoundException;
-import org.symphonyoss.s2.canon.runtime.exception.PermissionDeniedException;
-import org.symphonyoss.s2.canon.runtime.exception.ServerErrorException;
-import org.symphonyoss.s2.canon.runtime.http.IRequestAuthenticator;
-import org.symphonyoss.s2.canon.runtime.http.ParameterLocation;
-import org.symphonyoss.s2.canon.runtime.http.IRequestContext;
+import com.symphony.oss.canon.runtime.PathHandler;
+import com.symphony.oss.canon.runtime.ModelRegistry;
+import com.symphony.oss.canon.runtime.exception.BadRequestException;
+import com.symphony.oss.canon.runtime.exception.CanonException;
+import com.symphony.oss.canon.runtime.exception.NotFoundException;
+import com.symphony.oss.canon.runtime.exception.PermissionDeniedException;
+import com.symphony.oss.canon.runtime.exception.ServerErrorException;
+import com.symphony.oss.canon.runtime.http.IRequestAuthenticator;
+import com.symphony.oss.canon.runtime.http.ParameterLocation;
+import com.symphony.oss.canon.runtime.http.IRequestContext;
 
 <@importFieldTypes model true/>
 <@importFacadePackages model/>

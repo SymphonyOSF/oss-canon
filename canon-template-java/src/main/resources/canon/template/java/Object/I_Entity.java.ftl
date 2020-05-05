@@ -4,7 +4,7 @@
 <@setPrologueJavaType model/>
 
 import java.util.Set;
-import org.symphonyoss.s2.canon.runtime.IEntity;
+import com.symphony.oss.canon.runtime.IEntity;
 import com.google.common.collect.ImmutableSet;
 
 <@importFieldTypes model true/>

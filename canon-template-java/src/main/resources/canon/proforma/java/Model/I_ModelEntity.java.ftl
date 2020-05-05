@@ -1,6 +1,6 @@
 <#include "/proforma/java/canon-proforma-java-Prologue.ftl">
 
-import org.symphonyoss.s2.canon.runtime.IEntity;
+import com.symphony.oss.canon.runtime.IEntity;
 
 /**
  * Base interface for ${model.camelCapitalizedName} model entities.

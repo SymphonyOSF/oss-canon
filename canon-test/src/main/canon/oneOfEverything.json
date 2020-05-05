@@ -6,11 +6,11 @@
       "name": "Apache2"
     }
   },
-  "id": "org.symphonyoss.s2.canon.test.oneOfEverything",
+  "id": "com.symphony.oss.canon.test.oneOfEverything",
   "version": "1.0",
   "model": {
-    "javaGenPackage":  "org.symphonyoss.s2.canon.test.oneofeverything",
-    "javaFacadePackage":  "org.symphonyoss.s2.canon.test.oneofeverything.facade"
+    "javaGenPackage":  "com.symphony.oss.canon.test.oneofeverything",
+    "javaFacadePackage":  "com.symphony.oss.canon.test.oneofeverything.facade"
   },
   "components": {
     "schemas": {
@@ -292,7 +292,7 @@
         "type": "string",
         "format": "byte",
         "x-canon-attributes": {
-          "javaExternalPackage":  "org.symphonyoss.s2.canon.test.oneofeverything",
+          "javaExternalPackage":  "com.symphony.oss.canon.test.oneofeverything",
           "javaExternalType":     "TestHash"
         }
       },
@@ -301,7 +301,7 @@
         "type": "string",
         "format": "byte",
         "x-canon-attributes": {
-          "javaExternalPackage":  "org.symphonyoss.s2.canon.test.oneofeverything",
+          "javaExternalPackage":  "com.symphony.oss.canon.test.oneofeverything",
           "javaExternalType":     "DirectHash",
           "isDirectExternal":     "true"
         }
@@ -360,7 +360,7 @@
           "smooth"
         ],
         "x-canon-attributes": {
-          "javaExternalPackage":  "org.symphonyoss.s2.canon.test.oneofeverything",
+          "javaExternalPackage":  "com.symphony.oss.canon.test.oneofeverything",
           "javaExternalType":     "TestTexture"
          }
       },

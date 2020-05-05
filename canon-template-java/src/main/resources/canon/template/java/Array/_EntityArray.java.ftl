@@ -11,18 +11,18 @@ import com.google.common.collect.ImmutableSet;
 <@importFieldTypes model true/>
 <@importFacadePackages model/>
 
-import org.symphonyoss.s2.canon.runtime.IEntity${modelJavaCardinality};
-import org.symphonyoss.s2.canon.runtime.EntityArrayFactory;
+import com.symphony.oss.canon.runtime.IEntity${modelJavaCardinality};
+import com.symphony.oss.canon.runtime.EntityArrayFactory;
 
-import org.symphonyoss.s2.common.dom.json.IImmutableJsonDomNode;
-import org.symphonyoss.s2.common.dom.json.ImmutableJsonList;
-import org.symphonyoss.s2.common.dom.json.ImmutableJsonSet;
-import org.symphonyoss.s2.common.dom.json.IJsonDomNode;
-import org.symphonyoss.s2.common.dom.json.Json${modelJavaCardinality};
-import org.symphonyoss.s2.common.dom.json.MutableJsonList;
-import org.symphonyoss.s2.common.dom.json.MutableJsonSet;
+import com.symphony.oss.commons.dom.json.IImmutableJsonDomNode;
+import com.symphony.oss.commons.dom.json.ImmutableJsonList;
+import com.symphony.oss.commons.dom.json.ImmutableJsonSet;
+import com.symphony.oss.commons.dom.json.IJsonDomNode;
+import com.symphony.oss.commons.dom.json.Json${modelJavaCardinality};
+import com.symphony.oss.commons.dom.json.MutableJsonList;
+import com.symphony.oss.commons.dom.json.MutableJsonSet;
 
-import org.symphonyoss.s2.canon.runtime.Entity${modelJavaCardinality};
+import com.symphony.oss.canon.runtime.Entity${modelJavaCardinality};
 
 <#include "/template/java/Array/Array.ftl">
 <@setJavaType model.baseSchema/>
