@@ -44,7 +44,9 @@ public abstract class AbstractParameter extends ModelElement
   {
     super(parent, parserContext, type, name);
     
-    required_ = parserContext.get("required").getJsonNode().asBoolean();
+    ParserContext r = parserContext.get("required");
+    
+    required_ = r != null && r.getJsonNode().asBoolean();
     
     ParserContext schema = parserContext.get(Canon.SCHEMA);
     
