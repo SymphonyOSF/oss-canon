@@ -94,8 +94,8 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<source.code.version>1.8</source.code.version>
 		<target.code.version>1.8</target.code.version>
-    <oss.commons.version>0.0.2</oss.commons.version>
-    <oss.fugue.version>0.0.2</oss.fugue.version>
+    <oss.commons.version>0.0.4</oss.commons.version>
+    <oss.fugue.version>0.0.4</oss.fugue.version>
 	</properties>
 
 
@@ -106,6 +106,7 @@
 	<module>canon-parser</module>
 	<module>canon-template-java</module>
 	<module>canon-test</module>
+	<module>canon-launch</module>
 	</modules>
 
 	<build>
