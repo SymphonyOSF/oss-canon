@@ -27,10 +27,27 @@ import java.security.Key;
 
 import io.jsonwebtoken.Claims;
 
+/**
+ * An example JwtAutheticator which returns the subject claim as a String as the Authentication context.
+ * 
+ * This implementation has a default value which is returned in the case where a valid token has no subject claim.
+ * In a real implementation one would probably throw a NotAuthenticatedException to return an HTTP 401 in that case.
+ * 
+ * @author Bruce Skingle
+ *
+ */
 public class JwtSubjectAuthenticator extends JwtAuthenticator<String>
 {
   private String defaultSubject_;
 
+  /**
+   * Constructor.
+   * 
+   * @param key               Key to be used to validate signature.
+   * @param maxAge            Maximum acceptable age of JWT.
+   * @param defaultSubject    Value to return if there is no subject claim.
+   * @param algorithm         Signature algorithm which is acceptable.
+   */
   public JwtSubjectAuthenticator(Key key, Long maxAge, String defaultSubject, String algorithm)
   {
     super(key, maxAge, algorithm);
@@ -47,5 +64,4 @@ public class JwtSubjectAuthenticator extends JwtAuthenticator<String>
     
     return subject;
   }
-
 }

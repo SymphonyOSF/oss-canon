@@ -91,7 +91,6 @@ public class Canon
   private String              generationTarget_     = "target/generated-sources";
   private String              proformaTarget_       = "target/proforma-sources";
   private String              outputDir_            = ".";
-  private String              proformaCopy_         = null;
   private List<String>        fileNames_            = new ArrayList<>();
   private List<String>        errors_               = new ArrayList<>();
   private List<File>          templateDirs_         = new ArrayList<>();
@@ -333,7 +332,6 @@ public class Canon
       System.out.printf("sourceDir:        %s\n", sourceDir_);
       System.out.printf("generationTarget: %s\n", generationTarget_);
       System.out.printf("proformaTarget:   %s\n", proformaTarget_);
-      System.out.printf("proformaCopy:     %s\n", proformaCopy_);
       System.out.printf("inputFiles:\n");
       for (File f : files)
         System.out.println(f.getAbsolutePath());

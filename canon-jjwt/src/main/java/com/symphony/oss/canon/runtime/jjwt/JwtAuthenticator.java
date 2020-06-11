@@ -33,19 +33,32 @@ import com.symphony.oss.canon.runtime.exception.NotAuthenticatedException;
 import com.symphony.oss.canon.runtime.exception.PermissionDeniedException;
 import com.symphony.oss.canon.runtime.http.IRequestAuthenticator;
 import com.symphony.oss.canon.runtime.http.IRequestContext;
-import com.symphony.oss.canon.runtime.http.ParameterLocation;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.Jwts;
 
+/**
+ * Base class for an authenticator of JWTs.
+ * 
+ * @author Bruce Skingle
+ *
+ * @param <T> The concrete type of the returned authentication context.
+ */
 public abstract class JwtAuthenticator<T> extends JwtBase implements IRequestAuthenticator<T>
 {
   private final Key key_;
   private final Long maxAge_;
   private final String requiredAlgorithm_;
   
+  /**
+   * Constructor.
+   * 
+   * @param key               Key to be used to validate signature.
+   * @param maxAge            Maximum acceptable age of JWT.
+   * @param requiredAlgorithm Signature algorithm which is acceptable.
+   */
   public JwtAuthenticator(Key key, Long maxAge, String requiredAlgorithm)
   {
     key_ = key;
@@ -69,8 +82,9 @@ public abstract class JwtAuthenticator<T> extends JwtBase implements IRequestAut
   {  
     try
     {
-      Jws<Claims> parsedJwt = Jwts.parser()
+      Jws<Claims> parsedJwt = Jwts.parserBuilder()
           .setSigningKey(key_)
+          .build()
           .parseClaimsJws(token)
           ;
       

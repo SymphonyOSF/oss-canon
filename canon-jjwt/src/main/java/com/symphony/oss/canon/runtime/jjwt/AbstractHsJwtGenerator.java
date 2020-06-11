@@ -62,9 +62,7 @@ public class AbstractHsJwtGenerator<T extends AbstractHsJwtGenerator<T>> extends
   @Override
   protected String sign(JwtBuilder builder)
   {
-// This is for JJWT 0.10.5
-//    return builder.signWith(key_, signatureAlgorithm_).compact();
-    return builder.signWith(signatureAlgorithm_, key_).compact();
+    return builder.signWith(key_, signatureAlgorithm_).compact();
   }
 
   /**

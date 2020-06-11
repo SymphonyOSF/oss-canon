@@ -41,6 +41,12 @@ import com.symphony.oss.fugue.trace.ITraceContext;
 import com.symphony.oss.fugue.trace.ITraceContextTransaction;
 import com.symphony.oss.fugue.trace.ITraceContextTransactionFactory;
 
+/**
+ * A Servlet implementation of IAsyncHandlerContainer.
+ * 
+ * @author Bruce Skingle
+ *
+ */
 public class ModelServlet extends HttpServlet implements IModelServlet
 {
   private static final long                            serialVersionUID = 1L;
@@ -64,7 +70,12 @@ public class ModelServlet extends HttpServlet implements IModelServlet
           return 0;
         }});
 
-  
+  /**
+   * Constructor.
+   * 
+   * @param traceFactory    Trace context factory.
+   * @param modelRegistry   Model Registry.
+   */
   public ModelServlet(ITraceContextTransactionFactory traceFactory, IModelRegistry modelRegistry)
   {
     traceFactory_ = traceFactory;
@@ -109,7 +120,8 @@ public class ModelServlet extends HttpServlet implements IModelServlet
     try(ITraceContextTransaction traceTransaction = traceFactory_.createTransaction("HTTP " + method, UUID.randomUUID().toString()))
     {
       ITraceContext trace = traceTransaction.open();
-      
+
+      doCorsHeaders(req, resp);
       ServletRequestContext context = new ServletRequestContext(method, trace, modelRegistry_, req, resp);
       
       for(List<IAbstractEntityHandler> list : handlerMap_.values())
@@ -139,40 +151,61 @@ public class ModelServlet extends HttpServlet implements IModelServlet
   }
 
   @Override
-  protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException
+  protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException
   {
     handle(HttpMethod.Get, req, resp);
   }
 
   @Override
-  protected long getLastModified(HttpServletRequest req)
-  {
-    // TODO Auto-generated method stub
-    return super.getLastModified(req);
-  }
-
-  @Override
-  protected void doHead(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException
-  {
-    // TODO Auto-generated method stub
-    super.doHead(req, resp);
-  }
-
-  @Override
-  protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException
+  protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException
   {
     handle(HttpMethod.Post, req, resp);
   }
 
   @Override
-  protected void doPut(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException
+  protected void doPut(HttpServletRequest req, HttpServletResponse resp) throws IOException
   {
     handle(HttpMethod.Put, req, resp);
   }
 
   @Override
-  protected void doDelete(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException
+  protected void doDelete(HttpServletRequest req, HttpServletResponse resp) throws IOException
   {
     handle(HttpMethod.Delete, req, resp);
+  }
+
+  @Override
+  protected void doOptions(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException
+  {
+    if(doCorsHeaders(req, resp))
+    {
+      resp.setStatus(HttpServletResponse.SC_OK);
+      
+      return;
+    }
+    
+    super.doOptions(req, resp);
+  }
+
+  private boolean doCorsHeaders(HttpServletRequest req, HttpServletResponse resp)
+  {
+    String origin = req.getHeader("Origin");
+    
+    if(origin != null)
+    {
+      int i = origin.lastIndexOf(':');
+      
+      if(i>0)
+        origin = origin.substring(0, i);
+      
+      if(origin.endsWith(".symphony.com"))
+      {
+        resp.setHeader("Access-Control-Allow-Origin", "*");
+        resp.setHeader("Access-Control-Allow-Headers", "*");
+        
+        return true;
+      }
+    }
+    return false;
   }
 }

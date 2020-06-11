@@ -78,10 +78,7 @@ public abstract class JsonArrayParser implements Closeable
               break;
               
             case '"':
-              if(inEscape_)
-                inEscape_ = false;
-              else
-                inQuotedString_ = false;
+              inQuotedString_ = false;
               break;
           }
         }

@@ -24,7 +24,7 @@
     <version>0.0.4-SNAPSHOT</version>
   </parent>
   <artifactId>canon-jjwt</artifactId>
-  
+    
   <dependencies>
     <dependency>
       <groupId>${project.groupId}</groupId>
@@ -48,29 +48,24 @@
       <artifactId>commons-codec</artifactId>
     </dependency>
     
-    <dependency>
+    <!-- <dependency>
         <groupId>io.jsonwebtoken</groupId>
         <artifactId>jjwt</artifactId>
         <version>0.6.0</version>
-    </dependency>
+    </dependency> -->
     
-    <!-- <dependency>
+    <dependency>
       <groupId>io.jsonwebtoken</groupId>
       <artifactId>jjwt-api</artifactId>
-      <version>0.10.5</version>
     </dependency>
     <dependency>
       <groupId>io.jsonwebtoken</groupId>
       <artifactId>jjwt-impl</artifactId>
-      <version>0.10.5</version>
-      <scope>runtime</scope>
     </dependency>
     <dependency>
       <groupId>io.jsonwebtoken</groupId>
       <artifactId>jjwt-jackson</artifactId>
-      <version>0.10.5</version>
-      <scope>runtime</scope>
-    </dependency> -->
+    </dependency>
     
     <dependency>
       <groupId>javax.servlet</groupId>
