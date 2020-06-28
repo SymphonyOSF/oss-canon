@@ -23,6 +23,12 @@
 
 package com.symphony.oss.canon.runtime.http.client;
 
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Map.Entry;
+
+import org.apache.http.client.methods.CloseableHttpResponse;
+
 import com.symphony.oss.canon.runtime.IModelRegistry;
 
 public class HttpModelClient
@@ -30,8 +36,9 @@ public class HttpModelClient
   private final IModelRegistry          registry_;
   private final String                  uri_;
   private final IAuthenticationProvider auth_;
+  private final Map<Integer, IResponseHandler> handlerMap_;
   
-  public HttpModelClient(IModelRegistry registry, String baseUri, String basePath, IAuthenticationProvider auth)
+  public HttpModelClient(IModelRegistry registry, String baseUri, String basePath, IAuthenticationProvider auth, Map<Integer, IResponseHandler> handlerMap)
   {
     if(baseUri.endsWith("/"))
       throw new IllegalArgumentException("baseUri must not end with a slash");
@@ -42,6 +49,7 @@ public class HttpModelClient
     registry_ = registry;
     uri_ = baseUri + basePath;
     auth_ = auth;
+    handlerMap_ = handlerMap;
   }
 
   public String getUri()
@@ -57,5 +65,36 @@ public class HttpModelClient
   public IAuthenticationProvider getAuthenticationProvider()
   {
     return auth_;
+  }
+  
+  public Map<Integer, IResponseHandlerContext> prepareResponse()
+  {
+    if(handlerMap_ != null)
+    {
+      Map<Integer, IResponseHandlerContext> map = new HashMap<>();
+      
+      for(Entry<Integer, IResponseHandler> entry : handlerMap_.entrySet())
+      {
+        map.put(entry.getKey(), entry.getValue().prepare());
+      }
+      return map;
+    }
+    return null;
+  }
+
+  public ResponseHandlerAction handleResponse(CloseableHttpResponse response, Map<Integer, IResponseHandlerContext> contextMap)
+  {
+    if(contextMap != null)
+    {
+      IResponseHandlerContext handler = contextMap.get(response.getStatusLine().getStatusCode());
+      
+      if(handler != null)
+      {
+        return handler.handle(response);
+      }
+    }
+    return ResponseHandlerAction.CONTINUE;
+    
+    
   }
 }

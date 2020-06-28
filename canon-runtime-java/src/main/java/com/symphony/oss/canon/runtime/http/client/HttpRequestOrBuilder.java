@@ -23,9 +23,13 @@
 
 package com.symphony.oss.canon.runtime.http.client;
 
-import org.apache.commons.codec.binary.Base64;
+import java.io.IOException;
+import java.util.Map;
+
 import org.apache.http.HttpStatus;
 import org.apache.http.client.methods.CloseableHttpResponse;
+import org.apache.http.client.methods.HttpUriRequest;
+import org.apache.http.impl.client.CloseableHttpClient;
 
 import com.symphony.oss.canon.runtime.exception.BadRequestException;
 import com.symphony.oss.canon.runtime.exception.DeletedException;
@@ -68,9 +72,28 @@ public class HttpRequestOrBuilder<MC extends HttpModelClient>
     return s;
   }
   
-  public void validateResponse(CloseableHttpResponse response) throws PermissionDeniedException, BadRequestException, ServerErrorException
+  private CloseableHttpResponse makeRequestOnce(CloseableHttpClient httpClient, HttpUriRequest canonRequest) throws IOException
   {
-    int statusCode = response.getStatusLine().getStatusCode();
+    while(true)
+    {
+      Map<Integer, IResponseHandlerContext> map = canonClient_.prepareResponse();
+      CloseableHttpResponse response = httpClient.execute(canonRequest);
+      
+      switch(canonClient_.handleResponse(response, map))
+      {
+        case RETRY:
+          continue;
+          
+        case CONTINUE:
+          return response;
+      }
+    }
+  }
+  
+  public CloseableHttpResponse makeRequest(CloseableHttpClient httpClient, HttpUriRequest canonRequest) throws IOException
+  {
+    CloseableHttpResponse response    = makeRequestOnce(httpClient, canonRequest);
+    int                   statusCode  = response.getStatusLine().getStatusCode();
     
     if(statusCode == HttpStatus.SC_FORBIDDEN)
       throw new PermissionDeniedException(response);
@@ -92,5 +115,7 @@ public class HttpRequestOrBuilder<MC extends HttpModelClient>
     
     if(statusCode >= 400)
       throw new BadRequestException(response);
+    
+    return response;
   }
 }
