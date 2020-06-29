@@ -79,15 +79,15 @@
     Set<String> keySet = new HashSet<>(super.getCanonUnknownKeys());
     
 <#list model.fields as field>
-    if(keySet.remove("${field.camelName}"))
+    if(keySet.remove("${field.name}"))
     {
-      IJsonDomNode  node = jsonObject.get("${field.camelName}");
+      IJsonDomNode  node = jsonObject.get("${field.name}");
   <@generateCreateFieldFromJsonDomNode "      " field "_${field.camelName}_" "" "Immutable"/>
     }
     else
     {
   <#if field.required>
-      throw new IllegalArgumentException("${field.camelName} is required.");
+      throw new IllegalArgumentException("${field.name} is required.");
   <#else>
       _${field.camelName}_ = null;
   </#if>

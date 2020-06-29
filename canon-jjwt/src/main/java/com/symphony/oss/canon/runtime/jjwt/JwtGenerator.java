@@ -36,15 +36,31 @@ import com.symphony.oss.commons.fluent.Fluent;
 import io.jsonwebtoken.JwtBuilder;
 import io.jsonwebtoken.Jwts;
 
+/**
+ * Base class for JWT Generators.
+ * 
+ * The default TTL is 5 minutes, which means generated tokens have an expires claim 5 minutes after their issue time.
+ * 
+ * Call setTtl() to override. Passing a null value removes the expires claim.
+ * 
+ * @author Bruce Skingle
+ *
+ * @param <T> Concrete type for fluent methods.
+ */
 public abstract class JwtGenerator<T extends JwtGenerator<T>> extends Fluent<T> implements IJwtAuthenticationProvider
 {
+  /**
+   * Constructor.
+   * 
+   * @param type Concrete type for fluent methods.
+   */
   public JwtGenerator(Class<T> type)
   {
     super(type);
   }
 
   private String  subject_;
-  private Long    ttl_;
+  private Long    ttl_ = 5 * 60 * 1000L;  // default 5 minutes.
   private String  issuer_;
   private Map<String, Object> claims_ = new HashMap<>();
   
@@ -54,6 +70,7 @@ public abstract class JwtGenerator<T extends JwtGenerator<T>> extends Fluent<T> 
     builder.addHeader(JwtBase.AUTH_HEADER_KEY, JwtBase.AUTH_HEADER_VALUE_PREFIX + createJwt());
   }
   
+  @Override
   public String createJwt()
   {
     Date now = new Date();
@@ -77,24 +94,52 @@ public abstract class JwtGenerator<T extends JwtGenerator<T>> extends Fluent<T> 
     return sign(jwt);
   }
 
+  /**
+   * Set the value for the issuer claim.
+   * 
+   * @param issuer the value for the issuer claim.
+   * 
+   * @return This (fluent method).
+   */
   public T withIssuer(String issuer)
   {
     issuer_ = issuer;
     return self();
   }
-  
+  /**
+   * Set the value for the subject claim.
+   * 
+   * @param subject the value for the subject claim.
+   * 
+   * @return This (fluent method).
+   */
   public T withSubject(String subject)
   {
     subject_ = subject;
     return self();
   }
   
+  /**
+   * Set the time to live in milliseconds for generated tokens.
+   * 
+   * @param ttl The time to live in milliseconds for generated tokens.
+   * 
+   * @return This (fluent method).
+   */
   public T withTTL(long ttl)
   {
     ttl_ = ttl;
     return self();
   }
   
+  /**
+   * Add the given claim.
+   * 
+   * @param name  The name of the claim.
+   * @param value The value of the claim.
+   * 
+   * @return This (fluent method).
+   */
   public T withClaim(String name, Object value)
   {
     claims_.put(name, value);

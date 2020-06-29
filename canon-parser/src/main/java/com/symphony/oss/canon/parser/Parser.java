@@ -32,6 +32,7 @@ import org.slf4j.LoggerFactory;
 import com.fasterxml.jackson.core.JsonParser.Feature;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.MissingNode;
 import com.github.fge.jsonschema.core.exceptions.ProcessingException;
 import com.github.fge.jsonschema.core.report.ProcessingReport;
 import com.github.fge.jsonschema.main.JsonSchema;
@@ -60,7 +61,7 @@ public class Parser
           .configure(Feature.ALLOW_BACKSLASH_ESCAPING_ANY_CHARACTER, true);
       JsonNode rootNode = mapper.readTree(rootParserContext.getReader());
       
-      if(rootNode == null)
+      if(rootNode == null || rootNode instanceof MissingNode)
         throw new ParsingException("Null input");
       
       ProcessingReport report = schema_.validate(rootNode);

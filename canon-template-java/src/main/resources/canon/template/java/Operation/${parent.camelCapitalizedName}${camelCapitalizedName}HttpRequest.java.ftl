@@ -229,9 +229,7 @@ public class ${model.parent.camelCapitalizedName}${model.camelCapitalizedName}Ht
     CloseableHttpResponse response = null;
     try
     {
-      response = httpClient.execute(canonRequest_);
-      
-      validateResponse(response);
+      response = makeRequest(httpClient, canonRequest_);
       
   <#if model.response??>
       HttpEntity entity = response.getEntity();

@@ -361,10 +361,11 @@ public abstract class AbstractRequestContext implements IRequestContext
       log_.error("Failed to parse payload", e);
       error("Unable to parse payload");
       
-      String message = e.getMessage();
-      
-      if(message != null)
-        error(message);
+// Removed to prevent injection attacks
+//      String message = e.getMessage();
+//      
+//      if(message != null)
+//        error(message);
       
       return null;
     }
