@@ -95,7 +95,7 @@
 		<source.code.version>1.8</source.code.version>
 		<target.code.version>1.8</target.code.version>
     <oss.commons.version>0.2.0</oss.commons.version>
-    <oss.fugue.version>0.2.0</oss.fugue.version>
+    <oss.fugue.version>0.2.2-SNAPSHOT</oss.fugue.version>
 	</properties>
 
 
