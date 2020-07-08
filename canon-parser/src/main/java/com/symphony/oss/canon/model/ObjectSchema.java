@@ -35,7 +35,6 @@ import com.symphony.oss.canon.parser.GenerationException;
 import com.symphony.oss.canon.parser.ParserContext;
 import com.symphony.oss.canon.parser.error.ParserError;
 import com.symphony.oss.canon.parser.error.ParserInfo;
-import com.symphony.oss.canon.parser.error.ParserWarning;
 
 /**
  * Schema for an object.
@@ -88,11 +87,6 @@ public class ObjectSchema extends Schema
           {
             add(field);
             fields_.add(field);
-
-            if(!field.getName().equals(field.getCamelName()))
-            {
-              context.raise(new ParserWarning("Field \"%s\" has non-camel-case name", field.getName()));
-            }
           }
         }
       }
