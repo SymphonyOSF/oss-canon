@@ -1,7 +1,7 @@
 /*
  *
  *
- * Copyright 2017-2019 Symphony Communication Services, LLC.
+ * Copyright 2017-2020 Symphony Communication Services, LLC.
  *
  * Licensed to The Symphony Software Foundation (SSF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -192,7 +192,6 @@ public class ModelServlet extends HttpServlet implements IModelServlet
   @Override
   protected void doOptions(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException
   {
-    //if(doCorsHeaders(req, resp))
     if(corsHandler_ != null)
     {
       try(ITraceContextTransaction traceTransaction = traceFactory_.createTransaction("HTTP " + HttpMethod.Options, UUID.randomUUID().toString()))
@@ -212,37 +211,4 @@ public class ModelServlet extends HttpServlet implements IModelServlet
     
     super.doOptions(req, resp);
   }
-
-//  private boolean doCorsHeaders(HttpServletRequest req, HttpServletResponse resp)
-//  {
-//    String origin = req.getHeader("Origin");
-//    
-//    if(origin != null)
-//    {
-//      int i = origin.lastIndexOf(':');
-//      
-//      String s = i>0 ? origin.substring(0, i) : origin;
-//      
-//      if(s.endsWith(".symphony.com"))
-//      {
-////        resp.setHeader("Access-Control-Allow-Origin", origin);
-////        resp.setHeader("Access-Control-Allow-Headers", "*");
-////        resp.setHeader("Access-Control-Allow-Credentials", "true");
-//        
-//        resp.setHeader("access-control-allow-origin", origin);
-//        resp.setHeader("access-control-allow-headers", "*");
-//        resp.setHeader("access-control-allow-credentials", "true");
-//        
-//        
-//        resp.setHeader("x-amzn-RequestId", "660a4048-f331-4adb-af68-f3bd9ba3cd4b");
-//        resp.setHeader("Content-Type", "application/json");
-//        resp.setHeader("Connection", "keep-alive");
-//        resp.setHeader("x-amz-apigw-id", "PB8HwFPVIAMFbgA=");
-//        resp.setHeader("X-Amzn-Trace-Id", "Root=1-5efd73cb-f216c1be26c170cd94c183e5;Sampled=0");
-//        
-//        return true;
-//      }
-//    }
-//    return false;
-//  }
 }
