@@ -57,6 +57,7 @@ public class Canon
   public static final String  MAPPING               = "mapping";
   public static final String  ENUM                  = "enum";
 
+  public static final String  MODEL_NAME            = "modelName";
   public static final String  JAVA_EXTERNAL_PACKAGE = "javaExternalPackage";
   public static final String  JAVA_EXTERNAL_TYPE    = "javaExternalType";
   public static final String  IS_DIRECT_EXTERNAL    = "isDirectExternal";
@@ -72,6 +73,8 @@ public class Canon
   public static final String  YEAR_MONTH            = "yearMonth";
   public static final String  DATE                  = "date";
   public static final String  INPUT_SOURCE          = "inputSource";
+  public static final String  PATH_TO_FACADE        = "pathToFacade";
+  public static final String  PATH_TO_GEN           = "pathToGen";
 
   public static final String  IS_FACADE             = "isFacade";
   public static final String  TEMPLATE_NAME         = "templateName";

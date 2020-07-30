@@ -95,7 +95,7 @@
 		<source.code.version>1.8</source.code.version>
 		<target.code.version>1.8</target.code.version>
     <oss.commons.version>0.2.0</oss.commons.version>
-    <oss.fugue.version>0.2.2</oss.fugue.version>
+    <oss.fugue.version>0.2.4</oss.fugue.version>
 	</properties>
 
 
@@ -107,6 +107,8 @@
 	<module>canon-template-java</module>
 	<module>canon-test</module>
 	<module>canon-launch</module>
+	<module>canon-template-ts</module>
+	<module>canon-runtime-ts</module>
 	</modules>
 
 	<build>

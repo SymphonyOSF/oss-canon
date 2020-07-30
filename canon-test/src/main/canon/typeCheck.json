@@ -64,7 +64,7 @@
         "x-canon-attributes": {
           "javaExternalPackage":  "com.symphony.oss.canon.test.oneofeverything",
           "javaExternalType":     "DirectHash",
-          "isDirectExternal":     "true"
+          "javaIsDirectExternal":     "true"
         }
       },
       "SimpleObject": {

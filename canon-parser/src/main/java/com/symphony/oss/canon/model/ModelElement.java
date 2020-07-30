@@ -45,6 +45,7 @@ import com.symphony.oss.canon.Canon;
 import com.symphony.oss.canon.parser.GenerationContext;
 import com.symphony.oss.canon.parser.GenerationException;
 import com.symphony.oss.canon.parser.ParserContext;
+import com.symphony.oss.canon.parser.error.ParserError;
 
 import freemarker.template.Configuration;
 import freemarker.template.Template;
@@ -117,6 +118,9 @@ public class ModelElement
           Entry<String, JsonNode> entry = it.next();
           
           attributes_.put(entry.getKey(), entry.getValue().asText());
+          
+          if("isDirectExternal".equals(entry.getKey()))
+              parserContext.raise(new ParserError("replace \"isDirectExternal\" with \"javaIsDirectExternal\""));
         }
       }
     }

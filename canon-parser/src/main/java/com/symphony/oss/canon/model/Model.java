@@ -25,6 +25,7 @@ package com.symphony.oss.canon.model;
 
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.nio.file.Path;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
@@ -72,6 +73,7 @@ public class Model extends ModelElement
   {
     super(null, parserContext, "Model");
     
+    modelMap_.put(Canon.MODEL_NAME, getName());
     for(ParserContext subContext : parserContext)
     {
       log_.info("Found " + subContext.getName());
@@ -238,6 +240,12 @@ public class Model extends ModelElement
       log_.info("GENERATE");
       for(Entry<String, Object> entry : dataModel.entrySet())
         log_.info(entry.getKey() + "=" + entry.getValue());
+      
+      java.io.File facadeFile = generationContext.getCopyDir() == null ? generationContext.getProformaDir() : generationContext.getCopyDir();
+      
+      
+      dataModel.put(Canon.PATH_TO_GEN, facadeFile.toPath().relativize(generationContext.getTargetDir().toPath()));
+      dataModel.put(Canon.PATH_TO_FACADE, generationContext.getTargetDir().toPath().relativize(facadeFile.toPath()));
       
       generate(generationContext, dataModel);
       

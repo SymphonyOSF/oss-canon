@@ -1,0 +1,1 @@
+<#include "/template/ts/Object/I_.ts.ftl">

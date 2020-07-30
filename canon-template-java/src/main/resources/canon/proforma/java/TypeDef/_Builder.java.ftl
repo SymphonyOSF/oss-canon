@@ -1,7 +1,4 @@
-<#if model.attributes['javaExternalType']?? && (model.attributes['isDirectExternal']!"false") != "true">
-// model ${model}
-// model.attributes['javaExternalType'] ${model.attributes['javaExternalType']!"NULL"}
-// model.attributes['isDirectExternal'] ${model.attributes['isDirectExternal']!"NULL"}
+<#if model.attributes['javaExternalType']?? && (model.attributes['javaIsDirectExternal']!"false") != "true">
 <#include "/proforma/java/canon-proforma-java-Prologue.ftl">
 <@setPrologueJavaType model/>
 <#include "/proforma/java/TypeDefBuilderProforma.ftl">

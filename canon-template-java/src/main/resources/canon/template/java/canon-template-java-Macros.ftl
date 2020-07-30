@@ -235,7 +235,7 @@
   <#assign addJsonNode="addIfNotNull">
   <#assign isGenerated=false>
   <#assign isExternal=false>
-  <#assign isDirectExternal=false>
+  <#assign javaIsDirectExternal=false>
   <#assign requiresChecks=true>
   <#assign javaCardinality="">
   <#-- 
@@ -348,7 +348,7 @@
     <#if model.attributes['javaExternalType']??>
       <@"<#assign ${varPrefix}ElementType=\"${model.attributes['javaExternalType']}\">"?interpret />
       <@"<#assign ${varPrefix}FQType=\"${model.attributes['javaExternalPackage']}.${model.attributes['javaExternalType']}\">"?interpret />
-      <#if (model.attributes['isDirectExternal']!"false") != "true">
+      <#if (model.attributes['javaIsDirectExternal']!"false") != "true">
         <@"<#assign ${varPrefix}ElementFromBaseValuePrefix=\"${model.camelCapitalizedName}Builder.build(\">"?interpret />
         <@"<#assign ${varPrefix}ElementFQBuilder=\"${model.model.modelMap.javaFacadePackage}.${model.camelCapitalizedName}Builder\">"?interpret />
         <@"<#assign ${varPrefix}BaseValueFromElementPrefix=\"${model.camelCapitalizedName}Builder.to\" + ${varPrefix}BaseType + \"(\">"?interpret />
@@ -553,12 +553,12 @@
     <#assign isExternal=true>
     <#assign javaClassName=model.attributes['javaExternalType']>
     <#assign javaFullyQualifiedClassName="${model.attributes['javaExternalPackage']}.${fieldType}">
-    <#assign requiresChecks=false>
-    <#if (model.attributes['isDirectExternal']!"false") != "true">
+
+    <#if (model.attributes['javaIsDirectExternal']!"false") != "true">
       <#assign javaGeneratedBuilderClassName="${model.camelCapitalizedName}Builder">
       <#assign javaGeneratedBuilderFullyQualifiedClassName="${javaFacadePackage}.${javaGeneratedBuilderClassName}">
     <#else>
-      <#assign isDirectExternal=true>
+      <#assign javaIsDirectExternal=true>
       <#assign javaGeneratedBuilderClassName="${model.camelCapitalizedName}">
     </#if>
   <#else>
@@ -768,6 +768,11 @@ import ${fieldElementFQBuilder};
   </#if>
 </#macro>
 
+<#-------------------- ----------------------------------------------------------------------------------
+ # Generate javadoc throws clause for the given type if necessary
+ #
+ # @param model     A model element representing the class to generate for
+ #----------------------------------------------------------------------------------------------------->
 <#macro checkLimitsClassThrowsJavaDoc model><#list model.fields as field><#if isCheckLimits(field)>
      * @throws IllegalArgumentException If the given values are not valid.
 <#return></#if></#list><#if model.superSchema??><@checkLimitsClassThrowsJavaDoc model.superSchema.baseSchema/></#if></#macro>
@@ -835,6 +840,7 @@ ${indent}  throw new IllegalArgumentException("Value " + ${name} + " of ${name} 
       <#break>
       
     <#case "Field">
+    <#case "TypeDef">
       <#if model.required>     
 ${indent}if(${name} == null)
 ${indent}  throw new IllegalArgumentException("${name} is required.");
@@ -893,7 +899,7 @@ ${indent}${var}.addIfNotNull("${field.camelName}", get${field.camelCapitalizedNa
 ${indent}${var}.addIfNotNull("${field.camelName}", get${field.camelCapitalizedName}().getJson${fieldCardinality}());
       <#else>
         <#if isExternal>
-          <#if isDirectExternal>
+          <#if javaIsDirectExternal>
 ${indent}${var}.addIfNotNull("${field.camelName}", ${fieldType}.to${javaFieldClassName}(get${field.camelCapitalizedName}()${javaGetValuePostfix});
           <#else>
 ${indent}${var}.addIfNotNull("${field.camelName}", ${javaGetValuePrefix}get${field.camelCapitalizedName}()${javaGetValuePostfix});
@@ -1037,7 +1043,7 @@ ${indent}}
 
 <#macro createTypeDefValue indent model var value>
   <#if model.attributes['javaExternalType']??>
-    <#if (model.attributes['isDirectExternal']!"false") != "true">
+    <#if (model.attributes['javaIsDirectExternal']!"false") != "true">
 ${indent}    ${var}.add(${model.camelCapitalizedName}Builder.build(${value}));
     <#else>
 ${indent}    ${var}.add(${model.attributes['javaExternalType']}.build(${value}));

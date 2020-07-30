@@ -1,0 +1,1 @@
+<#include "/proforma/ts/Object/_.ts.ftl">

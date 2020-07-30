@@ -38,7 +38,7 @@ public class PathNameConstructor implements IPathNameConstructor
   public String constructFile(Map<String, Object> dataModel, String language, String templateName,
       ModelElement modelElement)  throws GenerationException
   {
-    return constructFile(language, null, templateName, modelElement, modelElement.getName());
+    return constructFile(language, modelElement.getModel().getName(), templateName, modelElement, modelElement.getName());
   }
 
   public String constructFile(String language, Object directoryPath, String templateName,

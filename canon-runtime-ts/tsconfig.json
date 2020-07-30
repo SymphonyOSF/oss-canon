@@ -1,0 +1,24 @@
+{
+  "compilerOptions": {
+    "composite": true,
+    "declaration": true,
+    "declarationMap": true,
+    "sourceMap": true,
+
+    "module": "commonjs",
+    "moduleResolution": "node",
+    "reactNamespace": "React",
+    "target": "es5",
+    "lib": ["es5", "es6", "es7", "dom","ES2020"],
+    "downlevelIteration": true,
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true,
+    "resolveJsonModule": true,
+    "jsx": "react",
+    "pretty": true,
+    "strict": true
+  },
+  "include": [
+    "src/main/ts/**/*", "index.ts"
+  ]
+}

@@ -31,10 +31,14 @@
       <artifactId>canon-parser</artifactId>
       <version>${project.version}</version>
     </dependency>
-    
     <dependency>
       <groupId>${project.groupId}</groupId>
       <artifactId>canon-runtime-java</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>${project.groupId}</groupId>
+      <artifactId>canon-template-ts</artifactId>
       <version>${project.version}</version>
     </dependency>
     
@@ -101,7 +105,6 @@
   
   <properties>
     <canon.template.groupid>${project.groupId}</canon.template.groupid>
-    <canon.template.java>canon-template-java</canon.template.java>
     <canon.template.version>${project.version}</canon.template.version>
   </properties>
   
@@ -123,7 +126,12 @@
               <templateArtifacts>
                 <templateArtifact>
                   <groupId>${canon.template.groupid}</groupId>
-                  <artifactId>${canon.template.java}</artifactId>
+                  <artifactId>canon-template-java</artifactId>
+                  <version>${canon.template.version}</version>
+                </templateArtifact>
+                <templateArtifact>
+                  <groupId>${canon.template.groupid}</groupId>
+                  <artifactId>canon-template-ts</artifactId>
                   <version>${canon.template.version}</version>
                 </templateArtifact>
               </templateArtifacts>

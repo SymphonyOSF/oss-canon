@@ -50,6 +50,14 @@
         "minimum": -123,
         "maximum": 80000
       },
+      "FacadeInt64MinMax": {
+        "description": "A 64 bit integer with a a facade as well as a minimum and maximum.",
+        "facade": true,
+        "type": "integer",
+        "format": "int64",
+        "minimum": -123,
+        "maximum": 80000
+      },
       
       "Int32": {
         "description": "A 32 bit integer.",
@@ -293,7 +301,9 @@
         "format": "byte",
         "x-canon-attributes": {
           "javaExternalPackage":  "com.symphony.oss.canon.test.oneofeverything",
-          "javaExternalType":     "TestHash"
+          "javaExternalType":     "TestHash",
+          "#tsExternalPackage":      "ts-external",
+          "#tsExternalType":         "TestHash"
         }
       },
       "DirectHash": {
@@ -301,9 +311,12 @@
         "type": "string",
         "format": "byte",
         "x-canon-attributes": {
-          "javaExternalPackage":  "com.symphony.oss.canon.test.oneofeverything",
-          "javaExternalType":     "DirectHash",
-          "isDirectExternal":     "true"
+          "javaExternalPackage":    "com.symphony.oss.canon.test.oneofeverything",
+          "javaExternalType":       "DirectHash",
+          "javaIsDirectExternal":   "true",
+          "#tsExternalPackage":      "ts-external",
+          "#tsExternalType":         "DirectHash",
+          "#tsIsDirectExternal":     "true"
         }
       },
       "anAllOf": {

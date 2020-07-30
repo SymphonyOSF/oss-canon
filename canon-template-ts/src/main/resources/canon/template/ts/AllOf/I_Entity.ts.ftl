@@ -1,0 +1,1 @@
+<#include "/template/ts/Object/I_Entity.ts.ftl">
