@@ -1,69 +1,33 @@
 <@setJavaType model/>
 <#include "/template/ts/Object/Object.ftl">
-@Immutable
-@SuppressWarnings("unused")
-public class ${model.camelCapitalizedName} extends ${model.camelCapitalizedName}Entity implements I${model.camelCapitalizedName}
+<#if model.baseSchema.isGenerateFacade>
+import { ${modelJavaClassName}Entity } from "../../${pathToGen}/ts/${modelName}/${modelJavaClassName}Entity";
+<#else>
+import { ${modelJavaClassName}Entity } from "./${modelJavaClassName}Entity";
+</#if>
+import {
+  Entity,
+  EntityData,
+  IllegalArgumentException
+  } from "canon-runtime-ts";
+  
+export class ${model.camelCapitalizedName} extends ${model.camelCapitalizedName}Entity
 {
   /**
-   * Constructor from builder.
+   * Constructor.
    * 
-   * @param builder A mutable builder containing all values.
+   * @param entityData Parsed JSON.
    */
-  public ${model.camelCapitalizedName}(Abstract${modelJavaClassName}Builder<?,?> builder)
-  {
-    super(builder);
-  }
-  
-  /**
-   * Constructor from serialised form.
-   * 
-   * @param jsonObject An immutable JSON object containing the serialized form of the object.
-   * @param modelRegistry A model registry to use to deserialize any nested objects.
-   */
-  public ${model.camelCapitalizedName}(ImmutableJsonObject jsonObject, IModelRegistry modelRegistry)
-  {
-    super(jsonObject, modelRegistry);
-  }
-  
-  /**
-   * Constructor from mutable JSON object.
-   * 
-   * @param mutableJsonObject A mutable JSON object containing the serialized form of the object.
-   * @param modelRegistry A model registry to use to deserialize any nested objects.
-   */
-  public ${modelJavaClassName}(MutableJsonObject mutableJsonObject, IModelRegistry modelRegistry)
-  {
-    super(mutableJsonObject, modelRegistry);
-  }
-   
-  /**
-   * Copy constructor.
-   * 
-   * @param other Another instance from which all attributes are to be copied.
-   */
-  public ${modelJavaClassName}(I${modelJavaClassName} other)
-  {
-    super(other);
+  constructor(entityData: EntityData) {
+    super(entityData);
   }
   
   <#if model.baseSchema.isGenerateBuilderFacade>
   /**
    * Abstract builder for ${modelJavaClassName}. If there are sub-classes of this type then their builders sub-class this builder.
-   *
-   * @param <B> The concrete type of the builder, used for fluent methods.
-   * @param <T> The concrete type of the built object.
    */
-  public static abstract class Abstract${modelJavaClassName}Builder<B extends Abstract${modelJavaClassName}Builder<B,T>, T extends I${modelJavaClassName}Entity> extends Abstract${modelJavaClassName}EntityBuilder<B,T>
+  static Abstract${modelJavaClassName}Builder extends Abstract${modelJavaClassName}EntityBuilder = abstract class
   {
-    protected Abstract${modelJavaClassName}Builder(Class<B> type)
-    {
-      super(type);
-    }
-    
-    protected Abstract${modelJavaClassName}Builder(Class<B> type, I${modelJavaClassName}Entity initial)
-    {
-      super(type, initial);
-    }
   }
   </#if>
 }

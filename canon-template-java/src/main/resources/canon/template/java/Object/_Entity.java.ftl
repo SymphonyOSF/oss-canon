@@ -1,9 +1,11 @@
 <#if ! model.isAbstract?? || ! model.isAbstract?c>
 <#include "/template/java/Object/ObjectHeader.ftl">
+  <@printModel />
 
   private final ${"ImmutableSet<String>"?right_pad(25)}   unknownKeys_;
 <#list model.fields as field>
   <@setJavaType field/>
+  <@printField />
   private final ${fieldType?right_pad(25)}  _${field.camelName}_;
 </#list>
 

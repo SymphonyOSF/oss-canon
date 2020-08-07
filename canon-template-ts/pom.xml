@@ -24,4 +24,12 @@
     <version>0.2.3-SNAPSHOT</version>
   </parent>
   <artifactId>canon-template-ts</artifactId>
+  
+  <dependencies>
+    <dependency>
+      <groupId>com.symphony.oss.canon</groupId>
+	    <artifactId>canon-parser</artifactId>
+	    <version>${project.version}</version>
+    </dependency>
+  </dependencies>
 </project>

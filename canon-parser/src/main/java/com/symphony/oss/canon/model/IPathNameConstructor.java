@@ -30,5 +30,5 @@ import com.symphony.oss.canon.parser.GenerationException;
 @FunctionalInterface
 public interface IPathNameConstructor
 {
-  String  constructFile(Map<String, Object> dataModel, String language, String templateName, ModelElement modelElement) throws GenerationException;
+  String  constructFile(Map<String, Object> dataModel, String templateName, ModelElement modelElement) throws GenerationException;
 }

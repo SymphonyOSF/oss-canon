@@ -27,7 +27,11 @@ export class EntityData extends AbstractEntityData{
                 stringBuilder.push(indent2 + '"' + key + '":');
                 value.serialize(indent2, stringBuilder);
             }
+            else if(typeof value === 'bigint' && value !== null) {
+                stringBuilder.push(indent2 + '"' + key + '":' + value);
+            }
             else {
+
                 stringBuilder.push(indent2 + '"' + key + '":' + JSON.stringify(value));
             }
         }
@@ -57,6 +61,13 @@ export class EntityData extends AbstractEntityData{
         }
 
         return sortedMap;
+    }
+
+    get(name: string): any {
+        this.unknownAttributes.delete(name);
+        let vv = this.allAttributes.get(name);
+
+        return vv;
     }
 
     getString(name: string): string {

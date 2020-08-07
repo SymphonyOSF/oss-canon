@@ -30,6 +30,9 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.net.URLClassLoader;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
@@ -41,6 +44,7 @@ import java.util.Map.Entry;
 import java.util.Properties;
 import java.util.Set;
 import java.util.jar.JarEntry;
+import java.util.jar.JarFile;
 import java.util.jar.JarInputStream;
 
 import org.apache.maven.artifact.Artifact;
@@ -59,6 +63,7 @@ import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.project.MavenProject;
 
+import com.symphony.oss.canon.ICanonGenerator;
 import com.symphony.oss.canon.parser.CanonException;
 import com.symphony.oss.canon.parser.GenerationContext;
 import com.symphony.oss.canon.parser.ModelSetParserContext;
@@ -176,10 +181,7 @@ public class GenerateMojo extends AbstractMojo
     }
     log.info( "--------------------------------------------------------------------------------------------");
     
-    for(TemplateArtifact ta : templateArtifacts)
-    {
-      copyArtefact(canonDir, ta.getGroupId(), ta.getArtifactId(), ta.getVersion(), ta.getPrefix(), null);
-    }
+
     
     List<File> srcList = new ArrayList<>();
     
@@ -205,7 +207,19 @@ public class GenerateMojo extends AbstractMojo
       GenerationContext generationContext = new GenerationContext(
           targetDir, proformaTargetDir, proformaCopyDir);
       
-      generationContext.addTemplateDirectory(canonDir);
+      for(TemplateArtifact ta : templateArtifacts)
+      {
+        System.err.println("\n\n\n\n\n\n\n=============================================================================================================================================================\n");
+        System.err.println("copyArtefact " + canonDir);
+        System.err.println("\n\n\n\n\n\n\n=============================================================================================================================================================\n");
+        
+        copyArtefact(generationContext, ta.getGroupId(), ta.getArtifactId(), ta.getVersion(), ta.getPrefix(), null);
+      }
+      
+//      System.err.println("\n\n\n\n\n\n\n=============================================================================================================================================================\n");
+//      System.err.println("addTemplateDir " + canonDir);
+//      System.err.println("\n\n\n\n\n\n\n=============================================================================================================================================================\n");
+//      generationContext.addTemplateDirectory(canonDir);
       
       modelSetContext.generate(generationContext);
     }
@@ -235,7 +249,7 @@ public class GenerateMojo extends AbstractMojo
     }
   }
 
-  private File copyArtefact(File canonDir, String artefactGroupId, String artefactArtifactId, String artefactVersion, String artefactPrefix, String artefactSuffix) throws MojoExecutionException
+  private void copyArtefact(GenerationContext generationContext, String artefactGroupId, String artefactArtifactId, String artefactVersion, String artefactPrefix, String artefactSuffix) throws MojoExecutionException
   {
     try
     {
@@ -249,35 +263,123 @@ public class GenerateMojo extends AbstractMojo
       
       log.debug("Artefact file is " + artefactFile.getAbsolutePath());
       
+      File templateCopy = new File(canonDir, artefactGroupId + "." + artefactArtifactId);
+      
       if(artefactFile.isDirectory())
       {
-        if(artefactPrefix != null)
-          artefactFile = new File(artefactFile, artefactPrefix);
+        throw new MojoExecutionException("Template artefact file " + artefactFile +
+            " is a directory");
         
-        if(artefactFile.isDirectory())
-        {
-          log.debug("Copy artefacts from " + artefactFile.getAbsolutePath());
-          
-          try
-          {
-            copyFiles(artefactFile, canonDir, artefactSuffix);
-          }
-          catch (IOException e)
-          {
-            throw new MojoExecutionException("Error copying artefacts from " + artefactFile, e);
-          }
-        }
-        else
-          throw new MojoExecutionException("Error copying artefacts, " + artefactFile +
-              " is not a directory");
+//        if(artefactPrefix != null)
+//          artefactFile = new File(artefactFile, artefactPrefix);
+//        
+//        if(artefactFile.isDirectory())
+//        {
+//          log.debug("Copy artefacts from " + artefactFile.getAbsolutePath());
+//          
+//          try
+//          {
+//            copyFiles(artefactFile, templateCopy, artefactSuffix);
+//          }
+//          catch (IOException e)
+//          {
+//            throw new MojoExecutionException("Error copying artefacts from " + artefactFile, e);
+//          }
+//        }
+//        else
+//          throw new MojoExecutionException("Error copying artefacts, " + artefactFile +
+//              " is not a directory");
       }
       else
       {
+        System.err.println("\n\n\n\n\n\n\n=============================================================================================================================================================\n");
+        System.err.println("artefactFile " + artefactFile.getAbsolutePath());
+        System.err.println("\n\n\n\n\n\n\n=============================================================================================================================================================\n");
+        
+//        //JarFile jarFile = new JarFile(artefactFile);
+//
+//        //String generatorName = "com.symphony.oss.canon.generator.typescript.Generator";
+//        try
+//        {
+//          String urlString = "jar:file:" + artefactFile.getPath()+"!/";
+//          
+//          System.err.println("urlString=" + urlString);
+//          
+//          URL[] urls = { new URL(urlString) };
+//          URLClassLoader cl = URLClassLoader.newInstance(urls, getClass().getClassLoader());
+//          
+//          JarFile jarFile = new JarFile(artefactFile);
+//          Enumeration<JarEntry> e = jarFile.entries();
+//
+//          while (e.hasMoreElements()) {
+//            JarEntry je = e.nextElement();
+//            if(je.isDirectory() || !je.getName().endsWith(".class")){
+//                continue;
+//            }
+//            // -6 because of .class
+//            String className = je.getName().substring(0,je.getName().length()-6);
+//            className = className.replace('/', '.');
+//            
+//
+//            System.out.println("load " + className + "...");
+//            
+//            
+//            try
+//            {
+//              Class<?> generatorClass = cl.loadClass(className);
+//              Object generator = generatorClass.newInstance();
+//              
+//              if(generator instanceof ICanonGenerator)
+//              {
+//
+//                log.info("Class " + generatorClass + " IS an ICanonGenerator");
+//                generationContext.addGenerator((ICanonGenerator)generator);
+//              }
+//              else
+//              {
+//                log.info("Class " + generatorClass + " is not an ICanonGenerator");
+//              }
+//            }
+//            catch (ClassNotFoundException | InstantiationException | IllegalAccessException e2)
+//            {
+//              log.debug("Unable to instantiate class " + className, e2);
+//            }
+//          }
+//        }
+//        catch (IOException e)
+//        {
+//          e.printStackTrace();
+//          throw new MojoExecutionException("INTERNAL Error instantiating generator from file "+ artefactFile, e);
+//        }
+////        catch (ClassNotFoundException e)
+////        {
+////
+////          e.printStackTrace();
+////          throw new MojoExecutionException("Error instantiating generator, " + generatorName + " from file "+ artefactFile, e);
+////        }
+//        
+//        
+//        
+        
+        
+        
+        
+        
+        
         try(
             FileInputStream in = new FileInputStream(artefactFile);
             JarInputStream  jarIn = new JarInputStream(in);
             )
         {
+
+          String urlString = "jar:file:" + artefactFile.getPath()+"!/";
+          
+          System.err.println("urlString=" + urlString);
+          
+          URL[] urls = { new URL(urlString) };
+          URLClassLoader cl = URLClassLoader.newInstance(urls, getClass().getClassLoader());
+            
+          
           JarEntry jarEntry;
           
           while((jarEntry = jarIn.getNextJarEntry()) != null)
@@ -302,7 +404,7 @@ public class GenerateMojo extends AbstractMojo
                 fileName = jarEntry.getName().substring(artefactPrefix.length());
               }
               
-              File file = new File(canonDir, fileName);
+              File file = new File(templateCopy, fileName);
               
               if(jarEntry.isDirectory())
               {
@@ -334,7 +436,50 @@ public class GenerateMojo extends AbstractMojo
             }
             else
             {
-              log.debug("SKIP Artefact file " + jarEntry.getName());
+              
+              
+              
+              if(jarEntry.getName().endsWith(".class"))
+              {
+                // -6 because of .class
+                String className = jarEntry.getName().substring(0, jarEntry.getName().length()-6);
+                className = className.replace('/', '.');
+                
+  
+                log.debug("load " + className + "...");
+                
+                
+                try
+                {
+                  Class<?> generatorClass = cl.loadClass(className);
+                  Object generator = generatorClass.newInstance();
+                  
+                  if(generator instanceof ICanonGenerator)
+                  {
+  
+                    log.info("Class " + generatorClass + " IS an ICanonGenerator");
+                    generationContext.addGenerator(((ICanonGenerator)generator).withTemplateDir(templateCopy));
+                  }
+                  else
+                  {
+                    log.info("Class " + generatorClass + " is not an ICanonGenerator");
+                  }
+                }
+                catch (ClassNotFoundException | InstantiationException | IllegalAccessException e2)
+                {
+                  log.debug("Unable to instantiate class " + className, e2);
+                }
+              
+              }
+              else
+              {
+                log.debug("SKIP Artefact file " + jarEntry.getName());
+              }
+              
+              
+              
+              
+              
             }
           }
         } catch (IOException e)
@@ -342,64 +487,69 @@ public class GenerateMojo extends AbstractMojo
           throw new MojoExecutionException("Error copying artefacts from " + artefactFile, e);
         }
       }
-      
-      return artefactFile;
     } catch (ArtifactResolutionException | ArtifactNotFoundException e)
     {
-      getLog().error("can't resolve artefact pom", e);
-      return null;
+      throw new MojoExecutionException("can't resolve artefact pom", e);
     }
     
   }
 
-  private void copyFiles(File srcDir, File targetDir, String artefactSuffix) throws FileNotFoundException, IOException
-  {
-    log.debug("Copy artefacts from " + srcDir + " to " + targetDir);
-    
-    if(!targetDir.exists())
-      targetDir.mkdirs();
-    
-    File[] files = srcDir.listFiles();
-    
-    if(files != null)
-    {
-      for(File file : files)
-      {
-        if(file.isDirectory())
-        {
-          File targetSubDir = new File(targetDir, file.getName());
-          
-          if(!targetSubDir.exists())
-            targetSubDir.mkdirs();
-          
-          copyFiles(file, targetSubDir, artefactSuffix);
-        }
-        else
-        {
-          if(artefactSuffix == null || file.getName().endsWith(artefactSuffix))
-          {
-            File targetFile = new File(targetDir, file.getName());
-            
-            log.debug("Copy artefact " + targetFile);
-            
-            try(
-                FileInputStream in = new FileInputStream(file);
-                FileOutputStream  out = new FileOutputStream(targetFile);
-                )
-            {
-              byte[] buf = new byte[1024];
-              int    nbytes;
-              
-              while((nbytes = in.read(buf))>0)
-              {
-                out.write(buf, 0, nbytes);
-              }
-            }
-          }
-        }
-      }
-    }
-  }
+//  private void addGenerator(ICanonGenerator generator)
+//  {
+//    System.err.println("\n\n\n\n\n\n\n=============================================================================================================================================================\n");
+//    System.err.println("generator " + generator.hello());
+//    System.err.println("\n\n\n\n\n\n\n=============================================================================================================================================================\n");
+//
+//  }
+
+//  private void copyFiles(File srcDir, File targetDir, String artefactSuffix) throws FileNotFoundException, IOException
+//  {
+//    log.debug("Copy artefacts from " + srcDir + " to " + targetDir);
+//    
+//    if(!targetDir.exists())
+//      targetDir.mkdirs();
+//    
+//    File[] files = srcDir.listFiles();
+//    
+//    if(files != null)
+//    {
+//      for(File file : files)
+//      {
+//        if(file.isDirectory())
+//        {
+//          File targetSubDir = new File(targetDir, file.getName());
+//          
+//          if(!targetSubDir.exists())
+//            targetSubDir.mkdirs();
+//          
+//          copyFiles(file, targetSubDir, artefactSuffix);
+//        }
+//        else
+//        {
+//          if(artefactSuffix == null || file.getName().endsWith(artefactSuffix))
+//          {
+//            File targetFile = new File(targetDir, file.getName());
+//            
+//            log.debug("Copy artefact " + targetFile);
+//            
+//            try(
+//                FileInputStream in = new FileInputStream(file);
+//                FileOutputStream  out = new FileOutputStream(targetFile);
+//                )
+//            {
+//              byte[] buf = new byte[1024];
+//              int    nbytes;
+//              
+//              while((nbytes = in.read(buf))>0)
+//              {
+//                out.write(buf, 0, nbytes);
+//              }
+//            }
+//          }
+//        }
+//      }
+//    }
+//  }
 
   private void dumpMap(String indent, Map<?, ?> map, Set<Object> visitSet) throws MojoExecutionException
   {

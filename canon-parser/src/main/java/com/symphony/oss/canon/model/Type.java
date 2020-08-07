@@ -33,9 +33,12 @@ public abstract class Type extends Schema
   private EnumSchema enum_;
   private boolean    generateFacade_;
 
-  public Type(ModelElement parent, ParserContext context, String type, String name)
+  public Type(ModelElement parent, ParserContext context, String elementType, String name)
   {
-    super(parent, context, type, name);
+    super(parent, context, elementType, name);
+    
+    if("Hash".equals(getCamelCapitalizedName()))
+      System.err.println(getCamelCapitalizedName());
     
     generateFacade_ = context.getBooleanNode(Canon.FACADE, false);
     
@@ -66,13 +69,14 @@ public abstract class Type extends Schema
     
     if(getAttributes().containsKey(Canon.IS_DIRECT_EXTERNAL))
     {
-      checkFacade(context, "Direct External types", false);
+      //checkFacade(context, "Direct External types", false);
+      context.raise(new ParserError("Direct External is no longer supported"));
     }
-    else if(getAttributes().containsKey(Canon.JAVA_EXTERNAL_PACKAGE) ||
-        getAttributes().containsKey(Canon.JAVA_EXTERNAL_TYPE))
-    {
-      checkFacade(context, "External types", true);
-    }
+//    else if(getAttributes().containsKey(Canon.JAVA_EXTERNAL_PACKAGE) ||
+//        getAttributes().containsKey(Canon.JAVA_EXTERNAL_TYPE))
+//    {
+//      checkFacade(context, "External types", true);
+//    }
   }
 
   private void checkFacade(ParserContext context, String type, boolean requiredValue)

@@ -27,24 +27,28 @@ import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 
 import com.symphony.oss.canon.Canon;
+import com.symphony.oss.canon.ICanonGenerator;
 
 import freemarker.template.Configuration;
 import freemarker.template.Version;
 
 public class GenerationContext
 {
-  private MultiDirTemplateLoader templateLoader_ = new MultiDirTemplateLoader();
+//  private MultiDirTemplateLoader templateLoader_ = new MultiDirTemplateLoader();
   private File                   targetDir_;
   private File                   proformaDir_;
   private File                   copyDir_;
-  private Set<String>            languages_      = new HashSet<>();
-  private Configuration          config_;
+//  private Set<String>            languages_      = new HashSet<>();
+//  private Configuration          config_;
   private Map<String, Object>    dataModel_      = new HashMap<>();
+  private List<ICanonGenerator>  generators_     = new LinkedList<>();
 
   public GenerationContext(String targetDirName, String proformaDirName, String copyDirName) throws GenerationException
   {
@@ -70,11 +74,11 @@ public class GenerationContext
     proformaDir_ = proformaDir;
     copyDir_ = copyDir;
     
-    config_ = new Configuration(new Version(2, 3, 25));
-    
-    config_.setTemplateLoader(templateLoader_);
-    config_.setDefaultEncoding("UTF-8");
-    config_.setLocale(Locale.US);
+//    config_ = new Configuration(new Version(2, 3, 25));
+//    
+//    config_.setTemplateLoader(templateLoader_);
+//    config_.setDefaultEncoding("UTF-8");
+//    config_.setLocale(Locale.US);
   }
   
   public Object put(String key, Object value)
@@ -109,84 +113,89 @@ public class GenerationContext
     }
   }
 
-  /**
-   * This is analogous to copying the templates into a working directory so later additions
-   * take precedence over earlier ones.
-   * 
-   * @param dir A template directory.
-   * @throws CanonException 
-   */
-  public void addTemplateDirectory(File dir) throws CanonException
-  {
-    addTemplateDirectory(dir, templateLoader_);
-    
-    try
-    {
-      config_.setDirectoryForTemplateLoading(dir);
-    }
-    catch (IOException e)
-    {
-      throw new CanonException(e);
-    }
-  }
+//  /**
+//   * This is analogous to copying the templates into a working directory so later additions
+//   * take precedence over earlier ones.
+//   * 
+//   * @param dir A template directory.
+//   * @throws CanonException 
+//   */
+//  public void addTemplateDirectory(File dir) throws CanonException
+//  {
+//    addTemplateDirectory(dir, templateLoader_);
+//    
+//    try
+//    {
+//      config_.setDirectoryForTemplateLoading(dir);
+//    }
+//    catch (IOException e)
+//    {
+//      throw new CanonException(e);
+//    }
+//  }
+//
+//
+//  public void addTemplateDirectory(File dir, MultiDirTemplateLoader templateLoader)
+//  {
+//    if(!dir.isDirectory())
+//      throw new IllegalArgumentException("\""
+//          + dir.getAbsolutePath()
+//          + "\" is not a directory");
+//    
+//    try
+//    {
+//      templateLoader.addTemplateDirectory(dir);
+//    }
+//    catch (IOException e)
+//    {
+//      throw new IllegalArgumentException("Failed to add \""
+//          + dir.getAbsolutePath()
+//          + "\"", e);
+//    }
+//    
+//    addLanguages(dir, Canon.TEMPLATE);
+//    addLanguages(dir, Canon.PROFORMA);
+//    
+//    
+//  }
+//  
+//  private void addLanguages(File dir, String proforma)
+//  {
+//    File   dd = new File(dir, proforma);
+//    
+//    if(dd.isDirectory())
+//    {
+//      File[] languages = dd.listFiles();
+//      
+//      if(languages != null)
+//      {
+//        for(File f : languages)
+//        {
+//          if(f.isDirectory())
+//            languages_.add(f.getName());
+//        }
+//      }
+//    }
+//  }
 
+//  public Configuration getFreemarkerConfig()
+//  {
+//    return config_;
+//  }
 
-  public void addTemplateDirectory(File dir, MultiDirTemplateLoader templateLoader)
-  {
-    if(!dir.isDirectory())
-      throw new IllegalArgumentException("\""
-          + dir.getAbsolutePath()
-          + "\" is not a directory");
-    
-    try
-    {
-      templateLoader.addTemplateDirectory(dir);
-    }
-    catch (IOException e)
-    {
-      throw new IllegalArgumentException("Failed to add \""
-          + dir.getAbsolutePath()
-          + "\"", e);
-    }
-    
-    addLanguages(dir, Canon.TEMPLATE);
-    addLanguages(dir, Canon.PROFORMA);
-    
-    
-  }
-  
-  private void addLanguages(File dir, String proforma)
-  {
-    File   dd = new File(dir, proforma);
-    
-    if(dd.isDirectory())
-    {
-      File[] languages = dd.listFiles();
-      
-      if(languages != null)
-      {
-        for(File f : languages)
-        {
-          if(f.isDirectory())
-            languages_.add(f.getName());
-        }
-      }
-    }
-  }
+//  public Set<String> getTemplatesFor(String templateOrProforma, String language, String type)
+//  {
+//    return templateLoader_.getTemplatesFor(templateOrProforma, language, type);
+//  }
 
-  public Configuration getFreemarkerConfig()
-  {
-    return config_;
-  }
+//  public Set<String> getLanguages()
+//  {
+//    return languages_;
+//  }
 
-  public Set<String> getTemplatesFor(String templateOrProforma, String language, String type)
+  public List<ICanonGenerator> getGenerators()
   {
-    return templateLoader_.getTemplatesFor(templateOrProforma, language, type);
-  }
-
-  public Set<String> getLanguages()
-  {
-    return languages_;
+    return generators_;
   }
 
   public File getTargetDir()
@@ -202,5 +211,10 @@ public class GenerationContext
   public File getCopyDir()
   {
     return copyDir_;
+  }
+
+  public void addGenerator(ICanonGenerator generator)
+  {
+    generators_.add(generator);
   }
 }

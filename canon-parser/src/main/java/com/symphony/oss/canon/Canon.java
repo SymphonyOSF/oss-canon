@@ -39,80 +39,81 @@ import com.symphony.oss.commons.writer.IndentedWriter;
 public class Canon
 {
   /* General Constants */
-  public static final String  TEMPLATE              = "template";
-  public static final String  PROFORMA              = "proforma";
+  public static final String    TEMPLATE              = "template";
+  public static final String    PROFORMA              = "proforma";
 
   /* JSON Constants */
-  public static final String  X_MODEL               = "model";
-  public static final String  X_ID                  = "id";
-  public static final String  VERSION               = "version";
-  public static final String  X_ATTRIBUTES          = "x-canon-attributes";
-  public static final String  X_CARDINALITY         = "x-canon-cardinality";
-  public static final String  X_CARDINALITY_LIST    = "LIST";
-  public static final String  X_CARDINALITY_SET     = "SET";
-  public static final String  EXTENDS               = "extends";
-  public static final String  FACADE                = "facade";
-  public static final String  BUILDER_FACADE        = "builderFacade";
-  public static final String  PROPERTY_NAME         = "propertyName";
-  public static final String  MAPPING               = "mapping";
-  public static final String  ENUM                  = "enum";
+  public static final String    X_MODEL               = "model";
+  public static final String    X_ID                  = "id";
+  public static final String    VERSION               = "version";
+  public static final String    X_ATTRIBUTES          = "x-canon-attributes";
+  public static final String    X_CARDINALITY         = "x-canon-cardinality";
+  public static final String    X_CARDINALITY_LIST    = "LIST";
+  public static final String    X_CARDINALITY_SET     = "SET";
+  public static final String    EXTENDS               = "extends";
+  public static final String    FACADE                = "facade";
+  public static final String    BUILDER_FACADE        = "builderFacade";
+  public static final String    PROPERTY_NAME         = "propertyName";
+  public static final String    MAPPING               = "mapping";
+  public static final String    ENUM                  = "enum";
 
-  public static final String  MODEL_NAME            = "modelName";
-  public static final String  JAVA_EXTERNAL_PACKAGE = "javaExternalPackage";
-  public static final String  JAVA_EXTERNAL_TYPE    = "javaExternalType";
-  public static final String  IS_DIRECT_EXTERNAL    = "isDirectExternal";
+  public static final String    MODEL_NAME            = "modelName";
+//  public static final String    JAVA_EXTERNAL_PACKAGE = "javaExternalPackage";
+//  public static final String    JAVA_EXTERNAL_TYPE    = "javaExternalType";
+  public static final String    IS_DIRECT_EXTERNAL    = "isDirectExternal";
 
   /* Root property names in the template data model */
 
-  public static final String  MODEL                 = "model";
+  public static final String    MODEL                 = "model";
 
-  public static final String  JAVA_GEN_PACKAGE      = "javaGenPackage";
-  public static final String  JAVA_FACADE_PACKAGE   = "javaFacadePackage";
+  public static final String    JAVA_GEN_PACKAGE      = "javaGenPackage";
+  public static final String    JAVA_FACADE_PACKAGE   = "javaFacadePackage";
 
-  public static final String  YEAR                  = "year";
-  public static final String  YEAR_MONTH            = "yearMonth";
-  public static final String  DATE                  = "date";
-  public static final String  INPUT_SOURCE          = "inputSource";
-  public static final String  PATH_TO_FACADE        = "pathToFacade";
-  public static final String  PATH_TO_GEN           = "pathToGen";
+  public static final String    YEAR                  = "year";
+  public static final String    YEAR_MONTH            = "yearMonth";
+  public static final String    DATE                  = "date";
+  public static final String    INPUT_SOURCE          = "inputSource";
+  public static final String    PATH_TO_FACADE        = "pathToFacade";
+  public static final String    PATH_TO_GEN           = "pathToGen";
 
-  public static final String  IS_FACADE             = "isFacade";
-  public static final String  TEMPLATE_NAME         = "templateName";
-  public static final String  TEMPLATE_DEBUG        = "templateDebug";
-  public static final String  PATHS                 = "paths";
-  public static final String  METHODS               = "methods";
-  public static final String  DOLLAR_REF            = "$ref";
-  public static final String  PARAMETER_SETS        = "parameterSets";
-  public static final String  SCHEMAS               = "schemas";
-  public static final String  PARAMETERS            = "parameters";
-  public static final String  SCHEMA                = "schema";
-  public static final String  X_BASE_PATH           = "basePath";
+  public static final String    IS_FACADE             = "isFacade";
+  public static final String    TEMPLATE_NAME         = "templateName";
+  public static final String    TEMPLATE_DEBUG        = "templateDebug";
+  public static final String    PATHS                 = "paths";
+  public static final String    METHODS               = "methods";
+  public static final String    DOLLAR_REF            = "$ref";
+  public static final String    PARAMETER_SETS        = "parameterSets";
+  public static final String    SCHEMAS               = "schemas";
+  public static final String    PARAMETERS            = "parameters";
+  public static final String    SCHEMA                = "schema";
+  public static final String    X_BASE_PATH           = "basePath";
 
-  private boolean             verbose_              = false;
-  private boolean             dryRun_               = false;
-  private String              sourceDir_            = "src/main/canon";
-  private String              generationTarget_     = "target/generated-sources";
-  private String              proformaTarget_       = "target/proforma-sources";
-  private String              outputDir_            = ".";
-  private List<String>        fileNames_            = new ArrayList<>();
-  private List<String>        errors_               = new ArrayList<>();
-  private List<File>          templateDirs_         = new ArrayList<>();
-  private Map<String, String> uriMap_               = new HashMap<>();
+  private boolean               verbose_              = false;
+  private boolean               dryRun_               = false;
+  private String                sourceDir_            = "src/main/canon";
+  private String                generationTarget_     = "target/generated-sources";
+  private String                proformaTarget_       = "target/proforma-sources";
+  private String                outputDir_            = ".";
+  private List<String>          fileNames_            = new ArrayList<>();
+  private List<String>          errors_               = new ArrayList<>();
+  private Map<String, String>   uriMap_               = new HashMap<>();
+  private List<ICanonGenerator> generators_           = new ArrayList<>();
+   
 
-  /**
-   * Launcher.
-   * 
-   * @param argv
-   *          command line arguments.
-   * @throws CanonException
-   *           If anything goes wrong.
-   */
-  public static void main(String[] argv) throws CanonException
-  {
-    new Canon().run(argv);
-  }
+//  /**
+//   * Launcher.
+//   * 
+//   * @param argv
+//   *          command line arguments.
+//   * @throws CanonException
+//   *           If anything goes wrong.
+//   */
+//  public static void main(String[] argv) throws CanonException
+//  {
+//    new Canon().run(argv);
+//  }
 
-  private void run(String[] argv) throws CanonException
+  protected void run(String[] argv) throws CanonException
   {
     int i = 0;
 
@@ -130,12 +131,12 @@ public class Canon
             dryRun_ = true;
             break;
 
-          case "templateDir":
+          case "generator":
             i++;
             if (i < argv.length)
-              templateDirs_.add(new File(argv[i]));
+              loadGenerator(argv[i]);
             else
-              error("--templateDir requires a directory name to follow.");
+              error("--generator requires className:directoryName name to follow.");
             break;
 
           case "sourceDir":
@@ -178,12 +179,12 @@ public class Canon
             dryRun_ = true;
             break;
 
-          case "t":
+          case "g":
             i++;
             if (i < argv.length)
-              templateDirs_.add(new File(argv[i]));
+              loadGenerator(argv[i]);
             else
-              error("-t requires a directory name to follow.");
+              error("-g requires className:directoryName name to follow.");
             break;
 
           case "s":
@@ -276,27 +277,9 @@ public class Canon
       }
     }
 
-    if (templateDirs_.isEmpty())
+    if (generators_.isEmpty())
     {
       error("No template directories specified");
-    }
-    else
-    {
-      for (File f : templateDirs_)
-      {
-        if (!f.exists())
-        {
-          error("Template directory \"%s\" does not exist.", f.getAbsolutePath());
-        }
-        else if (!f.isDirectory())
-        {
-          error("\"%s\" is not a directory", f.getAbsolutePath());
-        }
-        else if (!f.canRead())
-        {
-          error("Template directory \"%s\" is not readable", f.getAbsolutePath());
-        }
-      }
     }
 
     if (errors_.isEmpty())
@@ -310,6 +293,41 @@ public class Canon
         System.err.println(e);
       }
       System.err.println("Aborted.");
+    }
+  }
+
+  private void loadGenerator(String spec)
+  {
+    String[] parts = spec.split(":");
+    
+    if(parts.length != 2)
+      error("-g/--generator requires className:directoryName name to follow.");
+    
+    try
+    {
+      Class<?> generatorClass = Class.forName(parts[0]);
+      ICanonGenerator generator = (ICanonGenerator)generatorClass.newInstance();
+      File f = new File(parts[1]);
+      
+      if (!f.exists())
+      {
+        error("Template directory \"%s\" does not exist.", f.getAbsolutePath());
+      }
+      else if (!f.isDirectory())
+      {
+        error("\"%s\" is not a directory", f.getAbsolutePath());
+      }
+      else if (!f.canRead())
+      {
+        error("Template directory \"%s\" is not readable", f.getAbsolutePath());
+      }
+      
+      generators_.add(generator.withTemplateDir(f));
+    }
+    catch (ClassNotFoundException | InstantiationException | IllegalAccessException | ClassCastException e)
+    {
+      e.printStackTrace();
+      error("Unable to load generator spec " + spec);
     }
   }
 
@@ -367,9 +385,9 @@ public class Canon
       GenerationContext generationContext = new GenerationContext(outputDir_ + "/target/generated-sources",
           outputDir_ + "/target/proforma-sources", outputDir_ + "/target/proforma-copy");
 
-      for (File d : templateDirs_)
-        generationContext.addTemplateDirectory(d);
-
+      for(ICanonGenerator generator : generators_)
+        generationContext.addGenerator(generator);
+      
       if (verbose_)
       {
         generationContext.put("templateDebug", "true");

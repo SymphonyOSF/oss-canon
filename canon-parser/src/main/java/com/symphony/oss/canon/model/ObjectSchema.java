@@ -274,7 +274,7 @@ public class ObjectSchema extends Schema
   }
 
   @Override
-  public void generate(GenerationContext generationContext, Map<String, Object> dataModel) throws GenerationException
+  public void codeGenerate(GenerationContext generationContext) throws GenerationException
   {
     if(getParent() instanceof AllOfSchema)
     {
@@ -283,7 +283,7 @@ public class ObjectSchema extends Schema
     else
     {
       getContext().raise(new ParserInfo("ObjectSchema parent is Schemas for %s", getName()));
-      super.generate(generationContext, dataModel);
+      super.codeGenerate(generationContext);
     }
     
   }

@@ -10,7 +10,8 @@
   "version": "1.0",
 	"model": {
 		"javaGenPackage": "com.symphony.oss.canon.test.typeCheck",
-		"javaFacadePackage": "com.symphony.oss.canon.test.typeCheck.facade"
+		"javaFacadePackage": "com.symphony.oss.canon.test.typeCheck.facade",
+    "tsPackageName": "canon-test-model"
 	},
 	"components": {
 		

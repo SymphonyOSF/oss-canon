@@ -36,6 +36,11 @@
       <artifactId>canon-template-java</artifactId>
       <version>0.2.3-SNAPSHOT</version>
     </dependency>
+    <dependency>
+      <groupId>com.symphony.oss.canon</groupId>
+      <artifactId>canon-template-ts</artifactId>
+      <version>0.2.3-SNAPSHOT</version>
+    </dependency>
     
     <dependency>
       <groupId>com.symphony.oss.canon</groupId>

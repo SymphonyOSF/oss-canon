@@ -10,7 +10,8 @@
   "version": "1.0",
 	"model": {
 		"javaGenPackage": "com.symphony.oss.canon.test.unit",
-		"javaFacadePackage": "com.symphony.oss.canon.test.unit.facade"
+		"javaFacadePackage": "com.symphony.oss.canon.test.unit.facade",
+    "tsPackageName": "canon-test-model"
 	},
 	"methods": {
     "/keystore/cryptoRotationInfo/multiple": {

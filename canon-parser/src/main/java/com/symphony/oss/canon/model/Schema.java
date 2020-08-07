@@ -32,9 +32,9 @@ public abstract class Schema extends ReferenceOrSchema
 {
   private List<Component> superClasses_ = new ArrayList<>();
   
-  public Schema(ModelElement parent, ParserContext context, String type, String name)
+  public Schema(ModelElement parent, ParserContext context, String elementType, String name)
   {
-    super(parent, context, type, name);
+    super(parent, context, elementType, name);
   }
 
   @Override

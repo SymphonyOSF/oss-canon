@@ -6,7 +6,7 @@ import { ${modelJavaClassName} } from "../../${pathToFacade}/ts/${modelName}/${m
 <#else>
 import { ${modelJavaClassName} } from "./${modelJavaClassName}";
 </#if>
-import { I${modelJavaClassName}TypeDef } from "./I${modelJavaClassName}TypeDef";
+import { I${modelJavaClassName}Data } from "./I${modelJavaClassName}Data";
 
 <#include "/template/ts/TypeDefHeader.ftl">
 <@setJavaType model/>

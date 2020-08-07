@@ -34,14 +34,21 @@ import com.symphony.oss.canon.parser.GenerationException;
 
 public class PathNameConstructor implements IPathNameConstructor
 {
-  @Override
-  public String constructFile(Map<String, Object> dataModel, String language, String templateName,
-      ModelElement modelElement)  throws GenerationException
+  private final String language_;
+
+  public PathNameConstructor(String language)
   {
-    return constructFile(language, modelElement.getModel().getName(), templateName, modelElement, modelElement.getName());
+    language_ = language;
   }
 
-  public String constructFile(String language, Object directoryPath, String templateName,
+  @Override
+  public String constructFile(Map<String, Object> dataModel, String templateName,
+      ModelElement modelElement)  throws GenerationException
+  {
+    return constructFile(modelElement.getModel().getName(), templateName, modelElement, modelElement.getName());
+  }
+
+  public String constructFile(Object directoryPath, String templateName,
       ModelElement modelElement, String modelElementName)  throws GenerationException
   {
     int     underscoreIndex = templateName.indexOf('_');
@@ -52,11 +59,11 @@ public class PathNameConstructor implements IPathNameConstructor
     
     StringBuilder s = null;
     
-    if(language != null)
+    if(language_ != null)
     {
       s = new StringBuilder();
       
-      s.append(language);
+      s.append(language_);
     }
     
     if(directoryPath != null)

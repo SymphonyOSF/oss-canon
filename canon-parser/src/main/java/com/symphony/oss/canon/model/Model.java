@@ -247,8 +247,8 @@ public class Model extends ModelElement
       dataModel.put(Canon.PATH_TO_GEN, facadeFile.toPath().relativize(generationContext.getTargetDir().toPath()));
       dataModel.put(Canon.PATH_TO_FACADE, generationContext.getTargetDir().toPath().relativize(facadeFile.toPath()));
       
-      generate(generationContext, dataModel);
-      
+      preGenerate(generationContext, dataModel);
+      codeGenerate(generationContext);
     }
   }
 

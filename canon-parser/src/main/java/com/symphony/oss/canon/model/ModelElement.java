@@ -42,6 +42,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.io.Files;
 import com.symphony.oss.canon.Canon;
+import com.symphony.oss.canon.ICanonGenerator;
 import com.symphony.oss.canon.parser.GenerationContext;
 import com.symphony.oss.canon.parser.GenerationException;
 import com.symphony.oss.canon.parser.ParserContext;
@@ -53,37 +54,39 @@ import freemarker.template.TemplateException;
 
 public class ModelElement
 {
+  protected static final List<ModelElement> EMPTY_CHILDREN = new ArrayList<>();
   private static Logger                     log_                    = LoggerFactory.getLogger(ModelElement.class);
+  
+  private ModelElement                              parent_;
+  private final ParserContext                       parserContext_;
+  private final String                              elementType_;
+  private final String                              name_;
+  private final String                              camelName_;
+  private final String                              camelCapitalizedName_;
+  private final String                              snakeName_;
+  private final String                              snakeCapitalizedName_;
 
-  private ModelElement                      parent_;
-  private final ParserContext               parserContext_;
-  private final String                      elementType_;
-  private final String                      name_;
-  private final String                      camelName_;
-  private final String                      camelCapitalizedName_;
-  private final String                      snakeName_;
-  private final String                      snakeCapitalizedName_;
-
-  private List<ModelElement>                children_               = new ArrayList<>();
-  private Map<String, ModelElement>         nameMap_                = new HashMap<>();
-  private Map<String, IPathNameConstructor> templatePathBuilderMap_ = new HashMap<>();
-  private Map<String, IPathNameConstructor> proformaPathBuilderMap_ = new HashMap<>();
+  private List<ModelElement>                        children_     = new ArrayList<>();
+  private Map<String, ModelElement>                 nameMap_      = new HashMap<>();
+  private Map<ICanonGenerator, Map<String, Object>> dataModelMap_;
+//  private Map<String, IPathNameConstructor> templatePathBuilderMap_ = new HashMap<>();
+//  private Map<String, IPathNameConstructor> proformaPathBuilderMap_ = new HashMap<>();
   private Map<String, String>               attributes_             = new HashMap<>();
   
   private final String summary_;
   private final String[] description_;
   private String format_ = "";
 
-  public ModelElement(ModelElement parent, ParserContext parserContext, String type)
+  public ModelElement(ModelElement parent, ParserContext parserContext, String elementType)
   {
-    this(parent, parserContext, type, parserContext.getName());
+    this(parent, parserContext, elementType, parserContext.getName());
   }
   
-  public ModelElement(ModelElement parent, ParserContext parserContext, String type, String name)
+  public ModelElement(ModelElement parent, ParserContext parserContext, String elementType, String name)
   {
     parent_ = parent;
     parserContext_ = parserContext;
-    elementType_ = type;
+    elementType_ = elementType;
     summary_ = parserContext.getText("summary");
     
     description_ = parserContext.getTextArray("description");
@@ -96,13 +99,13 @@ public class ModelElement
     snakeName_ = toSnakeCase(name_);
     snakeCapitalizedName_ = capitalize(snakeName_);
     
-    IPathNameConstructor defaultPathNameConstructor = new PathNameConstructor();
-    
-    templatePathBuilderMap_.put("java", new JavaPathNameConstructor(Canon.JAVA_GEN_PACKAGE));
-    templatePathBuilderMap_.put(null, defaultPathNameConstructor);
-    
-    proformaPathBuilderMap_.put("java", new JavaPathNameConstructor(Canon.JAVA_FACADE_PACKAGE));
-    proformaPathBuilderMap_.put(null, defaultPathNameConstructor);
+//    IPathNameConstructor defaultPathNameConstructor = new PathNameConstructor();
+//    
+//    templatePathBuilderMap_.put("java", new JavaPathNameConstructor(Canon.JAVA_GEN_PACKAGE));
+//    templatePathBuilderMap_.put(null, defaultPathNameConstructor);
+//    
+//    proformaPathBuilderMap_.put("java", new JavaPathNameConstructor(Canon.JAVA_FACADE_PACKAGE));
+//    proformaPathBuilderMap_.put(null, defaultPathNameConstructor);
     
     ParserContext canon = parserContext.get(Canon.X_ATTRIBUTES);
     if(canon != null)
@@ -118,9 +121,6 @@ public class ModelElement
           Entry<String, JsonNode> entry = it.next();
           
           attributes_.put(entry.getKey(), entry.getValue().asText());
-          
-          if("isDirectExternal".equals(entry.getKey()))
-              parserContext.raise(new ParserError("replace \"isDirectExternal\" with \"javaIsDirectExternal\""));
         }
       }
     }
@@ -445,50 +445,93 @@ public class ModelElement
     return getChildren();
   }
   
-  public void generate(GenerationContext generationContext, Map<String, Object> dataModel) throws GenerationException
+  public Map<String, Object> getDataModel(ICanonGenerator generator)
+  {
+    return dataModelMap_.get(generator);
+  }
+  
+  protected List<ModelElement> getGenerationChildren()
+  {
+    return children_;
+  }
+  
+  void preGenerate(GenerationContext generationContext, Map<String, Object> commonDataModel) throws GenerationException
+  {
+    if(dataModelMap_ == null)
+    {
+      dataModelMap_ = new HashMap<>();
+      
+      if("ObjectWithOneOfEverything".equals(getCamelCapitalizedName()))
+        System.err.println(getCamelCapitalizedName());
+      
+      log_.debug("PreGenerate prologue {}", toString());
+      
+      for(ModelElement child : children_)
+        child.preGenerate(generationContext, commonDataModel);
+      
+      for(ModelElement ref : getReferencedTypes())
+        ref.preGenerate(generationContext, commonDataModel);
+
+      log_.info(getElementType() + " generationContext.getGenerators() " + generationContext.getGenerators());
+      
+      for(ICanonGenerator generator : generationContext.getGenerators())
+      {
+          Map<String, Object> dataModel = new HashMap<>(commonDataModel);
+          generator.populateDataModel(dataModel, this);
+          dataModelMap_.put(generator, dataModel);
+      }
+
+      log_.debug("PreGenerate epilogue {}", toString());
+    }
+    else
+    {
+      System.err.println("Already done " + this);
+    }
+    
+  }
+  
+  void codeGenerate(GenerationContext generationContext) throws GenerationException
   {
     log_.debug("Generate prologue {}", toString());
     
+    if("Hash".equals(getCamelCapitalizedName()))
+      System.err.println(getCamelCapitalizedName());
+
+    log_.info(getElementType() + " generationContext.getGenerators() " + generationContext.getGenerators());
     
-    for(String language : generationContext.getLanguages())
+    for(ICanonGenerator generator : generationContext.getGenerators())
     {
-      Set<String> templates = generationContext.getTemplatesFor(Canon.TEMPLATE, language, getElementType());
+      Map<String, Object> dataModel = dataModelMap_.get(generator);
+      Set<String> templates = generator.getTemplatesFor(Canon.TEMPLATE, getElementType());
+      
+      log_.info(getElementType() + " generator " + generator + " templates " + templates);
       
       if(!templates.isEmpty())
       {
         dataModel.remove(Canon.IS_FACADE);
-        generate(generationContext, dataModel, templates, language, templatePathBuilderMap_, generationContext.getFreemarkerConfig(), generationContext.getTargetDir(), null);
+        codeGenerate(generationContext, dataModel, templates, generator.getTemplatePathNameConstructor(), generator.getFreemarkerConfig(), generationContext.getTargetDir(), null);
       }
       
-      templates = generationContext.getTemplatesFor(Canon.PROFORMA, language, getElementType());
+      templates = generator.getTemplatesFor(Canon.PROFORMA, getElementType());
       
       if(!templates.isEmpty())
       {
         dataModel.put(Canon.IS_FACADE, "true");
-        generate(generationContext, dataModel, templates, language, proformaPathBuilderMap_, generationContext.getFreemarkerConfig(), generationContext.getProformaDir(), generationContext.getCopyDir());
+        codeGenerate(generationContext, dataModel, templates, generator.getProformaPathNameConstructor(), generator.getFreemarkerConfig(), generationContext.getProformaDir(), generationContext.getCopyDir());
       }
     }
     
-    generateChildren(generationContext, dataModel);
+    for(ModelElement child : getGenerationChildren())
+      child.codeGenerate(generationContext);
 
     log_.debug("Generate epilogue {}", toString());
   }
-  
-  protected void generateChildren(GenerationContext generationContext, Map<String, Object> dataModel) throws GenerationException
-  {
-    for(ModelElement child : children_)
-      child.generate(generationContext, dataModel);
-  }
 
-  private void generate(GenerationContext generationContext, Map<String, Object> dataModel, Set<String> templates,
-      String language, Map<String, IPathNameConstructor> pathBuilderMap, Configuration freemarkerConfig,
+  private void codeGenerate(GenerationContext generationContext, Map<String, Object> dataModel, Set<String> templates,
+      IPathNameConstructor pathBuilder,
+      Configuration freemarkerConfig,
       File targetDir, File copyDir) throws GenerationException
   {
-    IPathNameConstructor pathBuilder = pathBuilderMap.get(language);
-    
-    if(pathBuilder == null)
-      pathBuilder = pathBuilderMap.get(null);
-    
     log_.debug("Generate generate {}", toString());
     
     for(String templateName : templates)
@@ -499,12 +542,10 @@ public class ModelElement
       
       dataModel.put(Canon.TEMPLATE_NAME, templateName);
       
-      String  className = pathBuilder.constructFile(dataModel, language, templateFile.getName(), this);
+      String  className = pathBuilder.constructFile(dataModel, templateFile.getName(), this);
       
       if(className != null)
       {
-        
-            
         log_.debug("class " + className);
         
         try
@@ -512,7 +553,7 @@ public class ModelElement
           
           Template template = freemarkerConfig.getTemplate(templateName);
           
-          generate(generationContext, template, className, dataModel, targetDir, copyDir);
+          codeGenerate(generationContext, template, className, dataModel, targetDir, copyDir);
 
         } catch (IOException e)
         {
@@ -523,11 +564,13 @@ public class ModelElement
     }
   }
 
-  private void generate(GenerationContext generationContext, Template template,
+  private void codeGenerate(GenerationContext generationContext, Template template,
       String className, Map<String, Object> dataModel,
       File targetDir, File copyDir) throws GenerationException
   {
     File genPath = new File(targetDir, className);
+    
+    System.err.println("GENPATH " + genPath);
     
     genPath.getParentFile().mkdirs();
     

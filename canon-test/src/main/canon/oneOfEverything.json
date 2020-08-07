@@ -10,7 +10,8 @@
   "version": "1.0",
   "model": {
     "javaGenPackage":  "com.symphony.oss.canon.test.oneofeverything",
-    "javaFacadePackage":  "com.symphony.oss.canon.test.oneofeverything.facade"
+    "javaFacadePackage":  "com.symphony.oss.canon.test.oneofeverything.facade",
+    "tsPackageName": "canon-test-model"
   },
   "components": {
     "schemas": {
@@ -302,21 +303,8 @@
         "x-canon-attributes": {
           "javaExternalPackage":  "com.symphony.oss.canon.test.oneofeverything",
           "javaExternalType":     "TestHash",
-          "#tsExternalPackage":      "ts-external",
-          "#tsExternalType":         "TestHash"
-        }
-      },
-      "DirectHash": {
-        "description": "A Hash value, encoded as Base64, represented by an external class which has our expected factory methods.",
-        "type": "string",
-        "format": "byte",
-        "x-canon-attributes": {
-          "javaExternalPackage":    "com.symphony.oss.canon.test.oneofeverything",
-          "javaExternalType":       "DirectHash",
-          "javaIsDirectExternal":   "true",
-          "#tsExternalPackage":      "ts-external",
-          "#tsExternalType":         "DirectHash",
-          "#tsIsDirectExternal":     "true"
+          "tsExternalPackage":      "ts-external",
+          "tsExternalType":         "TestHash"
         }
       },
       "anAllOf": {
@@ -388,9 +376,6 @@
           },
           "aHash": {
             "$ref": "#/components/schemas/Hash"
-          },
-          "aDirectHash": {
-            "$ref": "#/components/schemas/DirectHash"
           }
         }
       }

@@ -15,7 +15,8 @@
   "version": "1.0",
 	"model": {
 		"javaGenPackage": "com.symphony.oss.canon.test.schema",
-		"javaFacadePackage": "com.symphony.oss.canon.test.schema.facade"
+		"javaFacadePackage": "com.symphony.oss.canon.test.schema.facade",
+    "tsPackageName": "canon-test-model"
 	},
   "methods": {
     "/objects/{objectHash}": {

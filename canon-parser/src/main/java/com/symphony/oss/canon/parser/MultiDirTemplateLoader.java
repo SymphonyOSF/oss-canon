@@ -36,93 +36,93 @@ import java.util.Set;
 import freemarker.cache.FileTemplateLoader;
 import freemarker.cache.TemplateLoader;
 
-public class MultiDirTemplateLoader implements TemplateLoader
+public class MultiDirTemplateLoader //implements TemplateLoader
 {
-  private Deque<TemplateLoader> templateLoaders_ = new LinkedList<>();
-  private Deque<File> templatedirs_ = new LinkedList<>();
-  private Map<Object, TemplateLoader> sourceMap_ = new HashMap<>();
-  
-  public MultiDirTemplateLoader()
-  {
-  }
-
-  @Override
-  public Object findTemplateSource(String name) throws IOException
-  {
-    for(TemplateLoader loader : templateLoaders_)
-    {
-      Object templateSource = loader.findTemplateSource(name);
-      
-      if(templateSource != null)
-      {
-        sourceMap_.put(templateSource, loader);
-        return templateSource;
-      }
-    }
-    return null;
-  }
-
-  @Override
-  public long getLastModified(Object templateSource)
-  {
-    TemplateLoader loader = sourceMap_.get(templateSource);
-    
-    if(loader == null)
-      return 0;
-    
-    return loader.getLastModified(templateSource);
-  }
-
-  @Override
-  public Reader getReader(Object templateSource, String encoding) throws IOException
-  {
-    TemplateLoader loader = sourceMap_.get(templateSource);
-    
-    if(loader == null)
-      throw new IOException("Unknown templateSource");
-    
-    return loader.getReader(templateSource, encoding);
-  }
-
-  @Override
-  public void closeTemplateSource(Object templateSource) throws IOException
-  {
-    TemplateLoader loader = sourceMap_.remove(templateSource);
-    
-    if(loader == null)
-      throw new IOException("Unknown templateSource");
-    
-    loader.closeTemplateSource(templateSource);
-  }
-
-  public void addTemplateDirectory(File dir) throws IOException
-  {
-    templateLoaders_.push(new FileTemplateLoader(dir));
-    templatedirs_.push(dir);
-  }
-
-  public Set<String> getTemplatesFor(String templateOrProforma, String language, String type)
-  {
-    Set<String> result = new HashSet<>();
-    
-    for(File dir : templatedirs_)
-    {
-      File tORp = new File(dir, templateOrProforma);
-      File l = new File(tORp, language);
-      
-      if(l.isDirectory())
-      {
-        File f = new File(l, type);
-        String[] templates = f.list();
-        
-        if(templates != null && templates.length>0)
-        {
-          for(String t : templates)
-            result.add(templateOrProforma + File.separatorChar + language + File.separatorChar + type + File.separatorChar + t);
-        }
-      }
-    }
-    return result;
-  }
+//  private Deque<TemplateLoader> templateLoaders_ = new LinkedList<>();
+//  private Deque<File> templatedirs_ = new LinkedList<>();
+//  private Map<Object, TemplateLoader> sourceMap_ = new HashMap<>();
+//  
+//  public MultiDirTemplateLoader()
+//  {
+//  }
+//
+//  @Override
+//  public Object findTemplateSource(String name) throws IOException
+//  {
+//    for(TemplateLoader loader : templateLoaders_)
+//    {
+//      Object templateSource = loader.findTemplateSource(name);
+//      
+//      if(templateSource != null)
+//      {
+//        sourceMap_.put(templateSource, loader);
+//        return templateSource;
+//      }
+//    }
+//    return null;
+//  }
+//
+//  @Override
+//  public long getLastModified(Object templateSource)
+//  {
+//    TemplateLoader loader = sourceMap_.get(templateSource);
+//    
+//    if(loader == null)
+//      return 0;
+//    
+//    return loader.getLastModified(templateSource);
+//  }
+//
+//  @Override
+//  public Reader getReader(Object templateSource, String encoding) throws IOException
+//  {
+//    TemplateLoader loader = sourceMap_.get(templateSource);
+//    
+//    if(loader == null)
+//      throw new IOException("Unknown templateSource");
+//    
+//    return loader.getReader(templateSource, encoding);
+//  }
+//
+//  @Override
+//  public void closeTemplateSource(Object templateSource) throws IOException
+//  {
+//    TemplateLoader loader = sourceMap_.remove(templateSource);
+//    
+//    if(loader == null)
+//      throw new IOException("Unknown templateSource");
+//    
+//    loader.closeTemplateSource(templateSource);
+//  }
+//
+//  public void addTemplateDirectory(File dir) throws IOException
+//  {
+//    templateLoaders_.push(new FileTemplateLoader(dir));
+//    templatedirs_.push(dir);
+//  }
+//
+//  public Set<String> getTemplatesFor(String templateOrProforma, String language, String type)
+//  {
+//    Set<String> result = new HashSet<>();
+//    
+//    for(File dir : templatedirs_)
+//    {
+//      File tORp = new File(dir, templateOrProforma);
+//      File l = new File(tORp, language);
+//      
+//      if(l.isDirectory())
+//      {
+//        File f = new File(l, type);
+//        String[] templates = f.list();
+//        
+//        if(templates != null && templates.length>0)
+//        {
+//          for(String t : templates)
+//            result.add(templateOrProforma + File.separatorChar + language + File.separatorChar + type + File.separatorChar + t);
+//        }
+//      }
+//    }
+//    return result;
+//  }
 
 }

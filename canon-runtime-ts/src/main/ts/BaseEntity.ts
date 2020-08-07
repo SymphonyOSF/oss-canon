@@ -1,14 +1,17 @@
 import { inherits } from "util";
 import { EntityData } from "./EntityData";
 
+
 export class BaseEntity {
-    readonly allAttributes: Map<string, any>;
-    readonly unknownAttributes: Map<string, any>;
+    // readonly allAttributes: Map<string, any>;
+    // readonly unknownAttributes: Map<string, any>;
+    readonly entityData: EntityData;
 
 
     constructor(entityData: EntityData) {
-        this.allAttributes = entityData.allAttributes;
-        this.unknownAttributes = entityData.unknownAttributes;
+        this.entityData = entityData;
+        // this.allAttributes = entityData.allAttributes;
+        // this.unknownAttributes = entityData.unknownAttributes;
     }
 
     // protected init() {
@@ -32,4 +35,9 @@ export class BaseEntity {
     //     return values.join();
     // }
 
+}
+
+
+BaseEntity.prototype.toString = function entityToString() {
+    return this.entityData.toString();
 }

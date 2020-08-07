@@ -23,6 +23,7 @@
 
 package com.symphony.oss.canon.model;
 
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -75,10 +76,12 @@ public class OneOfSchema extends AbstractContainerSchema
   {
     super.getReferencedTypes(result);
     
-    result.add(this);
+    // THis seems mad:   result.add(this);
   }
-
+  
   @Override
-  protected void generateChildren(GenerationContext generationContext, Map<String, Object> dataModel)
-  {}
+  protected List<ModelElement> getGenerationChildren()
+  {
+    return EMPTY_CHILDREN;
+  }
 }

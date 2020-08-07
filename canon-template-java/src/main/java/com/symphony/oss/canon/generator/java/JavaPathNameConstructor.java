@@ -21,28 +21,36 @@
  * under the License.
  */
 
-package com.symphony.oss.canon.model;
+package com.symphony.oss.canon.generator.java;
 
 import java.io.File;
 import java.util.Map;
 import java.util.regex.Matcher;
 
+import com.symphony.oss.canon.model.ModelElement;
+import com.symphony.oss.canon.model.PathNameConstructor;
 import com.symphony.oss.canon.parser.GenerationException;
 
 public class JavaPathNameConstructor extends PathNameConstructor
 {
   private String packageVar_;
 
+  /**
+   * Constructor.
+   * 
+   * @param packageVar  Name of the model variable containing the java package name.
+   */
   public JavaPathNameConstructor(String packageVar)
   {
+    super("java");
     packageVar_ = packageVar;
   }
 
   @Override
-  public String constructFile(Map<String, Object> dataModel, String language, String templateName,
+  public String constructFile(Map<String, Object> dataModel, String templateName,
       ModelElement modelElement) throws GenerationException
   {
-    return constructFile(language, convertPath(dataModel.get(packageVar_)), templateName, modelElement, modelElement.getCamelCapitalizedName());
+    return constructFile(convertPath(dataModel.get(packageVar_)), templateName, modelElement, modelElement.getCamelCapitalizedName());
   }
 
   private Object convertPath(Object object)

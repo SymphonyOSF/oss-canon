@@ -174,8 +174,8 @@
    # First set modelJavaClassName, modelJavaFullyQualifiedClassName, and modelIsGenerated
    #
    #-->
-  <#if model.attributes['javaExternalType']??>
-    <#assign modelJavaClassName=model.attributes['javaExternalType']>
+  <#if model.attributes['tsExternalType']??>
+    <#assign modelJavaClassName=model.attributes['tsExternalType']>
     <#assign modelJavaFullyQualifiedClassName="${model.attributes['javaExternalPackage']}.${modelJavaClassName}">
     <#assign modelIsGenerated=false>
   <#else>
@@ -235,7 +235,6 @@
   <#assign addJsonNode="addIfNotNull">
   <#assign isGenerated=false>
   <#assign isExternal=false>
-  <#assign javaIsDirectExternal=false>
   <#assign requiresChecks=true>
   <#assign javaCardinality="">
   <#-- 
@@ -281,7 +280,14 @@
     <#if model.isComponent>
       <@"<#assign ${varPrefix}Type=${varPrefix}ElementType>"?interpret />
     <#else>
-      <@"<#assign ${varPrefix}Type=${varPrefix}Cardinality + \"<\" + ${varPrefix}ElementType + \">\">"?interpret />
+      <#switch model.baseSchema.cardinality>
+        <#case "SET">
+          <@"<#assign ${varPrefix}Type=${varPrefix}Cardinality + \"<\" + ${varPrefix}ElementType + \">\">"?interpret />
+          <#break>
+        <#default>
+          <@"<#assign ${varPrefix}Type=${varPrefix}ElementType + \"[]\">"?interpret />
+      </#switch>
+      
     </#if>
   <#else>
     <@"<#assign ${varPrefix}Cardinality=\"\">"?interpret />
@@ -316,7 +322,7 @@
     <#case "String">
       <#switch model.format>
         <#case "byte">
-          <@"<#assign ${varPrefix}BaseType=\"ImmutableByteArray\">"?interpret />
+          <@"<#assign ${varPrefix}BaseType=\"Readonly<Uint8Array>\">"?interpret />
           <#return>
         
         <#default>
@@ -345,19 +351,13 @@
   <@"<#assign ${varPrefix}ElementFromBaseValueSuffix=\"\">"?interpret />
   <#if model.isTypeDef>
     <@"<#assign ${varPrefix}ElementFromBaseValueSuffix=\")\">"?interpret />
-    <#if model.attributes['javaExternalType']??>
-      <@"<#assign ${varPrefix}ElementType=\"${model.attributes['javaExternalType']}\">"?interpret />
-      <@"<#assign ${varPrefix}FQType=\"${model.attributes['javaExternalPackage']}.${model.attributes['javaExternalType']}\">"?interpret />
-      <#if (model.attributes['javaIsDirectExternal']!"false") != "true">
-        <@"<#assign ${varPrefix}ElementFromBaseValuePrefix=\"${model.camelCapitalizedName}Builder.build(\">"?interpret />
-        <@"<#assign ${varPrefix}ElementFQBuilder=\"${model.model.modelMap.javaFacadePackage}.${model.camelCapitalizedName}Builder\">"?interpret />
-        <@"<#assign ${varPrefix}BaseValueFromElementPrefix=\"${model.camelCapitalizedName}Builder.to\" + ${varPrefix}BaseType + \"(\">"?interpret />
-        <@"<#assign ${varPrefix}BaseValueFromElementSuffix=\")\">"?interpret />
-      <#else>
-        <@"<#assign ${varPrefix}ElementFromBaseValuePrefix=\"${model.camelCapitalizedName}.build(\">"?interpret />
-        <@"<#assign ${varPrefix}BaseValueFromElementPrefix=${varPrefix}ElementType + \".to\" + ${varPrefix}BaseType + \"(\">"?interpret />
-        <@"<#assign ${varPrefix}BaseValueFromElementSuffix=\")\">"?interpret />
-      </#if>
+    <#if model.attributes['tsExternalType']??>
+      <@"<#assign ${varPrefix}ElementType=\"${model.attributes['tsExternalType']}\">"?interpret />
+      <@"<#assign ${varPrefix}FQType=\"import { ${model.attributes['tsExternalType']} } from '${model.attributes['tsExternalPackage']}';\">"?interpret />
+      <@"<#assign ${varPrefix}ElementFromBaseValuePrefix=\"${model.camelCapitalizedName}Builder.build(\">"?interpret />
+      <@"<#assign ${varPrefix}ElementFQBuilder=\"${model.model.modelMap.javaFacadePackage}.${model.camelCapitalizedName}Builder\">"?interpret />
+      <@"<#assign ${varPrefix}BaseValueFromElementPrefix=\"${model.camelCapitalizedName}Builder.to\" + ${varPrefix}BaseType + \"(\">"?interpret />
+      <@"<#assign ${varPrefix}BaseValueFromElementSuffix=\")\">"?interpret />
       <#return>
     <#else>
       <@"<#assign ${varPrefix}ElementType=\"${model.camelCapitalizedName}\">"?interpret />
@@ -390,8 +390,8 @@
  #----------------------------------------------------------------------------------------------------->
 <#function getJavaClassName model element>
   <#if model.isTypeDef>
-    <#if model.attributes['javaExternalType']??>
-        <#return model.attributes['javaExternalType']>
+    <#if model.attributes['tsExternalType']??>
+        <#return model.attributes['tsExternalType']>
     </#if>
   </#if>
   <#if model.isComponent>
@@ -403,7 +403,7 @@
         <#return "Set<${getJavaClassName(element, element)}>">
         
       <#default>
-        <#return "List<${getJavaClassName(element, element)}>">
+        <#return "${getJavaClassName(element, element)}[]">
     </#switch>
   </#if>
   <#switch model.elementType>
@@ -428,7 +428,7 @@
     <#case "String">
       <#switch model.format>
         <#case "byte">
-          <#return "ImmutableByteArray">
+          <#return "Readonly<Uint8Array>">
         
         <#default>
           <#return "String">
@@ -503,14 +503,14 @@
       <#assign javaCardinality="Set">
       <#assign javaTypeCopyPrefix="ImmutableSet.copyOf(">
       <#assign javaBuilderTypeCopyPrefix=".addAll(">
-      <#assign javaBuilderTypeNew=" = new HashSet<>()">
+      <#assign javaBuilderTypeNew=" = new Set()">
       <#break>
       
     <#default>
       <#assign javaCardinality="List">
       <#assign javaTypeCopyPrefix="ImmutableList.copyOf(">
       <#assign javaBuilderTypeCopyPrefix=".addAll(">
-      <#assign javaBuilderTypeNew=" = new LinkedList<>()">
+      <#assign javaBuilderTypeNew=" = new ${javaElementFieldClassName}[]">
   </#switch>
 </#macro>
 
@@ -549,18 +549,12 @@
 </#macro>
 
 <#macro setTypeDefClassName model>
-  <#if model.attributes['javaExternalType']??>
+  <#if model.attributes['tsExternalType']??>
     <#assign isExternal=true>
-    <#assign javaClassName=model.attributes['javaExternalType']>
+    <#assign javaClassName=model.attributes['tsExternalType']>
     <#assign javaFullyQualifiedClassName="${model.attributes['javaExternalPackage']}.${fieldType}">
-
-    <#if (model.attributes['javaIsDirectExternal']!"false") != "true">
-      <#assign javaGeneratedBuilderClassName="${model.camelCapitalizedName}Builder">
-      <#assign javaGeneratedBuilderFullyQualifiedClassName="${javaFacadePackage}.${javaGeneratedBuilderClassName}">
-    <#else>
-      <#assign javaIsDirectExternal=true>
-      <#assign javaGeneratedBuilderClassName="${model.camelCapitalizedName}">
-    </#if>
+    <#assign javaGeneratedBuilderClassName="${model.camelCapitalizedName}Builder">
+    <#assign javaGeneratedBuilderFullyQualifiedClassName="${javaFacadePackage}.${javaGeneratedBuilderClassName}">
   <#else>
     <#if model.enum??>
       <#assign javaGeneratedBuilderClassName="${model.camelCapitalizedName}">
@@ -626,7 +620,7 @@ import ${javaFacadePackage}.${object.camelCapitalizedName};
         <#case "AllOf">
         <#case "OneOf">
         <#case "TypeDef">
-import ${javaFacadePackage}.${field.camelCapitalizedName};
+import { ${field.camelCapitalizedName} } from '${pathToFacade}; // importNestedTypes
           <@importNestedTypes field/>
           <#break>
       </#switch>
@@ -713,20 +707,11 @@ import ${javaFacadePackage}.${field.camelCapitalizedName};
 
 
 <#macro importFieldTypes model includeImpls>
-  <#if model.hasList>
-import java.util.List;
-    <#if includeImpls>
-import java.util.LinkedList;
-import com.google.common.collect.ImmutableList;
-    </#if>
-  </#if>
-  <#if model.hasByteString>
-import com.symphony.oss.commons.immutable.ImmutableByteArray;
-  </#if>
+// importFieldTypes
   <#list model.referencedTypes as field>
     <@setJavaType field/>
     <#if fieldFQType?has_content>
-import ${fieldFQType};
+${fieldFQType} // importFieldTypes
     </#if>
     <#if fieldElementFQBuilder?has_content>
 import ${fieldElementFQBuilder};
@@ -904,11 +889,7 @@ ${indent}${var}.addIfNotNull("${field.camelName}", get${field.camelCapitalizedNa
 ${indent}${var}.addIfNotNull("${field.camelName}", get${field.camelCapitalizedName}().getJson${fieldCardinality}());
       <#else>
         <#if isExternal>
-          <#if javaIsDirectExternal>
-${indent}${var}.addIfNotNull("${field.camelName}", ${fieldType}.to${javaFieldClassName}(get${field.camelCapitalizedName}()${javaGetValuePostfix});
-          <#else>
 ${indent}${var}.addIfNotNull("${field.camelName}", ${javaGetValuePrefix}get${field.camelCapitalizedName}()${javaGetValuePostfix});
-          </#if>
         <#else>
           <#if field.isObjectSchema>
 ${indent}${var}.addIfNotNull("${field.camelName}", get${field.camelCapitalizedName}().getJsonObject());
@@ -1047,12 +1028,8 @@ ${indent}}
 
 
 <#macro createTypeDefValue indent model var value>
-  <#if model.attributes['javaExternalType']??>
-    <#if (model.attributes['javaIsDirectExternal']!"false") != "true">
+  <#if model.attributes['tsExternalType']??>
 ${indent}    ${var}.add(${model.camelCapitalizedName}Builder.build(${value}));
-    <#else>
-${indent}    ${var}.add(${model.attributes['javaExternalType']}.build(${value}));
-    </#if>
   <#else>
     <#if model.enum??>
 ${indent}    ${var}.add(${model.camelCapitalizedName}.valueOf(${value}));
@@ -1076,7 +1053,7 @@ ${indent}    ${var}.add(${model.camelCapitalizedName}.newBuilder().build(${value
     <@setJavaType operation.response.schema/>
     <#assign methodResponseElementType="${fieldType}">
     <#if operation.response.isMultiple>
-      <#assign methodResponseType="List<${fieldType}>">
+      <#assign methodResponseType="${fieldType}[]">
     <#else>
       <#assign methodResponseType="${fieldType}">
     </#if>
@@ -1106,7 +1083,7 @@ ${indent}    ${var}.add(${model.camelCapitalizedName}.newBuilder().build(${value
     <@setJavaType operation.payload.schema/>
     <#assign methodPayloadElementType="${fieldType}">
     <#if operation.payload.isMultiple>
-      <#assign methodPayloadType="List<${fieldType}>">
+      <#assign methodPayloadType="${fieldType}[]">
     <#else>
       <#assign methodPayloadType="${fieldType}">
     </#if>

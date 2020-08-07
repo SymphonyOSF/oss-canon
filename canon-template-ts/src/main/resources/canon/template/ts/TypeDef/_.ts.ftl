@@ -1,9 +1,9 @@
-<#if ! model.attributes['javaExternalType']??>
+<#if ! model.attributes['tsExternalType']??>
   <#if model.enum??>
     <#include "/template/ts/canon-template-ts-Prologue.ftl">
     <@setPrologueJavaType model/>
     <#include "/template/ts/EnumTemplate.ftl">
-    }
+}
     
     <#include "/template/ts/canon-template-ts-Epilogue.ftl">
   <#else>

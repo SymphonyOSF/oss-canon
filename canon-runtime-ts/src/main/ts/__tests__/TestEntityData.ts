@@ -1,6 +1,7 @@
 import { BaseEntity } from "../BaseEntity";
 import { Entity } from "../Entity";
 import { EntityData } from "../EntityData";
+import { ExampleSuper } from "../ExampleSuper";
 
 test('SimpleObject test', () => {
     let incoming = "{\n" + 
@@ -17,6 +18,23 @@ test('SimpleObject test', () => {
 
     expect(entityData.allAttributes.get('name')).toBe('SquareOfTwo');
     expect(entityData.allAttributes.get('value')).toBe(4);
+
+    let exampleEntity = new ExampleSuper(entityData);
+
+    console.log('exampleEntity = ' + exampleEntity);
+
+    let builderA = new ExampleSuper.Builder()
+        .withName('SquareOfThree')
+        .withExtra('extraValue')
+        ;
+
+    let builderB = builderA
+            .withValue(BigInt(9))
+        ;
+        
+    let exampleEntity2: ExampleSuper = builderB.build();
+
+    console.log('exampleEntity2 = ' + exampleEntity2);
   });
 
 

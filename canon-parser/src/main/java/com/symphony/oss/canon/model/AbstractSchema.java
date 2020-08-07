@@ -23,13 +23,11 @@
 
 package com.symphony.oss.canon.model;
 
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 import com.symphony.oss.canon.Canon;
 import com.symphony.oss.canon.model.ValueMap.Entry;
-import com.symphony.oss.canon.parser.GenerationContext;
-import com.symphony.oss.canon.parser.GenerationException;
 import com.symphony.oss.canon.parser.ParserContext;
 import com.symphony.oss.canon.parser.error.OnlyOneAllowedError;
 
@@ -42,17 +40,15 @@ import com.symphony.oss.canon.parser.error.OnlyOneAllowedError;
  */
 public abstract class AbstractSchema extends ModelElement
 {
-  
   public AbstractSchema(ModelElement parent, ParserContext context, String type, String name)
   {
     super(parent, context, type, name);
   }
   
   @Override
-  protected void generateChildren(GenerationContext generationContext, Map<String, Object> dataModel)
-      throws GenerationException
+  protected List<ModelElement> getGenerationChildren()
   {
-    // Nothing
+    return EMPTY_CHILDREN;
   }
 
   /**

@@ -103,7 +103,6 @@
  *    field.snakeName               ${javaField.snakeName}
  *    field.snakeCapitalizedName    ${javaField.snakeCapitalizedName}
  *    field.elementType             ${javaField.elementType}
- *    field.description             ${javaField.description!"NULL"}
  *    field.baseSchema              ${javaField.baseSchema}
  *    field.component               ${javaField.component}
  *    field.elementSchema           ${javaField.elementSchema}
@@ -235,7 +234,6 @@
   <#assign addJsonNode="addIfNotNull">
   <#assign isGenerated=false>
   <#assign isExternal=false>
-  <#assign javaIsDirectExternal=false>
   <#assign requiresChecks=true>
   <#assign javaCardinality="">
   <#-- 
@@ -348,16 +346,10 @@
     <#if model.attributes['javaExternalType']??>
       <@"<#assign ${varPrefix}ElementType=\"${model.attributes['javaExternalType']}\">"?interpret />
       <@"<#assign ${varPrefix}FQType=\"${model.attributes['javaExternalPackage']}.${model.attributes['javaExternalType']}\">"?interpret />
-      <#if (model.attributes['javaIsDirectExternal']!"false") != "true">
-        <@"<#assign ${varPrefix}ElementFromBaseValuePrefix=\"${model.camelCapitalizedName}Builder.build(\">"?interpret />
-        <@"<#assign ${varPrefix}ElementFQBuilder=\"${model.model.modelMap.javaFacadePackage}.${model.camelCapitalizedName}Builder\">"?interpret />
-        <@"<#assign ${varPrefix}BaseValueFromElementPrefix=\"${model.camelCapitalizedName}Builder.to\" + ${varPrefix}BaseType + \"(\">"?interpret />
-        <@"<#assign ${varPrefix}BaseValueFromElementSuffix=\")\">"?interpret />
-      <#else>
-        <@"<#assign ${varPrefix}ElementFromBaseValuePrefix=\"${model.camelCapitalizedName}.build(\">"?interpret />
-        <@"<#assign ${varPrefix}BaseValueFromElementPrefix=${varPrefix}ElementType + \".to\" + ${varPrefix}BaseType + \"(\">"?interpret />
-        <@"<#assign ${varPrefix}BaseValueFromElementSuffix=\")\">"?interpret />
-      </#if>
+      <@"<#assign ${varPrefix}ElementFromBaseValuePrefix=\"${model.camelCapitalizedName}Builder.build(\">"?interpret />
+      <@"<#assign ${varPrefix}ElementFQBuilder=\"${model.model.modelMap.javaFacadePackage}.${model.camelCapitalizedName}Builder\">"?interpret />
+      <@"<#assign ${varPrefix}BaseValueFromElementPrefix=\"${model.camelCapitalizedName}Builder.to\" + ${varPrefix}BaseType + \"(\">"?interpret />
+      <@"<#assign ${varPrefix}BaseValueFromElementSuffix=\")\">"?interpret />
       <#return>
     <#else>
       <@"<#assign ${varPrefix}ElementType=\"${model.camelCapitalizedName}\">"?interpret />
@@ -554,13 +546,8 @@
     <#assign javaClassName=model.attributes['javaExternalType']>
     <#assign javaFullyQualifiedClassName="${model.attributes['javaExternalPackage']}.${fieldType}">
 
-    <#if (model.attributes['javaIsDirectExternal']!"false") != "true">
-      <#assign javaGeneratedBuilderClassName="${model.camelCapitalizedName}Builder">
-      <#assign javaGeneratedBuilderFullyQualifiedClassName="${javaFacadePackage}.${javaGeneratedBuilderClassName}">
-    <#else>
-      <#assign javaIsDirectExternal=true>
-      <#assign javaGeneratedBuilderClassName="${model.camelCapitalizedName}">
-    </#if>
+    <#assign javaGeneratedBuilderClassName="${model.camelCapitalizedName}Builder">
+    <#assign javaGeneratedBuilderFullyQualifiedClassName="${javaFacadePackage}.${javaGeneratedBuilderClassName}">
   <#else>
     <#if model.enum??>
       <#assign javaGeneratedBuilderClassName="${model.camelCapitalizedName}">
@@ -899,11 +886,7 @@ ${indent}${var}.addIfNotNull("${field.camelName}", get${field.camelCapitalizedNa
 ${indent}${var}.addIfNotNull("${field.camelName}", get${field.camelCapitalizedName}().getJson${fieldCardinality}());
       <#else>
         <#if isExternal>
-          <#if javaIsDirectExternal>
-${indent}${var}.addIfNotNull("${field.camelName}", ${fieldType}.to${javaFieldClassName}(get${field.camelCapitalizedName}()${javaGetValuePostfix});
-          <#else>
 ${indent}${var}.addIfNotNull("${field.camelName}", ${javaGetValuePrefix}get${field.camelCapitalizedName}()${javaGetValuePostfix});
-          </#if>
         <#else>
           <#if field.isObjectSchema>
 ${indent}${var}.addIfNotNull("${field.camelName}", get${field.camelCapitalizedName}().getJsonObject());
@@ -1043,11 +1026,7 @@ ${indent}}
 
 <#macro createTypeDefValue indent model var value>
   <#if model.attributes['javaExternalType']??>
-    <#if (model.attributes['javaIsDirectExternal']!"false") != "true">
 ${indent}    ${var}.add(${model.camelCapitalizedName}Builder.build(${value}));
-    <#else>
-${indent}    ${var}.add(${model.attributes['javaExternalType']}.build(${value}));
-    </#if>
   <#else>
     <#if model.enum??>
 ${indent}    ${var}.add(${model.camelCapitalizedName}.valueOf(${value}));
