@@ -25,9 +25,9 @@ package com.symphony.oss.canon.model;
 
 import com.symphony.oss.canon.parser.ParserContext;
 
-public class TypeDef extends Component
+public class TypeDef extends Component<Type>
 {
-  public TypeDef(ModelElement parent, ParserContext context, AbstractSchema type, String name)
+  public TypeDef(ModelElement parent, ParserContext context, Type type, String name)
   {
     super(parent, context, type, "TypeDef", name);
   }
@@ -36,12 +36,5 @@ public class TypeDef extends Component
   public boolean getIsTypeDef()
   {
     return true;
-  }
-
-  @Override
-  public Component getComponent()
-  {
-    // TODO Auto-generated method stub
-    return super.getComponent();
   }
 }

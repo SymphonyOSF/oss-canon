@@ -26,11 +26,11 @@ package com.symphony.oss.canon.model;
 import com.symphony.oss.canon.parser.ParserContext;
 import com.symphony.oss.canon.parser.error.ParserError;
 
-public class Component extends Schema
+public abstract class Component<S extends AbstractSchema> extends Schema
 {
-  private final AbstractSchema    type_;
+  private final S    type_;
   
-  public Component(ModelElement parent, ParserContext context, AbstractSchema type, String elementType, String name)
+  public Component(ModelElement parent, ParserContext context, S type, String elementType, String name)
   {
     super(parent, context, elementType, name);
     type_ = type;
@@ -47,7 +47,7 @@ public class Component extends Schema
   }
   
   @Override
-  public Component getComponent()
+  public Component<S> getComponent()
   {
     return this;
   }
@@ -76,7 +76,7 @@ public class Component extends Schema
     return type_.getIsObjectSchema();
   }
 
-  public AbstractSchema getType()
+  public S getType()
   {
     return type_;
   }

@@ -1,6 +1,5 @@
 <#if model.paths??>
 <#include "/template/java/canon-template-java-Prologue.ftl">
-<@setPrologueJavaType model/>
 import java.net.URL;
 import java.util.Map;
 
@@ -13,12 +12,12 @@ import com.symphony.oss.canon.runtime.http.client.IAuthenticationProvider;
 import com.symphony.oss.canon.runtime.http.client.IResponseHandler;
 
 /**
- * 
- * HTTP client for the ${modelJavaClassName} model.
+ *
+ * HTTP client for the ${model.camelCapitalizedName} model.
  *
  */
 @Immutable
-public class ${modelJavaClassName}HttpModelClient extends HttpModelClient
+public class ${model.camelCapitalizedName}HttpModelClient extends HttpModelClient
 {
   /**
    * Constructor
@@ -28,7 +27,7 @@ public class ${modelJavaClassName}HttpModelClient extends HttpModelClient
    * @param basePath  An optional base Path for all requests.
    * @param auth      An optional authentication provider.
    */
-  public ${modelJavaClassName}HttpModelClient(IModelRegistry registry, String baseUrl, @Nullable String basePath, @Nullable IAuthenticationProvider auth, @Nullable Map<Integer, IResponseHandler> handlerMap)
+  public ${model.camelCapitalizedName}HttpModelClient(IModelRegistry registry, String baseUrl, @Nullable String basePath, @Nullable IAuthenticationProvider auth, @Nullable Map<Integer, IResponseHandler> handlerMap)
   {
     super(registry, baseUrl, basePath==null ? "${model.basePath}" : basePath, auth, handlerMap);
   }
@@ -41,7 +40,7 @@ public class ${modelJavaClassName}HttpModelClient extends HttpModelClient
    * @param basePath  An optional base Path for all requests.
    * @param auth      An optional authentication provider.
    */
-  public ${modelJavaClassName}HttpModelClient(IModelRegistry registry, URL baseUrl, @Nullable String basePath, @Nullable IAuthenticationProvider auth, @Nullable Map<Integer, IResponseHandler> handlerMap)
+  public ${model.camelCapitalizedName}HttpModelClient(IModelRegistry registry, URL baseUrl, @Nullable String basePath, @Nullable IAuthenticationProvider auth, @Nullable Map<Integer, IResponseHandler> handlerMap)
   {
     super(registry, getBaseUrlStr(baseUrl), basePath==null ? "${model.basePath}" : basePath, auth, handlerMap);
   }

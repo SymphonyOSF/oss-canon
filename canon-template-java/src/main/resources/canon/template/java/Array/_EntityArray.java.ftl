@@ -1,6 +1,7 @@
 <#include "/template/java/canon-template-java-Prologue.ftl">
-<#assign model=model.type>
+// #assign model=model.type>
 <@setPrologueJavaType model/>
+<@printModel/>
 import javax.annotation.concurrent.Immutable;
 
 import java.util.HashSet;
@@ -100,7 +101,7 @@ public class ${modelJavaClassName}EntityArray extends Entity${modelJavaCardinali
       MutableJson${javaCardinality} jsonArray = new MutableJson${javaCardinality}();
       
       for(${modelJavaElementClassName} value : elements__)
-      <#if model.items.baseSchema.isObjectSchema>
+      <#if model.type.items.baseSchema.isObjectSchema>
         jsonArray.add(value.getJsonObject());
       <#else>
         jsonArray.add(value);

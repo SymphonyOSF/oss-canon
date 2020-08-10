@@ -40,7 +40,7 @@ public abstract class CanonGenerator implements ICanonGenerator
 {
   private final String                                   language_;
   private final IPathNameConstructor                     pathNameConstructor_;
-  private Map<String, ICanonDataModelFunc<ModelElement>> dataModelFuncMap_ = new HashMap<>();
+  private Map<Class<?>, ICanonDataModelFunc<ModelElement>> dataModelFuncMap_ = new HashMap<>();
   
   private Configuration                                  config_;
   private File                                           templateDir_;
@@ -57,7 +57,7 @@ public abstract class CanonGenerator implements ICanonGenerator
   }
   
   @SuppressWarnings("unchecked")
-  protected <T extends ModelElement> void register(String elementType, ICanonDataModelFunc<T> func)
+  protected <T extends ModelElement> void register(Class<T> elementType, ICanonDataModelFunc<T> func)
   {
     dataModelFuncMap_.put(elementType, (ICanonDataModelFunc<ModelElement>)func);
   }
@@ -65,12 +65,12 @@ public abstract class CanonGenerator implements ICanonGenerator
   @Override
   public void populateDataModel(Map<String, Object> dataModel, ModelElement modelElement)
   {
-    ICanonDataModelFunc<ModelElement> func = dataModelFuncMap_.get(modelElement.getElementType());
+//    ICanonDataModelFunc<ModelElement> func = dataModelFuncMap_.get(modelElement.getElementType());
+//    
+//    if(func != null)
+//      func.populateDataModel(dataModel, modelElement);
     
-    if(func != null)
-      func.populateDataModel(dataModel, modelElement);
-    
-////    doPopulateDataModel(dataModel, modelElement);
+      doPopulateDataModel(dataModel, modelElement);
 //    for(Entry<Class<?>, ICanonDataModelFunc<ModelElement>> entry : dataModelFuncMap_.entrySet())
 //    {
 //      if(entry.getKey().isInstance(modelElement))
@@ -80,16 +80,16 @@ public abstract class CanonGenerator implements ICanonGenerator
 //    }
   }
   
-//  private <T extends ModelElement> void doPopulateDataModel(Map<String, Object> dataModel, T modelElement)
-//  {
-//    @SuppressWarnings("unchecked")
-//    ICanonDataModelFunc<T> func = (ICanonDataModelFunc<T>) dataModelFuncMap_.get(modelElement.getClass());
-//    
-//    if(func != null)
-//    {
-//      func.populateDataModel(dataModel, modelElement);
-//    }
-//  }
+  private <T extends ModelElement> void doPopulateDataModel(Map<String, Object> dataModel, T modelElement)
+  {
+    @SuppressWarnings("unchecked")
+    ICanonDataModelFunc<T> func = (ICanonDataModelFunc<T>) dataModelFuncMap_.get(modelElement.getClass());
+    
+    if(func != null)
+    {
+      func.populateDataModel(dataModel, modelElement);
+    }
+  }
   
   @Override
   public ICanonGenerator withTemplateDir(File templateDir)

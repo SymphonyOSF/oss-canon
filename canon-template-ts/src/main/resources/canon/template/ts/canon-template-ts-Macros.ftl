@@ -94,6 +94,37 @@
  * ****************************************************************************************************/
 </#macro>
 
+<#macro printModelAttributes>
+/* *****************************************************************************************************
+ * Model ${javaModel}
+ *    name                               ${javaModel.name}
+ *    camelName                          ${javaModel.camelName}
+ *    camelCapitalizedName               ${javaModel.camelCapitalizedName}
+ *    snakeName                          ${javaModel.snakeName}
+ *    snakeCapitalizedName               ${javaModel.snakeCapitalizedName}
+ *    elementType                        ${javaModel.elementType}
+ *    canFailValidation                  ${javaModel.canFailValidation?c}
+ *
+ 
+ *    modelType                     ${javaModel.attributes.modelType!"NULL"}
+ *    modelCardinality              ${javaModel.attributes.modelCardinality!"NULL"}
+ *    modelBaseType                 ${javaModel.attributes.modelBaseType!"NULL"}
+ *    modelElementType              ${javaModel.attributes.modelElementType!"NULL"}
+ *    modelElementFromBaseValue     ${javaModel.attributes.modelElementFromBaseValuePrefix}X${javaModel.attributes.modelElementFromBaseValueSuffix}
+ *    modelBaseValueFromElement     ${javaModel.attributes.modelBaseValueFromElementPrefix!"NULL"}X${javaModel.attributes.modelBaseValueFromElementSuffix!"NULL"}
+ *    modelElementFQBuilder         ${javaModel.attributes.modelElementFQBuilder!"NULL"}  
+ *    modelJsonFromElement          ${javaModel.attributes.modelJsonFromElementPrefix!"NULL"}X${javaModel.attributes.modelJsonFromElementSuffix!"NULL"}
+
+ 
+ *    modelJavaClassName                 ${javaModel.attributes.modelJavaClassName!"NULL"}
+ *    modelJavaFullyQualifiedClassName   ${javaModel.attributes.modelJavaFullyQualifiedClassName!"NULL"}
+ *    modelJavaFieldClassName            ${javaModel.attributes.modelJavaFieldClassName!"NULL"}
+ *    modelJavaElementClassName          ${javaModel.attributes.modelJavaElementClassName!"NULL"}
+ *    modelJavaCardinality               ${javaModel.attributes.modelJavaCardinality}
+ *    modelIsGenerated                   ${javaModel.attributes.modelIsGenerated?c}
+ * ****************************************************************************************************/
+</#macro>
+
 <#macro printField>
 /* ====================================================================================================
  * Field ${javaField}

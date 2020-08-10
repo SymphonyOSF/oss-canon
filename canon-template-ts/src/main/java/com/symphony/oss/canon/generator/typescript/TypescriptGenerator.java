@@ -15,10 +15,14 @@ import java.util.TreeSet;
 
 import com.symphony.oss.canon.CanonGenerator;
 import com.symphony.oss.canon.model.AbstractSchema;
+import com.symphony.oss.canon.model.AllOf;
 import com.symphony.oss.canon.model.ArraySchema;
 import com.symphony.oss.canon.model.Component;
+import com.symphony.oss.canon.model.Model;
 import com.symphony.oss.canon.model.ModelElement;
+import com.symphony.oss.canon.model.ObjectElement;
 import com.symphony.oss.canon.model.ObjectSchema;
+import com.symphony.oss.canon.model.TypeDef;
 
 public class TypescriptGenerator extends CanonGenerator
 {
@@ -41,7 +45,7 @@ public class TypescriptGenerator extends CanonGenerator
   {
     super("ts");
     
-    register("Model", (dataModel, modelElement) -> {
+    register(Model.class, (dataModel, modelElement) -> {
       dataModel.put("tsElement", modelElement.getCamelCapitalizedName() + " " + modelElement.getClass());
       
       setImports(dataModel, modelElement);
@@ -50,7 +54,7 @@ public class TypescriptGenerator extends CanonGenerator
       
     });
     
-    register("Object", (dataModel, modelElement) -> {
+    register(ObjectElement.class, (dataModel, modelElement) -> {
       dataModel.put("tsElement", modelElement.getCamelCapitalizedName() + " " + modelElement.getClass());
       
       setImports(dataModel, modelElement);
@@ -59,7 +63,7 @@ public class TypescriptGenerator extends CanonGenerator
       
     });
     
-    register("AllOf", (dataModel, modelElement) -> {
+    register(AllOf.class, (dataModel, modelElement) -> {
       dataModel.put("tsElement", modelElement.getCamelCapitalizedName() + " " + modelElement.getClass());
       
       setImports(dataModel, modelElement);
@@ -68,7 +72,7 @@ public class TypescriptGenerator extends CanonGenerator
       
     });
     
-    register("TypeDef", (dataModel, modelElement) -> {
+    register(TypeDef.class, (dataModel, modelElement) -> {
       setImports(dataModel, modelElement);
       setTypeDefElementType(dataModel, modelElement);
      

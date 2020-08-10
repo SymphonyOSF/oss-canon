@@ -65,7 +65,7 @@
 
 <#macro printModel>
 /* *****************************************************************************************************
- * Model ${javaModel}
+ * V2 Model ${javaModel}
  *    name                               ${javaModel.name}
  *    camelName                          ${javaModel.camelName}
  *    camelCapitalizedName               ${javaModel.camelCapitalizedName}
@@ -75,22 +75,22 @@
  *    canFailValidation                  ${javaModel.canFailValidation?c}
  *
  
- *    modelType                     ${modelType!"NULL"}
- *    modelCardinality              ${modelCardinality!"NULL"}
- *    modelBaseType                 ${modelBaseType!"NULL"}
- *    modelElementType              ${modelElementType!"NULL"}
- *    modelElementFromBaseValue     ${modelElementFromBaseValuePrefix}X${modelElementFromBaseValueSuffix}
- *    modelBaseValueFromElement     ${modelBaseValueFromElementPrefix!"NULL"}X${modelBaseValueFromElementSuffix!"NULL"}
- *    modelElementFQBuilder         ${modelElementFQBuilder!"NULL"}  
- *    modelJsonFromElement          ${modelJsonFromElementPrefix!"NULL"}X${modelJsonFromElementSuffix!"NULL"}
+ *    modelType                     ${modelType!"NULL"} ${javaModel.attributes.type!"NULL"}
+ *    modelCardinality              ${modelCardinality!"NULL"} ${javaModel.attributes.cardinality!"NULL"}
+ *    modelBaseType                 ${modelBaseType!"NULL"} ${javaModel.attributes.baseType!"NULL"}
+ *    modelElementType              ${modelElementType!"NULL"} ${javaModel.attributes.elementType!"NULL"}
+ *    modelElementFromBaseValue     ${modelElementFromBaseValuePrefix}X${modelElementFromBaseValueSuffix} ${javaModel.attributes.elementFromBaseValuePrefix!"NULL"}X${javaModel.attributes.elementFromBaseValueSuffix!"NULL"}
+ *    modelBaseValueFromElement     ${modelBaseValueFromElementPrefix!"NULL"}X${modelBaseValueFromElementSuffix!"NULL"} ${javaModel.attributes.baseValueFromElementPrefix!"NULL"}X${javaModel.attributes.baseValueFromElementSuffix!"NULL"}
+ *    modelElementFQBuilder         ${modelElementFQBuilder!"NULL"} ${javaModel.attributes.modelElementFQBuilder!"NULL"}
+ *    modelJsonFromElement          ${modelJsonFromElementPrefix!"NULL"}X${modelJsonFromElementSuffix!"NULL"} ${javaModel.attributes.jsonFromElementPrefix!"NULL"}X${javaModel.attributes.jsonFromElementSuffix!"NULL"}
 
  
- *    modelJavaClassName                 ${modelJavaClassName!"NULL"}
- *    modelJavaFullyQualifiedClassName   ${modelJavaFullyQualifiedClassName!"NULL"}
- *    modelJavaFieldClassName            ${modelJavaFieldClassName!"NULL"}
- *    modelJavaElementClassName          ${modelJavaElementClassName!"NULL"}
- *    modelJavaCardinality               ${modelJavaCardinality}
- *    modelIsGenerated                   ${modelIsGenerated?c}
+ *    modelJavaClassName                 ${modelJavaClassName!"NULL"} ${javaModel.attributes.javaClassName!"NULL"}
+ *    modelJavaFullyQualifiedClassName   ${modelJavaFullyQualifiedClassName!"NULL"} ${javaModel.attributes.javaFullyQualifiedClassName!"NULL"}
+ *    modelJavaFieldClassName            ${modelJavaFieldClassName!"NULL"} ${javaModel.attributes.javaFieldClassName!"NULL"}
+ *    modelJavaElementClassName          ${modelJavaElementClassName!"NULL"} ${javaModel.attributes.javaElementClassName!"NULL"}
+ *    modelJavaCardinality               ${modelJavaCardinality} ${javaModel.attributes.javaCardinality!"NULL"}
+ *    modelIsGenerated                   ${modelIsGenerated?c} ${javaModel.attributes.isGenerated!"NULL"}
  * ****************************************************************************************************/
 </#macro>
 

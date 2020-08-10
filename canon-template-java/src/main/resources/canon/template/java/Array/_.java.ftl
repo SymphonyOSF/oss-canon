@@ -1,6 +1,7 @@
 <#if ! model.baseSchema.isGenerateFacade?? || ! model.baseSchema.isGenerateFacade>
 <#include "/template/java/canon-template-java-Prologue.ftl">
 <@setPrologueJavaType model/>
+<@printModel/>
 import javax.annotation.concurrent.Immutable;
 
 import com.symphony.oss.canon.runtime.IEntity${modelJavaCardinality};

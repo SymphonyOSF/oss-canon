@@ -457,6 +457,9 @@ public class ModelElement
   
   void preGenerate(GenerationContext generationContext, Map<String, Object> commonDataModel) throws GenerationException
   {
+    if("ListOfInts".equals(getCamelCapitalizedName()))
+      System.err.println(getCamelCapitalizedName());
+    
     if(dataModelMap_ == null)
     {
       dataModelMap_ = new HashMap<>();
@@ -494,7 +497,7 @@ public class ModelElement
   {
     log_.debug("Generate prologue {}", toString());
     
-    if("Hash".equals(getCamelCapitalizedName()))
+    if("ListOfInts".equals(getCamelCapitalizedName()))
       System.err.println(getCamelCapitalizedName());
 
     log_.info(getElementType() + " generationContext.getGenerators() " + generationContext.getGenerators());
