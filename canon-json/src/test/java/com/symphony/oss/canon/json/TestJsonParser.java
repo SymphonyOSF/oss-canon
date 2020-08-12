@@ -1,7 +1,19 @@
 /*
+ *
+ *
  * Copyright 2020 Symphony Communication Services, LLC.
  *
- * All Rights Reserved
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 
 package com.symphony.oss.canon.json;
@@ -47,7 +59,10 @@ public class TestJsonParser
     
     for(Entry<String, String> entry : stringEscapes.entrySet())
     {
-      JsonParser parser = new JsonParser(entry.getKey() + "\"");
+      JsonParser parser = new JsonParser.Builder()
+          .withInput(entry.getKey() + "\"")
+          .build();
+      
       test(entry.getValue(), parser.getQuotedString());
     }
   }
@@ -56,7 +71,7 @@ public class TestJsonParser
   @Test
   public void testObjectDuplicateAttribute()
   {
-    JsonDom dom = new JsonParser("{\"name\": \"pi\", \"name\": \"e\"}").parse();
+    JsonDom dom = parse("{\"name\": \"pi\", \"name\": \"e\"}");
     
     assertTrue(dom.getErrors().size() == 1);
     assertTrue(dom.getErrors().get(0) instanceof DuplicateAttributeException);
@@ -391,7 +406,7 @@ public class TestJsonParser
   private JsonArrayDom testParseArray(String input, String output)
   {
 
-    JsonDom dom = new JsonParser(input).parse();
+    JsonDom dom = parse(input);
     
     if(!dom.getErrors().isEmpty())
     {
@@ -411,6 +426,15 @@ public class TestJsonParser
     return arrayDom;
   }
   
+
+  private JsonDom parse(String input)
+  {
+    return new JsonParser.Builder()
+        .withInput(input)
+        .build()
+        .parse();
+  }
+
 
   @Test
   public void testParseFloatObject()
@@ -438,7 +462,7 @@ public class TestJsonParser
   private JsonObjectDom testParseObject(String input, String output)
   {
 
-    JsonDom dom = new JsonParser(input).parse();
+    JsonDom dom = parse(input);
     
     if(!dom.getErrors().isEmpty())
     {

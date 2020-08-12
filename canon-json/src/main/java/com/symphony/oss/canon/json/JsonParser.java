@@ -1,15 +1,24 @@
 /*
+ *
+ *
  * Copyright 2020 Symphony Communication Services, LLC.
  *
- * All Rights Reserved
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 
 package com.symphony.oss.canon.json;
 
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.Reader;
-import java.io.StringReader;
 
 import com.symphony.oss.canon.json.model.JsonArray;
 import com.symphony.oss.canon.json.model.JsonBoolean;
@@ -21,9 +30,7 @@ import com.symphony.oss.canon.json.model.JsonInteger;
 import com.symphony.oss.canon.json.model.JsonLong;
 import com.symphony.oss.canon.json.model.JsonNull;
 import com.symphony.oss.canon.json.model.JsonObject;
-import com.symphony.oss.canon.json.model.JsonObject.Builder;
 import com.symphony.oss.canon.json.model.JsonString;
-import com.symphony.oss.commons.fault.CodingFault;
 
 /**
  * A parser for JSON input.
@@ -31,9 +38,8 @@ import com.symphony.oss.commons.fault.CodingFault;
  * @author Bruce Skingle
  *
  */
-public class JsonParser implements IParserContext
+public class JsonParser extends Parser
 {
-  private static final char EOF   = 0;
   private static final char START_OBJECT   = '{';
   private static final char END_OBJECT   = '}';
   private static final char START_ARRAY   = '[';
@@ -42,53 +48,24 @@ public class JsonParser implements IParserContext
   private static final char NAME_SEPARATOR   = ':';
   private static final char VALUE_SEPARATOR   = ',';
 
-  private BufferedReader    in_;
   private JsonDom.ParserBuilder domBuilder_ = new JsonDom.ParserBuilder();
-  private String            inputSource_;
-  private int               line_;
-  private int               col_;
-  private String            lineBuffer_;
-  private boolean           atEof_;
   
  
-  public JsonParser(Reader in)
+  JsonParser(AbstractBuilder<?,?> builder)
   {
-    in_ = new BufferedReader(in);
-  }
-  
-  public JsonParser(String in)
-  {
-    in_ = new BufferedReader(new StringReader(in));
-  }
-  
-  @Override
-  public String getInputSource()
-  {
-    return inputSource_;
+    super(builder);
   }
 
-  @Override
-  public int getLine()
-  {
-    return line_;
-  }
-
-  @Override
-  public int getCol()
-  {
-    return col_;
-  }
-  
   /**
-   * Return a snapshot of the current context in the input stream.
+   * The main method to parse the input.
    * 
-   * @return A snapshot of the current context in the input stream.
+   * The returned DOM will be one of JsonObjectDom, JsonArrayDom or JsonInvalidDom. In any case the caller should
+   * check that the getErrors() method returns an empty list, if there are errors then the returned dom may be 
+   * incomplete. The parser attempts to recover from errors so that it can return multiple error messages in
+   * a single pass.
+   * 
+   * @return A JSON dom object.
    */
-  public IParserContext getContext()
-  {
-    return new ParserContext(this);
-  }
-
   public JsonDom parse()
   {
     try
@@ -173,7 +150,7 @@ public class JsonParser implements IParserContext
     domBuilder_.withObject(builder.build());
   }
 
-  private void processObjectAttributes(Builder builder) throws IOException, ParserException
+  private void processObjectAttributes(JsonObject.Builder builder) throws IOException, ParserException
   {
     while(true)
     {
@@ -244,21 +221,6 @@ public class JsonParser implements IParserContext
       default:
         throw new SyntaxErrorException("Expected a value but found " + escapeChar(token), this);
     }
-  }
-
-  private void expectString(String string) throws SyntaxErrorException
-  {
-    int end = col_ + string.length() - 1;
-    
-    if(end > lineBuffer_.length())
-      end = lineBuffer_.length();
-    
-    String found = lineBuffer_.substring(col_ - 1, end);
-    
-    if(!string.equals(found))
-      throw new SyntaxErrorException("Expected a value but found " + found, this);
-    
-    col_ = end;
   }
 
   private JsonDomNode getNumber(IParserContext context) throws SyntaxErrorException
@@ -464,206 +426,43 @@ public class JsonParser implements IParserContext
       }
     }
   }
-
-  private void skipTo(char end)
-  {
-    char c = 0;
-    
-    do
-    {
-      try
-      {
-        c = getToken();
-      }
-      catch (IOException e)
-      {
-        return;
-      }
-    } while(c != end);
-    
-  }
-
-  private int getHexNumber(int digits) throws ParserException, IOException
-  {
-    int v=0;
-    
-    for(int i=0 ; i<digits ; i++)
-    {
-      v = 16 * v + getHexDigit();
-    }
-    return v;
-  }
-
-  private int getHexDigit() throws ParserException, IOException
-  {
-    char c = getToken();
-    
-    if(c >= '0' && c <= '9')
-      return c - '0';
-    
-
-    if(c >= 'a' && c <= 'f')
-      return c - 'a';
-    
-
-    if(c >= 'A' && c <= 'F')
-      return c - 'A';
-    
-    throw new SyntaxErrorException("Invalid hex digit \"" + escapeChar(c) + "\" in char escape found", this);
-  }
-
-  static String escapeChar(char token)
-  {
-    switch(token)
-    {
-      case '\n':
-        return "\\n";
-        
-      case '\r':
-        return "\\r";
-
-      case '\\':
-        return "\\\\";
-        
-      case '\b':
-        return "\\b";
-        
-      case '\f':
-        return "\\f";
-        
-      case '\t':
-        return "\\t";
-    }
-    
-    if(token < ' ' || token > '~')
-      return String.format("\\u%04x", (int)token);
-    else
-     return String.valueOf(token);
-  }
-
-  @SuppressWarnings("null") // The check for expectedTokens.length == 0 means that s cannot be null after the loop.
-  private char expectToken(char ...expectedTokens) throws IOException, ParserException
-  {
-    char token = getToken();
-    
-    for(char t : expectedTokens)
-      if(token == t)
-        return token;
-    
-    StringBuilder s = null;
-    
-    if(expectedTokens.length == 0)
-      throw new CodingFault("expectedTokens may not be empty");
-    
-    if(expectedTokens.length == 1)
-    {
-      s = new StringBuilder("Expected \"" + expectedTokens[0] + "\" but found ");
-    }
-    else
-    {
-      for(char t : expectedTokens)
-      {
-        if(s == null)
-        {
-          s = new StringBuilder("Expected one of [");
-        }
-        else
-        {
-          s.append(", ");
-        }
-        
-        s.append(t);
-      }
-      
-      s.append("] but found ");
-    }
-    
-    if(token == EOF)
-      s.append("End of File");
-    else
-      s.append(escapeChar(token));
-    
-    throw new SyntaxErrorException(s.toString(), this);
-  }
-
+  
   /**
-   * Get the next token from the input, ignoring whitespace.
+   * Builder for JsonParser and sub-classes.
    * 
-   * @return The next token from the input, ignoring whitespace.
-   * 
-   * @throws IOException If there is a problem reading the data.
+   * @author Bruce Skingle
+   *
+   * @param <T> The concrete type of the builder for fluent methods.
+   * @param <B> The concrete type of the built object.
    */
-  private char getToken() throws IOException
+  public static abstract class AbstractBuilder<T extends AbstractBuilder<T,B>, B extends JsonParser> extends Parser.AbstractBuilder<T, B>
   {
-    if(atEof_)
+    AbstractBuilder(Class<T> type)
     {
-      return EOF;
+      super(type);
     }
-    
-    char c;
-    
-    do
-    {
-      fillBuffer();
-      
-      if(lineBuffer_ == null)
-      {
-        atEof_ = true;
-        return EOF;
-      }
-      
-      c = lineBuffer_.charAt(col_++);
-    } while(isSpace(c));
-    
-    return c;
   }
   
   /**
-   * Get the next character from the input.
+   * Builder.
    * 
-   * @return The next character from the input.
-   * 
-   * @throws IOException If there is a problem reading the data.
+   * @author Bruce Skingle
+   *
    */
-  private char getChar() throws IOException
+  public static class Builder extends AbstractBuilder<Builder, JsonParser>
   {
-    if(atEof_)
+    /**
+     * Constructor.
+     */
+    public Builder()
     {
-      return EOF;
-    }
-    
-    if(lineBuffer_ != null && col_ >= lineBuffer_.length())
-    {
-      lineBuffer_ = null;
-      return '\n';
+      super(Builder.class);
     }
 
-    fillBuffer();
-      
-    if(lineBuffer_ == null)
+    @Override
+    protected JsonParser construct()
     {
-      atEof_ = true;
-      return EOF;
-    }
-    
-    return lineBuffer_.charAt(col_++);
-  }
-    
-  private boolean isSpace(char c)
-  {
-    return c==' ' || c=='\t' || c=='\r' || c=='\n';
-  }
-
-  private void fillBuffer() throws IOException
-  {
-    if(lineBuffer_ == null || col_ >= lineBuffer_.length())
-    {
-      do
-      {
-        lineBuffer_ = in_.readLine();
-        line_++;
-        col_ = 0;
-      } while(lineBuffer_ != null && col_ >= lineBuffer_.length());
+      return new JsonParser(this);
     }
   }
 }
