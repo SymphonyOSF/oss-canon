@@ -26,7 +26,6 @@ import java.util.function.Consumer;
 import javax.annotation.concurrent.Immutable;
 
 import com.google.common.collect.ImmutableList;
-import com.symphony.oss.canon.json.IParserContext;
 
 /**
  * A JSON Array.
@@ -51,7 +50,8 @@ public class JsonArray extends JsonDomNode implements Iterable<JsonDomNode>
   {
     s.append("[");
     toStringChildren(s, indent + INDENT_LEVEL);
-    s.append("]\n");
+    s.append(indent);
+    s.append("]");
   }
 
   private void toStringChildren(StringBuilder s, String indent)

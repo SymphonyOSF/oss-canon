@@ -18,6 +18,7 @@
 
 package com.symphony.oss.canon.json.model;
 
+import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.TreeMap;
@@ -44,7 +45,7 @@ public class JsonObject extends JsonDomNode
   {
     super(builder);
     
-    children_ = ImmutableMap.copyOf(builder.children_);
+    children_ = builder.children_ == null ? ImmutableMap.of() : ImmutableMap.copyOf(builder.children_);
   }
   
   @Override
@@ -52,7 +53,8 @@ public class JsonObject extends JsonDomNode
   {
     s.append("{");
     toStringChildren(s, indent + INDENT_LEVEL);
-    s.append("}\n");
+    s.append(indent);
+    s.append("}");
   }
 
   private void toStringChildren(StringBuilder s, String indent)
@@ -123,13 +125,22 @@ public class JsonObject extends JsonDomNode
    */
   public static abstract class AbstractBuilder<T extends AbstractBuilder<T,B>, B extends JsonObject> extends JsonDomNode.AbstractBuilder<T, B>
   {
-    Map<String, JsonDomNode> children_ = new TreeMap<>();
+    Map<String, JsonDomNode> children_;
     
     AbstractBuilder(Class<T> type)
     {
       super(type);
     }
     
+    @Override
+    public T withCanonicalize(boolean canonicalize)
+    {
+      if(children_ != null)
+        throw new IllegalStateException("withCanonicalize() must be called prior to inserting children.");
+      
+      return super.withCanonicalize(canonicalize);
+    }
+
     /**
      * Set the given value as a member of this object with the given name.
      * 
@@ -140,6 +151,9 @@ public class JsonObject extends JsonDomNode
      */
     public T with(String name, JsonDomNode value)
     {
+      if(children_ == null)
+        children_ = canonicalize_ ? new TreeMap<>() : new LinkedHashMap<>();
+        
       children_.put(name, value);
       
       return self();
@@ -155,6 +169,9 @@ public class JsonObject extends JsonDomNode
      */
     public T with(String name, String value)
     {
+      if(children_ == null)
+        children_ = canonicalize_ ? new TreeMap<>() : new LinkedHashMap<>();
+        
       children_.put(name, new JsonString.Builder().withValue(value).build());
       
       return self();
@@ -175,6 +192,9 @@ public class JsonObject extends JsonDomNode
      */
     public T with(IParserContext context, String name, JsonDomNode value) throws DuplicateAttributeException
     {
+      if(children_ == null)
+        children_ = canonicalize_ ? new TreeMap<>() : new LinkedHashMap<>();
+        
       if(children_.containsKey(name))
         throw new DuplicateAttributeException("Attribute \"" + name + "\" redefined", context);
       

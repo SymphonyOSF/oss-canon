@@ -37,11 +37,14 @@ public class JsonArrayDom extends JsonDom
     
     array_ = array;
   }
-
+  
   @Override
-  public String toString()
+  void toString(StringBuilder s, String indent)
   {
-    return array_.toString();
+    s.append("Array DOM\n");
+    s.append(array_.toString());
+    
+    super.toString(s, indent);
   }
 
   /**

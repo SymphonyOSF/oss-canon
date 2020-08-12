@@ -37,6 +37,8 @@ public class JsonDom
 {
   private final ImmutableList<ParserException> errors_;
 
+  private String stringValue_;
+  
   protected JsonDom(AbstractBuilder<?,?> builder)
   {
     errors_ = ImmutableList.copyOf(builder.errors_);
@@ -50,6 +52,43 @@ public class JsonDom
   public ImmutableList<ParserException> getErrors()
   {
     return errors_;
+  }
+  
+  @Override
+  public synchronized String toString()
+  {
+    if(stringValue_ == null)
+    {
+      StringBuilder s = new StringBuilder();
+      
+      toString(s, "");
+      
+      stringValue_ = s.toString();
+    }
+    
+    return stringValue_;
+  }
+  
+  void toString(StringBuilder s, String indent)
+  {
+    s.append(indent);
+    s.append("Errors\n");
+    s.append(indent);
+    s.append("[\n");
+    
+    toStringErrors(s, indent + JsonDomNode.INDENT_LEVEL);
+    s.append(indent);
+    s.append("]\n");
+  }
+
+  private void toStringErrors(StringBuilder s, String indent)
+  {
+    for(ParserException error : errors_)
+    {
+      s.append(indent);
+      s.append(error);
+      s.append('\n');
+    }
   }
 
   /**

@@ -80,7 +80,7 @@ public class JsonParser extends Parser
       switch(c)
       {
         case START_OBJECT:
-          processObject();
+          domBuilder_.withObject(getObject());
           break;
           
         case START_ARRAY:
@@ -104,16 +104,21 @@ public class JsonParser extends Parser
   {
     if(arrayElementConsumer_ == null)
     {
-      JsonArray.Builder  builder = new JsonArray.Builder();
-      
-      processArrayContents(builder);
-    
-      domBuilder_.withArray(builder.build());
+      domBuilder_.withArray(getArray());
     }
     else
     {
       processArrayContents(arrayElementConsumer_);
     }
+  }
+
+  private JsonArray getArray() throws IOException
+  {
+    JsonArray.Builder  builder = new JsonArray.Builder();
+    
+    processArrayContents(builder);
+    
+    return builder.build();
   }
 
   private void processArrayContents(Consumer<JsonDomNode> builder) throws IOException
@@ -154,9 +159,9 @@ public class JsonParser extends Parser
     }
   }
 
-  private void processObject() throws IOException, ParserException
+  private JsonObject getObject() throws IOException, ParserException
   {
-    JsonObject.Builder  builder = new JsonObject.Builder();
+    JsonObject.Builder  builder = new JsonObject.Builder().withCanonicalize(canonicalize_);
     char                token   = expectToken(QUOTE, END_OBJECT);
     
     if(token == QUOTE)
@@ -164,7 +169,7 @@ public class JsonParser extends Parser
       processObjectAttributes(builder);
     }
     
-    domBuilder_.withObject(builder.build());
+    return builder.build();
   }
 
   private void processObjectAttributes(JsonObject.Builder builder) throws IOException, ParserException
@@ -202,41 +207,54 @@ public class JsonParser extends Parser
     char token = getToken();
     IParserContext context = getContext();
     
-    if((token >='1' && token <= '9') || token == '-')
+    try
     {
-      return getNumber(context);
+      if((token >='0' && token <= '9') || token == '-')
+      {
+        return getNumber(context);
+      }
+      switch(token)
+      {
+        case QUOTE:
+          String stringValue = getQuotedString();
+          return new JsonString.Builder()
+              .withValue(stringValue)
+              .withContext(context)
+              .build();
+          
+        case 't':
+          expectString("true");
+          return new JsonBoolean.Builder()
+              .withValue(true)
+              .withContext(context)
+              .build();
+          
+        case 'f':
+          expectString("false");
+          return new JsonBoolean.Builder()
+              .withValue(false)
+              .withContext(context)
+              .build();
+          
+        case 'n':
+          expectString("null");
+          return new JsonNull.Builder()
+              .withContext(context)
+              .build();
+          
+        case START_OBJECT:
+          return getObject();
+          
+        case START_ARRAY:
+          return getArray();
+          
+        default:
+          throw new SyntaxErrorException("Expected a value but found " + escapeChar(token), this);
+      }
     }
-    switch(token)
+    catch(RuntimeException e)
     {
-      case QUOTE:
-        String stringValue = getQuotedString();
-        return new JsonString.Builder()
-            .withValue(stringValue)
-            .withContext(context)
-            .build();
-        
-      case 't':
-        expectString("true");
-        return new JsonBoolean.Builder()
-            .withValue(true)
-            .withContext(context)
-            .build();
-        
-      case 'f':
-        expectString("false");
-        return new JsonBoolean.Builder()
-            .withValue(false)
-            .withContext(context)
-            .build();
-        
-      case 'n':
-        expectString("null");
-        return new JsonNull.Builder()
-            .withContext(context)
-            .build();
-        
-      default:
-        throw new SyntaxErrorException("Expected a value but found " + escapeChar(token), this);
+      throw new ParserException(e.toString(), context, e);
     }
   }
 
@@ -246,7 +264,7 @@ public class JsonParser extends Parser
     {
       col_++;
       
-      if(col_ > lineBuffer_.length())
+      if(col_ >= lineBuffer_.length())
         return getInteger(context);
     }
     
@@ -254,7 +272,7 @@ public class JsonParser extends Parser
     {
       col_++;
       
-      if(col_ > lineBuffer_.length())
+      if(col_ >= lineBuffer_.length())
       {
         throw new SyntaxErrorException("Invalid number value (trailing decimal point)", context);
       }
@@ -263,7 +281,7 @@ public class JsonParser extends Parser
       {
         col_++;
         
-        if(col_ > lineBuffer_.length())
+        if(col_ >= lineBuffer_.length())
           return getFloat(context);
       }
       
@@ -271,7 +289,7 @@ public class JsonParser extends Parser
       {
         col_++;
         
-        if(col_ > lineBuffer_.length())
+        if(col_ >= lineBuffer_.length())
         {
           throw new SyntaxErrorException("Invalid number value (trailing exponential)", context);
         }
@@ -281,7 +299,7 @@ public class JsonParser extends Parser
       {
         col_++;
         
-        if(col_ > lineBuffer_.length())
+        if(col_ >= lineBuffer_.length())
         {
           throw new SyntaxErrorException("Invalid number value (trailing + or -)", context);
         }
@@ -291,7 +309,7 @@ public class JsonParser extends Parser
       {
         col_++;
         
-        if(col_ > lineBuffer_.length())
+        if(col_ >= lineBuffer_.length())
           return getFloat(context);
       }
       

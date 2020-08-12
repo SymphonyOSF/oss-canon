@@ -37,8 +37,10 @@ public class JsonInvalidDom extends JsonDom
   }
 
   @Override
-  public String toString()
+  void toString(StringBuilder s, String indent)
   {
-    return "";
+    s.append("INVALID DOM\n");
+    
+    super.toString(s, indent);
   }
 }

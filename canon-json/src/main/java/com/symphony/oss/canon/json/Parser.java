@@ -20,8 +20,11 @@ package com.symphony.oss.canon.json;
 
 import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.Reader;
 import java.io.StringReader;
+import java.nio.charset.StandardCharsets;
 
 import com.symphony.oss.commons.fault.CodingFault;
 import com.symphony.oss.commons.fluent.BaseAbstractBuilder;
@@ -34,18 +37,21 @@ import com.symphony.oss.commons.fluent.BaseAbstractBuilder;
  */
 public class Parser implements IParserContext
 {
-  static final char EOF   = 0;
-  
-  BufferedReader    in_;
-  String            inputSource_;
-  int               line_;
-  int               col_;
-  String            lineBuffer_;
-  boolean           atEof_;
+  static final char            EOF = 0;
+
+  private final BufferedReader in_;
+  final boolean                canonicalize_;
+  String                       inputSource_;
+  int                          line_;
+  int                          col_;
+  String                       lineBuffer_;
+  boolean                      atEof_;
+
   
   Parser(AbstractBuilder<?,?> builder)
   {
     in_ = builder.in_;
+    canonicalize_ = builder.canonicalize_;
   }
   
   @Override
@@ -303,10 +309,25 @@ public class Parser implements IParserContext
   public static abstract class AbstractBuilder<T extends AbstractBuilder<T,B>, B extends Parser> extends BaseAbstractBuilder<T, B>
   {
     BufferedReader    in_;
+    boolean           canonicalize_ = true;
     
     AbstractBuilder(Class<T> type)
     {
       super(type);
+    }
+    
+    /**
+     * Set the canonicalization mode for the parser.
+     * 
+     * @param canonicalize The canonicalization mode for the parser.
+     * 
+     * @return This (fluent method).
+     */
+    public T withCanonicalize(boolean canonicalize)
+    {
+      canonicalize_ = canonicalize;
+      
+      return self();
     }
     
     /**
@@ -333,6 +354,20 @@ public class Parser implements IParserContext
     public T withInput(String in)
     {
       in_ = new BufferedReader(new StringReader(in));
+      
+      return self();
+    }
+    
+    /**
+     * Set the input for the parser.
+     * 
+     * @param in The input for the parser.
+     * 
+     * @return This (fluent method).
+     */
+    public T withInput(InputStream in)
+    {
+      in_ = new BufferedReader(new InputStreamReader(in, StandardCharsets.UTF_8));
       
       return self();
     }

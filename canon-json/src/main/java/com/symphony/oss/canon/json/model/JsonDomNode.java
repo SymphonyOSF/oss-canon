@@ -36,11 +36,13 @@ public abstract class JsonDomNode
   static final String INDENT_LEVEL = "  ";
   
   private final IParserContext context_;
+  final boolean                canonicalize_;
   private String stringValue_;
   
   protected JsonDomNode(AbstractBuilder<?,?> builder)
   {
     context_ = builder.context_;
+    canonicalize_ = builder.canonicalize_;
   }
   
   @Override
@@ -51,6 +53,8 @@ public abstract class JsonDomNode
       StringBuilder s = new StringBuilder();
       
       toString(s, "");
+
+      s.append('\n');
       
       stringValue_ = s.toString();
     }
@@ -81,6 +85,7 @@ public abstract class JsonDomNode
   public static abstract class AbstractBuilder<T extends AbstractBuilder<T,B>, B extends JsonDomNode> extends BaseAbstractBuilder<T, B>
   {
     IParserContext context_;
+    boolean        canonicalize_ = true;
     
     AbstractBuilder(Class<T> type)
     {
@@ -97,6 +102,20 @@ public abstract class JsonDomNode
     public T withContext(IParserContext context)
     {
       context_ = context;
+      
+      return self();
+    }
+    
+    /**
+     * Set the canonicalization mode for this object.
+     * 
+     * @param canonicalize The canonicalization mode for this object.
+     * 
+     * @return This (fluent method).
+     */
+    public T withCanonicalize(boolean canonicalize)
+    {
+      canonicalize_ = canonicalize;
       
       return self();
     }
