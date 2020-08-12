@@ -58,6 +58,11 @@ public abstract class JsonDomNode
     return stringValue_;
   }
   
+  /**
+   * Return the location of the source for this node if it was parsed.
+   * 
+   * @return The location of the source for this node if it was parsed, otherwise null.
+   */
   public @Nullable IParserContext getContext()
   {
     return context_;
@@ -85,8 +90,9 @@ public abstract class JsonDomNode
     /**
      * Set the location of the source of this object in the parsed input stream.
      * 
-     * @param context
-     * @return
+     * @param context The location of the source of this object in the parsed input stream.
+     * 
+     * @return This (fluent method).
      */
     public T withContext(IParserContext context)
     {

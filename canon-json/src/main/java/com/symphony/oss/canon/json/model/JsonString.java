@@ -18,7 +18,6 @@
 
 package com.symphony.oss.canon.json.model;
 
-import com.symphony.oss.canon.json.JsonParser;
 import com.symphony.oss.commons.type.provider.IStringProvider;
 
 /**

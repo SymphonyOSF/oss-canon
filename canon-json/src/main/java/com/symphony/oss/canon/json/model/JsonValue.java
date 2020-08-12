@@ -18,18 +18,17 @@
 
 package com.symphony.oss.canon.json.model;
 
+/**
+ * A JSON value.
+ * 
+ * @author Bruce Skingle
+ *
+ */
 public abstract class JsonValue extends JsonDomNode
 {
-  private static final Builder DUMMY_BUILDER = new Builder();
-  
   JsonValue(AbstractBuilder<?,?> builder)
   {
     super(builder);
-  }
-  
-  JsonValue()
-  {
-    super(DUMMY_BUILDER);
   }
   
   /**
@@ -45,23 +44,6 @@ public abstract class JsonValue extends JsonDomNode
     AbstractBuilder(Class<T> type)
     {
       super(type);
-    }
-  }
-  
-  static class Builder extends AbstractBuilder<Builder, JsonValue>
-  {
-    /**
-     * Constructor.
-     */
-    public Builder()
-    {
-      super(Builder.class);
-    }
-
-    @Override
-    protected JsonValue construct()
-    {
-      throw new IllegalStateException("Virtual Method");
     }
   }
 }

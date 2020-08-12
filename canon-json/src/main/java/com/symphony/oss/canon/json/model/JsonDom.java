@@ -42,6 +42,11 @@ public class JsonDom
     errors_ = ImmutableList.copyOf(builder.errors_);
   }
     
+  /**
+   * Return all errors encountered parsing this dom.
+   * 
+   * @return All errors encountered parsing this dom.
+   */
   public ImmutableList<ParserException> getErrors()
   {
     return errors_;
@@ -66,6 +71,15 @@ public class JsonDom
       super(type);
     }
     
+    /**
+     * Set the content of this DOM.
+     * 
+     * Only one of withArray() and withObject() should be called.
+     * 
+     * @param array The content of this DOM.
+     * 
+     * @return This (fluent method).
+     */
     public T withArray(JsonArray array)
     {
       array_ = array;
@@ -73,6 +87,15 @@ public class JsonDom
       return self();
     }
     
+    /**
+     * Set the content of this DOM.
+     * 
+     * Only one of withArray() and withObject() should be called.
+     * 
+     * @param object The content of this DOM.
+     * 
+     * @return This (fluent method).
+     */
     public T withObject(JsonObject object)
     {
       object_ = object;
@@ -81,8 +104,17 @@ public class JsonDom
     }
   }
   
+  /**
+   * Builder for use when constructing a DOM directly.
+   * 
+   * @author Bruce Skingle
+   *
+   */
   public static class Builder extends AbstractBuilder<Builder, JsonDom>
   {
+    /**
+     * Constructor.
+     */
     public Builder()
     {
       super(Builder.class);
@@ -107,13 +139,29 @@ public class JsonDom
     }
   }
   
+  /**
+   * Builder for use when parsing a DOM.
+   * 
+   * @author Bruce Skingle
+   *
+   */
   public static class ParserBuilder extends AbstractBuilder<ParserBuilder, JsonDom>
   {
+    /**
+     * Constructor.
+     */
     public ParserBuilder()
     {
       super(ParserBuilder.class);
     }
     
+    /**
+     * Add the given parsing error to this dom.
+     * 
+     * @param error A parsing error encountered when parsing the dom.
+     * 
+     * @return This (fluent method).
+     */
     public ParserBuilder withError(ParserException error)
     {
       errors_.add(error);
@@ -121,6 +169,14 @@ public class JsonDom
       return self();
     }
 
+    /**
+     * Add the given parsing error to this dom.
+     * 
+     * @param e         A parsing error encountered when parsing the dom.
+     * @param context   The location of the error in the parsed input.
+     * 
+     * @return This (fluent method).
+     */
     public ParserBuilder withError(Exception e, IParserContext context)
     {
       return withError(new ParserException(e.getMessage(), context, e));
