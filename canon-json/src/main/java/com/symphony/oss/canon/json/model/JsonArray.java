@@ -21,6 +21,7 @@ package com.symphony.oss.canon.json.model;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.function.Consumer;
 
 import javax.annotation.concurrent.Immutable;
 
@@ -112,6 +113,7 @@ public class JsonArray extends JsonDomNode implements Iterable<JsonDomNode>
    * @param <B> Concrete type of built type.
    */
   public static abstract class AbstractBuilder<T extends AbstractBuilder<T,B>, B extends JsonArray> extends JsonDomNode.AbstractBuilder<T, B>
+    implements Consumer<JsonDomNode>
   {
     List<JsonDomNode> children_ = new LinkedList<>();
     
@@ -150,21 +152,11 @@ public class JsonArray extends JsonDomNode implements Iterable<JsonDomNode>
       
       return self();
     }
-    
-    /**
-     * Add the given elements to the array.
-     * 
-     * @param context A ParserContext for reporting errors.
-     * @param children One or more elements to be added to the array.
-     * 
-     * @return This (fluent method).
-     */
-    public T with(IParserContext context, JsonDomNode ...children)
+
+    @Override
+    public void accept(JsonDomNode child)
     {
-      for(JsonDomNode child : children)
-        children_.add(child);
-      
-      return self();
+      children_.add(child);
     }
   }
   

@@ -18,12 +18,14 @@
 
 package com.symphony.oss.canon.json;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import java.io.IOException;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.function.Consumer;
 
 import org.junit.Assert;
 import org.junit.Test;
@@ -37,6 +39,7 @@ import com.symphony.oss.canon.json.model.JsonDomNode;
 import com.symphony.oss.canon.json.model.JsonDouble;
 import com.symphony.oss.canon.json.model.JsonFloat;
 import com.symphony.oss.canon.json.model.JsonInteger;
+import com.symphony.oss.canon.json.model.JsonInvalidDom;
 import com.symphony.oss.canon.json.model.JsonLong;
 import com.symphony.oss.canon.json.model.JsonNull;
 import com.symphony.oss.canon.json.model.JsonObject;
@@ -393,6 +396,70 @@ public class TestJsonParser
           fail(message);
         }
         cnt++;
+      }
+      else
+      {
+        String message = "Expected Integer but found " + node.getClass();
+        System.err.println(message);
+        fail(message);
+      }
+    }
+  }
+  
+  @Test
+  public void testParseArrayHandler()
+  {
+    TestIntegerConsumer consumer = new TestIntegerConsumer(new int[] {1,-2,3,-5,8,-11});
+    
+    JsonDom dom = new JsonParser.Builder()
+      .withInput("[1,-2,3,-5,8,-11]")
+      .withArrayElementConsumer(consumer)
+      .build()
+      .parse();
+    
+    assertTrue(dom instanceof JsonInvalidDom);
+    assertTrue(dom.getErrors().isEmpty());
+    assertEquals(6, consumer.cnt_);
+  }
+  
+  @Test
+  public void testParseInvalidArrayHandler()
+  {
+    TestIntegerConsumer consumer = new TestIntegerConsumer(new int[] {1,-2,3,-5,8,-11});
+    
+    JsonDom dom = new JsonParser.Builder()
+      .withInput("[1,BLAH FOO,-2,3,-5,8,-11]")
+      .withArrayElementConsumer(consumer)
+      .build()
+      .parse();
+    
+    assertTrue(dom instanceof JsonInvalidDom);
+    assertEquals(1, dom.getErrors().size());
+    assertEquals(6, consumer.cnt_);
+  }
+  
+  class TestIntegerConsumer implements Consumer<JsonDomNode>
+  {
+    int[] values_;
+    int cnt_=0;
+    
+    TestIntegerConsumer(int[] values)
+    {
+      values_ = values;
+    }
+    
+    @Override
+    public void accept(JsonDomNode node)
+    {
+      if(node instanceof IIntegerProvider)
+      {
+        if(((IIntegerProvider)node).asInteger() != values_[cnt_])
+        {
+          String message = "Expected " + values_[cnt_] + " but found " + ((IIntegerProvider)node).asInteger();
+          System.err.println(message);
+          fail(message);
+        }
+        cnt_++;
       }
       else
       {

@@ -19,6 +19,7 @@
 package com.symphony.oss.canon.json;
 
 import java.io.IOException;
+import java.util.function.Consumer;
 
 import com.symphony.oss.canon.json.model.JsonArray;
 import com.symphony.oss.canon.json.model.JsonBoolean;
@@ -40,20 +41,24 @@ import com.symphony.oss.canon.json.model.JsonString;
  */
 public class JsonParser extends Parser
 {
-  private static final char START_OBJECT   = '{';
-  private static final char END_OBJECT   = '}';
-  private static final char START_ARRAY   = '[';
-  private static final char END_ARRAY   = ']';
-  private static final char QUOTE   = '\"';
-  private static final char NAME_SEPARATOR   = ':';
-  private static final char VALUE_SEPARATOR   = ',';
+  private static final char           START_OBJECT    = '{';
+  private static final char           END_OBJECT      = '}';
+  private static final char           START_ARRAY     = '[';
+  private static final char           END_ARRAY       = ']';
+  private static final char           QUOTE           = '\"';
+  private static final char           NAME_SEPARATOR  = ':';
+  private static final char           VALUE_SEPARATOR = ',';
 
-  private JsonDom.ParserBuilder domBuilder_ = new JsonDom.ParserBuilder();
+  private final Consumer<JsonDomNode> arrayElementConsumer_;
+
+  private JsonDom.ParserBuilder       domBuilder_     = new JsonDom.ParserBuilder();
   
  
   JsonParser(AbstractBuilder<?,?> builder)
   {
     super(builder);
+    
+    arrayElementConsumer_ = builder.arrayElementConsumer_;
   }
 
   /**
@@ -97,43 +102,55 @@ public class JsonParser extends Parser
 
   private void processArray() throws IOException
   {
-    JsonArray.Builder  builder = new JsonArray.Builder();
+    if(arrayElementConsumer_ == null)
+    {
+      JsonArray.Builder  builder = new JsonArray.Builder();
+      
+      processArrayContents(builder);
     
-    processArrayContents(builder);
-    
-    domBuilder_.withArray(builder.build());
+      domBuilder_.withArray(builder.build());
+    }
+    else
+    {
+      processArrayContents(arrayElementConsumer_);
+    }
   }
 
-  private void processArrayContents(JsonArray.Builder builder) throws IOException
+  private void processArrayContents(Consumer<JsonDomNode> builder) throws IOException
   {
     
-    try
-    {
-      char token = getToken();
+    
+    char token = getToken();
 
-      if(token == END_ARRAY)
-        return;
-      
-      // back up over the first token of the value.
-      col_--;
-      
-      while(true)
+    if(token == END_ARRAY)
+      return;
+    
+    // back up over the first token of the value.
+    col_--;
+    
+    while(true)
+    {
+      try
       {
-        IParserContext context = getContext();
-        
-        JsonDomNode value = getValue();
-        
-        builder.with(context, value);
+        builder.accept(getValue());
         
         if(END_ARRAY == expectToken(VALUE_SEPARATOR, END_ARRAY))
         {
           return;
         }
       }
-    }
-    catch (ParserException e)
-    {
-      domBuilder_.withError(e);
+      catch (ParserException e)
+      {
+        domBuilder_.withError(e);
+        
+        do
+        {
+          token = getToken();
+        } while(token != VALUE_SEPARATOR && token != END_ARRAY);
+        
+        if(token == END_ARRAY)
+          return;
+      }
     }
   }
 
@@ -437,9 +454,18 @@ public class JsonParser extends Parser
    */
   public static abstract class AbstractBuilder<T extends AbstractBuilder<T,B>, B extends JsonParser> extends Parser.AbstractBuilder<T, B>
   {
+    Consumer<JsonDomNode> arrayElementConsumer_;
+
     AbstractBuilder(Class<T> type)
     {
       super(type);
+    }
+    
+    public T withArrayElementConsumer(Consumer<JsonDomNode> consumer)
+    {
+      arrayElementConsumer_ = consumer;
+      
+      return self();
     }
   }
   
