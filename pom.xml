@@ -109,6 +109,7 @@
 	<module>canon-launch</module>
 	<module>canon-template-ts</module>
 	<module>canon-runtime-ts</module>
+	<module>canon-json</module>
 	</modules>
 
 	<build>
