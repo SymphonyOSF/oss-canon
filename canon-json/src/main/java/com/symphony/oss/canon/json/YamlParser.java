@@ -104,11 +104,6 @@ public class YamlParser extends Parser
     {
       domBuilder_.withError(new ParserException("Unable to read input (" + e.getMessage() + ")", this, e));
     }
-//    catch (ParserException e)
-//    {
-//      domBuilder_.withError(e);
-//    }
-    
    
     return domBuilder_.build();
   }
@@ -135,11 +130,8 @@ public class YamlParser extends Parser
           boolean couldBeBlock = (col_ == lineBuffer_.length() - 1 || (col_ <= lineBuffer_.length() - 2 && lineBuffer_.charAt(col_ + 1) == SPACE));
           if(collection.getIndentLevel() == null)
           {
-            System.err.println("COLLECTION HAS NO LEVEL");
             collection.setIndentLevel(context.getCol());
           }
-          
-          System.out.println(lineBuffer_);
           
           if(couldBeBlock && lineBuffer_.charAt(col_) == SEQUENCE_ENTRY)
           {
@@ -184,10 +176,6 @@ public class YamlParser extends Parser
               return context;
             }
           }
-//          else if(couldBeBlock && (lineBuffer_.charAt(col_) == MAPPING_KEY || lineBuffer_.charAt(col_) == MAPPING_ENTRY))
-//          {
-//            throw new SyntaxErrorException("Mapping indicator unexpected", context);
-//          }
           else
           {
             try
@@ -248,86 +236,24 @@ public class YamlParser extends Parser
                   context = parse(newCollection);
                   
                   collection.put(key.text_, newCollection.build(context), context);
-                  
-//                  if(context.getCol() > collection.getIndentLevel())
-//                  {
-//                    throw new SyntaxErrorException("Unexpected indent level", this);
-//                  }
-//                  else 
+
                   if(context.getCol() < collection.getIndentLevel())
                   {
                     return context;
                   }
-                  // DELETE THIS
-//                  else
-//                  {
-//                    collection.put(key.text_, newCollection.build(context), context);
-//                  }
                 }
-                  
-//                  if(context.getCol() > collection.getIndentLevel())
-//                  {
-//                    collection.validate(key, context);
-//                    YamlCollection newCollection = YamlCollectionType.MAPPING.createCollection(col_, key);
-//                    
-//                    parse(newCollection);
-//                    
-//                    collection.put(MAPPING_ENTRY, key, newCollection.build(), context);
-//                    
-//                    if(col_ > collection.getIndentLevel())
-//                    {
-//                      throw new SyntaxErrorException("Unexpected indent level", this);
-//                    }
-//                    else if(col_ < collection.getIndentLevel())
-//                    {
-//                      return;
-//                    }
-//                  }
-//                  else if(context.getCol() == collection.getIndentLevel())
-//                  {
-//                    if(col_ < lineBuffer_.length())
-//                    {
-//                      collection.put(SPACE, key, getValue(YamlStyle.BLOCK), context);
-//                    }
-//                  }
-//                  else // less than
-//                  {
-//                    return;
-//                  }
-                }
-              
-  
-//              }
+              }
             }
             catch(ParserException e)
             {
               readLine();
               throw e;
             }
-            
-            
-            
-            
-            
-            /////////
           }
         }
         // End of line
 
         readLine();
-        
-//        if(lineBuffer_ == null)
-//        {
-//          // EOF
-//          if(scalar != null)
-//          {
-//            collection.put(key, scalar, context);
-//          }
-//        
-//          collection = indentStack_.isEmpty() ? document : indentStack_.get(indentStack_.size() - 1);
-//          
-//          collection.build();
-//        }
       }
       catch (ParserException e)
       {
@@ -388,8 +314,6 @@ public class YamlParser extends Parser
               }
               col_ = endCol + 1;
   
-              System.out.println("MAPPING ENTRY " + key);
-              
               return new ScannerText(initCol, key);
             }
           }
@@ -439,8 +363,6 @@ public class YamlParser extends Parser
               
               col_ = endCol + 1;
   
-              System.out.println("MAPPING ENTRY " + key);
-              
               return new ScannerText(initCol, key);
             }
           }
@@ -470,11 +392,7 @@ public class YamlParser extends Parser
               }
               
               col_ = i;
-              System.out.println("MAPPING ENTRY " + key);
-              
-              if("anAllOf".equals(key))
-                System.err.println("HERE");
-              
+  
               return new ScannerText(initCol, key);
             }
           }
@@ -557,154 +475,14 @@ public class YamlParser extends Parser
       
       return domBuilder_.build();
     }
-    
   }
-
-//  private @Nonnull YamlCollection findBlockCollection(YamlCollectionType type, int indentCnt, YamlCollection parent, String key, IParserContext context) throws SyntaxErrorException
-//  {
-//    for(int i=0 ; i<indentStack_.size() ; i++)
-//    {
-//      YamlCollection collection = indentStack_.get(i);
-//      
-//      if(collection.getIndentLevel() == indentCnt)
-//      {
-//        if(collection.isInstance(type))
-//        {
-//          return collection;
-//        }
-//        else
-//        {
-//          throw new SyntaxErrorException("Expected  a " + collection.getType() + " but found a " + type, context);
-//        }
-//      }
-//      
-//      if(collection.getIndentLevel() > indentCnt)
-//      {
-//        throw new SyntaxErrorException("Unexpected indent level", context);
-//      }
-//    }
-//    
-//    parent.validate(key, context);
-//    YamlCollection collection = type.createCollection(indentCnt, parent, key);
-//    indentStack_.add(collection);
-//      
-//    return collection;
-//    
-//  }
-
-//  private YamlCollection findCollection(YamlCollectionType collectionType) throws SyntaxErrorException
-//  {    
-//    if(indentStack_.isEmpty() || indentStack_.peekLast().indentLevel_ < lineIndentLevel_)
-//    {
-//      YamlCollection collection = collectionType.createCollection();
-//      
-//      indentStack_.add(collection);
-//      return collection;
-//    }
-//    else
-//    {
-//      YamlCollection collection;
-//      
-//      do
-//      {
-//        collection = indentStack_.pollLast();
-//        
-//        if(collection.indentLevel_ == lineIndentLevel_)
-//        {
-//          
-//        }
-//      } while(collection != null);
-//
-//      throw new SyntaxErrorException("Invalid indent level " + lineIndentLevel_, this);
-//    }
-//  }
-//
-//  private YamlCollectionType getCollectionType()
-//  {
-//    if(lineIndentLevel_ < lineBuffer_.length() - 2 && lineBuffer_.charAt(lineIndentLevel_ + 1) == SPACE)
-//    {
-//      switch(lineBuffer_.charAt(lineIndentLevel_))
-//      {
-//        case SEQUENCE_ENTRY:
-//          return YamlCollectionType.SEQUENCE;
-//          
-//        case MAPPING_ENTRY:
-//          return YamlCollectionType.MAPPING;
-//          
-//        default:
-//          return YamlCollectionType.SCALAR;
-//      }
-//    }
-//    else
-//    {
-//      return YamlCollectionType.SCALAR;
-//    }
-//  }
-  
-//  private JsonArray processFlowArray() throws IOException
-//  {
-//    JsonArray.Builder  builder = new JsonArray.Builder();
-//    
-//    char token = getCharToken();
-//
-//    if(token == SEQUENCE_END)
-//      return builder.build();
-//    
-//    // back up over the first token of the value.
-//    col_--;
-//    
-//    while(true)
-//    {
-//      try
-//      {
-//        builder.with(getValue());
-//        
-//        if(SEQUENCE_END == expectCharToken(COLLECT_ENTRY, SEQUENCE_END))
-//        {
-//          return builder.build();
-//        }
-//      }
-//      catch (ParserException e)
-//      {
-//        domBuilder_.withError(e);
-//        
-//        do
-//        {
-//          token = getCharToken();
-//        } while(token != COLLECT_ENTRY && token != SEQUENCE_END);
-//        
-//        if(token == SEQUENCE_END)
-//          return builder.build();
-//      }
-//    }
-//  }
-//
-//  private void processBlockArray()
-//  {
-//    // TODO Auto-generated method stub
-//    
-//  }
   
   JsonDomNode getValue(YamlStyle style, int indentLevel) throws IOException, ParserException
   {
     IParserContext context = getContext();
-    
-    
-    
+
     try
     {
-//      if((token >='0' && token <= '9') || token == '-')
-//      {
-//        try
-//        {
-//          return getNumber(context);
-//        }
-//        catch(ParserException e)
-//        {
-//          return getBareValue(context);
-//        }
-//      }
-      
       ScannerText key = style == YamlStyle.BLOCK ? getMappingKey() : NullScannerText;
       
       if(key.text_ == null)
@@ -729,27 +507,6 @@ public class YamlParser extends Parser
                 .withContext(context)
                 .build();
           }
-          
-  //        case 't':
-  //          expectString("true");
-  //          return new JsonBoolean.Builder()
-  //              .withValue(true)
-  //              .withContext(context)
-  //              .build();
-  //          
-  //        case 'f':
-  //          expectString("false");
-  //          return new JsonBoolean.Builder()
-  //              .withValue(false)
-  //              .withContext(context)
-  //              .build();
-  //          
-  //        case 'n':
-  //          expectString("null");
-  //          return new JsonNull.Builder()
-  //              .withContext(context)
-  //              .build();
-  //          
           case MAPPING_START:
             return getFlowMapping();
             
@@ -791,8 +548,6 @@ public class YamlParser extends Parser
       
     while(readNextLine)
     {
-      System.out.println(s.toString());
-      
       if(firstLine)
       {
         firstLine = false;
@@ -828,10 +583,8 @@ public class YamlParser extends Parser
       {
         if(endCol < lineBuffer_.length() - 1 && lineBuffer_.charAt(endCol) == '\\')
           endCol++;
-        
 
         endCol++;
-        
       }
       
       if(endCol == lineBuffer_.length())
@@ -944,7 +697,6 @@ public class YamlParser extends Parser
           s.append(c);
         }
       }
-      
     }
     
     col_++; // consume the closing double quote
@@ -962,8 +714,6 @@ public class YamlParser extends Parser
       
     while(readNextLine)
     {
-      System.out.println(s.toString());
-      
       if(firstLine)
       {
         firstLine = false;
@@ -1268,15 +1018,6 @@ public class YamlParser extends Parser
               }
               
               col_ = i;
-//              while(col_ < i && isSpace(lineBuffer_.charAt(col_)))
-//              {
-//                col_++;
-//              }
-//              
-//              while(col_ < i)
-//              {
-//                b.append(lineBuffer_.charAt(col_++));
-//              }
               // This is not a blank line so b == builder.
               return builder.toString();
           }
@@ -1356,18 +1097,6 @@ public class YamlParser extends Parser
       }
     }
   }
-
-  @Override
-  void readLine() throws IOException
-  {
-    super.readLine();
-    
-//    lineIndentLevel_=0;
-//    
-//    while(lineIndentLevel_<lineBuffer_.length() && lineBuffer_.charAt(lineIndentLevel_) == SPACE)
-//      lineIndentLevel_++;
-  }
-
   
   /**
    * Builder for JsonParser and sub-classes.

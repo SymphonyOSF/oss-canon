@@ -254,8 +254,6 @@ public class JsonParser extends Parser
     }
   }
 
-  
-
   String getQuotedString() throws IOException, ParserException
   {
     StringBuilder s = new StringBuilder();
