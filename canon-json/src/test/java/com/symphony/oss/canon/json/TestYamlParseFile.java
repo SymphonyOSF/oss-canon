@@ -28,17 +28,16 @@ import org.junit.Test;
 import com.symphony.oss.canon.json.model.JsonDom;
 
 @SuppressWarnings("javadoc")
-public class TestJsonParseFile
+public class TestYamlParseFile
 {
   @Test
-
   public void testParseFile() throws IOException
   {
-    try(InputStream in = getClass().getResourceAsStream("/oneOfEverything.json"))
+    try(InputStream in = getClass().getResourceAsStream("/oneOfEverything.yaml"))
     {
       System.err.println("in " + in);
     
-      JsonParser parser = new JsonParser.Builder()
+      YamlParser parser = new YamlParser.Builder()
           .withCanonicalize(false)
           .withInput(in)
           .build();

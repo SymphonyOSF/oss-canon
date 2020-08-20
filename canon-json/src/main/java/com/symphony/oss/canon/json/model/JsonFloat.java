@@ -18,18 +18,22 @@
 
 package com.symphony.oss.canon.json.model;
 
+import java.math.BigDecimal;
+
+import com.symphony.oss.commons.type.provider.IBigDecimalProvider;
 import com.symphony.oss.commons.type.provider.IDoubleProvider;
 import com.symphony.oss.commons.type.provider.IFloatProvider;
+import com.symphony.oss.commons.type.provider.INumberProvider;
 
 /**
- * A JSON String.
+ * A JSON Float value.
  * 
  * @author Bruce Skingle
  *
  */
-public class JsonFloat extends JsonValue implements IDoubleProvider, IFloatProvider
+public class JsonFloat extends JsonValue implements IBigDecimalProvider, INumberProvider, IDoubleProvider, IFloatProvider
 {
-  private final float value_;
+  private final Float value_;
 
   private JsonFloat(AbstractBuilder<?,?> builder)
   {
@@ -45,6 +49,12 @@ public class JsonFloat extends JsonValue implements IDoubleProvider, IFloatProvi
   }
 
   @Override
+  public Number asNumber()
+  {
+    return value_;
+  }
+
+  @Override
   public Float asFloat()
   {
     return value_;
@@ -54,6 +64,24 @@ public class JsonFloat extends JsonValue implements IDoubleProvider, IFloatProvi
   public Double asDouble()
   {
     return (double)value_;
+  }
+
+  @Override
+  public BigDecimal asBigDecimal()
+  {
+    return BigDecimal.valueOf(value_);
+  }
+
+  @Override
+  public int hashCode()
+  {
+    return value_.hashCode();
+  }
+
+  @Override
+  public boolean equals(Object obj)
+  {
+    return obj instanceof JsonFloat && value_.equals(((JsonFloat)obj).value_);
   }
 
   /**

@@ -26,6 +26,11 @@ import java.io.Reader;
 import java.io.StringReader;
 import java.nio.charset.StandardCharsets;
 
+import com.symphony.oss.canon.json.model.JsonDomNode;
+import com.symphony.oss.canon.json.model.JsonDouble;
+import com.symphony.oss.canon.json.model.JsonFloat;
+import com.symphony.oss.canon.json.model.JsonInteger;
+import com.symphony.oss.canon.json.model.JsonLong;
 import com.symphony.oss.commons.fault.CodingFault;
 import com.symphony.oss.commons.fluent.BaseAbstractBuilder;
 
@@ -105,7 +110,7 @@ public class Parser implements IParserContext
     {
       try
       {
-        c = getToken();
+        c = getCharToken();
       }
       catch (IOException e)
       {
@@ -127,7 +132,7 @@ public class Parser implements IParserContext
 
   int getHexDigit() throws ParserException, IOException
   {
-    char c = getToken();
+    char c = getCharToken();
     
     if(c >= '0' && c <= '9')
       return c - '0';
@@ -171,11 +176,109 @@ public class Parser implements IParserContext
     else
      return String.valueOf(token);
   }
+  
+  String escapeString(String token)
+  {
+    StringBuilder s = new StringBuilder();
+    
+    for(char c : token.toCharArray())
+      s.append(escapeChar(c));
+    
+    return s.toString();
+  }
 
   @SuppressWarnings("null") // The check for expectedTokens.length == 0 means that s cannot be null after the loop.
-  char expectToken(char ...expectedTokens) throws IOException, ParserException
+  String expectStringToken(String ...expectedTokens) throws IOException, ParserException
   {
-    char token = getToken();
+    String token = getStringToken();
+    
+    for(String t : expectedTokens)
+      if(token.equals(t))
+        return token;
+    
+    StringBuilder s = null;
+    
+    if(expectedTokens.length == 0)
+      throw new CodingFault("expectedTokens may not be empty");
+    
+    if(expectedTokens.length == 1)
+    {
+      s = new StringBuilder("Expected \"" + expectedTokens[0] + "\" but found ");
+    }
+    else
+    {
+      for(String t : expectedTokens)
+      {
+        if(s == null)
+        {
+          s = new StringBuilder("Expected one of [\"");
+        }
+        else
+        {
+          s.append("\", \"");
+        }
+        
+        s.append(t);
+      }
+      
+      s.append("\"] but found \"");
+    }
+    
+    if(token == null)
+      s.append("End of File");
+    else
+      s.append(escapeString(token));
+    
+    throw new SyntaxErrorException(s.toString(), this);
+  }
+
+  /**
+   * Get the next token from the input, ignoring whitespace.
+   * 
+   * @return The next token from the input, ignoring whitespace.
+   * 
+   * @throws IOException If there is a problem reading the data.
+   */
+  String getStringToken() throws IOException
+  {
+    if(atEof_)
+    {
+      return null;
+    }
+    
+    char c;
+    
+    do
+    {
+      fillBuffer();
+      
+      if(lineBuffer_ == null)
+      {
+        atEof_ = true;
+        return null;
+      }
+      
+      c = lineBuffer_.charAt(col_++);
+    } while(isSpace(c));
+    
+    StringBuilder s = new StringBuilder(c);
+    
+    while(col_ < lineBuffer_.length())
+    {
+      c = lineBuffer_.charAt(col_++);
+      
+      if(isSpace(c))
+        return s.toString();
+      
+      s.append(c);
+    }
+    return s.toString();
+  }
+  
+  @SuppressWarnings("null") // The check for expectedTokens.length == 0 means that s cannot be null after the loop.
+  char expectCharToken(char ...expectedTokens) throws IOException, ParserException
+  {
+    char token = getCharToken();
     
     for(char t : expectedTokens)
       if(token == t)
@@ -224,7 +327,7 @@ public class Parser implements IParserContext
    * 
    * @throws IOException If there is a problem reading the data.
    */
-  char getToken() throws IOException
+  char getCharToken() throws IOException
   {
     if(atEof_)
     {
@@ -291,10 +394,136 @@ public class Parser implements IParserContext
     {
       do
       {
-        lineBuffer_ = in_.readLine();
-        line_++;
-        col_ = 0;
+        readLine();
       } while(lineBuffer_ != null && col_ >= lineBuffer_.length());
+    }
+  }
+
+  void readLine() throws IOException
+  {
+    lineBuffer_ = in_.readLine();
+    line_++;
+    col_ = 0;
+    
+    if(lineBuffer_ == null)
+    {
+      System.err.println("AT EOF");
+    }
+  }
+  
+  JsonDomNode getNumber(IParserContext context) throws SyntaxErrorException
+  {
+    while(lineBuffer_.charAt(col_) >='0' && lineBuffer_.charAt(col_) <= '9')
+    {
+      col_++;
+      
+      if(col_ >= lineBuffer_.length())
+        return getInteger(context);
+    }
+    
+    if(lineBuffer_.charAt(col_) == '.')
+    {
+      col_++;
+      
+      if(col_ >= lineBuffer_.length())
+      {
+        throw new SyntaxErrorException("Invalid number value (trailing decimal point)", context);
+      }
+      
+      while(lineBuffer_.charAt(col_) >='0' && lineBuffer_.charAt(col_) <= '9')
+      {
+        col_++;
+        
+        if(col_ >= lineBuffer_.length())
+          return getFloat(context);
+      }
+      
+      if(lineBuffer_.charAt(col_) == 'e' || lineBuffer_.charAt(col_) == 'E')
+      {
+        col_++;
+        
+        if(col_ >= lineBuffer_.length())
+        {
+          throw new SyntaxErrorException("Invalid number value (trailing exponential)", context);
+        }
+      }
+      
+      if(lineBuffer_.charAt(col_) == '+' || lineBuffer_.charAt(col_) == '-')
+      {
+        col_++;
+        
+        if(col_ >= lineBuffer_.length())
+        {
+          throw new SyntaxErrorException("Invalid number value (trailing + or -)", context);
+        }
+      }
+      
+      while(lineBuffer_.charAt(col_) >='0' && lineBuffer_.charAt(col_) <= '9')
+      {
+        col_++;
+        
+        if(col_ >= lineBuffer_.length())
+          return getFloat(context);
+      }
+      
+      return getFloat(context);
+    }
+    
+    return getInteger(context);
+  }
+
+  JsonDomNode getFloat(IParserContext context) throws SyntaxErrorException
+  {
+    try
+    {
+      double doubleValue = Double.parseDouble(lineBuffer_.substring(context.getCol() - 1, col_));
+      float floatValue = Float.parseFloat(lineBuffer_.substring(context.getCol() - 1, col_));
+      
+      if(String.valueOf(doubleValue).equals(String.valueOf(floatValue)))
+      {
+        return new JsonFloat.Builder()
+            .withContext(context)
+            .withValue(floatValue)
+            .build();
+      }
+      else
+      {
+        return new JsonDouble.Builder()
+            .withContext(context)
+            .withValue(doubleValue)
+            .build();
+      }
+    }
+    catch(NumberFormatException e)
+    {
+      throw new SyntaxErrorException("Invalid integer value", context);
+    }
+  }
+
+  JsonDomNode getInteger(IParserContext context) throws SyntaxErrorException
+  {
+    try
+    {
+      Long longValue = Long.parseLong(lineBuffer_.substring(context.getCol() - 1, col_));
+      
+      if(longValue.intValue() == longValue)
+      {
+        return new JsonInteger.Builder()
+            .withContext(context)
+            .withValue(longValue.intValue())
+            .build();
+      }
+      else
+      {
+        return new JsonLong.Builder()
+            .withContext(context)
+            .withValue(longValue)
+            .build();
+      }
+    }
+    catch(NumberFormatException e)
+    {
+      throw new SyntaxErrorException("Invalid integer value", context);
     }
   }
 

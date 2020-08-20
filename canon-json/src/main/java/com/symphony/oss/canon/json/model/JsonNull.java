@@ -26,6 +26,8 @@ package com.symphony.oss.canon.json.model;
  */
 public class JsonNull extends JsonValue
 {
+  public static final JsonNull INSTANCE = new JsonNull(new Builder());
+  
   private JsonNull(AbstractBuilder<?,?> builder)
   {
     super(builder);
@@ -35,6 +37,18 @@ public class JsonNull extends JsonValue
   void toString(StringBuilder s, String indent)
   {
     s.append("null");
+  }
+
+  @Override
+  public int hashCode()
+  {
+    return 1;
+  }
+
+  @Override
+  public boolean equals(Object obj)
+  {
+    return obj instanceof JsonNull;
   }
   
   /**
@@ -56,7 +70,7 @@ public class JsonNull extends JsonValue
     @Override
     protected JsonNull construct()
     {
-      return new JsonNull(this);
+      return INSTANCE;
     }
   }
 }

@@ -18,6 +18,9 @@
 
 package com.symphony.oss.canon.json.model;
 
+import java.math.BigDecimal;
+import java.math.BigInteger;
+
 /**
  * A JSON value.
  * 
@@ -45,5 +48,98 @@ public abstract class JsonValue extends JsonDomNode
     {
       super(type);
     }
+  }
+  
+  public static JsonValue valueOf(String stringValue)
+  {
+
+    switch(stringValue.toLowerCase())
+    {
+      case "true":
+        return new JsonBoolean.Builder().withValue(true).build();
+        
+      case "false":
+        return new JsonBoolean.Builder().withValue(false).build();
+        
+      case "null":
+        return JsonNull.INSTANCE;
+    }
+    
+    try
+    {
+      return new JsonInteger.Builder().withValue(Integer.parseInt(stringValue)).build();
+    }
+    catch(NumberFormatException e)
+    {
+      // Not an integer
+    }
+    
+    try
+    {
+      return new JsonLong.Builder().withValue(Long.parseLong(stringValue)).build();
+    }
+    catch(NumberFormatException e)
+    {
+      // Not a Long
+    }
+
+    try
+    {
+      return new JsonBigInteger.Builder().withValue(new BigInteger(stringValue)).build();
+    }
+    catch(NumberFormatException e)
+    {
+      // Not a BigInteger
+    }
+
+    try
+    {
+      BigDecimal  bigDecimalValue   = new BigDecimal(stringValue);
+      String      bigDecimalString  = bigDecimalValue.toString();
+      Float       floatValue        = Float.parseFloat(stringValue);
+      String      floatString       = new BigDecimal(floatValue.toString()).toString();
+      
+      BigDecimal bd = new BigDecimal(floatValue.toString());
+      
+      if(floatString.equals(bigDecimalString))
+      {
+        return new JsonFloat.Builder()
+            //.withContext(context)
+            .withValue(floatValue)
+            .build();
+      }
+      
+      Double      doubleValue       = Double.parseDouble(stringValue);
+      String      doubleString      = new BigDecimal(doubleValue.toString()).toString();
+      
+      double debug = -765547723.033303;
+      BigDecimal dd = new BigDecimal(doubleValue);
+      double ddd = bigDecimalValue.doubleValue();
+      float fff = bigDecimalValue.floatValue();
+      
+      boolean dde = ddd == doubleValue;
+      boolean ffe = fff == floatValue;
+      
+      if(doubleString.equals(bigDecimalString))
+      {
+        return new JsonDouble.Builder()
+            //.withContext(context)
+            .withValue(doubleValue)
+            .build();
+      }
+      else
+      {
+        return new JsonBigDecimal.Builder()
+            //.withContext(context)
+            .withValue(bigDecimalValue)
+            .build();
+      }
+    }
+    catch(NumberFormatException e)
+    {
+      // Not a Double
+    }
+    
+    return new JsonString.Builder().withValue(stringValue).build();
   }
 }

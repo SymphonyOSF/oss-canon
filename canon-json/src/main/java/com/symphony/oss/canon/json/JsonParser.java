@@ -25,10 +25,6 @@ import com.symphony.oss.canon.json.model.JsonArray;
 import com.symphony.oss.canon.json.model.JsonBoolean;
 import com.symphony.oss.canon.json.model.JsonDom;
 import com.symphony.oss.canon.json.model.JsonDomNode;
-import com.symphony.oss.canon.json.model.JsonDouble;
-import com.symphony.oss.canon.json.model.JsonFloat;
-import com.symphony.oss.canon.json.model.JsonInteger;
-import com.symphony.oss.canon.json.model.JsonLong;
 import com.symphony.oss.canon.json.model.JsonNull;
 import com.symphony.oss.canon.json.model.JsonObject;
 import com.symphony.oss.canon.json.model.JsonString;
@@ -75,7 +71,7 @@ public class JsonParser extends Parser
   {
     try
     {
-      char c = expectToken(START_OBJECT, START_ARRAY);
+      char c = expectCharToken(START_OBJECT, START_ARRAY);
       
       switch(c)
       {
@@ -125,7 +121,7 @@ public class JsonParser extends Parser
   {
     
     
-    char token = getToken();
+    char token = getCharToken();
 
     if(token == END_ARRAY)
       return;
@@ -139,7 +135,7 @@ public class JsonParser extends Parser
       {
         builder.accept(getValue());
         
-        if(END_ARRAY == expectToken(VALUE_SEPARATOR, END_ARRAY))
+        if(END_ARRAY == expectCharToken(VALUE_SEPARATOR, END_ARRAY))
         {
           return;
         }
@@ -150,7 +146,7 @@ public class JsonParser extends Parser
         
         do
         {
-          token = getToken();
+          token = getCharToken();
         } while(token != VALUE_SEPARATOR && token != END_ARRAY);
         
         if(token == END_ARRAY)
@@ -162,7 +158,7 @@ public class JsonParser extends Parser
   private JsonObject getObject() throws IOException, ParserException
   {
     JsonObject.Builder  builder = new JsonObject.Builder().withCanonicalize(canonicalize_);
-    char                token   = expectToken(QUOTE, END_OBJECT);
+    char                token   = expectCharToken(QUOTE, END_OBJECT);
     
     if(token == QUOTE)
     {
@@ -182,7 +178,7 @@ public class JsonParser extends Parser
         
         String name = getQuotedString();
         
-        expectToken(NAME_SEPARATOR);
+        expectCharToken(NAME_SEPARATOR);
         
         JsonDomNode value = getValue();
         
@@ -193,18 +189,18 @@ public class JsonParser extends Parser
         domBuilder_.withError(e);
       }
       
-      if(END_OBJECT == expectToken(VALUE_SEPARATOR, END_OBJECT))
+      if(END_OBJECT == expectCharToken(VALUE_SEPARATOR, END_OBJECT))
       {
         return;
       }
       
-      expectToken(QUOTE);
+      expectCharToken(QUOTE);
     }
   }
 
   private JsonDomNode getValue() throws IOException, ParserException
   {
-    char token = getToken();
+    char token = getCharToken();
     IParserContext context = getContext();
     
     try
@@ -258,121 +254,7 @@ public class JsonParser extends Parser
     }
   }
 
-  private JsonDomNode getNumber(IParserContext context) throws SyntaxErrorException
-  {
-    while(lineBuffer_.charAt(col_) >='0' && lineBuffer_.charAt(col_) <= '9')
-    {
-      col_++;
-      
-      if(col_ >= lineBuffer_.length())
-        return getInteger(context);
-    }
-    
-    if(lineBuffer_.charAt(col_) == '.')
-    {
-      col_++;
-      
-      if(col_ >= lineBuffer_.length())
-      {
-        throw new SyntaxErrorException("Invalid number value (trailing decimal point)", context);
-      }
-      
-      while(lineBuffer_.charAt(col_) >='0' && lineBuffer_.charAt(col_) <= '9')
-      {
-        col_++;
-        
-        if(col_ >= lineBuffer_.length())
-          return getFloat(context);
-      }
-      
-      if(lineBuffer_.charAt(col_) == 'e' || lineBuffer_.charAt(col_) == 'E')
-      {
-        col_++;
-        
-        if(col_ >= lineBuffer_.length())
-        {
-          throw new SyntaxErrorException("Invalid number value (trailing exponential)", context);
-        }
-      }
-      
-      if(lineBuffer_.charAt(col_) == '+' || lineBuffer_.charAt(col_) == '-')
-      {
-        col_++;
-        
-        if(col_ >= lineBuffer_.length())
-        {
-          throw new SyntaxErrorException("Invalid number value (trailing + or -)", context);
-        }
-      }
-      
-      while(lineBuffer_.charAt(col_) >='0' && lineBuffer_.charAt(col_) <= '9')
-      {
-        col_++;
-        
-        if(col_ >= lineBuffer_.length())
-          return getFloat(context);
-      }
-      
-      return getFloat(context);
-    }
-    
-    return getInteger(context);
-  }
-
-  private JsonDomNode getFloat(IParserContext context) throws SyntaxErrorException
-  {
-    try
-    {
-      double doubleValue = Double.parseDouble(lineBuffer_.substring(context.getCol() - 1, col_));
-      float floatValue = Float.parseFloat(lineBuffer_.substring(context.getCol() - 1, col_));
-      
-      if(String.valueOf(doubleValue).equals(String.valueOf(floatValue)))
-      {
-        return new JsonFloat.Builder()
-            .withContext(context)
-            .withValue(floatValue)
-            .build();
-      }
-      else
-      {
-        return new JsonDouble.Builder()
-            .withContext(context)
-            .withValue(doubleValue)
-            .build();
-      }
-    }
-    catch(NumberFormatException e)
-    {
-      throw new SyntaxErrorException("Invalid integer value", context);
-    }
-  }
-
-  private JsonDomNode getInteger(IParserContext context) throws SyntaxErrorException
-  {
-    try
-    {
-      Long longValue = Long.parseLong(lineBuffer_.substring(context.getCol() - 1, col_));
-      
-      if(longValue.intValue() == longValue)
-      {
-        return new JsonInteger.Builder()
-            .withContext(context)
-            .withValue(longValue.intValue())
-            .build();
-      }
-      else
-      {
-        return new JsonLong.Builder()
-            .withContext(context)
-            .withValue(longValue)
-            .build();
-      }
-    }
-    catch(NumberFormatException e)
-    {
-      throw new SyntaxErrorException("Invalid integer value", context);
-    }
-  }
+  
 
   String getQuotedString() throws IOException, ParserException
   {
@@ -479,6 +361,13 @@ public class JsonParser extends Parser
       super(type);
     }
     
+    /**
+     * Expect an Array object and pass each element of the array to the given consumer.
+     * 
+     * @param consumer A consumer of JsonDomNode objects.
+     * 
+     * @return This (Fluent method).
+     */
     public T withArrayElementConsumer(Consumer<JsonDomNode> consumer)
     {
       arrayElementConsumer_ = consumer;

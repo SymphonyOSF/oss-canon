@@ -69,6 +69,18 @@ public class JsonString extends JsonValue implements IStringProvider
     return value_;
   }
 
+  @Override
+  public int hashCode()
+  {
+    return value_.hashCode();
+  }
+
+  @Override
+  public boolean equals(Object obj)
+  {
+    return obj instanceof JsonString && value_.equals(((JsonString)obj).value_);
+  }
+
   /**
    * Builder for this and sub-classes.
    * 

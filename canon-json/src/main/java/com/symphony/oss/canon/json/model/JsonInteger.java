@@ -18,18 +18,22 @@
 
 package com.symphony.oss.canon.json.model;
 
+import java.math.BigInteger;
+
+import com.symphony.oss.commons.type.provider.IBigIntegerProvider;
 import com.symphony.oss.commons.type.provider.IIntegerProvider;
 import com.symphony.oss.commons.type.provider.ILongProvider;
+import com.symphony.oss.commons.type.provider.INumberProvider;
 
 /**
- * A JSON String.
+ * A JSON 32 bit Integer value.
  * 
  * @author Bruce Skingle
  *
  */
-public class JsonInteger extends JsonValue implements ILongProvider, IIntegerProvider
+public class JsonInteger extends JsonValue implements INumberProvider, IBigIntegerProvider, ILongProvider, IIntegerProvider
 {
-  private final int value_;
+  private final Integer value_;
 
   private JsonInteger(AbstractBuilder<?,?> builder)
   {
@@ -45,6 +49,12 @@ public class JsonInteger extends JsonValue implements ILongProvider, IIntegerPro
   }
 
   @Override
+  public Number asNumber()
+  {
+    return value_;
+  }
+
+  @Override
   public Integer asInteger()
   {
     return value_;
@@ -54,6 +64,24 @@ public class JsonInteger extends JsonValue implements ILongProvider, IIntegerPro
   public Long asLong()
   {
     return (long)value_;
+  }
+
+  @Override
+  public BigInteger asBigInteger()
+  {
+    return BigInteger.valueOf(value_);
+  }
+
+  @Override
+  public int hashCode()
+  {
+    return value_.hashCode();
+  }
+
+  @Override
+  public boolean equals(Object obj)
+  {
+    return obj instanceof JsonInteger && value_.equals(((JsonInteger)obj).value_);
   }
 
   /**

@@ -21,20 +21,19 @@ package com.symphony.oss.canon.json.model;
 import java.math.BigInteger;
 
 import com.symphony.oss.commons.type.provider.IBigIntegerProvider;
-import com.symphony.oss.commons.type.provider.ILongProvider;
 import com.symphony.oss.commons.type.provider.INumberProvider;
 
 /**
- * A JSON Long value.
+ * A JSON BigInteger value.
  * 
  * @author Bruce Skingle
  *
  */
-public class JsonLong extends JsonValue implements INumberProvider, IBigIntegerProvider, ILongProvider
+public class JsonBigInteger extends JsonValue implements INumberProvider, IBigIntegerProvider
 {
-  private final Long value_;
+  private final BigInteger value_;
 
-  private JsonLong(AbstractBuilder<?,?> builder)
+  private JsonBigInteger(AbstractBuilder<?,?> builder)
   {
     super(builder);
     
@@ -54,15 +53,9 @@ public class JsonLong extends JsonValue implements INumberProvider, IBigIntegerP
   }
 
   @Override
-  public Long asLong()
-  {
-    return value_;
-  }
-
-  @Override
   public BigInteger asBigInteger()
   {
-    return BigInteger.valueOf(value_);
+    return value_;
   }
 
   @Override
@@ -74,7 +67,7 @@ public class JsonLong extends JsonValue implements INumberProvider, IBigIntegerP
   @Override
   public boolean equals(Object obj)
   {
-    return obj instanceof JsonLong && value_.equals(((JsonLong)obj).value_);
+    return obj instanceof JsonBigInteger && value_.equals(((JsonBigInteger)obj).value_);
   }
 
   /**
@@ -85,9 +78,9 @@ public class JsonLong extends JsonValue implements INumberProvider, IBigIntegerP
    * @param <T> The concrete type of the builder for fluent methods.
    * @param <B> The concrete type of the built object.
    */
-  public static abstract class AbstractBuilder<T extends AbstractBuilder<T,B>, B extends JsonLong> extends JsonValue.AbstractBuilder<T, B>
+  public static abstract class AbstractBuilder<T extends AbstractBuilder<T,B>, B extends JsonBigInteger> extends JsonValue.AbstractBuilder<T, B>
   {
-    private long value_;
+    private BigInteger value_;
 
     AbstractBuilder(Class<T> type)
     {
@@ -101,7 +94,7 @@ public class JsonLong extends JsonValue implements INumberProvider, IBigIntegerP
      * 
      * @return This (fluent method).
      */
-    public T withValue(long value)
+    public T withValue(BigInteger value)
     {
       value_ = value;
       
@@ -115,7 +108,7 @@ public class JsonLong extends JsonValue implements INumberProvider, IBigIntegerP
    * @author Bruce Skingle
    *
    */
-  public static class Builder extends AbstractBuilder<Builder, JsonLong>
+  public static class Builder extends AbstractBuilder<Builder, JsonBigInteger>
   {
     /**
      * Constructor.
@@ -126,9 +119,9 @@ public class JsonLong extends JsonValue implements INumberProvider, IBigIntegerP
     }
 
     @Override
-    protected JsonLong construct()
+    protected JsonBigInteger construct()
     {
-      return new JsonLong(this);
+      return new JsonBigInteger(this);
     }
   }
 }

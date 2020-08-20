@@ -18,17 +18,21 @@
 
 package com.symphony.oss.canon.json.model;
 
+import java.math.BigDecimal;
+
+import com.symphony.oss.commons.type.provider.IBigDecimalProvider;
 import com.symphony.oss.commons.type.provider.IDoubleProvider;
+import com.symphony.oss.commons.type.provider.INumberProvider;
 
 /**
- * A JSON String.
+ * A JSON Double value.
  * 
  * @author Bruce Skingle
  *
  */
-public class JsonDouble extends JsonValue implements IDoubleProvider
+public class JsonDouble extends JsonValue implements IBigDecimalProvider, INumberProvider, IDoubleProvider
 {
-  private final double value_;
+  private final Double value_;
 
   private JsonDouble(AbstractBuilder<?,?> builder)
   {
@@ -44,11 +48,34 @@ public class JsonDouble extends JsonValue implements IDoubleProvider
   }
 
   @Override
+  public Number asNumber()
+  {
+    return value_;
+  }
+
+  @Override
   public Double asDouble()
   {
     return value_;
   }
 
+  @Override
+  public BigDecimal asBigDecimal()
+  {
+    return BigDecimal.valueOf(value_);
+  }
+
+  @Override
+  public int hashCode()
+  {
+    return value_.hashCode();
+  }
+
+  @Override
+  public boolean equals(Object obj)
+  {
+    return obj instanceof JsonDouble && value_.equals(((JsonDouble)obj).value_);
+  }
   /**
    * Builder for this and sub-classes.
    * 

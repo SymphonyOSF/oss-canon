@@ -18,23 +18,22 @@
 
 package com.symphony.oss.canon.json.model;
 
-import java.math.BigInteger;
+import java.math.BigDecimal;
 
-import com.symphony.oss.commons.type.provider.IBigIntegerProvider;
-import com.symphony.oss.commons.type.provider.ILongProvider;
+import com.symphony.oss.commons.type.provider.IBigDecimalProvider;
 import com.symphony.oss.commons.type.provider.INumberProvider;
 
 /**
- * A JSON Long value.
+ * A JSON BigDecimal value.
  * 
  * @author Bruce Skingle
  *
  */
-public class JsonLong extends JsonValue implements INumberProvider, IBigIntegerProvider, ILongProvider
+public class JsonBigDecimal extends JsonValue implements INumberProvider, IBigDecimalProvider
 {
-  private final Long value_;
+  private final BigDecimal value_;
 
-  private JsonLong(AbstractBuilder<?,?> builder)
+  private JsonBigDecimal(AbstractBuilder<?,?> builder)
   {
     super(builder);
     
@@ -44,7 +43,7 @@ public class JsonLong extends JsonValue implements INumberProvider, IBigIntegerP
   @Override
   void toString(StringBuilder s, String indent)
   {
-    s.append(value_);
+    s.append(value_.toString().replace("E+", "E"));
   }
 
   @Override
@@ -54,15 +53,9 @@ public class JsonLong extends JsonValue implements INumberProvider, IBigIntegerP
   }
 
   @Override
-  public Long asLong()
+  public BigDecimal asBigDecimal()
   {
     return value_;
-  }
-
-  @Override
-  public BigInteger asBigInteger()
-  {
-    return BigInteger.valueOf(value_);
   }
 
   @Override
@@ -74,7 +67,7 @@ public class JsonLong extends JsonValue implements INumberProvider, IBigIntegerP
   @Override
   public boolean equals(Object obj)
   {
-    return obj instanceof JsonLong && value_.equals(((JsonLong)obj).value_);
+    return obj instanceof JsonBigDecimal && value_.equals(((JsonBigDecimal)obj).value_);
   }
 
   /**
@@ -85,9 +78,9 @@ public class JsonLong extends JsonValue implements INumberProvider, IBigIntegerP
    * @param <T> The concrete type of the builder for fluent methods.
    * @param <B> The concrete type of the built object.
    */
-  public static abstract class AbstractBuilder<T extends AbstractBuilder<T,B>, B extends JsonLong> extends JsonValue.AbstractBuilder<T, B>
+  public static abstract class AbstractBuilder<T extends AbstractBuilder<T,B>, B extends JsonBigDecimal> extends JsonValue.AbstractBuilder<T, B>
   {
-    private long value_;
+    private BigDecimal value_;
 
     AbstractBuilder(Class<T> type)
     {
@@ -101,7 +94,7 @@ public class JsonLong extends JsonValue implements INumberProvider, IBigIntegerP
      * 
      * @return This (fluent method).
      */
-    public T withValue(long value)
+    public T withValue(BigDecimal value)
     {
       value_ = value;
       
@@ -115,7 +108,7 @@ public class JsonLong extends JsonValue implements INumberProvider, IBigIntegerP
    * @author Bruce Skingle
    *
    */
-  public static class Builder extends AbstractBuilder<Builder, JsonLong>
+  public static class Builder extends AbstractBuilder<Builder, JsonBigDecimal>
   {
     /**
      * Constructor.
@@ -126,9 +119,9 @@ public class JsonLong extends JsonValue implements INumberProvider, IBigIntegerP
     }
 
     @Override
-    protected JsonLong construct()
+    protected JsonBigDecimal construct()
     {
-      return new JsonLong(this);
+      return new JsonBigDecimal(this);
     }
   }
 }

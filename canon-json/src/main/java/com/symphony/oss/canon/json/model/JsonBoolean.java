@@ -21,14 +21,14 @@ package com.symphony.oss.canon.json.model;
 import com.symphony.oss.commons.type.provider.IBooleanProvider;
 
 /**
- * A JSON String.
+ * A JSON boolean value.
  * 
  * @author Bruce Skingle
  *
  */
 public class JsonBoolean extends JsonValue implements IBooleanProvider
 {
-  private final boolean value_;
+  private final Boolean value_;
 
   private JsonBoolean(AbstractBuilder<?,?> builder)
   {
@@ -47,6 +47,18 @@ public class JsonBoolean extends JsonValue implements IBooleanProvider
   public Boolean asBoolean()
   {
     return value_;
+  }
+
+  @Override
+  public int hashCode()
+  {
+    return value_.hashCode();
+  }
+
+  @Override
+  public boolean equals(Object obj)
+  {
+    return obj instanceof JsonBoolean && value_.equals(((JsonBoolean)obj).value_);
   }
 
   /**
