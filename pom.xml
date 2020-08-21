@@ -110,6 +110,8 @@
 	<module>canon-template-ts</module>
 	<module>canon-runtime-ts</module>
 	<module>canon-json</module>
+	<module>canon2-parser</module>
+	<module>canon2-maven-plugin</module>
 	</modules>
 
 	<build>

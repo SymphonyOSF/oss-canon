@@ -69,7 +69,17 @@
           }
         }
       },
-      
+      "ObjectWithRefs": {
+        "type": "object",
+        "properties": {
+          "userId": {
+            "$ref": "https://models.oss.symphony.com/core.json#/components/schemas/PodAndUserId"
+          },
+          "createdDate": {
+            "$ref": "https://models.oss.symphony.com/core.json#/components/schemas/Instant"
+          }
+        }
+      },
       "ListOfInts": {
         "description": "A list of integers.",
         "type": "array",

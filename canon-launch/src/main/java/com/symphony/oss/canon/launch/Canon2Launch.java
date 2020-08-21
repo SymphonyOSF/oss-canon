@@ -23,21 +23,21 @@
 
 package com.symphony.oss.canon.launch;
 
-import com.symphony.oss.canon.Canon;
-import com.symphony.oss.canon.parser.CanonException;
+import com.symphony.oss.canon2.parser.Canon2;
+import com.symphony.oss.canon2.parser.GenerationException;
 
-public class CanonLaunch extends Canon
+public class Canon2Launch extends Canon2
 { 
   /**
    * Launcher.
    * 
    * @param argv
    *          command line arguments.
-   * @throws CanonException
+   * @throws GenerationException
    *           If anything goes wrong.
    */
-  public static void main(String[] argv) throws CanonException
+  public static void main(String[] argv) throws  GenerationException
   {
-    new CanonLaunch().run(argv);
+    new Canon2Launch().run(argv);
   }
 }

@@ -21,23 +21,24 @@
  * under the License.
  */
 
-package com.symphony.oss.canon.launch;
+package com.symphony.oss.canon2.maven.plugin;
 
-import com.symphony.oss.canon.Canon;
-import com.symphony.oss.canon.parser.CanonException;
+import org.apache.maven.plugin.logging.Log;
 
-public class CanonLaunch extends Canon
-{ 
-  /**
-   * Launcher.
-   * 
-   * @param argv
-   *          command line arguments.
-   * @throws CanonException
-   *           If anything goes wrong.
-   */
-  public static void main(String[] argv) throws CanonException
+import com.symphony.oss.canon.parser.log.Logger;
+import com.symphony.oss.canon.parser.log.LoggerFactory;
+
+public class MavenLogFactoryAdaptor implements LoggerFactory
+{
+  private MavenLoggerAdaptor logger_;
+  
+  public MavenLogFactoryAdaptor(Log mavenLogger)
   {
-    new CanonLaunch().run(argv);
+    logger_ = new MavenLoggerAdaptor(mavenLogger);
+  }
+  @Override
+  public Logger getLogger(Class<?> type)
+  {
+    return logger_;
   }
 }
