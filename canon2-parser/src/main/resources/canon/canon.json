@@ -1,0 +1,123 @@
+{
+  "canon": "0.0.1",
+  "info": {
+    "title": "Canon Specification",
+    "license": {
+      "name": "Apache2"
+    }
+  },
+  "id": "com.symphony.oss.canon2.model",
+  "version": "1.0",
+  "model": {
+    "javaGenPackage":  "com.symphony.oss.canon2.parser.model",
+    "javaFacadePackage":  "com.symphony.oss.canon2.parser",
+    "tsPackageName": "canon-model"
+  },
+  "components": {
+    "schemas": {
+      "SemanticVersion": {
+        "description": "A 3 part semantic version number.",
+        "type": "string"
+      },
+      "OpenApiObject": {
+        "type": "object",
+        "facade": true,
+        "required": [
+          "info"
+        ],
+        "properties": {
+          "openapi": {
+            "type": "string"
+          },
+          "canon": {
+            "type": "string"
+          },
+          "info": {
+            "$ref": "#/components/schemas/InfoObject"
+          },
+          "x-canon-id": {
+            "type": "string"
+          },
+          "x-canon-version": {
+            "$ref": "#/components/schemas/SemanticVersion"
+          },
+          "x-canon-generators": {
+            "$ref": "#/components/schemas/CanonGeneratorConfig"
+          },
+          "paths": {
+            "$ref": "#/components/schemas/PathsObject"
+          },
+          "components": {
+            "$ref": "#/components/schemas/ComponentsObject"
+          }
+        }
+      },
+      
+      "InfoObject": {
+        "description": "Metadata about the API.",
+        "type": "object",
+        "facade": true,
+        "properties": {
+        }
+      },
+      
+      "CanonGeneratorConfig": {
+        "description": "The available paths and operations for the API.",
+        "type": "object",
+        "facade": true,
+        "properties": {
+        }
+      },
+      
+      "PathsObject": {
+        "description": "The available paths and operations for the API.",
+        "type": "object",
+        "facade": true,
+        "properties": {
+        }
+      },
+      
+      "ComponentsObject": {
+        "description": "An element to hold various schemas for the specification.",
+        "type": "object",
+        "facade": true,
+        "properties": {
+          "schemas": {
+            "$ref": "#/components/schemas/SchemasObject"
+          }
+        }
+      },
+      
+      "SchemasObject": {
+        "description": "An element to hold various schemas for the specification.",
+        "type": "object",
+        "facade": true,
+        "properties": {
+        }
+      },
+      
+      "SchemaType": {
+        "description": "Values for the type attribute of a Schema.",
+        "type": "string",
+        "enum": [
+          "XXboolean",
+          "number",
+          "string",
+          "object",
+          "array"
+        ]
+      },
+      
+      "Schema": {
+        "description": "A data type definition.",
+        "type": "object",
+        "facade": true,
+        "properties": {
+          "type": {
+              "type": "string"
+            }
+        }
+      }
+    }
+  }
+}

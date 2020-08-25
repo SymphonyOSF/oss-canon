@@ -27,7 +27,7 @@
 
   <groupId>com.symphony.oss.canon</groupId>
 	<artifactId>oss-canon</artifactId>
-	<version>0.2.3-SNAPSHOT</version>
+	<version>0.3.0-SNAPSHOT</version>
 	<packaging>pom</packaging>
 
 	<url>https://github.com/SymphonyOSF/oss-canon</url>
@@ -94,7 +94,7 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<source.code.version>1.8</source.code.version>
 		<target.code.version>1.8</target.code.version>
-    <oss.commons.version>0.2.0</oss.commons.version>
+    <oss.commons.version>0.2.1-SNAPSHOT</oss.commons.version>
     <oss.fugue.version>0.2.2</oss.fugue.version>
 	</properties>
 
@@ -107,6 +107,11 @@
 	<module>canon-template-java</module>
 	<module>canon-test</module>
 	<module>canon-launch</module>
+	<module>canon2-json</module>
+	<module>canon2-parser</module>
+	<module>canon2-maven-plugin</module>
+	<module>canon2-test</module>
+	<module>canon2-generator-java</module>
 	</modules>
 
 	<build>
