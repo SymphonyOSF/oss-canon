@@ -28,9 +28,6 @@ import org.apache.http.client.methods.CloseableHttpResponse;
 /**
  * An Exception which may be thrown by Canon implementing methods to indicate
  * the client is making more requests than the quota established by the API server. 
- * This has the same effect as throwing any RuntimeException,
- * but is more elegant where the implementing code needs to wrap some other
- * checked exception.
  * 
  * @author Geremia Longobardo
  *
