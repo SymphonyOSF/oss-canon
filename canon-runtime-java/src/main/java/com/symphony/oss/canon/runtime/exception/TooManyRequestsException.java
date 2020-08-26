@@ -32,7 +32,7 @@ import org.apache.http.client.methods.CloseableHttpResponse;
  * but is more elegant where the implementing code needs to wrap some other
  * checked exception.
  * 
- * @author Bruce Skingle
+ * @author Geremia Longobardo
  *
  */
 public class TooManyRequestsException extends CanonException
