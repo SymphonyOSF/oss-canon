@@ -25,8 +25,6 @@
 
 package com.symphony.oss.canon2.parser;
 
-import java.util.function.Consumer;
-
 import javax.annotation.concurrent.Immutable;
 
 import com.symphony.oss.canon2.parser.model.IOpenApiObjectEntity;
@@ -39,12 +37,13 @@ import com.symphony.oss.canon2.parser.model.IOpenApiObjectEntity;
 public interface IOpenApiObject
   extends IOpenApiObjectEntity
 {
-  void resolve(GenerationContext generationContext);
+  IResolvedModel resolve(GenerationContext generationContext);
 
   void validate(GenerationContext generationContext);
 
-  void generate(IGeneratorModelContext modelContext, GenerationContext generationContext,
-      Consumer<ITemplateEntity> consumer);
+  void fetchReferences(GenerationContext generationContext) throws GenerationException;
+
+  <T extends ICanonModelEntity> T get(String fragment, Class<T> type);
 }
 /*----------------------------------------------------------------------------------------------------
  * End of template proforma/java/Object/I_.java.ftl

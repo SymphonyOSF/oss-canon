@@ -1,4 +1,5 @@
 <#include "/copyrightHeader.ftl">
+<#include "/macros.ftl">
 
 package ${genPackage};
 
@@ -93,12 +94,10 @@ public abstract class ${entity.camelCapitalizedName}Entity extends Entity
   @Deprecated
   public static final IBuilderFactory<I${entity.camelCapitalizedName}Entity, Builder> BUILDER = new BuilderFactory();
 
-<#include "/template/java/Object/ObjectHeader.ftl">
-
   private final ${"ImmutableSet<String>"?right_pad(25)}   unknownKeys_;
-<#list model.fields as field>
-  <@setJavaType field/>
-  private final ${fieldType?right_pad(25)}  _${field.camelName}_;
+<#list entity.fields as field>
+  // field ${field}
+  private final {fieldType?right_pad(25)}  _${field.camelName}_;
 </#list>
 
   /**
@@ -110,8 +109,7 @@ public abstract class ${entity.camelCapitalizedName}Entity extends Entity
   {
     super(builder);
     
-<#list model.fields as field>
-    <@setJavaType field/>
+<#list entity.fields as field>
     _${field.camelName}_ = ${javaTypeCopyPrefix}builder.get${field.camelCapitalizedName}()${javaTypeCopyPostfix};
 
 <#if requiresChecks>
@@ -156,6 +154,9 @@ public abstract class ${entity.camelCapitalizedName}Entity extends Entity
   {
     this(setType(mutableJsonObject), modelRegistry);
   }
+  
+
+
    
   /**
    * Constructor from serialised form.
@@ -172,7 +173,7 @@ public abstract class ${entity.camelCapitalizedName}Entity extends Entity
   
     Set<String> keySet = new HashSet<>(super.getCanonUnknownKeys());
     
-<#list model.fields as field>
+<#list entity.fields as field>
     if(keySet.remove("${field.name}"))
     {
       IJsonDomNode  node = jsonObject.get("${field.name}");
@@ -200,7 +201,7 @@ public abstract class ${entity.camelCapitalizedName}Entity extends Entity
   {
     super(other);
     
-<#list model.fields as field>
+<#list entity.fields as field>
     _${field.camelName}_ = other.get${field.camelCapitalizedName}();
 </#list>
 
@@ -212,7 +213,7 @@ public abstract class ${entity.camelCapitalizedName}Entity extends Entity
   {
     return unknownKeys_;
   }
-<#list model.fields as field>
+<#list entity.fields as field>
   <@setJavaType field/>
   
   @Override
@@ -528,13 +529,13 @@ public abstract class ${entity.camelCapitalizedName}Entity extends Entity
    * @param <T> The concrete type of the built object.
    */
    public static abstract class ${AbstractBuilder}<B extends ${entity.camelCapitalizedName}.Abstract${entity.camelCapitalizedName}Builder<B,T>, T extends I${entity.camelCapitalizedName}Entity>
-  <#if model.superSchema??>
+  <#if entity.superSchema??>
     extends ${model.superSchema.baseSchema.camelCapitalizedName}.Abstract${model.superSchema.baseSchema.camelCapitalizedName}Builder<B,T>
   <#else>
     extends EntityBuilder<B,T>
   </#if>
   {
-  <#list model.fields as field>
+  <#list entity.fields as field>
     <@setJavaType field/>
     protected ${fieldType?right_pad(25)}  _${field.camelName}_${javaBuilderTypeNew};
   </#list>
@@ -548,7 +549,7 @@ public abstract class ${entity.camelCapitalizedName}Entity extends Entity
     {
       super(type, initial);
       
-  <#list model.fields as field>
+  <#list entity.fields as field>
   <@setJavaType field/>
       _${field.camelName}_${javaBuilderTypeCopyPrefix}initial.get${field.camelCapitalizedName}()${javaBuilderTypeCopyPostfix};
   </#list>
@@ -574,11 +575,11 @@ public abstract class ${entity.camelCapitalizedName}Entity extends Entity
 <#if model.superSchema??>
       super.populateAllFields(result);
 </#if>    
-<#list model.fields as field>
+<#list entity.fields as field>
       result.add(_${field.camelName}_);
 </#list>
     }
-  <#list model.fields as field>
+  <#list entity.fields as field>
     <@setJavaType field/>
     
     public ${fieldType} get${field.camelCapitalizedName}()

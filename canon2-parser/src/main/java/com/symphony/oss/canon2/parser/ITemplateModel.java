@@ -18,8 +18,14 @@
 
 package com.symphony.oss.canon2.parser;
 
-public interface ITemplateEntity
+import java.util.Collection;
+
+import com.google.common.collect.ImmutableList;
+
+public interface ITemplateModel
 {
+  final Collection<? extends ITemplateModel> EMPTY_CHILDREN = ImmutableList.of();
+  
   /**
    * Return the name of this model entity as written in the input spec.
    * 
@@ -67,7 +73,9 @@ public interface ITemplateEntity
    * 
    * @return The OpenApiObject template model.
    */
-  ITemplateEntity getModel();
+  ITemplateModel getModel();
 
   IGeneratorModelContext getGeneratorModelContext();
+  
+  Collection<? extends ITemplateModel> getChildren();
 }

@@ -20,13 +20,16 @@ package com.symphony.oss.canon2.parser;
 
 import java.util.Map;
 
-public interface IGeneratorModelContext
+import com.symphony.oss.canon2.parser.model.CanonCardinality;
+
+public interface IGeneratorModelContext<S extends ISchemaTemplateModel<S>>
 {
   IModelContext getSourceContext();
 
-  IModelEntity generate(IOpenApiObject entity, GenerationContext generationContext);
+  IOpenApiTemplateModel<S> generateOpenApiObject(IResolvedModel entity);
 
-  ITemplateEntity generate(IModelEntity model, ISchema entity, String name, GenerationContext generationContext);
+  IObjectSchemaTemplateModel<S> generateObjectSchema(IOpenApiTemplateModel<S> model, IResolvedSchema entity, String name);
+  IArraySchemaTemplateModel<S> generateArraySchema(IOpenApiTemplateModel<S> model, IResolvedSchema entity, String name, CanonCardinality cardinality);
 
   ICanonGenerator getGenerator();
 
@@ -34,4 +37,5 @@ public interface IGeneratorModelContext
 
   void populateTemplateModel(Map<String, Object> map);
 
+  ISchemaTemplateModel<S> generatePrimativeSchema(IOpenApiTemplateModel<S> model, ISchema entity, String name);
 }

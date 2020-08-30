@@ -25,22 +25,15 @@
 
 package com.symphony.oss.canon2.parser;
 
-import java.util.function.Consumer;
+import java.util.Map.Entry;
 
 import javax.annotation.concurrent.Immutable;
 
-import com.symphony.oss.commons.immutable.ImmutableByteArray;
-
+import com.symphony.oss.canon.runtime.IModelRegistry;
+import com.symphony.oss.canon2.parser.model.SchemaEntity;
+import com.symphony.oss.commons.dom.json.IImmutableJsonDomNode;
 import com.symphony.oss.commons.dom.json.ImmutableJsonObject;
 import com.symphony.oss.commons.dom.json.MutableJsonObject;
-
-import com.symphony.oss.canon.runtime.IEntity;
-import com.symphony.oss.canon.runtime.IModelRegistry;
-
-
-import com.symphony.oss.canon2.parser.model.SchemaEntity;
-import com.symphony.oss.canon2.parser.model.ISchemaEntity;
-import com.symphony.oss.canon2.parser.model.CanonModel;
 
 /**
  * Facade for Object ObjectSchema(Schema)
@@ -51,6 +44,10 @@ import com.symphony.oss.canon2.parser.model.CanonModel;
 @Immutable
 public class Schema extends SchemaEntity implements ISchema
 {
+//  private final ImmutableMap<String, ISchema> fields_;
+private final ISchema          itemsSchema_;
+private final IReferenceObject itemsReference_;
+  
   /**
    * Constructor from builder.
    * 
@@ -59,6 +56,32 @@ public class Schema extends SchemaEntity implements ISchema
   public Schema(AbstractSchemaBuilder<?,?> builder)
   {
     super(builder);
+    
+    ICanonModelEntity items = initItems(null);
+
+    itemsSchema_    = items instanceof ISchema ? (ISchema)items : null;
+    itemsReference_ = items instanceof IReferenceObject ? (IReferenceObject)items : null;
+  }
+  
+  private ICanonModelEntity initItems(IModelRegistry modelRegistry)
+  {
+    IImmutableJsonDomNode itemsNode = getJsonObject().get("items");
+    
+    if(itemsNode instanceof ImmutableJsonObject)
+    {
+      ImmutableJsonObject items = (ImmutableJsonObject)itemsNode;
+      
+      if(items.get("$ref") == null)
+        return new Schema(items, modelRegistry);
+      else
+        return new ReferenceObject(items, modelRegistry);
+      
+      
+    }
+    else
+    {
+      return null;
+    }
   }
   
   /**
@@ -70,6 +93,11 @@ public class Schema extends SchemaEntity implements ISchema
   public Schema(ImmutableJsonObject jsonObject, IModelRegistry modelRegistry)
   {
     super(jsonObject, modelRegistry);
+    
+    ICanonModelEntity items = initItems(modelRegistry);
+
+    itemsSchema_    = items instanceof ISchema ? (ISchema)items : null;
+    itemsReference_ = items instanceof IReferenceObject ? (IReferenceObject)items : null;
   }
   
   /**
@@ -81,6 +109,11 @@ public class Schema extends SchemaEntity implements ISchema
   public Schema(MutableJsonObject mutableJsonObject, IModelRegistry modelRegistry)
   {
     super(mutableJsonObject, modelRegistry);
+    
+    ICanonModelEntity items = initItems(modelRegistry);
+
+    itemsSchema_    = items instanceof ISchema ? (ISchema)items : null;
+    itemsReference_ = items instanceof IReferenceObject ? (IReferenceObject)items : null;
   }
    
   /**
@@ -91,13 +124,81 @@ public class Schema extends SchemaEntity implements ISchema
   public Schema(ISchema other)
   {
     super(other);
+    
+    itemsSchema_ = other.getItemsSchema();
+    itemsReference_ = other.getItemsReference();
   }
 
   @Override
-  public void resolve(GenerationContext generationContext)
+  public IResolvedSchema resolve(IOpenApiObject openApiObject, GenerationContext generationContext)
   {
-    // TODO Auto-generated method stub
+    ResolvedSchema.Builder builder = new ResolvedSchema.Builder()
+        .withValues(getJsonObject(), false, generationContext.getModelRegistry())
+        ;
     
+    IPropertiesObject                 propertiesObject  = getProperties();
+    
+    if(propertiesObject != null)
+    {
+      ResolvedPropertiesObject.Builder  propertiesBuilder = new ResolvedPropertiesObject.Builder();
+      
+      for(Entry<String, Object> entry : propertiesObject.getProperties().entrySet())
+      {
+        ISchema schema = null;
+        
+        if(entry.getValue() instanceof ISchema)
+        {
+          schema = (ISchema)entry.getValue();
+        }
+        else
+        {
+          schema = fetchSchema(openApiObject, generationContext, ((IReferenceObject)entry.getValue()));
+        }
+        
+        propertiesBuilder.withProperty(entry.getKey(), generationContext.resolve(openApiObject, schema));
+      }
+      
+      builder.withResolvedProperties(propertiesBuilder.build());
+    }
+
+    
+    ISchema schema = itemsSchema_;
+    
+    if(schema == null && itemsReference_ != null)
+    {
+      schema = fetchSchema(openApiObject, generationContext, itemsReference_);
+    }
+    
+    if(schema != null)
+    {
+      builder.withResolvedItems(generationContext.resolve(openApiObject, schema));
+    }
+    
+    return builder.build();
+  }
+  
+  private ISchema fetchSchema(IOpenApiObject openApiObject, GenerationContext generationContext, IReferenceObject ref)
+  {
+    if(ref.getBaseUrl() == null)
+    {
+      return openApiObject.get(ref.getFragment(), ISchema.class);
+    }
+    else
+    {
+      ModelContext refGenContext = generationContext.getReferencedModel(ref.getBaseUrl());
+      return refGenContext.getModel().get(ref.getFragment(), ISchema.class);
+    }
+  }
+
+  @Override
+  public ISchema getItemsSchema()
+  {
+    return itemsSchema_;
+  }
+  @Override
+  public IReferenceObject getItemsReference()
+  {
+    return itemsReference_;
   }
 
   @Override
@@ -108,11 +209,26 @@ public class Schema extends SchemaEntity implements ISchema
   }
 
   @Override
-  public ITemplateEntity generate(IModelEntity parentModel, String name, IGeneratorModelContext modelContext, GenerationContext generationContext)
+  public void fetchReferences(GenerationContext generationContext) throws GenerationException
   {
-    return modelContext.generate(parentModel, this, name, generationContext);
+    IPropertiesObject propertiesObject = getProperties();
+    
+    if(propertiesObject != null)
+    {
+      for(Entry<String, Object> entry : propertiesObject.getProperties().entrySet())
+      {
+        if(entry.getValue() instanceof IReferenceObject)
+        {
+          generationContext.addReferencedModel(((IReferenceObject)entry.getValue()).getBaseUrl());
+        }
+      }
+    }
+    
+    if(itemsReference_ != null)
+    {
+      generationContext.addReferencedModel(itemsReference_.getBaseUrl());
+    }
   }
-  
 }
 /*----------------------------------------------------------------------------------------------------
  * End of template proforma/java/Object/_.java.ftl

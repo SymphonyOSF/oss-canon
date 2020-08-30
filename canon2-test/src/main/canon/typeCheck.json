@@ -79,6 +79,17 @@
           }
         }
       },
+      "ExternalObject": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "userId": {
+            "$ref": "https://models.oss.symphony.com/core.json#/components/schemas/PodAndUserId"
+          }
+        }
+      },
       
       "ListOfInts": {
         "description": "A list of integers.",

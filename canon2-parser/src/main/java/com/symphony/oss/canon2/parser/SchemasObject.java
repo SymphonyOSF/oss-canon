@@ -47,6 +47,7 @@ import com.symphony.oss.commons.dom.json.MutableJsonObject;
 public class SchemasObject extends SchemasObjectEntity implements ISchemasObject
 {
   private final ImmutableMap<String, ISchema> schemas_;
+  
   /**
    * Constructor from builder.
    * 
@@ -112,6 +113,16 @@ public class SchemasObject extends SchemasObjectEntity implements ISchemasObject
     return schemas_;
   }
   
+  @Override
+  public ICanonModelEntity get(String[] parts, int index)
+  {
+    ISchema schema = schemas_.get(parts[index]);
+    
+    if(schema == null)
+      return super.get(parts, index);
+    else
+      return schema;
+  }
 }
 /*----------------------------------------------------------------------------------------------------
  * End of template proforma/java/Object/_.java.ftl

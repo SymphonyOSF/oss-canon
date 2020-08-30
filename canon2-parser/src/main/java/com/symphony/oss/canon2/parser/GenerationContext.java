@@ -79,6 +79,7 @@ public class GenerationContext
   private Deque<ModelContext>                  validateQueue_      = new LinkedList<>();
   private Deque<ModelContext>                  generateQueue_      = new LinkedList<>();
   private Map<URL, IOpenApiObject>             modelMap_           = new HashMap<>();
+  private Map<ISchema, IResolvedSchema>        schemaResolution_   = new HashMap<>();
 
   private GenerationContext(AbstractBuilder<?,?> builder)
   {
@@ -235,6 +236,11 @@ public class GenerationContext
     return targetDir;
   }
 
+  ModelRegistry getModelRegistry()
+  {
+    return modelRegistry_;
+  }
+
   public List<ICanonGenerator> getGenerators()
   {
     return generators_;
@@ -292,7 +298,7 @@ public class GenerationContext
 //    return model;
 //  }
   
-  public void process()
+  public void process() throws GenerationException
   {
     ModelContext context;
     IOpenApiObject model;
@@ -302,6 +308,8 @@ public class GenerationContext
       model = context.parse(modelRegistry_);
       validateQueue_.add(context);
       modelMap_.put(context.getUrl(), model);
+      
+      model.fetchReferences(this);
     }
     
     while((context = validateQueue_.pollFirst()) != null)
@@ -316,7 +324,10 @@ public class GenerationContext
   void validate(ModelContext context)
   {
     IOpenApiObject model = context.getModel();
-    model.resolve(this);
+    IResolvedModel resolvedModel = model.resolve(this);
+    
+    context.setResolvedModel(resolvedModel);
+    
     model.validate(this);
     
     if(!context.isReferencedModel())
@@ -325,18 +336,24 @@ public class GenerationContext
     }
   }
 
-  ModelContext addReferencedModel(URL url) throws GenerationException
+  void addReferencedModel(URL url) throws GenerationException
   {
-    ModelContext context = referencedContexts_.get(url);
-    
-    if(context == null)
+    if(url != null)
     {
-      context = new ModelContext(this, url, true, uriMap_);
-      referencedContexts_.put(url, context);
-      parseQueue_.add(context);
+      ModelContext context = referencedContexts_.get(url);
+      
+      if(context == null)
+      {
+        context = new ModelContext(this, url, true, uriMap_);
+        referencedContexts_.put(url, context);
+        parseQueue_.add(context);
+      }
     }
-    
-    return context;
+  }
+  
+  ModelContext getReferencedModel(URL url)
+  {
+    return referencedContexts_.get(url);
   }
   
   public IOpenApiObject getModel(URL url)
@@ -344,24 +361,27 @@ public class GenerationContext
     return modelMap_.get(url);
   }
   
-  private class TemplateModelConsumer implements Consumer<ITemplateEntity>
+  private class TemplateModelConsumer implements Consumer<ITemplateModel>
   {
-    private Map<String, List<ITemplateEntity>> map_ = new HashMap<>();
+    private Map<String, List<ITemplateModel>> map_ = new HashMap<>();
     
     @Override
-    public synchronized void accept(ITemplateEntity model)
+    public synchronized void accept(ITemplateModel model)
     {
-      for(String template : model.getTemaplates())
+      if(model.getTemaplates() != null)
       {
-        List<ITemplateEntity> list = map_.get(template);
-        
-        if(list == null)
+        for(String template : model.getTemaplates())
         {
-          list = new LinkedList<>();
-          map_.put(template, list);
+          List<ITemplateModel> list = map_.get(template);
+          
+          if(list == null)
+          {
+            list = new LinkedList<>();
+            map_.put(template, list);
+          }
+          
+          list.add(model);
         }
-        
-        list.add(model);
       }
     }
 
@@ -371,11 +391,11 @@ public class GenerationContext
       {
         log_.info("Process template " + templateGroup + "...");
         
-        for(ITemplateEntity model : map_.get(templateGroup))
+        for(ITemplateModel model : map_.get(templateGroup))
         {
           log_.info("Process template " + templateGroup + ", model " + model.getName() + "...");
           
-          IGeneratorModelContext modelContext = model.getGeneratorModelContext();
+          IGeneratorModelContext<?> modelContext = model.getGeneratorModelContext();
           ICanonGenerator generator = modelContext.getGenerator();
           
           for(TemplateType templateType : TemplateType.values())
@@ -392,7 +412,7 @@ public class GenerationContext
       }
     }
 
-    private void generate(ICanonGenerator generator, IGeneratorModelContext modelContext, ITemplateEntity entity,
+    private void generate(ICanonGenerator generator, IGeneratorModelContext<?> modelContext, ITemplateModel entity,
         TemplateType templateType, String templateName) throws GenerationException
     {
       IPathNameConstructor pathBuilder = modelContext.getPathBuilder(templateType);
@@ -418,7 +438,7 @@ public class GenerationContext
 //          TemplateModel model = new TemplateModel(modelContext, templateName,
 //              entity);
           
-          generate(TemplateModel.newTemplateModel(modelContext, templateName, entity), template, targetFileName);
+          generate(FreemarkerModel.newTemplateModel(modelContext, templateName, entity), template, targetFileName);
 
         } catch (IOException e)
         {
@@ -484,9 +504,11 @@ public class GenerationContext
       {
         IJsonObject<?> generatorConfig = context.getModel().getXCanonGenerators().getJsonObject().getRequiredObject(generator.getLanguage());
         
-        IGeneratorModelContext generatorModelContext = generator.createModelContext(context, generatorConfig);
+        IGeneratorModelContext<?> generatorModelContext = generator.createModelContext(context, generatorConfig);
         
-        context.getModel().generate(generatorModelContext, this, consumer);
+        IOpenApiTemplateModel<?> templateModel = context.getResolvedModel().generate(generatorModelContext);
+        
+        gather(templateModel, consumer);
         //generator.generate(context.getModel(), context, this, consumer);
       }
     }
@@ -497,9 +519,31 @@ public class GenerationContext
     consumer.generate();
   }
 
+  private void gather(ITemplateModel model, TemplateModelConsumer consumer)
+  {
+    consumer.accept(model);
+    
+    for(ITemplateModel child : model.getChildren())
+      gather(child, consumer);
+  }
+
   public boolean getTemplateDebug()
   {
     return templateDebug_;
+  }
+  
+  synchronized IResolvedSchema resolve(IOpenApiObject openApiObject, ISchema schema)
+  {
+    
+    IResolvedSchema resolvedSchema = schemaResolution_.get(schema);
+    
+    if(resolvedSchema == null)
+    {
+      resolvedSchema = schema.resolve(openApiObject, this);
+      schemaResolution_.put(schema, resolvedSchema);
+    }
+    
+    return resolvedSchema;
   }
   
 //  public void visitAllModels(IModelVisitor visitor)

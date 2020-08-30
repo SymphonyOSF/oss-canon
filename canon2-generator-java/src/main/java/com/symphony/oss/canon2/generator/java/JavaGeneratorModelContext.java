@@ -1,24 +1,36 @@
 /*
+ *
+ *
  * Copyright 2020 Symphony Communication Services, LLC.
  *
- * All Rights Reserved
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 
 package com.symphony.oss.canon2.generator.java;
 
 import java.util.Map;
 
-import com.symphony.oss.canon2.parser.GenerationContext;
 import com.symphony.oss.canon2.parser.GeneratorModelContext;
 import com.symphony.oss.canon2.parser.IModelContext;
-import com.symphony.oss.canon2.parser.IModelEntity;
-import com.symphony.oss.canon2.parser.IOpenApiObject;
+import com.symphony.oss.canon2.parser.IOpenApiTemplateModel;
+import com.symphony.oss.canon2.parser.IResolvedModel;
+import com.symphony.oss.canon2.parser.IResolvedSchema;
 import com.symphony.oss.canon2.parser.ISchema;
-import com.symphony.oss.canon2.parser.ITemplateEntity;
-import com.symphony.oss.canon2.parser.TemplateEntity;
+import com.symphony.oss.canon2.parser.ISchemaTemplateModel;
+import com.symphony.oss.canon2.parser.model.CanonCardinality;
 import com.symphony.oss.commons.dom.json.IJsonObject;
 
-class JavaGeneratorModelContext extends GeneratorModelContext
+class JavaGeneratorModelContext extends GeneratorModelContext<JavaSchemaTemplateModel>
 {
   private IJsonObject<?> generatorConfig_;
 
@@ -39,21 +51,30 @@ class JavaGeneratorModelContext extends GeneratorModelContext
   }
 
   @Override
-  public IModelEntity generate(IOpenApiObject entity, GenerationContext generationContext)
+  public JavaOpenApiTemplateModel generateOpenApiObject(IResolvedModel entity)
   {
-    return new JavaModelEntity(entity, getSourceContext().getInputSourceName(), this, "Model");
+    return new JavaOpenApiTemplateModel(entity, getSourceContext().getInputSourceName(), this, "Model");
+  }
+
+  
+  @Override
+  public JavaObjectSchemaTemplateModel generateObjectSchema(IOpenApiTemplateModel<JavaSchemaTemplateModel> model, IResolvedSchema entity, String name)
+  {
+    return new JavaObjectSchemaTemplateModel(entity,  name, model, this, "Object");
   }
 
   @Override
-  public ITemplateEntity generate(IModelEntity model, ISchema schema, String name, GenerationContext generationContext)
+  public JavaArraySchemaTemplateModel generateArraySchema(IOpenApiTemplateModel<JavaSchemaTemplateModel> model, IResolvedSchema entity,
+      String name, CanonCardinality cardinality)
   {
-    switch(schema.getType())
-    {
-      case "object":
-        return new JavaObjectEntity(schema,  name, model, this, "Object");
-    }
-    
-    return new TemplateEntity<ISchema>(schema,  name, model, this, "UNKNOWN");
+    return new JavaArraySchemaTemplateModel(entity,  name, cardinality, model, this);
+  }
+
+  @Override
+  public ISchemaTemplateModel<JavaSchemaTemplateModel> generatePrimativeSchema(
+      IOpenApiTemplateModel<JavaSchemaTemplateModel> model, ISchema entity, String name)
+  {
+    return new JavaPrimitiveSchemaTemplateModel(entity,  name, model, this);
   }
 
 //  private String getJavaCardinality(String cardinality)

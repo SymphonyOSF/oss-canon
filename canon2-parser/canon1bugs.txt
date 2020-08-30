@@ -1,0 +1,6 @@
+The getJsonObject method of builders sets the attribute using getCamelName() which means if the model defines name which don't follow that
+patterm the generated JSON is wrong.
+
+Canon2 needs to throw an error for attributes which are defined with non camel case names when converting from canon1 syntax
+so that existing schemas can be rewritten so
+that they match existing serialized objects.

@@ -26,6 +26,8 @@
 package com.symphony.oss.canon2.parser;
 
 
+import javax.annotation.Nullable;
+
 import com.symphony.oss.canon.runtime.IEntity;
 
 /**
@@ -33,6 +35,30 @@ import com.symphony.oss.canon.runtime.IEntity;
  */
 public interface ICanonModelEntity extends IEntity
 {
+  /**
+   * Get the model entity at the given path.
+   * 
+   * @param parts The path as an array of element names.
+   * @param index The index into the array of the current level of the overall path.
+   * 
+   * @return The model element at the given path.
+   * 
+   * @throws IllegalArgumentException if the given path is invalid.
+   */
+  default ICanonModelEntity get(String[] parts, int index)
+  {
+    throw new IllegalArgumentException("No path element " + parts[index]);
+  }
+  
+  /**
+   * Get the line and column in the source document of this element's declaration.
+   * 
+   * @return The line and column in the source document of this element's declaration.
+   */
+  default String getSourceLocation()
+  {
+    return "unknown source location";
+  }
 }
 /*----------------------------------------------------------------------------------------------------
  * End of template proforma/java/Model/I_ModelEntity.java.ftl

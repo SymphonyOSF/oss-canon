@@ -96,18 +96,66 @@ public class OpenApiObject extends OpenApiObjectEntity implements IOpenApiObject
   {
     super(other);
   }
+  
+  @Override
+  public <T extends ICanonModelEntity> T get(String fragment, Class<T> type)
+  {
+    ICanonModelEntity entity = get(fragment.split("/"), 1);
+    
+    if(type.isInstance(entity))
+      return type.cast(entity);
+    
+    throw new IllegalArgumentException("Expected " + type + " but found " + entity.getClass());
+  }
+  
+  @Override
+  public ICanonModelEntity get(String[] parts, int index)
+  {
+    switch(parts[index])
+    {
+      case "components":
+        return getComponents().get(parts, index + 1);
+    }
+    
+    return super.get(parts, index);
+  }
 
   @Override
-  public void resolve(GenerationContext generationContext)
+  public void fetchReferences(GenerationContext generationContext) throws GenerationException
   {
-    log_.info("resolve model");
+    log_.info("fetchReferences");
     
     ISchemasObject schemas = getComponents().getSchemas();
     
     for(ISchema schema : schemas.getSchemas().values())
     {
-      schema.resolve(generationContext);
+      schema.fetchReferences(generationContext);
     }
+  }
+
+  @Override
+  public IResolvedModel resolve(GenerationContext generationContext)
+  {
+    log_.info("resolve model");
+    
+    ResolvedModel.Builder builder = new ResolvedModel.Builder()
+        .withValues(getJsonObject(), false, generationContext.getModelRegistry());
+    
+    // dodge canon1 bugs
+
+    builder.withXCanonId(getXCanonId());
+    builder.withXCanonVersion(getXCanonVersion());
+    builder.withXCanonGenerators(getXCanonGenerators());
+    
+    
+    ISchemasObject schemas = getComponents().getSchemas();
+    
+    for(Entry<String, ISchema> entry : schemas.getSchemas().entrySet())
+    {
+      builder.withResolvedSchema(entry.getKey(), generationContext.resolve(this, entry.getValue()));
+    }
+    
+    return builder.build();
   }
 
   @Override
@@ -122,29 +170,6 @@ public class OpenApiObject extends OpenApiObjectEntity implements IOpenApiObject
       schema.validate(generationContext);
     }
   }
-
-  @Override
-  public void generate(IGeneratorModelContext modelContext, GenerationContext generationContext,
-      Consumer<ITemplateEntity> consumer)
-  {
-    log_.info("generate model");
-    
-    IModelEntity parentModel = modelContext.generate(this, generationContext);
-    
-    consumer.accept(parentModel);
-    
-    ISchemasObject schemas = getComponents().getSchemas();
-    
-    for(Entry<String, ISchema> entry : schemas.getSchemas().entrySet())
-    {
-      ITemplateEntity model = entry.getValue().generate(parentModel, entry.getKey(), modelContext, generationContext);
-      
-      parentModel.addSchema(model);
-      
-      consumer.accept(model);
-    }
-  }
-  
 }
 /*----------------------------------------------------------------------------------------------------
  * End of template proforma/java/Object/_.java.ftl

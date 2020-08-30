@@ -33,8 +33,6 @@ import java.net.URL;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import javax.annotation.Nullable;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -48,6 +46,7 @@ class ModelContext implements IModelContext
   private final URL                   url_;
   private final GenerationContext     generationContext_;
   private IOpenApiObject        model_;
+  private IResolvedModel        resolvedModel_;
   private final Map<String, String>   uriMap_;
   
   private final String          inputSource_;
@@ -163,6 +162,16 @@ class ModelContext implements IModelContext
     return model_;
   }
 
+  IResolvedModel getResolvedModel()
+  {
+    return resolvedModel_;
+  }
+
+  void setResolvedModel(IResolvedModel resolvedModel)
+  {
+    resolvedModel_ = resolvedModel;
+  }
+
   /**
    * @return True iff this is a referenced model, and generation should not be performed.
    */
@@ -194,13 +203,13 @@ class ModelContext implements IModelContext
     return inputSourceName_;
   }
   
-  public @Nullable ModelContext addReferencedModel(URI uri) throws GenerationException
+  public void addReferencedModel(URI uri) throws GenerationException
   {
     try
     {
       URL url = getReferencedUrl(uri);
         
-      return generationContext_.addReferencedModel(url);
+      generationContext_.addReferencedModel(url);
     }
     catch (IOException | URISyntaxException e)
     {

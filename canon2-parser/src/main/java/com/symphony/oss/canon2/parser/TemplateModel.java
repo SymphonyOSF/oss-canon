@@ -18,74 +18,151 @@
 
 package com.symphony.oss.canon2.parser;
 
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.Collection;
+
+import com.google.common.collect.ImmutableList;
 
 /**
- * The model object which is passed to a Freemarker template.
+ * A model for generation of one or more Freemarker templates.
  * 
  * @author Bruce Skingle
  *
  */
-class TemplateModel
+public abstract class TemplateModel<S extends ISchemaTemplateModel<S>, T extends ICanonModelEntity> implements ITemplateModel
 {
-//  private final String templateName_;
-//  private final ITemplateEntity entity_;
-//  private final String year_;
-//  private final String yearMonth_;
-//  private final String date_;
-//  private final Object inputSource_;
+  
+  
+  protected T entity_;
+  
+  private final IGeneratorModelContext<S> generatorModelContext_;
+  private final String[]               templates_;
+  private final String                 name_;
+  private final String                 camelName_;
+  private final String                 camelCapitalizedName_;
+  private final String                 snakeName_;
+  private final String                 snakeCapitalizedName_;
+  private final ITemplateModel         model_;
 
-  public static Map<String, Object> newTemplateModel(IGeneratorModelContext modelContext, String templateName, ITemplateEntity entity)
+  public TemplateModel(T entity, String name, ITemplateModel model, IGeneratorModelContext<S> generatorModelContext, String ...templates)
   {
-    Map<String, Object> map = new HashMap<>();
+    entity_ = entity;
+    generatorModelContext_ = generatorModelContext;
+    model_ = model ;
+    name_ = name;
+    templates_ = templates;
+
     
-    modelContext.populateTemplateModel(map);
-    
-    map.put("templateName",  templateName);
-    map.put("model",  entity.getModel());
-    map.put("entity",  entity);
-    
-    Date now = new Date();
-    
-    map.put("year",  new SimpleDateFormat("yyyy").format(now));
-    map.put("yearMonth",  new SimpleDateFormat("yyyy-MM").format(now));
-    map.put("date",  new SimpleDateFormat("yyyy-MM-dd HH:mm:ss z").format(now));
-    map.put("inputSource",  modelContext.getSourceContext().getInputSource());
-    
-    return map;
+    camelName_ = toCamelCase(name_);
+    camelCapitalizedName_ = capitalize(camelName_);
+    snakeName_ = toSnakeCase(name_);
+    snakeCapitalizedName_ = capitalize(snakeName_);
+  }
+  
+  @Override
+  public IGeneratorModelContext getGeneratorModelContext()
+  {
+    return generatorModelContext_;
   }
 
-//  public String getTemplateName()
-//  {
-//    return templateName_;
-//  }
-//
-//  public ITemplateEntity getEntity()
-//  {
-//    return entity_;
-//  }
-//
-//  public String getYear()
-//  {
-//    return year_;
-//  }
-//
-//  public String getYearMonth()
-//  {
-//    return yearMonth_;
-//  }
-//
-//  public String getDate()
-//  {
-//    return date_;
-//  }
-//
-//  public Object getInputSource()
-//  {
-//    return inputSource_;
-//  }
+  @Override
+  public String[] getTemaplates()
+  {
+    return templates_;
+  }
 
+  private String toCamelCase(String name)
+  {
+    int i=0;
+    StringBuilder s = new StringBuilder();
+    
+    while(i<name.length() && name.charAt(i)=='_')
+    {
+      s.append('_');
+      i++;
+    }
+    
+    if(i<name.length())
+    {
+      s.append(Character.toLowerCase(name.charAt(i++)));
+    }
+    
+    while(i<name.length())
+    {
+      char c = name.charAt(i++);
+   
+      if((c=='_' || c=='-') && i<name.length())
+      {
+        s.append(Character.toUpperCase(name.charAt(i++)));
+      }
+      else
+      {
+        s.append(c);
+      }
+    }
+    return s.toString();
+  }
+  
+  private String toSnakeCase(String name)
+  {
+    int i=0;
+    StringBuilder s = new StringBuilder(Character.toLowerCase(name.charAt(i)));
+    
+    while(i<name.length())
+    {
+      char c = name.charAt(i++);
+      
+      if(Character.isUpperCase(c))
+      {
+        if(i>1)
+          s.append('_');
+        s.append(Character.toLowerCase(c));
+      }
+      else
+      {
+        s.append(c);
+      }
+    }
+    return s.toString();
+  }
+
+  private static String capitalize(String name)
+  {
+    return name.substring(0, 1).toUpperCase() + name.substring(1);
+  }
+
+  @Override
+  public ITemplateModel getModel()
+  {
+    return model_;
+  }
+  
+  @Override
+  public String getName()
+  {
+    return name_;
+  }
+
+  @Override
+  public String getCamelName()
+  {
+    return camelName_;
+  }
+
+  @Override
+  public String getCamelCapitalizedName()
+  {
+    return camelCapitalizedName_;
+  }
+
+  @Override
+  public String getSnakeName()
+  {
+    return snakeName_;
+  }
+
+  @Override
+  public String getSnakeCapitalizedName()
+  {
+    return snakeCapitalizedName_;
+  }
 }

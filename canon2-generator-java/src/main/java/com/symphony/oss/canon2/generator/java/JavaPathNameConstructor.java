@@ -27,7 +27,7 @@ import java.io.File;
 import java.util.regex.Matcher;
 
 import com.symphony.oss.canon2.parser.GenerationException;
-import com.symphony.oss.canon2.parser.ITemplateEntity;
+import com.symphony.oss.canon2.parser.ITemplateModel;
 import com.symphony.oss.canon2.parser.PathNameConstructor;
 
 class JavaPathNameConstructor extends PathNameConstructor
@@ -47,7 +47,7 @@ class JavaPathNameConstructor extends PathNameConstructor
 
   @Override
   public String constructFile(String templateName,
-      ITemplateEntity modelElement) throws GenerationException
+      ITemplateModel modelElement) throws GenerationException
   {
     return constructFile(convertPath(packageName_), templateName, modelElement, modelElement.getCamelCapitalizedName());
   }

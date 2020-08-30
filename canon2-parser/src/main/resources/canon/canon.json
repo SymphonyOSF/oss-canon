@@ -102,9 +102,30 @@
         "enum": [
           "XXboolean",
           "number",
+          "integer",
           "string",
           "object",
           "array"
+        ]
+      },
+      
+      "SchemaOrReference": {
+        "oneOf": [
+          {
+            "$ref": "#/components/schemas/Schema"
+          },
+          {
+            "$ref": "#/components/schemas/ReferenceObject"
+          }
+        ]
+      },
+      
+      "CanonCardinality": {
+        "description": "Values for the cardinality of an array Schema.",
+        "type": "string",
+        "enum": [
+          "SET",
+          "LIST"
         ]
       },
       
@@ -114,7 +135,88 @@
         "facade": true,
         "properties": {
           "type": {
-              "type": "string"
+            "type": "string"
+          },
+          "format": {
+            "type": "string"
+          },
+          "properties": {
+            "$ref": "#/components/schemas/PropertiesObject"
+          },
+          "x-canon-attributes": {
+            "$ref": "#/components/schemas/CanonAttributes"
+          },
+          "x-canon-cardinality": {
+            "$ref": "#/components/schemas/CanonCardinality"
+          }
+        }
+      },
+      
+      "CanonAttributes": {
+        "description": "A collection of canon generation attributes.",
+        "type": "object",
+        "facade": true,
+        "properties": {
+        }
+      },
+      
+      "PropertiesObject": {
+        "description": "A collection of schema properties (fields).",
+        "type": "object",
+        "facade": true,
+        "properties": {
+        }
+      },
+      
+      "ResolvedModel": {
+        "description": "An OpenApi model with all references resolved.",
+        "type": "object",
+        "extends": "#/components/schemas/OpenApiObject",
+        "facade": true,
+        "builderFacade": true,
+        "properties": {
+        }
+      },
+      
+      "#comment": [
+                "items below should be ReolvedSchema but canon 1 can't deal with an object which contains an instance of itself.'"
+            ],
+            
+      "ResolvedSchema": {
+        "description": "A data type definition with all references resolved.",
+        "type": "object",
+        "extends": "#/components/schemas/Schema",
+        "facade": true,
+        "properties": {
+          "resolvedItems": {
+            "$ref": "#/components/schemas/Schema"
+          },
+          "resolvedProperties": {
+            "$ref": "#/components/schemas/ResolvedPropertiesObject"
+          }
+        }
+      },
+      
+      "ResolvedPropertiesObject": {
+        "description": "A collection of resolved schema properties (fields).",
+        "type": "object",
+        "facade": true,
+        "builderFacade": true,
+        "properties": {
+        }
+      },
+      
+      "ReferenceObject": {
+        "description": "A reference.",
+        "type": "object",
+        "facade": true,
+        "required": [
+          "$ref"
+        ],
+        "properties": {
+          "$ref": {
+              "type": "string",
+              "format": "uri"
             }
         }
       }

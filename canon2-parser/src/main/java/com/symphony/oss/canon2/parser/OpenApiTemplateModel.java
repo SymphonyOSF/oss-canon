@@ -18,6 +18,7 @@
 
 package com.symphony.oss.canon2.parser;
 
+import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -29,14 +30,14 @@ import com.symphony.oss.canon2.parser.model.SemanticVersion;
  * @author Bruce Skingle
  *
  */
-public class ModelEntity extends TemplateEntity<IOpenApiObject> implements IModelEntity
+public class OpenApiTemplateModel<S extends ISchemaTemplateModel<S>> extends TemplateModel<S, IOpenApiObject> implements IOpenApiTemplateModel<S>
 {
-  private List<ITemplateEntity> schemas_ = new LinkedList<>();
+  private List<ISchemaTemplateModel<S>> schemas_ = new LinkedList<>();
 
-  private Integer                    canonMajorVersion_;
-  private Integer                    canonMinorVersion_;
+  private Integer             canonMajorVersion_;
+  private Integer             canonMinorVersion_;
   
-  public ModelEntity(IOpenApiObject entity, String name, IGeneratorModelContext generatorModelContext,
+  public OpenApiTemplateModel(IOpenApiObject entity, String name, IGeneratorModelContext<S> generatorModelContext,
       String[] temaplates)
   {
     super(entity, name, null, generatorModelContext, temaplates);
@@ -78,18 +79,19 @@ public class ModelEntity extends TemplateEntity<IOpenApiObject> implements IMode
   }
 
   @Override
-  public ITemplateEntity getModel()
+  public ITemplateModel getModel()
   {
     return this;
   }
 
   @Override
-  public void addSchema(ITemplateEntity schema)
+  public void addSchema(ISchemaTemplateModel<S> schema)
   {
     schemas_.add(schema);
   }
 
-  public List<ITemplateEntity> getSchemas()
+  @Override
+  public Collection<ISchemaTemplateModel<S>> getSchemas()
   {
     return schemas_;
   }

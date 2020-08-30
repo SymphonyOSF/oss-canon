@@ -92,6 +92,17 @@ public class ComponentsObject extends ComponentsObjectEntity implements ICompone
     super(other);
   }
   
+  @Override
+  public ICanonModelEntity get(String[] parts, int index)
+  {
+    switch(parts[index])
+    {
+      case "schemas":
+        return getSchemas().get(parts, index + 1);
+    }
+    
+    return super.get(parts, index);
+  }
 }
 /*----------------------------------------------------------------------------------------------------
  * End of template proforma/java/Object/_.java.ftl

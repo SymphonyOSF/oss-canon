@@ -20,7 +20,7 @@ package com.symphony.oss.canon2.parser;
 
 import com.symphony.oss.commons.fault.CodingFault;
 
-public abstract class GeneratorModelContext implements IGeneratorModelContext
+public abstract class GeneratorModelContext<S extends ISchemaTemplateModel<S>> implements IGeneratorModelContext<S>
 {
   private final ICanonGenerator generator_;
   private final IModelContext sourceContext_;

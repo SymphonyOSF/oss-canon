@@ -41,13 +41,13 @@ public class PathNameConstructor implements IPathNameConstructor
 
   @Override
   public String constructFile(String templateName,
-      ITemplateEntity modelElement)  throws GenerationException
+      ITemplateModel modelElement)  throws GenerationException
   {
     return constructFile(null, templateName, modelElement, modelElement.getName());
   }
 
   protected String constructFile(String directoryPath, String templateName,
-      ITemplateEntity modelElement, String modelElementName)  throws GenerationException
+      ITemplateModel modelElement, String modelElementName)  throws GenerationException
   {
     int     underscoreIndex = templateName.indexOf('_');
     int     dollarIndex = templateName.indexOf('$');

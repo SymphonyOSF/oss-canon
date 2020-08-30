@@ -18,7 +18,20 @@
 
 package com.symphony.oss.canon2.parser;
 
-public interface IModelEntity extends ITemplateEntity
+/**
+ * The types of OpenApi schema.
+ * 
+ * @author Bruce Skingle
+ *
+ */
+public enum SchemaType
 {
-  void addSchema(ITemplateEntity schema);
+  /** primitive types number, integer, boolean, string. */
+  PRIMITIVE,
+  
+  /** Object */
+  OBJECT, 
+  
+  /** Array */
+  ARRAY;
 }

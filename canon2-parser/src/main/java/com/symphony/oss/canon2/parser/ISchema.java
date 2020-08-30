@@ -40,12 +40,17 @@ public interface ISchema
   extends ISchemaEntity
 {
 
-  void resolve(GenerationContext generationContext);
+  IResolvedSchema resolve(IOpenApiObject openApiObject, GenerationContext generationContext);
 
   void validate(GenerationContext generationContext);
+  
+  ISchema getItemsSchema();
 
-  ITemplateEntity generate(IModelEntity parentModel, String name, IGeneratorModelContext modelContext,
-      GenerationContext generationContext);
+  IReferenceObject getItemsReference();
+
+  void fetchReferences(GenerationContext generationContext) throws GenerationException;
+
+//  ImmutableMap<String, ISchema> getFields();
 }
 /*----------------------------------------------------------------------------------------------------
  * End of template proforma/java/Object/I_.java.ftl
