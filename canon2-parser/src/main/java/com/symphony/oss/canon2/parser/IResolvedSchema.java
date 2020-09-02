@@ -39,9 +39,17 @@ import com.symphony.oss.canon2.parser.model.IResolvedSchemaEntity;
 public interface IResolvedSchema
   extends ISchema, IResolvedSchemaEntity
 {
-
-  <S extends ISchemaTemplateModel<S>> S generate(IOpenApiTemplateModel<S> model, String name, IGeneratorModelContext<S> modelContext);
-
+//  <M extends IOpenApiTemplateModel<S>, S extends ISchemaTemplateModel,
+//    O extends IObjectSchemaTemplateModel<S>, A extends IArraySchemaTemplateModel<S>, P extends IPrimitiveSchemaTemplateModel<S>>
+  
+  <
+  T extends ITemplateModel<T,M,S,O,A,P>,
+  M extends IOpenApiTemplateModel<T,M,S,O,A,P>,
+  S extends ISchemaTemplateModel<T,M,S,O,A,P>,
+  O extends IObjectSchemaTemplateModel<T,M,S,O,A,P>,
+  A extends IArraySchemaTemplateModel<T,M,S,O,A,P>,
+  P extends IPrimitiveSchemaTemplateModel<T,M,S,O,A,P>>
+    S generate(M model, String name, IGeneratorModelContext<T,M,S,O,A,P> modelContext);
 }
 /*----------------------------------------------------------------------------------------------------
  * End of template proforma/java/Object/I_.java.ftl

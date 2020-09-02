@@ -23,27 +23,33 @@ import java.util.Collection;
 import com.google.common.collect.ImmutableList;
 
 /**
- * A model for generation of one or more Freemarker templates.
+ * Base implementation of ITemplateModel which provides a set of methods returning the entity name mapped
+ * to various case conventions.
  * 
  * @author Bruce Skingle
  *
  */
-public abstract class TemplateModel<S extends ISchemaTemplateModel<S>, T extends ICanonModelEntity> implements ITemplateModel
+public abstract class TemplateModel<
+T extends ITemplateModel<T,M,S,O,A,P>,
+M extends IOpenApiTemplateModel<T,M,S,O,A,P>,
+S extends ISchemaTemplateModel<T,M,S,O,A,P>,
+O extends IObjectSchemaTemplateModel<T,M,S,O,A,P>,
+A extends IArraySchemaTemplateModel<T,M,S,O,A,P>,
+P extends IPrimitiveSchemaTemplateModel<T,M,S,O,A,P>,
+E extends ICanonModelEntity>
 {
+  protected E entity_;
   
-  
-  protected T entity_;
-  
-  private final IGeneratorModelContext<S> generatorModelContext_;
+  private final IGeneratorModelContext<T,M,S,O,A,P> generatorModelContext_;
   private final String[]               templates_;
   private final String                 name_;
   private final String                 camelName_;
   private final String                 camelCapitalizedName_;
   private final String                 snakeName_;
   private final String                 snakeCapitalizedName_;
-  private final ITemplateModel         model_;
+  private final M         model_;
 
-  public TemplateModel(T entity, String name, ITemplateModel model, IGeneratorModelContext<S> generatorModelContext, String ...templates)
+  public TemplateModel(E entity, String name, M model, IGeneratorModelContext<T,M,S,O,A,P> generatorModelContext, String ...templates)
   {
     entity_ = entity;
     generatorModelContext_ = generatorModelContext;
@@ -58,13 +64,16 @@ public abstract class TemplateModel<S extends ISchemaTemplateModel<S>, T extends
     snakeCapitalizedName_ = capitalize(snakeName_);
   }
   
-  @Override
-  public IGeneratorModelContext getGeneratorModelContext()
+  public IGeneratorModelContext<T,M,S,O,A,P> getGeneratorModelContext()
   {
     return generatorModelContext_;
   }
 
-  @Override
+  /**
+   * Return the list of template names which should be run against this model.
+   * 
+   * @return The list of template names which should be run against this model.
+   */
   public String[] getTemaplates()
   {
     return templates_;
@@ -130,39 +139,65 @@ public abstract class TemplateModel<S extends ISchemaTemplateModel<S>, T extends
     return name.substring(0, 1).toUpperCase() + name.substring(1);
   }
 
-  @Override
-  public ITemplateModel getModel()
+  /**
+   * Return the OpenApiObject template model.
+   * 
+   * @return The OpenApiObject template model.
+   */
+  public M getModel()
   {
     return model_;
   }
   
-  @Override
+  /**
+   * Return the name of this model entity as written in the input spec.
+   * 
+   * @return The name of this model entity as written in the input spec.
+   */
   public String getName()
   {
     return name_;
   }
 
-  @Override
+  /**
+   * Return the name of this model entity in camelCase with a lower case initial letter.
+   * 
+   * @return The name of this model entity in camelCase with a lower case initial letter.
+   */
   public String getCamelName()
   {
     return camelName_;
   }
 
-  @Override
+  /**
+   * Return the name of this model entity in CamelCase with an upper case initial letter.
+   * 
+   * @return The name of this model entity in CamelCase with an upper case initial letter.
+   */
   public String getCamelCapitalizedName()
   {
     return camelCapitalizedName_;
   }
 
-  @Override
+  /**
+   * Return the name of this model entity in snake_case with a lower case initial letter.
+   * 
+   * @return The name of this model entity in snake_case with a lower case initial letter.
+   */
   public String getSnakeName()
   {
     return snakeName_;
   }
-
-  @Override
+  
+  /**
+  * Return the name of this model entity in Snake_case with an upper case initial letter.
+  * 
+  * @return The name of this model entity in Snake_case with an upper case initial letter.
+  */
   public String getSnakeCapitalizedName()
   {
     return snakeCapitalizedName_;
   }
+
+//  public abstract Collection<S> getChildren();
 }

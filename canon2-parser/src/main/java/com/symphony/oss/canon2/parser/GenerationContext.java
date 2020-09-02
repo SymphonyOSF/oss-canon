@@ -361,18 +361,18 @@ public class GenerationContext
     return modelMap_.get(url);
   }
   
-  private class TemplateModelConsumer implements Consumer<ITemplateModel>
+  private class TemplateModelConsumer implements Consumer<ITemplateModel<?,?,?,?,?,?>>
   {
-    private Map<String, List<ITemplateModel>> map_ = new HashMap<>();
+    private Map<String, List<ITemplateModel<?,?,?,?,?,?>>> map_ = new HashMap<>();
     
     @Override
-    public synchronized void accept(ITemplateModel model)
+    public synchronized void accept(ITemplateModel<?,?,?,?,?,?> model)
     {
       if(model.getTemaplates() != null)
       {
         for(String template : model.getTemaplates())
         {
-          List<ITemplateModel> list = map_.get(template);
+          List<ITemplateModel<?,?,?,?,?,?>> list = map_.get(template);
           
           if(list == null)
           {
@@ -385,113 +385,138 @@ public class GenerationContext
       }
     }
 
+   
     void generate() throws GenerationException
     {
       for(String templateGroup : map_.keySet())
       {
         log_.info("Process template " + templateGroup + "...");
         
-        for(ITemplateModel model : map_.get(templateGroup))
+        for(ITemplateModel<?,?,?,?,?,?> model : map_.get(templateGroup))
         {
-          log_.info("Process template " + templateGroup + ", model " + model.getName() + "...");
+          new Helper(model).generateModel(templateGroup);
+        }
+      }
+    }
+
+    private  class Helper<
+    T extends ITemplateModel<T,M,S,O,A,P>,
+    M extends IOpenApiTemplateModel<T,M,S,O,A,P>,
+    S extends ISchemaTemplateModel<T,M,S,O,A,P>,
+    O extends IObjectSchemaTemplateModel<T,M,S,O,A,P>,
+    A extends IArraySchemaTemplateModel<T,M,S,O,A,P>,
+    P extends IPrimitiveSchemaTemplateModel<T,M,S,O,A,P>
+    >
+    {
+      private T model;
+
+      private Helper(T model)
+      {
+        this.model = model;
+      }
+
+      void generateModel(String templateGroup) throws GenerationException
+      {
+  
+        log_.info("Process template " + templateGroup + ", model " + model.getName() + "...");
+        
+        IGeneratorModelContext<T,M,S,O,A,P> modelContext = model.getGeneratorModelContext();
+        ICanonGenerator<T,M,S,O,A,P> generator = modelContext.getGenerator();
+        
+        for(TemplateType templateType : TemplateType.values())
+        {
+          Set<String> templateNames = generator.getTemplatesFor(templateType, templateGroup);
           
-          IGeneratorModelContext<?> modelContext = model.getGeneratorModelContext();
-          ICanonGenerator generator = modelContext.getGenerator();
-          
-          for(TemplateType templateType : TemplateType.values())
+          for(String templateName : templateNames)
           {
-            Set<String> templateNames = generator.getTemplatesFor(templateType, templateGroup);
+            generate(generator, modelContext, model, templateType, templateName);
             
-            for(String templateName : templateNames)
+          }
+        }
+      }
+  
+  
+      private void generate(ICanonGenerator<T,M,S,O,A,P> generator, IGeneratorModelContext<T,M,S,O,A,P> modelContext, T entity,
+          TemplateType templateType, String templateName) throws GenerationException
+      {
+        IPathNameConstructor<T> pathBuilder = modelContext.getPathBuilder(templateType);
+        Configuration freemarkerConfig = generator.getFreemarkerConfig();
+        
+        
+        log_.debug("Generate generate {} {}", entity.getName(), templateName);
+        
+        File templateFile = new File(templateName);
+        
+        //dataModel.put(Canon.TEMPLATE_NAME, templateName);
+        
+        String  targetFileName = pathBuilder.constructFile(templateFile.getName(), entity);
+        
+        if(targetFileName != null)
+        {
+          log_.debug("targetFileName " + targetFileName);
+          
+          try
+          {
+            
+            Template template = freemarkerConfig.getTemplate(templateName);
+  //          TemplateModel model = new TemplateModel(modelContext, templateName,
+  //              entity);
+            
+            generate(FreemarkerModel.newTemplateModel(modelContext, templateName, entity), template, targetFileName);
+  
+          } catch (IOException e)
+          {
+            throw new GenerationException("ERROR processing " + targetFileName + " template " +
+                templateName, e);
+          }
+        }
+      }
+      
+      private void generate(Map<String, Object> model, Template template,
+          String targetFileName) throws GenerationException
+      {
+        File genPath = new File(getTargetDir(), targetFileName);
+        
+        genPath.getParentFile().mkdirs();
+        
+        try(FileWriter writer = new FileWriter(genPath))
+        {
+          template.process(model, writer);
+        } 
+        catch (TemplateException | IOException e)
+        {
+          //dumpMap("", dataModel, new HashSet<Object>());
+          
+          throw new GenerationException(e);
+        }
+        
+        if(genPath.length() == 0L)
+        {
+          genPath.delete();
+        }
+        else if(getCopyDir() != null)
+        {
+          File copyPath = new File(getCopyDir(), targetFileName);
+        
+          if(copyPath.exists())
+          {
+            log_.info("Proforma " + copyPath.getAbsolutePath() + " exists, not copying");
+            }
+            else
             {
-              generate(generator, modelContext, model, templateType, templateName);
-              
+              copyPath.getParentFile().mkdirs();
+              try
+              {
+                Files.copy(genPath, copyPath);
+              }
+              catch (IOException e)
+              {
+                throw new GenerationException(e);
+              }
             }
           }
         }
       }
-    }
-
-    private void generate(ICanonGenerator generator, IGeneratorModelContext<?> modelContext, ITemplateModel entity,
-        TemplateType templateType, String templateName) throws GenerationException
-    {
-      IPathNameConstructor pathBuilder = modelContext.getPathBuilder(templateType);
-      Configuration freemarkerConfig = generator.getFreemarkerConfig();
-      
-      
-      log_.debug("Generate generate {} {}", entity.getName(), templateName);
-      
-      File templateFile = new File(templateName);
-      
-      //dataModel.put(Canon.TEMPLATE_NAME, templateName);
-      
-      String  targetFileName = pathBuilder.constructFile(templateFile.getName(), entity);
-      
-      if(targetFileName != null)
-      {
-        log_.debug("targetFileName " + targetFileName);
-        
-        try
-        {
-          
-          Template template = freemarkerConfig.getTemplate(templateName);
-//          TemplateModel model = new TemplateModel(modelContext, templateName,
-//              entity);
-          
-          generate(FreemarkerModel.newTemplateModel(modelContext, templateName, entity), template, targetFileName);
-
-        } catch (IOException e)
-        {
-          throw new GenerationException("ERROR processing " + targetFileName + " template " +
-              templateName, e);
-        }
-      }
-    }
-    
-    private void generate(Map<String, Object> model, Template template,
-        String targetFileName) throws GenerationException
-    {
-      File genPath = new File(getTargetDir(), targetFileName);
-      
-      genPath.getParentFile().mkdirs();
-      
-      try(FileWriter writer = new FileWriter(genPath))
-      {
-        template.process(model, writer);
-      } 
-      catch (TemplateException | IOException e)
-      {
-        //dumpMap("", dataModel, new HashSet<Object>());
-        
-        throw new GenerationException(e);
-      }
-      
-      if(genPath.length() == 0L)
-      {
-        genPath.delete();
-      }
-      else if(getCopyDir() != null)
-      {
-        File copyPath = new File(getCopyDir(), targetFileName);
-      
-        if(copyPath.exists())
-        {
-          log_.info("Proforma " + copyPath.getAbsolutePath() + " exists, not copying");
-        }
-        else
-        {
-          copyPath.getParentFile().mkdirs();
-          try
-          {
-            Files.copy(genPath, copyPath);
-          }
-          catch (IOException e)
-          {
-            throw new GenerationException(e);
-          }
-        }
-      }
-    }
   }
   
   public void generate() throws GenerationException
@@ -502,14 +527,7 @@ public class GenerationContext
     {
       for(ICanonGenerator generator : generators_)
       {
-        IJsonObject<?> generatorConfig = context.getModel().getXCanonGenerators().getJsonObject().getRequiredObject(generator.getLanguage());
-        
-        IGeneratorModelContext<?> generatorModelContext = generator.createModelContext(context, generatorConfig);
-        
-        IOpenApiTemplateModel<?> templateModel = context.getResolvedModel().generate(generatorModelContext);
-        
-        gather(templateModel, consumer);
-        //generator.generate(context.getModel(), context, this, consumer);
+        new GenerationHelper(context, generator, consumer).generateFor();
       }
     }
     
@@ -519,12 +537,46 @@ public class GenerationContext
     consumer.generate();
   }
 
-  private void gather(ITemplateModel model, TemplateModelConsumer consumer)
+  private class GenerationHelper
+  <
+  T extends ITemplateModel<T,M,S,O,A,P>,
+  M extends IOpenApiTemplateModel<T,M,S,O,A,P>,
+  S extends ISchemaTemplateModel<T,M,S,O,A,P>,
+  O extends IObjectSchemaTemplateModel<T,M,S,O,A,P>,
+  A extends IArraySchemaTemplateModel<T,M,S,O,A,P>,
+  P extends IPrimitiveSchemaTemplateModel<T,M,S,O,A,P>>
   {
-    consumer.accept(model);
+    ModelContext context;
+    ICanonGenerator<T,M,S,O,A,P> generator;
+    TemplateModelConsumer consumer;
+
+    GenerationHelper(ModelContext context, ICanonGenerator<T,M,S,O,A,P> generator, TemplateModelConsumer consumer)
+    {
+      this.context = context;
+      this.generator = generator;
+      this.consumer = consumer;
+    }
+
+    void generateFor()
+    {
+      IJsonObject<?> generatorConfig = context.getModel().getXCanonGenerators().getJsonObject().getRequiredObject(generator.getLanguage());
     
-    for(ITemplateModel child : model.getChildren())
-      gather(child, consumer);
+      IGeneratorModelContext<T,M,S,O,A,P> generatorModelContext = generator.createModelContext(context, generatorConfig);
+    
+      M templateModel = context.getResolvedModel().generate(generatorModelContext);
+    
+      gather(templateModel.asTemplateModel(), consumer);
+      //generator.generate(context.getModel(), context, this, consumer);
+
+    }
+
+    private void gather(ITemplateModel<?,?,?,?,?,?> model, TemplateModelConsumer consumer)
+    {
+      consumer.accept(model);
+      
+      for(ITemplateModel<?,?,?,?,?,?> child : model.getChildren())
+        gather(child, consumer);
+    }
   }
 
   public boolean getTemplateDebug()

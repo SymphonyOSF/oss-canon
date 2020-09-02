@@ -30,14 +30,22 @@ import com.symphony.oss.canon2.parser.model.SemanticVersion;
  * @author Bruce Skingle
  *
  */
-public class OpenApiTemplateModel<S extends ISchemaTemplateModel<S>> extends TemplateModel<S, IOpenApiObject> implements IOpenApiTemplateModel<S>
+public abstract class OpenApiTemplateModel<
+T extends ITemplateModel<T,M,S,O,A,P>,
+M extends IOpenApiTemplateModel<T,M,S,O,A,P>,
+S extends ISchemaTemplateModel<T,M,S,O,A,P>,
+O extends IObjectSchemaTemplateModel<T,M,S,O,A,P>,
+A extends IArraySchemaTemplateModel<T,M,S,O,A,P>,
+P extends IPrimitiveSchemaTemplateModel<T,M,S,O,A,P>>
+  extends TemplateModel<T,M,S,O,A,P, IOpenApiObject>
+  implements IOpenApiTemplateModel<T,M,S,O,A,P>
 {
-  private List<ISchemaTemplateModel<S>> schemas_ = new LinkedList<>();
+  private List<S> schemas_ = new LinkedList<>();
 
   private Integer             canonMajorVersion_;
   private Integer             canonMinorVersion_;
   
-  public OpenApiTemplateModel(IOpenApiObject entity, String name, IGeneratorModelContext<S> generatorModelContext,
+  public OpenApiTemplateModel(IOpenApiObject entity, String name, IGeneratorModelContext<T,M,S,O,A,P> generatorModelContext,
       String[] temaplates)
   {
     super(entity, name, null, generatorModelContext, temaplates);
@@ -78,21 +86,26 @@ public class OpenApiTemplateModel<S extends ISchemaTemplateModel<S>> extends Tem
     return entity_.getXCanonVersion();
   }
 
+  @SuppressWarnings("unchecked")
   @Override
-  public ITemplateModel getModel()
+  public M getModel()
   {
-    return this;
+    return (M)this;
   }
 
-  @Override
-  public void addSchema(ISchemaTemplateModel<S> schema)
+  public void addSchema(S schema)
   {
     schemas_.add(schema);
   }
 
-  @Override
-  public Collection<ISchemaTemplateModel<S>> getSchemas()
+  public Collection<S> getSchemas()
   {
     return schemas_;
+  }
+  
+  @Override
+  public Collection<T> getChildren()
+  {
+    return (Collection<T>) getSchemas();
   }
 }

@@ -7,12 +7,19 @@
 package com.symphony.oss.canon2.generator.java;
 
 import com.symphony.oss.canon2.parser.IArraySchemaTemplateModel;
-import com.symphony.oss.canon2.parser.IOpenApiTemplateModel;
 import com.symphony.oss.canon2.parser.IResolvedSchema;
+import com.symphony.oss.canon2.parser.ISchemaTemplateModel;
 import com.symphony.oss.canon2.parser.model.CanonCardinality;
 import com.symphony.oss.commons.fault.CodingFault;
 
-class JavaArraySchemaTemplateModel extends JavaSchemaTemplateModel implements IArraySchemaTemplateModel<JavaSchemaTemplateModel>
+class JavaArraySchemaTemplateModel extends JavaSchemaTemplateModel
+implements IArraySchemaTemplateModel<
+IJavaTemplateModel,
+JavaOpenApiTemplateModel,
+JavaSchemaTemplateModel,
+JavaObjectSchemaTemplateModel,
+JavaArraySchemaTemplateModel,
+JavaPrimitiveSchemaTemplateModel>
 {
   private JavaSchemaTemplateModel elementType_;
   
@@ -20,7 +27,7 @@ class JavaArraySchemaTemplateModel extends JavaSchemaTemplateModel implements IA
 
   private final String type_;
   
-  JavaArraySchemaTemplateModel(IResolvedSchema entity, String name, CanonCardinality cardinality, IOpenApiTemplateModel<JavaSchemaTemplateModel> model,
+  JavaArraySchemaTemplateModel(IResolvedSchema entity, String name, CanonCardinality cardinality, JavaOpenApiTemplateModel model,
        JavaGeneratorModelContext javaGeneratorModelContext)
   {
     super(entity, name, model, javaGeneratorModelContext);
@@ -50,6 +57,12 @@ class JavaArraySchemaTemplateModel extends JavaSchemaTemplateModel implements IA
       default:
         throw new CodingFault("Unknown cardinality " + cardinality);
     }
+  }
+
+  @Override
+  public ISchemaTemplateModel<IJavaTemplateModel, JavaOpenApiTemplateModel, JavaSchemaTemplateModel, JavaObjectSchemaTemplateModel, JavaArraySchemaTemplateModel, JavaPrimitiveSchemaTemplateModel> asSchemaTemplateModel()
+  {
+    return this;
   }
 
   @Override

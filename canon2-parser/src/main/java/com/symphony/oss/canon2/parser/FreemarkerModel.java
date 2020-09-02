@@ -38,7 +38,15 @@ class FreemarkerModel
 //  private final String date_;
 //  private final Object inputSource_;
 
-  public static Map<String, Object> newTemplateModel(IGeneratorModelContext modelContext, String templateName, ITemplateModel entity)
+  public static 
+  <
+  T extends ITemplateModel<T,M,S,O,A,P>,
+  M extends IOpenApiTemplateModel<T,M,S,O,A,P>,
+  S extends ISchemaTemplateModel<T,M,S,O,A,P>,
+  O extends IObjectSchemaTemplateModel<T,M,S,O,A,P>,
+  A extends IArraySchemaTemplateModel<T,M,S,O,A,P>,
+  P extends IPrimitiveSchemaTemplateModel<T,M,S,O,A,P>>
+  Map<String, Object> newTemplateModel(IGeneratorModelContext<T,M,S,O,A,P> modelContext, String templateName, ITemplateModel<T,M,S,O,A,P> entity)
   {
     Map<String, Object> map = new HashMap<>();
     

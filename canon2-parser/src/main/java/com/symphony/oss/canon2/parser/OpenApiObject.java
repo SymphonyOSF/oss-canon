@@ -97,19 +97,20 @@ public class OpenApiObject extends OpenApiObjectEntity implements IOpenApiObject
     super(other);
   }
   
+  @SuppressWarnings("unchecked")
   @Override
-  public <T extends ICanonModelEntity> T get(String fragment, Class<T> type)
+  public <T extends ICanonModelEntity> Named<T> get(String fragment, Class<T> type)
   {
-    ICanonModelEntity entity = get(fragment.split("/"), 1);
+    Named<? extends ICanonModelEntity> entity = get(fragment.split("/"), 1);
     
-    if(type.isInstance(entity))
-      return type.cast(entity);
+    if(type.isInstance(entity.getValue()))
+      return (Named<T>)entity; //type.cast(entity);
     
     throw new IllegalArgumentException("Expected " + type + " but found " + entity.getClass());
   }
   
   @Override
-  public ICanonModelEntity get(String[] parts, int index)
+  public Named<? extends ICanonModelEntity> get(String[] parts, int index)
   {
     switch(parts[index])
     {

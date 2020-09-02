@@ -24,7 +24,7 @@
 package com.symphony.oss.canon2.parser;
 
 @FunctionalInterface
-public interface IPathNameConstructor
+public interface IPathNameConstructor<T extends ITemplateModel<?,?,?,?,?,?>>
 {
-  String  constructFile(String templateName, ITemplateModel entity) throws GenerationException;
+  String  constructFile(String templateName, T entity) throws GenerationException;
 }

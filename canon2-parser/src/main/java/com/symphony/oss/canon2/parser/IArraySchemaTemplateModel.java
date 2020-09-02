@@ -23,15 +23,32 @@ import java.util.Collections;
 
 import com.symphony.oss.canon2.parser.model.CanonCardinality;
 
-public interface IArraySchemaTemplateModel<S extends ISchemaTemplateModel<S>> extends ISchemaTemplateModel<S>
+public interface IArraySchemaTemplateModel<
+  T extends ITemplateModel<T,M,S,O,A,P>,
+  M extends IOpenApiTemplateModel<T,M,S,O,A,P>,
+  S extends ISchemaTemplateModel<T,M,S,O,A,P>,
+  O extends IObjectSchemaTemplateModel<T,M,S,O,A,P>,
+  A extends IArraySchemaTemplateModel<T,M,S,O,A,P>,
+  P extends IPrimitiveSchemaTemplateModel<T,M,S,O,A,P>>
+    extends ISchemaTemplateModel<T,M,S,O,A,P>
 {
-
+  /**
+   * Return this object as an ISchemaTemplateModel.
+   * 
+   * Implementations of this class must also be a subclass of the implementation of ISchemaTemplateModel
+   * but the Java type system is unable to represent that in a parameterised type declaration.
+   * 
+   * @return this object as an ITemplateModel.
+   */
+  ISchemaTemplateModel<T,M,S,O,A,P> asSchemaTemplateModel();
+  
   S getElementType();
   
+  @SuppressWarnings("unchecked")
   @Override
-  default Collection<? extends ITemplateModel> getChildren()
+  default Collection<T> getChildren()
   {
-    return Collections.singleton(getElementType());
+    return (Collection<T>) Collections.singleton(getElementType());
   }
 
   @Override

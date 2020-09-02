@@ -22,15 +22,14 @@ import java.util.Map;
 
 import com.symphony.oss.canon2.parser.GeneratorModelContext;
 import com.symphony.oss.canon2.parser.IModelContext;
-import com.symphony.oss.canon2.parser.IOpenApiTemplateModel;
 import com.symphony.oss.canon2.parser.IResolvedModel;
 import com.symphony.oss.canon2.parser.IResolvedSchema;
 import com.symphony.oss.canon2.parser.ISchema;
-import com.symphony.oss.canon2.parser.ISchemaTemplateModel;
 import com.symphony.oss.canon2.parser.model.CanonCardinality;
 import com.symphony.oss.commons.dom.json.IJsonObject;
 
-class JavaGeneratorModelContext extends GeneratorModelContext<JavaSchemaTemplateModel>
+class JavaGeneratorModelContext extends GeneratorModelContext<IJavaTemplateModel, JavaOpenApiTemplateModel, JavaSchemaTemplateModel, JavaObjectSchemaTemplateModel,
+  JavaArraySchemaTemplateModel, JavaPrimitiveSchemaTemplateModel>
 {
   private IJsonObject<?> generatorConfig_;
 
@@ -53,26 +52,26 @@ class JavaGeneratorModelContext extends GeneratorModelContext<JavaSchemaTemplate
   @Override
   public JavaOpenApiTemplateModel generateOpenApiObject(IResolvedModel entity)
   {
-    return new JavaOpenApiTemplateModel(entity, getSourceContext().getInputSourceName(), this, "Model");
+    return new JavaOpenApiTemplateModel(entity, getSourceContext().getInputSourceName(), getGenerator(), "Model");
   }
 
   
   @Override
-  public JavaObjectSchemaTemplateModel generateObjectSchema(IOpenApiTemplateModel<JavaSchemaTemplateModel> model, IResolvedSchema entity, String name)
+  public JavaObjectSchemaTemplateModel generateObjectSchema(JavaOpenApiTemplateModel model, IResolvedSchema entity, String name)
   {
     return new JavaObjectSchemaTemplateModel(entity,  name, model, this, "Object");
   }
 
   @Override
-  public JavaArraySchemaTemplateModel generateArraySchema(IOpenApiTemplateModel<JavaSchemaTemplateModel> model, IResolvedSchema entity,
+  public JavaArraySchemaTemplateModel generateArraySchema(JavaOpenApiTemplateModel model, IResolvedSchema entity,
       String name, CanonCardinality cardinality)
   {
     return new JavaArraySchemaTemplateModel(entity,  name, cardinality, model, this);
   }
 
   @Override
-  public ISchemaTemplateModel<JavaSchemaTemplateModel> generatePrimativeSchema(
-      IOpenApiTemplateModel<JavaSchemaTemplateModel> model, ISchema entity, String name)
+  public JavaPrimitiveSchemaTemplateModel generatePrimativeSchema(
+      JavaOpenApiTemplateModel model, ISchema entity, String name)
   {
     return new JavaPrimitiveSchemaTemplateModel(entity,  name, model, this);
   }

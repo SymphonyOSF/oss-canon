@@ -20,15 +20,36 @@ package com.symphony.oss.canon2.parser;
 
 import java.util.Collection;
 
-public interface IOpenApiTemplateModel<S extends ISchemaTemplateModel<S>> extends ITemplateModel
+public interface IOpenApiTemplateModel<
+  T extends ITemplateModel<T,M,S,O,A,P>,
+  M extends IOpenApiTemplateModel<T,M,S,O,A,P>,
+  S extends ISchemaTemplateModel<T,M,S,O,A,P>,
+  O extends IObjectSchemaTemplateModel<T,M,S,O,A,P>,
+  A extends IArraySchemaTemplateModel<T,M,S,O,A,P>,
+  P extends IPrimitiveSchemaTemplateModel<T,M,S,O,A,P>>
+    extends ITemplateModel<T,M,S,O,A,P>
 {
-  void addSchema(ISchemaTemplateModel<S> schema);
 
-  Collection<ISchemaTemplateModel<S>> getSchemas();
+  ICanonGenerator<T,M,S,O,A,P> getGenerator();
   
+  /**
+   * Return this object as an ITemplateModel.
+   * 
+   * Implementations of this class must also be a subclass of the implementation of ITemplateModel
+   * but the Java type system is unable to represent that in a parameterised type declaration.
+   * 
+   * @return this object as an ITemplateModel.
+   */
+  ITemplateModel<T,M,S,O,A,P> asTemplateModel();
+  
+  void addSchema(S schema);
+
+  Collection<S> getSchemas();
+  
+  @SuppressWarnings("unchecked")
   @Override
-  default Collection<? extends ITemplateModel> getChildren()
+  default Collection<T> getChildren()
   {
-    return getSchemas();
+    return (Collection<T>) getSchemas();
   }
 }

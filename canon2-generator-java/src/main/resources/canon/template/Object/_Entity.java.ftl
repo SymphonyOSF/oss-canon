@@ -54,29 +54,28 @@ import com.google.common.collect.ImmutableSet;
 /**
  * Facade for Object  ${entity.name} ${model.name}
  * Object ${model}
-<#if model.summary??>
+<#if entity.summary??>
  *
- * ${model.summary}
+ * ${entity.summary}
 </#if>
-<#if model.description??>
+<#if entity.description??>
  *
-<#list model.description as description>
+<#list entity.description as description>
  * ${description}
 </#list>
 </#if>
- * Generated from ${model} at {model.context.path}
+ * Generated from ${entity} at {entity.context.path}
  */
 @Immutable
 @SuppressWarnings("unused")
-<#if model.superSchema??>
-public abstract class ${entity.camelCapitalizedName}Entity extends ${model.superSchema.baseSchema.camelCapitalizedName}
+<#if entity.superSchema??>
+public abstract class ${entity.camelCapitalizedName}Entity extends ${entity.superSchema.baseSchema.camelCapitalizedName}
 <#else>
 public abstract class ${entity.camelCapitalizedName}Entity extends Entity
 </#if>
- implements I${entity.camelCapitalizedName}, I${model.camelCapitalizedName}ModelEntity
 {
   /** Type ID */
-  public static final String  TYPE_ID = "${model.canonId}.${model.name}";
+  public static final String  TYPE_ID = "${model.canonId}.${entity.name}";
   /** Type version */
   public static final String  TYPE_VERSION = "${model.canonVersion}";
   /** Type major version */
@@ -86,18 +85,10 @@ public abstract class ${entity.camelCapitalizedName}Entity extends Entity
   /** Factory instance */
   public static final Factory FACTORY = new Factory();
   
-  /**
-   *  Builder factory instance
-   *
-   *  @deprecated use <code>new ${entity.camelCapitalizedName}.Builder()</code> or <code>new ${entity.camelCapitalizedName}.Builder(I${entity.camelCapitalizedName}Entity)</code> 
-   */
-  @Deprecated
-  public static final IBuilderFactory<I${entity.camelCapitalizedName}Entity, Builder> BUILDER = new BuilderFactory();
-
   private final ${"ImmutableSet<String>"?right_pad(25)}   unknownKeys_;
 <#list entity.fields as field>
   // field ${field}
-  private final {fieldType?right_pad(25)}  _${field.camelName}_;
+  private final ${field.type?right_pad(25)}  _${field.camelName}_;
 </#list>
 
   /**

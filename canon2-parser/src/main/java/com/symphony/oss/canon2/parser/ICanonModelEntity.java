@@ -26,8 +26,6 @@
 package com.symphony.oss.canon2.parser;
 
 
-import javax.annotation.Nullable;
-
 import com.symphony.oss.canon.runtime.IEntity;
 
 /**
@@ -45,7 +43,7 @@ public interface ICanonModelEntity extends IEntity
    * 
    * @throws IllegalArgumentException if the given path is invalid.
    */
-  default ICanonModelEntity get(String[] parts, int index)
+  default Named<? extends ICanonModelEntity> get(String[] parts, int index)
   {
     throw new IllegalArgumentException("No path element " + parts[index]);
   }

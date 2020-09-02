@@ -30,7 +30,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-public class PathNameConstructor implements IPathNameConstructor
+public class PathNameConstructor<T extends ITemplateModel<?,?,?,?,?,?>> implements IPathNameConstructor<T>
 {
   private final String language_;
 
@@ -41,13 +41,13 @@ public class PathNameConstructor implements IPathNameConstructor
 
   @Override
   public String constructFile(String templateName,
-      ITemplateModel modelElement)  throws GenerationException
+      T modelElement)  throws GenerationException
   {
     return constructFile(null, templateName, modelElement, modelElement.getName());
   }
 
   protected String constructFile(String directoryPath, String templateName,
-      ITemplateModel modelElement, String modelElementName)  throws GenerationException
+     T modelElement, String modelElementName)  throws GenerationException
   {
     int     underscoreIndex = templateName.indexOf('_');
     int     dollarIndex = templateName.indexOf('$');

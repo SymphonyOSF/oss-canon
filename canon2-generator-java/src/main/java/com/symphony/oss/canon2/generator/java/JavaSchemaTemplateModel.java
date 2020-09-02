@@ -21,18 +21,25 @@ package com.symphony.oss.canon2.generator.java;
 import java.util.Set;
 import java.util.TreeSet;
 
-import com.symphony.oss.canon2.parser.IGeneratorModelContext;
-import com.symphony.oss.canon2.parser.IOpenApiTemplateModel;
 import com.symphony.oss.canon2.parser.ISchema;
-import com.symphony.oss.canon2.parser.ISchemaTemplateModel;
-import com.symphony.oss.canon2.parser.TemplateModel;
+import com.symphony.oss.canon2.parser.ITemplateModel;
+import com.symphony.oss.canon2.parser.SchemaTemplateModel;
 
-public abstract class JavaSchemaTemplateModel extends TemplateModel<JavaSchemaTemplateModel, ISchema> implements ISchemaTemplateModel<JavaSchemaTemplateModel>
+public abstract class JavaSchemaTemplateModel
+extends SchemaTemplateModel<
+IJavaTemplateModel,
+JavaOpenApiTemplateModel,
+JavaSchemaTemplateModel,
+JavaObjectSchemaTemplateModel,
+JavaArraySchemaTemplateModel,
+JavaPrimitiveSchemaTemplateModel,
+ISchema>
+implements IJavaTemplateModel
 {
   Set<String> imports_ = new TreeSet<>();
   
-  JavaSchemaTemplateModel(ISchema entity, String name, IOpenApiTemplateModel<JavaSchemaTemplateModel> model,
-      IGeneratorModelContext<JavaSchemaTemplateModel> generatorModelContext,
+  JavaSchemaTemplateModel(ISchema entity, String name, JavaOpenApiTemplateModel model,
+      JavaGeneratorModelContext generatorModelContext,
       String... templates)
   {
     super(entity, name, model, generatorModelContext, templates);
@@ -41,10 +48,15 @@ public abstract class JavaSchemaTemplateModel extends TemplateModel<JavaSchemaTe
     imports_.add("javax.annotation.Nullable");
   }
 
+  @Override
+  public ITemplateModel<IJavaTemplateModel, JavaOpenApiTemplateModel, JavaSchemaTemplateModel, JavaObjectSchemaTemplateModel, JavaArraySchemaTemplateModel, JavaPrimitiveSchemaTemplateModel> asTemplateModel()
+  {
+    return this;
+  }
+
+  @Override
   public Set<String> getImports()
   {
     return imports_;
   }
-  
-  public abstract String getType();
 }

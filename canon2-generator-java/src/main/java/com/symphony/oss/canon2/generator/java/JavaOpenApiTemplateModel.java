@@ -18,15 +18,46 @@
 
 package com.symphony.oss.canon2.generator.java;
 
-import com.symphony.oss.canon2.parser.IGeneratorModelContext;
+import java.util.Set;
+import java.util.TreeSet;
+
 import com.symphony.oss.canon2.parser.IOpenApiObject;
+import com.symphony.oss.canon2.parser.ITemplateModel;
 import com.symphony.oss.canon2.parser.OpenApiTemplateModel;
 
-public class JavaOpenApiTemplateModel extends OpenApiTemplateModel
+public class JavaOpenApiTemplateModel extends OpenApiTemplateModel<
+IJavaTemplateModel,
+JavaOpenApiTemplateModel,
+JavaSchemaTemplateModel,
+JavaObjectSchemaTemplateModel,
+JavaArraySchemaTemplateModel,
+JavaPrimitiveSchemaTemplateModel
+>
+implements IJavaTemplateModel
 {
-  public JavaOpenApiTemplateModel(IOpenApiObject entity, String name, IGeneratorModelContext generatorModelContext,
+  Set<String> imports_ = new TreeSet<>();
+  
+  public JavaOpenApiTemplateModel(IOpenApiObject entity, String name, JavaGeneratorModelContext generatorModelContext,
       String... temaplates)
   {
     super(entity, name, generatorModelContext, temaplates);
+  }
+
+  @Override
+  public ITemplateModel<IJavaTemplateModel, JavaOpenApiTemplateModel, JavaSchemaTemplateModel, JavaObjectSchemaTemplateModel, JavaArraySchemaTemplateModel, JavaPrimitiveSchemaTemplateModel> asTemplateModel()
+  {
+    return this;
+  }
+
+  @Override
+  public Set<String> getImports()
+  {
+    return imports_;
+  }
+
+  @Override
+  public String getType()
+  {
+    return getCamelCapitalizedName() + "Model";
   }
 }

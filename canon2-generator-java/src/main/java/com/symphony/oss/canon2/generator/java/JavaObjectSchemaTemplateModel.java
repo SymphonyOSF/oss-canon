@@ -18,22 +18,27 @@
 
 package com.symphony.oss.canon2.generator.java;
 
-import java.util.LinkedList;
+import java.util.HashMap;
 import java.util.List;
-import java.util.Set;
+import java.util.Map;
 
-import com.symphony.oss.canon2.parser.IGeneratorModelContext;
 import com.symphony.oss.canon2.parser.IObjectSchemaTemplateModel;
-import com.symphony.oss.canon2.parser.IOpenApiTemplateModel;
-import com.symphony.oss.canon2.parser.ISchema;
+import com.symphony.oss.canon2.parser.IResolvedSchema;
 import com.symphony.oss.canon2.parser.ISchemaTemplateModel;
 
-public class JavaObjectSchemaTemplateModel extends JavaSchemaTemplateModel implements IObjectSchemaTemplateModel<JavaSchemaTemplateModel>
+public class JavaObjectSchemaTemplateModel extends JavaSchemaTemplateModel
+implements IObjectSchemaTemplateModel<
+IJavaTemplateModel,
+JavaOpenApiTemplateModel,
+JavaSchemaTemplateModel,
+JavaObjectSchemaTemplateModel,
+JavaArraySchemaTemplateModel,
+JavaPrimitiveSchemaTemplateModel>
 {
-  private List<ISchemaTemplateModel<JavaSchemaTemplateModel>> fields_ = new LinkedList<>();
+  private Map<String, JavaSchemaTemplateModel> fields_ = new HashMap<>();
   
-  JavaObjectSchemaTemplateModel(ISchema entity, String name, IOpenApiTemplateModel<JavaSchemaTemplateModel> model,
-      IGeneratorModelContext<JavaSchemaTemplateModel> generatorModelContext,
+  JavaObjectSchemaTemplateModel(IResolvedSchema entity, String name, JavaOpenApiTemplateModel model,
+      JavaGeneratorModelContext generatorModelContext,
        String... temaplates)
   {
     super(entity, name, model, generatorModelContext, temaplates);
@@ -43,22 +48,23 @@ public class JavaObjectSchemaTemplateModel extends JavaSchemaTemplateModel imple
   }
 
   @Override
-  public void addField(ISchemaTemplateModel<JavaSchemaTemplateModel> field)
+  public ISchemaTemplateModel<IJavaTemplateModel, JavaOpenApiTemplateModel, JavaSchemaTemplateModel, JavaObjectSchemaTemplateModel, JavaArraySchemaTemplateModel, JavaPrimitiveSchemaTemplateModel> asSchemaTemplateModel()
   {
-    fields_.add(field);
-  }
-  
-  @Override
-  public List<ISchemaTemplateModel<JavaSchemaTemplateModel>> getFields()
-  {
-    return fields_;
+    return this;
   }
 
   @Override
-  public Set<String> getImports()
+  public void addField(String name, JavaSchemaTemplateModel field)
   {
-    // TODO Auto-generated method stub
-    return super.getImports();
+    fields_.put(name, field);
+    
+    imports_.addAll(field.imports_);
+  }
+  
+  @Override
+  public Map<String, JavaSchemaTemplateModel> getFields()
+  {
+    return fields_;
   }
 
   @Override
@@ -70,6 +76,8 @@ public class JavaObjectSchemaTemplateModel extends JavaSchemaTemplateModel imple
   @Override
   public String getType()
   {
-    return getCamelCapitalizedName();
+    return getName();
+    
+    //getCamelCapitalizedName();
   }
 }

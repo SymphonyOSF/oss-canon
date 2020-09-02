@@ -31,7 +31,14 @@ import freemarker.cache.TemplateLoader;
 import freemarker.template.Configuration;
 import freemarker.template.Version;
 
-public abstract class CanonGenerator implements ICanonGenerator
+public abstract class CanonGenerator<
+T extends ITemplateModel<T,M,S,O,A,P>,
+M extends IOpenApiTemplateModel<T,M,S,O,A,P>,
+S extends ISchemaTemplateModel<T,M,S,O,A,P>,
+O extends IObjectSchemaTemplateModel<T,M,S,O,A,P>,
+A extends IArraySchemaTemplateModel<T,M,S,O,A,P>,
+P extends IPrimitiveSchemaTemplateModel<T,M,S,O,A,P>>
+implements ICanonGenerator<T,M,S,O,A,P>
 {
   private final String                                   language_;
 //  private Map<Class<?>, ICanonDataModelFunc<ModelElement>> dataModelFuncMap_ = new HashMap<>();
@@ -85,7 +92,7 @@ public abstract class CanonGenerator implements ICanonGenerator
 //  }
   
   @Override
-  public ICanonGenerator withTemplateDir(File templateDir)
+  public ICanonGenerator<T,M,S,O,A,P> withTemplateDir(File templateDir)
   {
     templateDir_ = templateDir;
     config_.setTemplateLoader(getTemplateLoader());

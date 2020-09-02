@@ -114,14 +114,14 @@ public class SchemasObject extends SchemasObjectEntity implements ISchemasObject
   }
   
   @Override
-  public ICanonModelEntity get(String[] parts, int index)
+  public Named<? extends ICanonModelEntity> get(String[] parts, int index)
   {
     ISchema schema = schemas_.get(parts[index]);
     
     if(schema == null)
       return super.get(parts, index);
     else
-      return schema;
+      return new Named<ISchema>(parts[index], schema);
   }
 }
 /*----------------------------------------------------------------------------------------------------

@@ -144,18 +144,19 @@ private final IReferenceObject itemsReference_;
       
       for(Entry<String, Object> entry : propertiesObject.getProperties().entrySet())
       {
-        ISchema schema = null;
-        
         if(entry.getValue() instanceof ISchema)
         {
-          schema = (ISchema)entry.getValue();
+          ISchema schema = (ISchema)entry.getValue();
+          
+          propertiesBuilder.withProperty(entry.getKey(), generationContext.resolve(openApiObject, schema));
         }
         else
         {
-          schema = fetchSchema(openApiObject, generationContext, ((IReferenceObject)entry.getValue()));
+          Named<ISchema> namedSchema = fetchSchema(openApiObject, generationContext, ((IReferenceObject)entry.getValue()));
+          String type = namedSchema.getName();
+          
+          propertiesBuilder.withProperty(entry.getKey(), generationContext.resolve(openApiObject, namedSchema.getValue()));
         }
-        
-        propertiesBuilder.withProperty(entry.getKey(), generationContext.resolve(openApiObject, schema));
       }
       
       builder.withResolvedProperties(propertiesBuilder.build());
@@ -166,7 +167,8 @@ private final IReferenceObject itemsReference_;
     
     if(schema == null && itemsReference_ != null)
     {
-      schema = fetchSchema(openApiObject, generationContext, itemsReference_);
+      Named<ISchema> namedSchema = fetchSchema(openApiObject, generationContext, itemsReference_);
+      schema = namedSchema.getValue();
     }
     
     if(schema != null)
@@ -177,7 +179,7 @@ private final IReferenceObject itemsReference_;
     return builder.build();
   }
   
-  private ISchema fetchSchema(IOpenApiObject openApiObject, GenerationContext generationContext, IReferenceObject ref)
+  private Named<ISchema> fetchSchema(IOpenApiObject openApiObject, GenerationContext generationContext, IReferenceObject ref)
   {
     if(ref.getBaseUrl() == null)
     {

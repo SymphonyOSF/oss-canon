@@ -20,14 +20,27 @@ package com.symphony.oss.canon2.parser;
 
 import com.symphony.oss.commons.fault.CodingFault;
 
-public abstract class GeneratorModelContext<S extends ISchemaTemplateModel<S>> implements IGeneratorModelContext<S>
+public abstract class GeneratorModelContext<
+T extends ITemplateModel<T,M,S,O,A,P>,
+M extends IOpenApiTemplateModel<T,M,S,O,A,P>,
+S extends ISchemaTemplateModel<T,M,S,O,A,P>,
+O extends IObjectSchemaTemplateModel<T,M,S,O,A,P>,
+A extends IArraySchemaTemplateModel<T,M,S,O,A,P>,
+P extends IPrimitiveSchemaTemplateModel<T,M,S,O,A,P>>
+
+
+
+//<M extends IOpenApiTemplateModel<S>, S extends ISchemaTemplateModel,
+//  O extends IObjectSchemaTemplateModel<S>, A extends IArraySchemaTemplateModel<S>, P extends IPrimitiveSchemaTemplateModel<S>>
+  implements IGeneratorModelContext<T,M,S,O,A,P>
 {
-  private final ICanonGenerator generator_;
+  private final ICanonGenerator<T,M,S,O,A,P> generator_;
   private final IModelContext sourceContext_;
-  private final IPathNameConstructor templatePathBuilder_;
-  private final IPathNameConstructor proformaPathBuilder_;
+  private final IPathNameConstructor<T> templatePathBuilder_;
+  private final IPathNameConstructor<T> proformaPathBuilder_;
   
-  public GeneratorModelContext(ICanonGenerator generator, IModelContext context, IPathNameConstructor templatePathBuilder, IPathNameConstructor proformaPathBuilder)
+  public GeneratorModelContext(ICanonGenerator<T,M,S,O,A,P> generator, IModelContext context,
+      IPathNameConstructor<T> templatePathBuilder, IPathNameConstructor<T> proformaPathBuilder)
   {
     generator_ = generator;
     sourceContext_ = context;
@@ -36,7 +49,7 @@ public abstract class GeneratorModelContext<S extends ISchemaTemplateModel<S>> i
   }
   
   @Override
-  public ICanonGenerator getGenerator()
+  public ICanonGenerator<T,M,S,O,A,P> getGenerator()
   {
     return generator_;
   }
@@ -48,7 +61,7 @@ public abstract class GeneratorModelContext<S extends ISchemaTemplateModel<S>> i
   }
 
   @Override
-  public IPathNameConstructor getPathBuilder(TemplateType templateType)
+  public IPathNameConstructor<T> getPathBuilder(TemplateType templateType)
   {
     switch(templateType)
     {

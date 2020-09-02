@@ -40,7 +40,14 @@ import com.symphony.oss.canon2.parser.model.IResolvedModelEntity;
 public interface IResolvedModel
   extends IOpenApiObject, IResolvedModelEntity
 {
-  <S extends ISchemaTemplateModel<S>> IOpenApiTemplateModel<S> generate(IGeneratorModelContext<S> modelContext);
+
+  <
+  T extends ITemplateModel<T,M,S,O,A,P>,
+  M extends IOpenApiTemplateModel<T,M,S,O,A,P>,
+  S extends ISchemaTemplateModel<T,M,S,O,A,P>,
+  O extends IObjectSchemaTemplateModel<T,M,S,O,A,P>,
+  A extends IArraySchemaTemplateModel<T,M,S,O,A,P>,
+  P extends IPrimitiveSchemaTemplateModel<T,M,S,O,A,P>> M generate(IGeneratorModelContext<T,M,S,O,A,P> modelContext);
 
   ImmutableMap<String, IResolvedSchema> getResolvedSchemas();
 }

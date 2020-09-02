@@ -26,7 +26,13 @@ import com.symphony.oss.canon2.parser.IModelContext;
 import com.symphony.oss.canon2.parser.IPathNameConstructor;
 import com.symphony.oss.commons.dom.json.IJsonObject;
 
-public class JavaGenerator extends CanonGenerator
+public class JavaGenerator extends CanonGenerator<
+IJavaTemplateModel, JavaOpenApiTemplateModel,
+JavaSchemaTemplateModel,
+JavaObjectSchemaTemplateModel,
+JavaArraySchemaTemplateModel,
+JavaPrimitiveSchemaTemplateModel
+>
 {
   private static Logger log_ = LoggerFactory.getLogger(JavaGenerator.class);
   

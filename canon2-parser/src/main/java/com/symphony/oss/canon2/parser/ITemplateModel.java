@@ -20,51 +20,53 @@ package com.symphony.oss.canon2.parser;
 
 import java.util.Collection;
 
-import com.google.common.collect.ImmutableList;
-
-public interface ITemplateModel
+public interface ITemplateModel<
+T extends ITemplateModel<T,M,S,O,A,P>,
+M extends IOpenApiTemplateModel<T,M,S,O,A,P>,
+S extends ISchemaTemplateModel<T,M,S,O,A,P>,
+O extends IObjectSchemaTemplateModel<T,M,S,O,A,P>,
+A extends IArraySchemaTemplateModel<T,M,S,O,A,P>,
+P extends IPrimitiveSchemaTemplateModel<T,M,S,O,A,P>>
 {
-  final Collection<? extends ITemplateModel> EMPTY_CHILDREN = ImmutableList.of();
-  
   /**
    * Return the name of this model entity as written in the input spec.
    * 
    * @return The name of this model entity as written in the input spec.
    */
   String getName();
-  
-  /**
-   * Return the name of this model entity in camelCase with a lower case initial letter.
-   * 
-   * @return The name of this model entity in camelCase with a lower case initial letter.
-   */
-  String getCamelName();
+//  
+//  /**
+//   * Return the name of this model entity in camelCase with a lower case initial letter.
+//   * 
+//   * @return The name of this model entity in camelCase with a lower case initial letter.
+//   */
+//  String getCamelName();
+//
+//  /**
+//   * Return the name of this model entity in snake_case with a lower case initial letter.
+//   * 
+//   * @return The name of this model entity in snake_case with a lower case initial letter.
+//   */
+//  String getSnakeName();
+//
+//  /**
+//   * Return the name of this model entity in CamelCase with an upper case initial letter.
+//   * 
+//   * @return The name of this model entity in CamelCase with an upper case initial letter.
+//   */
+//  String getCamelCapitalizedName();
+//  
+//  /**
+//   * Return the name of this model entity in Snake_case with an upper case initial letter.
+//   * 
+//   * @return The name of this model entity in Snake_case with an upper case initial letter.
+//   */
+//  String getSnakeCapitalizedName();
 
   /**
-   * Return the name of this model entity in snake_case with a lower case initial letter.
+   * Return the list of template names which should be run against this model.
    * 
-   * @return The name of this model entity in snake_case with a lower case initial letter.
-   */
-  String getSnakeName();
-
-  /**
-   * Return the name of this model entity in CamelCase with an upper case initial letter.
-   * 
-   * @return The name of this model entity in CamelCase with an upper case initial letter.
-   */
-  String getCamelCapitalizedName();
-  
-  /**
-   * Return the name of this model entity in Snake_case with an upper case initial letter.
-   * 
-   * @return The name of this model entity in Snake_case with an upper case initial letter.
-   */
-  String getSnakeCapitalizedName();
-
-  /**
-   * Return the list of template names which should be run againstthis model.
-   * 
-   * @return The list of template names which should be run againstthis model.
+   * @return The list of template names which should be run against this model.
    */
   String[] getTemaplates();
 
@@ -73,9 +75,9 @@ public interface ITemplateModel
    * 
    * @return The OpenApiObject template model.
    */
-  ITemplateModel getModel();
+  M getModel();
 
-  IGeneratorModelContext getGeneratorModelContext();
+  IGeneratorModelContext<T,M,S,O,A,P> getGeneratorModelContext();
   
-  Collection<? extends ITemplateModel> getChildren();
+  Collection<T> getChildren();
 }

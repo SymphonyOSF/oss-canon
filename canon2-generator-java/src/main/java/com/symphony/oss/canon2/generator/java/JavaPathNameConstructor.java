@@ -30,7 +30,7 @@ import com.symphony.oss.canon2.parser.GenerationException;
 import com.symphony.oss.canon2.parser.ITemplateModel;
 import com.symphony.oss.canon2.parser.PathNameConstructor;
 
-class JavaPathNameConstructor extends PathNameConstructor
+class JavaPathNameConstructor extends PathNameConstructor<IJavaTemplateModel>
 {
   private String packageName_;
 
@@ -47,7 +47,7 @@ class JavaPathNameConstructor extends PathNameConstructor
 
   @Override
   public String constructFile(String templateName,
-      ITemplateModel modelElement) throws GenerationException
+      IJavaTemplateModel modelElement) throws GenerationException
   {
     return constructFile(convertPath(packageName_), templateName, modelElement, modelElement.getCamelCapitalizedName());
   }

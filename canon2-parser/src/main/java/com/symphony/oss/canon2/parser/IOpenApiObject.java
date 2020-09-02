@@ -43,7 +43,7 @@ public interface IOpenApiObject
 
   void fetchReferences(GenerationContext generationContext) throws GenerationException;
 
-  <T extends ICanonModelEntity> T get(String fragment, Class<T> type);
+  <T extends ICanonModelEntity> Named<T> get(String fragment, Class<T> type);
 }
 /*----------------------------------------------------------------------------------------------------
  * End of template proforma/java/Object/I_.java.ftl

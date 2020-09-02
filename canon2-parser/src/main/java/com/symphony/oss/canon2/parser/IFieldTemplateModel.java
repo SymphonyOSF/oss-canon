@@ -18,13 +18,16 @@
 
 package com.symphony.oss.canon2.parser;
 
+import java.util.Collection;
+import java.util.Collections;
+
 /**
- * Super interface for all models passed to the template engine in the final stage of
- * code generation.
+ * Template model object for an object field.
  * 
  * @author Bruce Skingle
+ *
  */
-public interface ISchemaTemplateModel<
+public interface IFieldTemplateModel<
   T extends ITemplateModel<T,M,S,O,A,P>,
   M extends IOpenApiTemplateModel<T,M,S,O,A,P>,
   S extends ISchemaTemplateModel<T,M,S,O,A,P>,
@@ -44,9 +47,16 @@ public interface ISchemaTemplateModel<
   ITemplateModel<T,M,S,O,A,P> asTemplateModel();
   
   /**
-   * Return the type of this schema.
+   * Return the schema for the type of this field.
    * 
-   * @return the type of this schema.
+   * @return the schema for the type of this field.
    */
-  SchemaType getSchemaType();
+  S getTypeSchema();
+  
+  @SuppressWarnings("unchecked")
+  @Override
+  default Collection<T> getChildren()
+  {
+    return (Collection<T>) Collections.singleton(getTypeSchema());
+  }
 }

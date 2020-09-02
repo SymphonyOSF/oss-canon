@@ -9,10 +9,9 @@ package com.symphony.oss.canon2.generator.java;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.symphony.oss.canon2.parser.IGeneratorModelContext;
-import com.symphony.oss.canon2.parser.IOpenApiTemplateModel;
 import com.symphony.oss.canon2.parser.IPrimitiveSchemaTemplateModel;
 import com.symphony.oss.canon2.parser.ISchema;
+import com.symphony.oss.canon2.parser.ISchemaTemplateModel;
 import com.symphony.oss.commons.fault.CodingFault;
 
 /**
@@ -21,13 +20,20 @@ import com.symphony.oss.commons.fault.CodingFault;
  * @author Bruce Skingle
  *
  */
-public class JavaPrimitiveSchemaTemplateModel extends JavaSchemaTemplateModel implements IPrimitiveSchemaTemplateModel<JavaSchemaTemplateModel>
+public class JavaPrimitiveSchemaTemplateModel extends JavaSchemaTemplateModel
+implements IPrimitiveSchemaTemplateModel<
+IJavaTemplateModel,
+JavaOpenApiTemplateModel,
+JavaSchemaTemplateModel,
+JavaObjectSchemaTemplateModel,
+JavaArraySchemaTemplateModel,
+JavaPrimitiveSchemaTemplateModel>
 {
   private static final Logger log_ = LoggerFactory.getLogger(JavaPrimitiveSchemaTemplateModel.class);
   
   private final String type_;
 
-  JavaPrimitiveSchemaTemplateModel(ISchema entity, String name, IOpenApiTemplateModel<JavaSchemaTemplateModel> model, IGeneratorModelContext<JavaSchemaTemplateModel> generatorModelContext,
+  JavaPrimitiveSchemaTemplateModel(ISchema entity, String name, JavaOpenApiTemplateModel model, JavaGeneratorModelContext generatorModelContext,
        String... templates)
   { 
     super(entity, name, model, generatorModelContext, templates);
@@ -42,26 +48,40 @@ public class JavaPrimitiveSchemaTemplateModel extends JavaSchemaTemplateModel im
     switch(entity.getType())
     {
       case "number":
-        switch(entity.getFormat())
+        if(entity.getFormat() != null)
         {
-          case "int64":   return "Long";
-          case "int32":   return "Integer";
-          case "float":   return "Float";
-          case "double":  return "Double";
-          case "default":
-            warnBadFormat(entity);
-            return "Double";
+          switch(entity.getFormat())
+          {
+            case "int64":   return "Long";
+            case "int32":   return "Integer";
+            case "float":   return "Float";
+            case "double":  return "Double";
+            case "default":
+              warnBadFormat(entity);
+              return "Double";
+          }
+        }
+        else
+        {
+          return "Double";
         }
         break;
         
       case "integer":
-        switch(entity.getFormat())
+        if(entity.getFormat() != null)
         {
-          case "int64":   return "Long";
-          case "int32":   return "Integer";
-          case "default":
-            warnBadFormat(entity);
-            return "Long";
+          switch(entity.getFormat())
+          {
+            case "int64":   return "Long";
+            case "int32":   return "Integer";
+            case "default":
+              warnBadFormat(entity);
+              return "Long";
+          }
+        }
+        else
+        {
+          return "Long";
         }
         break;
         
@@ -73,17 +93,24 @@ public class JavaPrimitiveSchemaTemplateModel extends JavaSchemaTemplateModel im
         return "Boolean";
         
       case "string":
-        switch(entity.getFormat())
+        if(entity.getFormat() != null)
         {
-          case "byte":
-            imports_.add("com.symphony.oss.commons.immutable.ImmutableByteArray");
-            return "ImmutableByteArray";
-
-            
-          case "default":
-            warnBadFormat(entity);
-            return "Long";
-
+          switch(entity.getFormat())
+          {
+            case "byte":
+              imports_.add("com.symphony.oss.commons.immutable.ImmutableByteArray");
+              return "ImmutableByteArray";
+  
+              
+            case "default":
+              warnBadFormat(entity);
+              return "String";
+  
+          }
+        }
+        else
+        {
+          return "String";
         }
         break;
         
@@ -98,6 +125,12 @@ public class JavaPrimitiveSchemaTemplateModel extends JavaSchemaTemplateModel im
   {
 
     log_.warn("Unrecognized " + entity.getType() + " format \"" + entity.getFormat() + "\" ignored at " + entity.getSourceLocation());
+  }
+
+  @Override
+  public ISchemaTemplateModel<IJavaTemplateModel, JavaOpenApiTemplateModel, JavaSchemaTemplateModel, JavaObjectSchemaTemplateModel, JavaArraySchemaTemplateModel, JavaPrimitiveSchemaTemplateModel> asSchemaTemplateModel()
+  {
+    return this;
   }
 
   @Override

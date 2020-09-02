@@ -50,7 +50,6 @@ import com.symphony.oss.canon2.parser.model.CanonModel;
  * Generated from ObjectSchema(ResolvedSchema) at #/components/schemas/ResolvedSchema
  */
 @Immutable
-@SuppressWarnings("unused")
 public class ResolvedSchema extends ResolvedSchemaEntity implements IResolvedSchema
 {
   /**
@@ -94,15 +93,32 @@ public class ResolvedSchema extends ResolvedSchemaEntity implements IResolvedSch
   {
     super(other);
   }
-
+  /*
+   * 
+   * (non-Javadoc)
+   * @see com.symphony.oss.canon2.parser.IResolvedSchema#generate(com.symphony.oss.canon2.parser.IOpenApiTemplateModel, java.lang.String, com.symphony.oss.canon2.parser.IGeneratorModelContext)
+   */
+  @SuppressWarnings("unchecked")
   @Override
-  public <S extends ISchemaTemplateModel<S>> S generate(IOpenApiTemplateModel<S> model, String name, IGeneratorModelContext<S> modelContext)
+  public 
+  
+//  <M extends IOpenApiTemplateModel<S>, S extends ISchemaTemplateModel,
+//    O extends IObjectSchemaTemplateModel<S>, A extends IArraySchemaTemplateModel<S>, P extends IPrimitiveSchemaTemplateModel<S>>
+  <
+  T extends ITemplateModel<T,M,S,O,A,P>,
+  M extends IOpenApiTemplateModel<T,M,S,O,A,P>,
+  S extends ISchemaTemplateModel<T,M,S,O,A,P>,
+  O extends IObjectSchemaTemplateModel<T,M,S,O,A,P>,
+  A extends IArraySchemaTemplateModel<T,M,S,O,A,P>,
+  P extends IPrimitiveSchemaTemplateModel<T,M,S,O,A,P>>
+    S generate(M model, String name, IGeneratorModelContext<T,M,S,O,A,P> modelContext)
   {
     switch(getType())
     {
       case "object":
       {
-        IObjectSchemaTemplateModel<S> entity = modelContext.generateObjectSchema(model, this, name);
+        //IObjectSchemaTemplateModel<S> 
+        O entity = modelContext.generateObjectSchema(model, this, name);
         
         IResolvedPropertiesObject propertiesObject = getResolvedProperties();
         
@@ -110,11 +126,11 @@ public class ResolvedSchema extends ResolvedSchemaEntity implements IResolvedSch
         {
           for(Entry<String, IResolvedSchema> entry : propertiesObject.getResolvedProperties().entrySet())
           {
-            entity.addField(entry.getValue().generate(model, entry.getKey(), modelContext));
+            entity.addField(entry.getKey(), entry.getValue().generate(model, entry.getKey(), modelContext));
           }
         }
         
-        return entity;
+        return (S) entity;
       }
       
       case "array":
@@ -124,13 +140,13 @@ public class ResolvedSchema extends ResolvedSchemaEntity implements IResolvedSch
           cardinality = CanonCardinality.LIST; 
         }
         
-        return modelContext.generateArraySchema(model, this, name, cardinality);
+        return (S) modelContext.generateArraySchema(model, this, name, cardinality);
         
       case "number":
       case "boolean":
       case "string":
       case "integer":
-        return modelContext.generatePrimativeSchema(model, this, name);
+        return (S) modelContext.generatePrimativeSchema(model, this, name);
         
       default:
         throw new CodingFault("Unknown schema type " + getType());

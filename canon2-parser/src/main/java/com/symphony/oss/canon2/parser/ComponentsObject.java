@@ -93,7 +93,7 @@ public class ComponentsObject extends ComponentsObjectEntity implements ICompone
   }
   
   @Override
-  public ICanonModelEntity get(String[] parts, int index)
+  public Named<? extends ICanonModelEntity> get(String[] parts, int index)
   {
     switch(parts[index])
     {
