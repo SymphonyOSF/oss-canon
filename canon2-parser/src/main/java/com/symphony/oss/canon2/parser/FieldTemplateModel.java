@@ -25,22 +25,19 @@ package com.symphony.oss.canon2.parser;
  *
  */
 public abstract class FieldTemplateModel<
-T extends ITemplateModel<T,M,S,O,A,P>,
-M extends IOpenApiTemplateModel<T,M,S,O,A,P>,
-S extends ISchemaTemplateModel<T,M,S,O,A,P>,
-O extends IObjectSchemaTemplateModel<T,M,S,O,A,P>,
-A extends IArraySchemaTemplateModel<T,M,S,O,A,P>,
-P extends IPrimitiveSchemaTemplateModel<T,M,S,O,A,P>>
-  extends TemplateModel<T,M,S,O,A,P, IResolvedSchema>
-  implements IFieldTemplateModel<T,M,S,O,A,P>
+T extends ITemplateModel<T,M,S>,
+M extends IOpenApiTemplateModel<T,M,S>,
+S extends ISchemaTemplateModel<T,M,S>>
+  extends TemplateModel<T,M,S>
+  implements IFieldTemplateModel<T,M,S>
 {
   private final S typeSchema_;
   
-  public FieldTemplateModel(IResolvedSchema entity, String name, M model, IGeneratorModelContext<T,M,S,O,A,P> generatorModelContext,
+  public FieldTemplateModel(String name, M model,
       S typeSchema,
       String[] temaplates)
   {
-    super(entity, name, model, generatorModelContext, temaplates);
+    super(name, model, temaplates);
     
     typeSchema_ = typeSchema;
   }

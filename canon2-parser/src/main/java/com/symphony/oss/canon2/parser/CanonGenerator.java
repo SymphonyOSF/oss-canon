@@ -32,13 +32,15 @@ import freemarker.template.Configuration;
 import freemarker.template.Version;
 
 public abstract class CanonGenerator<
-T extends ITemplateModel<T,M,S,O,A,P>,
-M extends IOpenApiTemplateModel<T,M,S,O,A,P>,
-S extends ISchemaTemplateModel<T,M,S,O,A,P>,
-O extends IObjectSchemaTemplateModel<T,M,S,O,A,P>,
-A extends IArraySchemaTemplateModel<T,M,S,O,A,P>,
-P extends IPrimitiveSchemaTemplateModel<T,M,S,O,A,P>>
-implements ICanonGenerator<T,M,S,O,A,P>
+T extends ITemplateModel<T,M,S>,
+M extends IOpenApiTemplateModel<T,M,S>,
+S extends ISchemaTemplateModel<T,M,S>,
+O extends IObjectSchemaTemplateModel<T,M,S,F>,
+A extends IArraySchemaTemplateModel<T,M,S>,
+P extends IPrimitiveSchemaTemplateModel<T,M,S>,
+F extends IFieldTemplateModel<T,M,S>
+>
+implements ICanonGenerator<T,M,S,O,A,P,F>
 {
   private final String                                   language_;
 //  private Map<Class<?>, ICanonDataModelFunc<ModelElement>> dataModelFuncMap_ = new HashMap<>();
@@ -92,7 +94,7 @@ implements ICanonGenerator<T,M,S,O,A,P>
 //  }
   
   @Override
-  public ICanonGenerator<T,M,S,O,A,P> withTemplateDir(File templateDir)
+  public ICanonGenerator<T,M,S,O,A,P,F> withTemplateDir(File templateDir)
   {
     templateDir_ = templateDir;
     config_.setTemplateLoader(getTemplateLoader());

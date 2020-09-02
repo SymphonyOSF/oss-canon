@@ -24,13 +24,11 @@ import java.util.Collections;
 import com.symphony.oss.canon2.parser.model.CanonCardinality;
 
 public interface IArraySchemaTemplateModel<
-  T extends ITemplateModel<T,M,S,O,A,P>,
-  M extends IOpenApiTemplateModel<T,M,S,O,A,P>,
-  S extends ISchemaTemplateModel<T,M,S,O,A,P>,
-  O extends IObjectSchemaTemplateModel<T,M,S,O,A,P>,
-  A extends IArraySchemaTemplateModel<T,M,S,O,A,P>,
-  P extends IPrimitiveSchemaTemplateModel<T,M,S,O,A,P>>
-    extends ISchemaTemplateModel<T,M,S,O,A,P>
+  T extends ITemplateModel<T,M,S>,
+  M extends IOpenApiTemplateModel<T,M,S>,
+  S extends ISchemaTemplateModel<T,M,S>
+  >
+    extends ISchemaTemplateModel<T,M,S>
 {
   /**
    * Return this object as an ISchemaTemplateModel.
@@ -40,11 +38,10 @@ public interface IArraySchemaTemplateModel<
    * 
    * @return this object as an ITemplateModel.
    */
-  ISchemaTemplateModel<T,M,S,O,A,P> asSchemaTemplateModel();
+  S asSchemaTemplateModel();
   
   S getElementType();
   
-  @SuppressWarnings("unchecked")
   @Override
   default Collection<T> getChildren()
   {

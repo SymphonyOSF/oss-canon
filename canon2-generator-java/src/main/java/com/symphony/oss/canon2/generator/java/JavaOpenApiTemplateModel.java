@@ -22,29 +22,25 @@ import java.util.Set;
 import java.util.TreeSet;
 
 import com.symphony.oss.canon2.parser.IOpenApiObject;
-import com.symphony.oss.canon2.parser.ITemplateModel;
 import com.symphony.oss.canon2.parser.OpenApiTemplateModel;
 
 public class JavaOpenApiTemplateModel extends OpenApiTemplateModel<
 IJavaTemplateModel,
 JavaOpenApiTemplateModel,
-JavaSchemaTemplateModel,
-JavaObjectSchemaTemplateModel,
-JavaArraySchemaTemplateModel,
-JavaPrimitiveSchemaTemplateModel
+JavaSchemaTemplateModel
 >
 implements IJavaTemplateModel
 {
   Set<String> imports_ = new TreeSet<>();
   
-  public JavaOpenApiTemplateModel(IOpenApiObject entity, String name, JavaGeneratorModelContext generatorModelContext,
+  public JavaOpenApiTemplateModel(IOpenApiObject resolvedModel, String name,
       String... temaplates)
   {
-    super(entity, name, generatorModelContext, temaplates);
+    super(resolvedModel, name, temaplates);
   }
 
   @Override
-  public ITemplateModel<IJavaTemplateModel, JavaOpenApiTemplateModel, JavaSchemaTemplateModel, JavaObjectSchemaTemplateModel, JavaArraySchemaTemplateModel, JavaPrimitiveSchemaTemplateModel> asTemplateModel()
+  public IJavaTemplateModel asTemplateModel()
   {
     return this;
   }

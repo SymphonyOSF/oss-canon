@@ -30,7 +30,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-public class PathNameConstructor<T extends ITemplateModel<?,?,?,?,?,?>> implements IPathNameConstructor<T>
+public class PathNameConstructor<T extends ITemplateModel<?,?,?>> implements IPathNameConstructor<T>
 {
   private final String language_;
 

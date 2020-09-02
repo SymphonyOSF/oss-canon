@@ -31,24 +31,25 @@ import com.symphony.oss.canon2.parser.model.SemanticVersion;
  *
  */
 public abstract class OpenApiTemplateModel<
-T extends ITemplateModel<T,M,S,O,A,P>,
-M extends IOpenApiTemplateModel<T,M,S,O,A,P>,
-S extends ISchemaTemplateModel<T,M,S,O,A,P>,
-O extends IObjectSchemaTemplateModel<T,M,S,O,A,P>,
-A extends IArraySchemaTemplateModel<T,M,S,O,A,P>,
-P extends IPrimitiveSchemaTemplateModel<T,M,S,O,A,P>>
-  extends TemplateModel<T,M,S,O,A,P, IOpenApiObject>
-  implements IOpenApiTemplateModel<T,M,S,O,A,P>
+T extends ITemplateModel<T,M,S>,
+M extends IOpenApiTemplateModel<T,M,S>,
+S extends ISchemaTemplateModel<T,M,S>>
+  extends TemplateModel<T,M,S>
+  implements IOpenApiTemplateModel<T,M,S>
 {
-  private List<S> schemas_ = new LinkedList<>();
+  private final IOpenApiObject resolvedModel_;
+  private final List<S>        schemas_ = new LinkedList<>();
 
-  private Integer             canonMajorVersion_;
-  private Integer             canonMinorVersion_;
+  private final Integer        canonMajorVersion_;
+  private final Integer        canonMinorVersion_;
+
   
-  public OpenApiTemplateModel(IOpenApiObject entity, String name, IGeneratorModelContext<T,M,S,O,A,P> generatorModelContext,
+  public OpenApiTemplateModel(IOpenApiObject resolvedModel, String name,
       String[] temaplates)
   {
-    super(entity, name, null, generatorModelContext, temaplates);
+    super(name, null, temaplates);
+    
+    resolvedModel_ = resolvedModel;
     
     String[] parts = getCanonVersion().getValue().split("\\.");
     
@@ -64,11 +65,16 @@ P extends IPrimitiveSchemaTemplateModel<T,M,S,O,A,P>>
         throw new IllegalStateException("version must be a 2 element semantic version (each element must be an integer)");
       }
     }
+    else
+    {
+      canonMajorVersion_ = null;
+      canonMinorVersion_ = null;
+    }
   }
   
   public String getCanonId()
   {
-    return entity_.getXCanonId();
+    return resolvedModel_.getXCanonId();
   }
   
   public Integer getCanonMajorVersion()
@@ -83,21 +89,22 @@ P extends IPrimitiveSchemaTemplateModel<T,M,S,O,A,P>>
 
   public SemanticVersion getCanonVersion()
   {
-    return entity_.getXCanonVersion();
+    return resolvedModel_.getXCanonVersion();
   }
 
-  @SuppressWarnings("unchecked")
   @Override
   public M getModel()
   {
     return (M)this;
   }
 
+  @Override
   public void addSchema(S schema)
   {
     schemas_.add(schema);
   }
 
+  @Override
   public Collection<S> getSchemas()
   {
     return schemas_;

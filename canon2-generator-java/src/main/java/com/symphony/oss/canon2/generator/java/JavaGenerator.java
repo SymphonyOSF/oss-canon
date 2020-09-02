@@ -31,7 +31,8 @@ IJavaTemplateModel, JavaOpenApiTemplateModel,
 JavaSchemaTemplateModel,
 JavaObjectSchemaTemplateModel,
 JavaArraySchemaTemplateModel,
-JavaPrimitiveSchemaTemplateModel
+JavaPrimitiveSchemaTemplateModel,
+JavaFieldTemplateModel
 >
 {
   private static Logger log_ = LoggerFactory.getLogger(JavaGenerator.class);

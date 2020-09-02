@@ -27,21 +27,22 @@ import freemarker.cache.TemplateLoader;
 import freemarker.template.Configuration;
 
 public interface ICanonGenerator<
-T extends ITemplateModel<T,M,S,O,A,P>,
-M extends IOpenApiTemplateModel<T,M,S,O,A,P>,
-S extends ISchemaTemplateModel<T,M,S,O,A,P>,
-O extends IObjectSchemaTemplateModel<T,M,S,O,A,P>,
-A extends IArraySchemaTemplateModel<T,M,S,O,A,P>,
-P extends IPrimitiveSchemaTemplateModel<T,M,S,O,A,P>>
+T extends ITemplateModel<T,M,S>,
+M extends IOpenApiTemplateModel<T,M,S>,
+S extends ISchemaTemplateModel<T,M,S>,
+O extends IObjectSchemaTemplateModel<T,M,S,F>,
+A extends IArraySchemaTemplateModel<T,M,S>,
+P extends IPrimitiveSchemaTemplateModel<T,M,S>,
+F extends IFieldTemplateModel<T,M,S>>
 {
   
   TemplateLoader getTemplateLoader();
 
   Configuration getFreemarkerConfig();
   
-  ICanonGenerator<T,M,S,O,A,P> withTemplateDir(File templateDir);
+  ICanonGenerator<T,M,S,O,A,P,F> withTemplateDir(File templateDir);
 
-  IGeneratorModelContext<T,M,S,O,A,P> createModelContext(IModelContext context, IJsonObject<?> generatorConfig);
+  IGeneratorModelContext<T,M,S,O,A,P,F> createModelContext(IModelContext context, IJsonObject<?> generatorConfig);
 
   String getLanguage();
 

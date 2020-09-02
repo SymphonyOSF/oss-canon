@@ -11,7 +11,6 @@ import org.slf4j.LoggerFactory;
 
 import com.symphony.oss.canon2.parser.IPrimitiveSchemaTemplateModel;
 import com.symphony.oss.canon2.parser.ISchema;
-import com.symphony.oss.canon2.parser.ISchemaTemplateModel;
 import com.symphony.oss.commons.fault.CodingFault;
 
 /**
@@ -24,19 +23,16 @@ public class JavaPrimitiveSchemaTemplateModel extends JavaSchemaTemplateModel
 implements IPrimitiveSchemaTemplateModel<
 IJavaTemplateModel,
 JavaOpenApiTemplateModel,
-JavaSchemaTemplateModel,
-JavaObjectSchemaTemplateModel,
-JavaArraySchemaTemplateModel,
-JavaPrimitiveSchemaTemplateModel>
+JavaSchemaTemplateModel>
 {
   private static final Logger log_ = LoggerFactory.getLogger(JavaPrimitiveSchemaTemplateModel.class);
   
   private final String type_;
 
-  JavaPrimitiveSchemaTemplateModel(ISchema entity, String name, JavaOpenApiTemplateModel model, JavaGeneratorModelContext generatorModelContext,
+  JavaPrimitiveSchemaTemplateModel(ISchema entity, String name, JavaOpenApiTemplateModel model,
        String... templates)
   { 
-    super(entity, name, model, generatorModelContext, templates);
+    super(name, model, templates);
     
     type_ = initType(entity);
     imports_.add("com.symphony.oss.commons.type.provider.I" + type_ + "Provider");
@@ -128,14 +124,20 @@ JavaPrimitiveSchemaTemplateModel>
   }
 
   @Override
-  public ISchemaTemplateModel<IJavaTemplateModel, JavaOpenApiTemplateModel, JavaSchemaTemplateModel, JavaObjectSchemaTemplateModel, JavaArraySchemaTemplateModel, JavaPrimitiveSchemaTemplateModel> asSchemaTemplateModel()
+  public String getType()
+  {
+    return type_;
+  }
+
+  @Override
+  public IJavaTemplateModel asTemplateModel()
   {
     return this;
   }
 
   @Override
-  public String getType()
+  public JavaSchemaTemplateModel asSchemaTemplateModel()
   {
-    return type_;
+    return this;
   }
 }

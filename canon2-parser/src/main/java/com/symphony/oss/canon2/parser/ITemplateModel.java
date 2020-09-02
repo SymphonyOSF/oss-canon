@@ -20,13 +20,21 @@ package com.symphony.oss.canon2.parser;
 
 import java.util.Collection;
 
+/**
+ * Super-interface for all template model objects.
+ * 
+ * These are the objects passed to Freemarker during template expansion.
+ * 
+ * @author Bruce Skingle
+ *
+ * @param <T> Concrete implementation of ITemplateModel.
+ * @param <M> Concrete implementation of IOpenApiTemplateModel.
+ * @param <S> Concrete implementation of ISchemaTemplateModel.
+ */
 public interface ITemplateModel<
-T extends ITemplateModel<T,M,S,O,A,P>,
-M extends IOpenApiTemplateModel<T,M,S,O,A,P>,
-S extends ISchemaTemplateModel<T,M,S,O,A,P>,
-O extends IObjectSchemaTemplateModel<T,M,S,O,A,P>,
-A extends IArraySchemaTemplateModel<T,M,S,O,A,P>,
-P extends IPrimitiveSchemaTemplateModel<T,M,S,O,A,P>>
+T extends ITemplateModel<T,M,S>,
+M extends IOpenApiTemplateModel<T,M,S>,
+S extends ISchemaTemplateModel<T,M,S>>
 {
   /**
    * Return the name of this model entity as written in the input spec.
@@ -76,8 +84,6 @@ P extends IPrimitiveSchemaTemplateModel<T,M,S,O,A,P>>
    * @return The OpenApiObject template model.
    */
   M getModel();
-
-  IGeneratorModelContext<T,M,S,O,A,P> getGeneratorModelContext();
   
   Collection<T> getChildren();
 }

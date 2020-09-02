@@ -19,19 +19,20 @@
 package com.symphony.oss.canon2.parser;
 
 /**
- * Super interface for all models passed to the template engine in the final stage of
- * code generation.
+ * Super interface for template models for all schema types.
  * 
  * @author Bruce Skingle
+ *
+ * @param <T> Concrete implementation of ITemplateModel.
+ * @param <M> Concrete implementation of IOpenApiTemplateModel.
+ * @param <S> Concrete implementation of ISchemaTemplateModel.
  */
 public interface ISchemaTemplateModel<
-  T extends ITemplateModel<T,M,S,O,A,P>,
-  M extends IOpenApiTemplateModel<T,M,S,O,A,P>,
-  S extends ISchemaTemplateModel<T,M,S,O,A,P>,
-  O extends IObjectSchemaTemplateModel<T,M,S,O,A,P>,
-  A extends IArraySchemaTemplateModel<T,M,S,O,A,P>,
-  P extends IPrimitiveSchemaTemplateModel<T,M,S,O,A,P>>
-    extends ITemplateModel<T,M,S,O,A,P>
+  T extends ITemplateModel<T,M,S>,
+  M extends IOpenApiTemplateModel<T,M,S>,
+  S extends ISchemaTemplateModel<T,M,S>
+  >
+    extends ITemplateModel<T,M,S>
 {
   /**
    * Return this object as an ITemplateModel.
@@ -41,7 +42,7 @@ public interface ISchemaTemplateModel<
    * 
    * @return this object as an ITemplateModel.
    */
-  ITemplateModel<T,M,S,O,A,P> asTemplateModel();
+  T asTemplateModel();
   
   /**
    * Return the type of this schema.

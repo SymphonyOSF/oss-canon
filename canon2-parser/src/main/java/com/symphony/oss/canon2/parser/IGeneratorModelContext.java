@@ -23,12 +23,14 @@ import java.util.Map;
 import com.symphony.oss.canon2.parser.model.CanonCardinality;
 
 public interface IGeneratorModelContext<
-T extends ITemplateModel<T,M,S,O,A,P>,
-M extends IOpenApiTemplateModel<T,M,S,O,A,P>,
-S extends ISchemaTemplateModel<T,M,S,O,A,P>,
-O extends IObjectSchemaTemplateModel<T,M,S,O,A,P>,
-A extends IArraySchemaTemplateModel<T,M,S,O,A,P>,
-P extends IPrimitiveSchemaTemplateModel<T,M,S,O,A,P>>
+T extends ITemplateModel<T,M,S>,
+M extends IOpenApiTemplateModel<T,M,S>,
+S extends ISchemaTemplateModel<T,M,S>,
+O extends IObjectSchemaTemplateModel<T,M,S,F>,
+A extends IArraySchemaTemplateModel<T,M,S>,
+P extends IPrimitiveSchemaTemplateModel<T,M,S>,
+F extends IFieldTemplateModel<T,M,S>
+>
 
 
 //<M extends IOpenApiTemplateModel<S>, S extends ISchemaTemplateModel,
@@ -41,11 +43,13 @@ P extends IPrimitiveSchemaTemplateModel<T,M,S,O,A,P>>
   O generateObjectSchema(M model, IResolvedSchema entity, String name);
   A generateArraySchema(M model, IResolvedSchema entity, String name, CanonCardinality cardinality);
 
-  ICanonGenerator<T,M,S,O,A,P> getGenerator();
+  ICanonGenerator<T,M,S,O,A,P,F> getGenerator();
 
   IPathNameConstructor<T> getPathBuilder(TemplateType templateType);
 
   void populateTemplateModel(Map<String, Object> map);
 
-  P generatePrimativeSchema(M model, ISchema entity, String name);
+  P generatePrimativeSchema(M model, IResolvedSchema entity, String name);
+  
+  F generateField(M model, IResolvedSchema entity, String name, S typeSchema);
 }

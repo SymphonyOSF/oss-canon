@@ -361,18 +361,48 @@ public class GenerationContext
     return modelMap_.get(url);
   }
   
-  private class TemplateModelConsumer implements Consumer<ITemplateModel<?,?,?,?,?,?>>
+  private class TemplateModelContext<
+  T extends ITemplateModel<T,M,S>,
+  M extends IOpenApiTemplateModel<T,M,S>,
+  S extends ISchemaTemplateModel<T,M,S>,
+  O extends IObjectSchemaTemplateModel<T,M,S,F>,
+  A extends IArraySchemaTemplateModel<T,M,S>,
+  P extends IPrimitiveSchemaTemplateModel<T,M,S>,
+  F extends IFieldTemplateModel<T,M,S>>
   {
-    private Map<String, List<ITemplateModel<?,?,?,?,?,?>>> map_ = new HashMap<>();
+    private final IGeneratorModelContext<T,M,S,O,A,P,F> context_;
+    private final T model_;
+    
+    private TemplateModelContext(IGeneratorModelContext<T,M,S,O,A,P,F> context,
+        T model)
+    {
+      context_ = context;
+      model_ = model;
+    }
+
+    private IGeneratorModelContext<T,M,S,O,A,P,F> getContext()
+    {
+      return context_;
+    }
+
+    private T getModel()
+    {
+      return model_;
+    }
+  }
+  
+  private class TemplateModelConsumer implements Consumer<TemplateModelContext<?,?,?,?,?,?,?>>
+  {
+    private Map<String, List<TemplateModelContext<?,?,?,?,?,?,?>>> map_ = new HashMap<>();
     
     @Override
-    public synchronized void accept(ITemplateModel<?,?,?,?,?,?> model)
+    public synchronized void accept(TemplateModelContext<?,?,?,?,?,?,?> modelContext)
     {
-      if(model.getTemaplates() != null)
+      if(modelContext.getModel().getTemaplates() != null)
       {
-        for(String template : model.getTemaplates())
+        for(String template : modelContext.getModel().getTemaplates())
         {
-          List<ITemplateModel<?,?,?,?,?,?>> list = map_.get(template);
+          List<TemplateModelContext<?,?,?,?,?,?,?>> list = map_.get(template);
           
           if(list == null)
           {
@@ -380,7 +410,7 @@ public class GenerationContext
             map_.put(template, list);
           }
           
-          list.add(model);
+          list.add(modelContext);
         }
       }
     }
@@ -392,36 +422,52 @@ public class GenerationContext
       {
         log_.info("Process template " + templateGroup + "...");
         
-        for(ITemplateModel<?,?,?,?,?,?> model : map_.get(templateGroup))
+        for(TemplateModelContext<?,?,?,?,?,?,?> modelContext : map_.get(templateGroup))
         {
-          new Helper(model).generateModel(templateGroup);
+          generateModel(modelContext, templateGroup);
         }
       }
     }
+    
+    private <
+    T extends ITemplateModel<T,M,S>,
+    M extends IOpenApiTemplateModel<T,M,S>,
+    S extends ISchemaTemplateModel<T,M,S>,
+    O extends IObjectSchemaTemplateModel<T,M,S,F>,
+    A extends IArraySchemaTemplateModel<T,M,S>,
+    P extends IPrimitiveSchemaTemplateModel<T,M,S>,
+    F extends IFieldTemplateModel<T,M,S>
+    >
+    void generateModel(TemplateModelContext<T,M,S,O,A,P,F> modelContext, String templateGroup) throws GenerationException
+    {
+      new Helper<T,M,S,O,A,P,F>(modelContext).generateModel(templateGroup);
+    }
 
-    private  class Helper<
-    T extends ITemplateModel<T,M,S,O,A,P>,
-    M extends IOpenApiTemplateModel<T,M,S,O,A,P>,
-    S extends ISchemaTemplateModel<T,M,S,O,A,P>,
-    O extends IObjectSchemaTemplateModel<T,M,S,O,A,P>,
-    A extends IArraySchemaTemplateModel<T,M,S,O,A,P>,
-    P extends IPrimitiveSchemaTemplateModel<T,M,S,O,A,P>
+    private  class Helper
+    <
+    T extends ITemplateModel<T,M,S>,
+    M extends IOpenApiTemplateModel<T,M,S>,
+    S extends ISchemaTemplateModel<T,M,S>,
+    O extends IObjectSchemaTemplateModel<T,M,S,F>,
+    A extends IArraySchemaTemplateModel<T,M,S>,
+    P extends IPrimitiveSchemaTemplateModel<T,M,S>,
+    F extends IFieldTemplateModel<T,M,S>
     >
     {
-      private T model;
+      private TemplateModelContext<T,M,S,O,A,P,F> modelContext_;
 
-      private Helper(T model)
+      private Helper(TemplateModelContext<T,M,S,O,A,P,F> modelContext)
       {
-        this.model = model;
+        modelContext_ = modelContext;
       }
 
       void generateModel(String templateGroup) throws GenerationException
       {
   
-        log_.info("Process template " + templateGroup + ", model " + model.getName() + "...");
+        log_.info("Process template " + templateGroup + ", model " + modelContext_.getModel().getName() + "...");
         
-        IGeneratorModelContext<T,M,S,O,A,P> modelContext = model.getGeneratorModelContext();
-        ICanonGenerator<T,M,S,O,A,P> generator = modelContext.getGenerator();
+        IGeneratorModelContext<T,M,S,O,A,P,F> generatorModelContext = modelContext_.getContext();
+        ICanonGenerator<T,M,S,O,A,P,F> generator = generatorModelContext.getGenerator();
         
         for(TemplateType templateType : TemplateType.values())
         {
@@ -429,14 +475,14 @@ public class GenerationContext
           
           for(String templateName : templateNames)
           {
-            generate(generator, modelContext, model, templateType, templateName);
+            generate(generator, generatorModelContext, modelContext_.getModel(), templateType, templateName);
             
           }
         }
       }
   
   
-      private void generate(ICanonGenerator<T,M,S,O,A,P> generator, IGeneratorModelContext<T,M,S,O,A,P> modelContext, T entity,
+      private void generate(ICanonGenerator<T,M,S,O,A,P,F> generator, IGeneratorModelContext<T,M,S,O,A,P,F> modelContext, T entity,
           TemplateType templateType, String templateName) throws GenerationException
       {
         IPathNameConstructor<T> pathBuilder = modelContext.getPathBuilder(templateType);
@@ -539,18 +585,19 @@ public class GenerationContext
 
   private class GenerationHelper
   <
-  T extends ITemplateModel<T,M,S,O,A,P>,
-  M extends IOpenApiTemplateModel<T,M,S,O,A,P>,
-  S extends ISchemaTemplateModel<T,M,S,O,A,P>,
-  O extends IObjectSchemaTemplateModel<T,M,S,O,A,P>,
-  A extends IArraySchemaTemplateModel<T,M,S,O,A,P>,
-  P extends IPrimitiveSchemaTemplateModel<T,M,S,O,A,P>>
+  T extends ITemplateModel<T,M,S>,
+  M extends IOpenApiTemplateModel<T,M,S>,
+  S extends ISchemaTemplateModel<T,M,S>,
+  O extends IObjectSchemaTemplateModel<T,M,S,F>,
+  A extends IArraySchemaTemplateModel<T,M,S>,
+  P extends IPrimitiveSchemaTemplateModel<T,M,S>,
+  F extends IFieldTemplateModel<T,M,S>>
   {
     ModelContext context;
-    ICanonGenerator<T,M,S,O,A,P> generator;
+    ICanonGenerator<T,M,S,O,A,P,F> generator;
     TemplateModelConsumer consumer;
 
-    GenerationHelper(ModelContext context, ICanonGenerator<T,M,S,O,A,P> generator, TemplateModelConsumer consumer)
+    GenerationHelper(ModelContext context, ICanonGenerator<T,M,S,O,A,P,F> generator, TemplateModelConsumer consumer)
     {
       this.context = context;
       this.generator = generator;
@@ -561,21 +608,21 @@ public class GenerationContext
     {
       IJsonObject<?> generatorConfig = context.getModel().getXCanonGenerators().getJsonObject().getRequiredObject(generator.getLanguage());
     
-      IGeneratorModelContext<T,M,S,O,A,P> generatorModelContext = generator.createModelContext(context, generatorConfig);
+      IGeneratorModelContext<T,M,S,O,A,P,F> generatorModelContext = generator.createModelContext(context, generatorConfig);
     
       M templateModel = context.getResolvedModel().generate(generatorModelContext);
     
-      gather(templateModel.asTemplateModel(), consumer);
+      gather(generatorModelContext, templateModel.asTemplateModel(), consumer);
       //generator.generate(context.getModel(), context, this, consumer);
 
     }
 
-    private void gather(ITemplateModel<?,?,?,?,?,?> model, TemplateModelConsumer consumer)
+    private void gather(IGeneratorModelContext<T,M,S,O,A,P,F> generatorModelContext, T model, TemplateModelConsumer consumer)
     {
-      consumer.accept(model);
+      consumer.accept(new TemplateModelContext<T,M,S,O,A,P,F>(generatorModelContext, model));
       
-      for(ITemplateModel<?,?,?,?,?,?> child : model.getChildren())
-        gather(child, consumer);
+      for(T child : model.getChildren())
+        gather(generatorModelContext, child, consumer);
     }
   }
 

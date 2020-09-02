@@ -18,51 +18,54 @@
 
 package com.symphony.oss.canon2.generator.java;
 
-import java.util.HashMap;
+import java.util.Collection;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
 import com.symphony.oss.canon2.parser.IObjectSchemaTemplateModel;
-import com.symphony.oss.canon2.parser.IResolvedSchema;
-import com.symphony.oss.canon2.parser.ISchemaTemplateModel;
 
 public class JavaObjectSchemaTemplateModel extends JavaSchemaTemplateModel
 implements IObjectSchemaTemplateModel<
 IJavaTemplateModel,
 JavaOpenApiTemplateModel,
 JavaSchemaTemplateModel,
-JavaObjectSchemaTemplateModel,
-JavaArraySchemaTemplateModel,
-JavaPrimitiveSchemaTemplateModel>
+JavaFieldTemplateModel
+>
 {
-  private Map<String, JavaSchemaTemplateModel> fields_ = new HashMap<>();
+  private List<JavaFieldTemplateModel> fields_ = new LinkedList<>();
   
-  JavaObjectSchemaTemplateModel(IResolvedSchema entity, String name, JavaOpenApiTemplateModel model,
-      JavaGeneratorModelContext generatorModelContext,
-       String... temaplates)
+  JavaObjectSchemaTemplateModel(String name, JavaOpenApiTemplateModel model,
+      String... temaplates)
   {
-    super(entity, name, model, generatorModelContext, temaplates);
+    super(name, model, temaplates);
     
     imports_.add("javax.annotation.concurrent.Immutable");
     imports_.add("javax.annotation.Nullable");
   }
 
   @Override
-  public ISchemaTemplateModel<IJavaTemplateModel, JavaOpenApiTemplateModel, JavaSchemaTemplateModel, JavaObjectSchemaTemplateModel, JavaArraySchemaTemplateModel, JavaPrimitiveSchemaTemplateModel> asSchemaTemplateModel()
+  public IJavaTemplateModel asTemplateModel()
   {
     return this;
   }
 
   @Override
-  public void addField(String name, JavaSchemaTemplateModel field)
+  public JavaSchemaTemplateModel asSchemaTemplateModel()
   {
-    fields_.put(name, field);
+    return this;
+  }
+
+  @Override
+  public void addField(JavaFieldTemplateModel field)
+  {
+    fields_.add(field);
     
     imports_.addAll(field.imports_);
   }
   
   @Override
-  public Map<String, JavaSchemaTemplateModel> getFields()
+  public Collection<JavaFieldTemplateModel> getFields()
   {
     return fields_;
   }
@@ -76,7 +79,7 @@ JavaPrimitiveSchemaTemplateModel>
   @Override
   public String getType()
   {
-    return getName();
+    return getCamelCapitalizedName();
     
     //getCamelCapitalizedName();
   }

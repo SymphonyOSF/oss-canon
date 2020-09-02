@@ -21,25 +21,21 @@ package com.symphony.oss.canon2.parser;
 import com.symphony.oss.commons.fault.CodingFault;
 
 public abstract class GeneratorModelContext<
-T extends ITemplateModel<T,M,S,O,A,P>,
-M extends IOpenApiTemplateModel<T,M,S,O,A,P>,
-S extends ISchemaTemplateModel<T,M,S,O,A,P>,
-O extends IObjectSchemaTemplateModel<T,M,S,O,A,P>,
-A extends IArraySchemaTemplateModel<T,M,S,O,A,P>,
-P extends IPrimitiveSchemaTemplateModel<T,M,S,O,A,P>>
-
-
-
-//<M extends IOpenApiTemplateModel<S>, S extends ISchemaTemplateModel,
-//  O extends IObjectSchemaTemplateModel<S>, A extends IArraySchemaTemplateModel<S>, P extends IPrimitiveSchemaTemplateModel<S>>
-  implements IGeneratorModelContext<T,M,S,O,A,P>
+T extends ITemplateModel<T,M,S>,
+M extends IOpenApiTemplateModel<T,M,S>,
+S extends ISchemaTemplateModel<T,M,S>,
+O extends IObjectSchemaTemplateModel<T,M,S,F>,
+A extends IArraySchemaTemplateModel<T,M,S>,
+P extends IPrimitiveSchemaTemplateModel<T,M,S>,
+F extends IFieldTemplateModel<T,M,S>>
+  implements IGeneratorModelContext<T,M,S,O,A,P,F>
 {
-  private final ICanonGenerator<T,M,S,O,A,P> generator_;
+  private final ICanonGenerator<T,M,S,O,A,P,F> generator_;
   private final IModelContext sourceContext_;
   private final IPathNameConstructor<T> templatePathBuilder_;
   private final IPathNameConstructor<T> proformaPathBuilder_;
   
-  public GeneratorModelContext(ICanonGenerator<T,M,S,O,A,P> generator, IModelContext context,
+  public GeneratorModelContext(ICanonGenerator<T,M,S,O,A,P,F> generator, IModelContext context,
       IPathNameConstructor<T> templatePathBuilder, IPathNameConstructor<T> proformaPathBuilder)
   {
     generator_ = generator;
@@ -49,7 +45,7 @@ P extends IPrimitiveSchemaTemplateModel<T,M,S,O,A,P>>
   }
   
   @Override
-  public ICanonGenerator<T,M,S,O,A,P> getGenerator()
+  public ICanonGenerator<T,M,S,O,A,P,F> getGenerator()
   {
     return generator_;
   }

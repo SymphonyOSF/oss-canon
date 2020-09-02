@@ -22,34 +22,29 @@ import java.util.Set;
 import java.util.TreeSet;
 
 import com.symphony.oss.canon2.parser.ISchema;
-import com.symphony.oss.canon2.parser.ITemplateModel;
 import com.symphony.oss.canon2.parser.SchemaTemplateModel;
 
 public abstract class JavaSchemaTemplateModel
 extends SchemaTemplateModel<
 IJavaTemplateModel,
 JavaOpenApiTemplateModel,
-JavaSchemaTemplateModel,
-JavaObjectSchemaTemplateModel,
-JavaArraySchemaTemplateModel,
-JavaPrimitiveSchemaTemplateModel,
-ISchema>
+JavaSchemaTemplateModel
+>
 implements IJavaTemplateModel
 {
   Set<String> imports_ = new TreeSet<>();
   
-  JavaSchemaTemplateModel(ISchema entity, String name, JavaOpenApiTemplateModel model,
-      JavaGeneratorModelContext generatorModelContext,
+  JavaSchemaTemplateModel(String name, JavaOpenApiTemplateModel model,
       String... templates)
   {
-    super(entity, name, model, generatorModelContext, templates);
+    super(name, model, templates);
     
     imports_.add("javax.annotation.concurrent.Immutable");
     imports_.add("javax.annotation.Nullable");
   }
 
   @Override
-  public ITemplateModel<IJavaTemplateModel, JavaOpenApiTemplateModel, JavaSchemaTemplateModel, JavaObjectSchemaTemplateModel, JavaArraySchemaTemplateModel, JavaPrimitiveSchemaTemplateModel> asTemplateModel()
+  public IJavaTemplateModel asTemplateModel()
   {
     return this;
   }

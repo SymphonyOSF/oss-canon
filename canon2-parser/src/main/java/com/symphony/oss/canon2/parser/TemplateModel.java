@@ -18,10 +18,6 @@
 
 package com.symphony.oss.canon2.parser;
 
-import java.util.Collection;
-
-import com.google.common.collect.ImmutableList;
-
 /**
  * Base implementation of ITemplateModel which provides a set of methods returning the entity name mapped
  * to various case conventions.
@@ -30,17 +26,11 @@ import com.google.common.collect.ImmutableList;
  *
  */
 public abstract class TemplateModel<
-T extends ITemplateModel<T,M,S,O,A,P>,
-M extends IOpenApiTemplateModel<T,M,S,O,A,P>,
-S extends ISchemaTemplateModel<T,M,S,O,A,P>,
-O extends IObjectSchemaTemplateModel<T,M,S,O,A,P>,
-A extends IArraySchemaTemplateModel<T,M,S,O,A,P>,
-P extends IPrimitiveSchemaTemplateModel<T,M,S,O,A,P>,
-E extends ICanonModelEntity>
+T extends ITemplateModel<T,M,S>,
+M extends IOpenApiTemplateModel<T,M,S>,
+S extends ISchemaTemplateModel<T,M,S>
+>
 {
-  protected E entity_;
-  
-  private final IGeneratorModelContext<T,M,S,O,A,P> generatorModelContext_;
   private final String[]               templates_;
   private final String                 name_;
   private final String                 camelName_;
@@ -49,10 +39,8 @@ E extends ICanonModelEntity>
   private final String                 snakeCapitalizedName_;
   private final M         model_;
 
-  public TemplateModel(E entity, String name, M model, IGeneratorModelContext<T,M,S,O,A,P> generatorModelContext, String ...templates)
+  public TemplateModel(String name, M model, String ...templates)
   {
-    entity_ = entity;
-    generatorModelContext_ = generatorModelContext;
     model_ = model ;
     name_ = name;
     templates_ = templates;
@@ -62,11 +50,6 @@ E extends ICanonModelEntity>
     camelCapitalizedName_ = capitalize(camelName_);
     snakeName_ = toSnakeCase(name_);
     snakeCapitalizedName_ = capitalize(snakeName_);
-  }
-  
-  public IGeneratorModelContext<T,M,S,O,A,P> getGeneratorModelContext()
-  {
-    return generatorModelContext_;
   }
 
   /**

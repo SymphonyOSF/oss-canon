@@ -20,18 +20,21 @@ package com.symphony.oss.canon2.parser;
 
 import java.util.Collection;
 
+/**
+ * The template model for the overall OpenApi model.
+ * 
+ * @author Bruce Skingle
+ *
+ * @param <T> Concrete implementation of ITemplateModel.
+ * @param <M> Concrete implementation of IOpenApiTemplateModel.
+ * @param <S> Concrete implementation of ISchemaTemplateModel.
+ */
 public interface IOpenApiTemplateModel<
-  T extends ITemplateModel<T,M,S,O,A,P>,
-  M extends IOpenApiTemplateModel<T,M,S,O,A,P>,
-  S extends ISchemaTemplateModel<T,M,S,O,A,P>,
-  O extends IObjectSchemaTemplateModel<T,M,S,O,A,P>,
-  A extends IArraySchemaTemplateModel<T,M,S,O,A,P>,
-  P extends IPrimitiveSchemaTemplateModel<T,M,S,O,A,P>>
-    extends ITemplateModel<T,M,S,O,A,P>
+  T extends ITemplateModel<T,M,S>,
+  M extends IOpenApiTemplateModel<T,M,S>,
+  S extends ISchemaTemplateModel<T,M,S>>
+    extends ITemplateModel<T,M,S>
 {
-
-  ICanonGenerator<T,M,S,O,A,P> getGenerator();
-  
   /**
    * Return this object as an ITemplateModel.
    * 
@@ -40,13 +43,23 @@ public interface IOpenApiTemplateModel<
    * 
    * @return this object as an ITemplateModel.
    */
-  ITemplateModel<T,M,S,O,A,P> asTemplateModel();
+  T asTemplateModel();
   
+  /**
+   * Add the given schema to this model.
+   * 
+   * @param schema A schema to be added to this model.
+   */
   void addSchema(S schema);
 
+  /**
+   * Return all schemas in this model.
+   * 
+   * @return all schemas in this model.
+   */
   Collection<S> getSchemas();
   
-  @SuppressWarnings("unchecked")
+  // TODO: make this typesafe
   @Override
   default Collection<T> getChildren()
   {

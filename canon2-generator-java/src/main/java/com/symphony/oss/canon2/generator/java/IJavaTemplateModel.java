@@ -25,10 +25,7 @@ import com.symphony.oss.canon2.parser.ITemplateModel;
 public interface IJavaTemplateModel extends ITemplateModel<
 IJavaTemplateModel,
 JavaOpenApiTemplateModel,
-JavaSchemaTemplateModel,
-JavaObjectSchemaTemplateModel,
-JavaArraySchemaTemplateModel,
-JavaPrimitiveSchemaTemplateModel
+JavaSchemaTemplateModel
 >
 {
   /**

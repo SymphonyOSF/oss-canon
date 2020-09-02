@@ -8,7 +8,6 @@ package com.symphony.oss.canon2.generator.java;
 
 import com.symphony.oss.canon2.parser.IArraySchemaTemplateModel;
 import com.symphony.oss.canon2.parser.IResolvedSchema;
-import com.symphony.oss.canon2.parser.ISchemaTemplateModel;
 import com.symphony.oss.canon2.parser.model.CanonCardinality;
 import com.symphony.oss.commons.fault.CodingFault;
 
@@ -16,10 +15,7 @@ class JavaArraySchemaTemplateModel extends JavaSchemaTemplateModel
 implements IArraySchemaTemplateModel<
 IJavaTemplateModel,
 JavaOpenApiTemplateModel,
-JavaSchemaTemplateModel,
-JavaObjectSchemaTemplateModel,
-JavaArraySchemaTemplateModel,
-JavaPrimitiveSchemaTemplateModel>
+JavaSchemaTemplateModel>
 {
   private JavaSchemaTemplateModel elementType_;
   
@@ -28,9 +24,9 @@ JavaPrimitiveSchemaTemplateModel>
   private final String type_;
   
   JavaArraySchemaTemplateModel(IResolvedSchema entity, String name, CanonCardinality cardinality, JavaOpenApiTemplateModel model,
-       JavaGeneratorModelContext javaGeneratorModelContext)
+      JavaGeneratorModelContext generatorModelContext, String ...templates)
   {
-    super(entity, name, model, javaGeneratorModelContext);
+    super(name, model, templates);
     
     cardinality_ = cardinality;
     
@@ -38,7 +34,7 @@ JavaPrimitiveSchemaTemplateModel>
     
     IResolvedSchema resolvedItems = (IResolvedSchema) entity.getResolvedItems(); // trust me
     
-    elementType_ = resolvedItems.generate(model, "items", javaGeneratorModelContext);
+    elementType_ = resolvedItems.generate(model, "items", generatorModelContext);
     
     switch(cardinality)
     {
@@ -60,7 +56,13 @@ JavaPrimitiveSchemaTemplateModel>
   }
 
   @Override
-  public ISchemaTemplateModel<IJavaTemplateModel, JavaOpenApiTemplateModel, JavaSchemaTemplateModel, JavaObjectSchemaTemplateModel, JavaArraySchemaTemplateModel, JavaPrimitiveSchemaTemplateModel> asSchemaTemplateModel()
+  public JavaSchemaTemplateModel asSchemaTemplateModel()
+  {
+    return this;
+  }
+
+  @Override
+  public IJavaTemplateModel asTemplateModel()
   {
     return this;
   }

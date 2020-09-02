@@ -25,19 +25,16 @@ package com.symphony.oss.canon2.parser;
  *
  */
 public abstract class ObjectSchemaTemplateModel<
-T extends ITemplateModel<T,M,S,O,A,P>,
-M extends IOpenApiTemplateModel<T,M,S,O,A,P>,
-S extends ISchemaTemplateModel<T,M,S,O,A,P>,
-O extends IObjectSchemaTemplateModel<T,M,S,O,A,P>,
-A extends IArraySchemaTemplateModel<T,M,S,O,A,P>,
-P extends IPrimitiveSchemaTemplateModel<T,M,S,O,A,P>,
-E extends ICanonModelEntity>
-  extends SchemaTemplateModel<T,M,S,O,A,P,E>
-  implements IObjectSchemaTemplateModel<T,M,S,O,A,P>
+T extends ITemplateModel<T,M,S>,
+M extends IOpenApiTemplateModel<T,M,S>,
+S extends ISchemaTemplateModel<T,M,S>,
+F extends IFieldTemplateModel<T,M,S>
+>
+  extends SchemaTemplateModel<T,M,S>
+  implements IObjectSchemaTemplateModel<T,M,S,F>
 {
-  public ObjectSchemaTemplateModel(E entity, String name, M model,
-      IGeneratorModelContext<T,M,S,O,A,P> generatorModelContext, String... templates)
+  public ObjectSchemaTemplateModel( String name, M model, String... templates)
   {
-    super(entity, name, model, generatorModelContext, templates);
+    super(name, model, templates);
   }
 }

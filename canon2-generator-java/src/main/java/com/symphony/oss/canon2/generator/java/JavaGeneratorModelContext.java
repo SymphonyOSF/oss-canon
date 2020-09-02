@@ -24,12 +24,11 @@ import com.symphony.oss.canon2.parser.GeneratorModelContext;
 import com.symphony.oss.canon2.parser.IModelContext;
 import com.symphony.oss.canon2.parser.IResolvedModel;
 import com.symphony.oss.canon2.parser.IResolvedSchema;
-import com.symphony.oss.canon2.parser.ISchema;
 import com.symphony.oss.canon2.parser.model.CanonCardinality;
 import com.symphony.oss.commons.dom.json.IJsonObject;
 
 class JavaGeneratorModelContext extends GeneratorModelContext<IJavaTemplateModel, JavaOpenApiTemplateModel, JavaSchemaTemplateModel, JavaObjectSchemaTemplateModel,
-  JavaArraySchemaTemplateModel, JavaPrimitiveSchemaTemplateModel>
+  JavaArraySchemaTemplateModel, JavaPrimitiveSchemaTemplateModel, JavaFieldTemplateModel>
 {
   private IJsonObject<?> generatorConfig_;
 
@@ -50,30 +49,36 @@ class JavaGeneratorModelContext extends GeneratorModelContext<IJavaTemplateModel
   }
 
   @Override
-  public JavaOpenApiTemplateModel generateOpenApiObject(IResolvedModel entity)
+  public JavaOpenApiTemplateModel generateOpenApiObject(IResolvedModel resolvedModel)
   {
-    return new JavaOpenApiTemplateModel(entity, getSourceContext().getInputSourceName(), getGenerator(), "Model");
+    return new JavaOpenApiTemplateModel(resolvedModel, getSourceContext().getInputSourceName(), "Model");
   }
 
   
   @Override
   public JavaObjectSchemaTemplateModel generateObjectSchema(JavaOpenApiTemplateModel model, IResolvedSchema entity, String name)
   {
-    return new JavaObjectSchemaTemplateModel(entity,  name, model, this, "Object");
+    return new JavaObjectSchemaTemplateModel(name, model, "Object");
   }
 
   @Override
   public JavaArraySchemaTemplateModel generateArraySchema(JavaOpenApiTemplateModel model, IResolvedSchema entity,
       String name, CanonCardinality cardinality)
   {
-    return new JavaArraySchemaTemplateModel(entity,  name, cardinality, model, this);
+    return new JavaArraySchemaTemplateModel(entity,  name, cardinality, model, this,  "Array");
   }
 
   @Override
   public JavaPrimitiveSchemaTemplateModel generatePrimativeSchema(
-      JavaOpenApiTemplateModel model, ISchema entity, String name)
+      JavaOpenApiTemplateModel model, IResolvedSchema entity, String name)
   {
-    return new JavaPrimitiveSchemaTemplateModel(entity,  name, model, this);
+    return new JavaPrimitiveSchemaTemplateModel(entity,  name, model);
+  }
+
+  @Override
+  public JavaFieldTemplateModel generateField(JavaOpenApiTemplateModel model, IResolvedSchema entity, String name, JavaSchemaTemplateModel typeSchema)
+  {
+    return new JavaFieldTemplateModel(name, model, typeSchema);
   }
 
 //  private String getJavaCardinality(String cardinality)

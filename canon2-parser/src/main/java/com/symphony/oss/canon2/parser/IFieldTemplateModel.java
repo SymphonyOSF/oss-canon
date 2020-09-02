@@ -28,13 +28,11 @@ import java.util.Collections;
  *
  */
 public interface IFieldTemplateModel<
-  T extends ITemplateModel<T,M,S,O,A,P>,
-  M extends IOpenApiTemplateModel<T,M,S,O,A,P>,
-  S extends ISchemaTemplateModel<T,M,S,O,A,P>,
-  O extends IObjectSchemaTemplateModel<T,M,S,O,A,P>,
-  A extends IArraySchemaTemplateModel<T,M,S,O,A,P>,
-  P extends IPrimitiveSchemaTemplateModel<T,M,S,O,A,P>>
-    extends ITemplateModel<T,M,S,O,A,P>
+T extends ITemplateModel<T,M,S>,
+M extends IOpenApiTemplateModel<T,M,S>,
+S extends ISchemaTemplateModel<T,M,S>
+>
+    extends ITemplateModel<T,M,S>
 {
   /**
    * Return this object as an ITemplateModel.
@@ -44,7 +42,7 @@ public interface IFieldTemplateModel<
    * 
    * @return this object as an ITemplateModel.
    */
-  ITemplateModel<T,M,S,O,A,P> asTemplateModel();
+  T asTemplateModel();
   
   /**
    * Return the schema for the type of this field.

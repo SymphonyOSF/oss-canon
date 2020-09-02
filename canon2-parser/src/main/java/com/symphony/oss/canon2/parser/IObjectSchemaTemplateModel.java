@@ -19,16 +19,14 @@
 package com.symphony.oss.canon2.parser;
 
 import java.util.Collection;
-import java.util.Map;
 
 public interface IObjectSchemaTemplateModel<
-  T extends ITemplateModel<T,M,S,O,A,P>,
-  M extends IOpenApiTemplateModel<T,M,S,O,A,P>,
-  S extends ISchemaTemplateModel<T,M,S,O,A,P>,
-  O extends IObjectSchemaTemplateModel<T,M,S,O,A,P>,
-  A extends IArraySchemaTemplateModel<T,M,S,O,A,P>,
-  P extends IPrimitiveSchemaTemplateModel<T,M,S,O,A,P>>
-    extends ISchemaTemplateModel<T,M,S,O,A,P>
+  T extends ITemplateModel<T,M,S>,
+  M extends IOpenApiTemplateModel<T,M,S>,
+  S extends ISchemaTemplateModel<T,M,S>,
+  F extends IFieldTemplateModel<T,M,S>
+  >
+    extends ISchemaTemplateModel<T,M,S>
 {
   /**
    * Return this object as an ISchemaTemplateModel.
@@ -38,17 +36,16 @@ public interface IObjectSchemaTemplateModel<
    * 
    * @return this object as an ITemplateModel.
    */
-  ISchemaTemplateModel<T,M,S,O,A,P> asSchemaTemplateModel();
+  S asSchemaTemplateModel();
   
-  void addField(String name, S schema);
+  void addField(F field);
   
-  Map<String, S> getFields();
+  Collection<F> getFields();
   
-  @SuppressWarnings("unchecked")
   @Override
   default Collection<T> getChildren()
   {
-    return (Collection<T>) getFields().values();
+    return (Collection<T>) getFields();
   }
 
   @Override

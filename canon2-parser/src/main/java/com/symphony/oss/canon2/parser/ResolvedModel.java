@@ -50,12 +50,14 @@ import com.symphony.oss.commons.fault.CodingFault;
 @Immutable
 public class ResolvedModel
 <
-T extends ITemplateModel<T,M,S,O,A,P>,
-M extends IOpenApiTemplateModel<T,M,S,O,A,P>,
-S extends ISchemaTemplateModel<T,M,S,O,A,P>,
-O extends IObjectSchemaTemplateModel<T,M,S,O,A,P>,
-A extends IArraySchemaTemplateModel<T,M,S,O,A,P>,
-P extends IPrimitiveSchemaTemplateModel<T,M,S,O,A,P>> extends ResolvedModelEntity implements IResolvedModel
+T extends ITemplateModel<T,M,S>,
+M extends IOpenApiTemplateModel<T,M,S>,
+S extends ISchemaTemplateModel<T,M,S>,
+O extends IObjectSchemaTemplateModel<T,M,S,F>,
+A extends IArraySchemaTemplateModel<T,M,S>,
+P extends IPrimitiveSchemaTemplateModel<T,M,S>,
+F extends IFieldTemplateModel<T,M,S>
+> extends ResolvedModelEntity implements IResolvedModel
 {
   private static Logger log_ = LoggerFactory.getLogger(ResolvedModel.class);
   private final ImmutableMap<String, IResolvedSchema> schemas_;
@@ -108,13 +110,15 @@ P extends IPrimitiveSchemaTemplateModel<T,M,S,O,A,P>> extends ResolvedModelEntit
   public 
   //<S extends ISchemaTemplateModel<S>> IOpenApiTemplateModel<S> 
   <
-  T extends ITemplateModel<T,M,S,O,A,P>,
-  M extends IOpenApiTemplateModel<T,M,S,O,A,P>,
-  S extends ISchemaTemplateModel<T,M,S,O,A,P>,
-  O extends IObjectSchemaTemplateModel<T,M,S,O,A,P>,
-  A extends IArraySchemaTemplateModel<T,M,S,O,A,P>,
-  P extends IPrimitiveSchemaTemplateModel<T,M,S,O,A,P>>
-  M generate(IGeneratorModelContext<T,M,S,O,A,P> modelContext)
+  T extends ITemplateModel<T,M,S>,
+  M extends IOpenApiTemplateModel<T,M,S>,
+  S extends ISchemaTemplateModel<T,M,S>,
+  O extends IObjectSchemaTemplateModel<T,M,S,F>,
+  A extends IArraySchemaTemplateModel<T,M,S>,
+  P extends IPrimitiveSchemaTemplateModel<T,M,S>,
+  F extends IFieldTemplateModel<T,M,S>
+  >
+  M generate(IGeneratorModelContext<T,M,S,O,A,P,F> modelContext)
   {
     log_.info("generate model");
     

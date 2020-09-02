@@ -29,19 +29,12 @@ import java.util.Map.Entry;
 
 import javax.annotation.concurrent.Immutable;
 
-import com.symphony.oss.commons.immutable.ImmutableByteArray;
-
+import com.symphony.oss.canon.runtime.IModelRegistry;
+import com.symphony.oss.canon2.parser.model.CanonCardinality;
+import com.symphony.oss.canon2.parser.model.ResolvedSchemaEntity;
 import com.symphony.oss.commons.dom.json.ImmutableJsonObject;
 import com.symphony.oss.commons.dom.json.MutableJsonObject;
 import com.symphony.oss.commons.fault.CodingFault;
-import com.symphony.oss.canon.runtime.IEntity;
-import com.symphony.oss.canon.runtime.IModelRegistry;
-
-
-import com.symphony.oss.canon2.parser.model.ResolvedSchemaEntity;
-import com.symphony.oss.canon2.parser.model.IResolvedSchemaEntity;
-import com.symphony.oss.canon2.parser.model.CanonCardinality;
-import com.symphony.oss.canon2.parser.model.CanonModel;
 
 /**
  * Facade for Object ObjectSchema(ResolvedSchema)
@@ -101,17 +94,16 @@ public class ResolvedSchema extends ResolvedSchemaEntity implements IResolvedSch
   @SuppressWarnings("unchecked")
   @Override
   public 
-  
-//  <M extends IOpenApiTemplateModel<S>, S extends ISchemaTemplateModel,
-//    O extends IObjectSchemaTemplateModel<S>, A extends IArraySchemaTemplateModel<S>, P extends IPrimitiveSchemaTemplateModel<S>>
   <
-  T extends ITemplateModel<T,M,S,O,A,P>,
-  M extends IOpenApiTemplateModel<T,M,S,O,A,P>,
-  S extends ISchemaTemplateModel<T,M,S,O,A,P>,
-  O extends IObjectSchemaTemplateModel<T,M,S,O,A,P>,
-  A extends IArraySchemaTemplateModel<T,M,S,O,A,P>,
-  P extends IPrimitiveSchemaTemplateModel<T,M,S,O,A,P>>
-    S generate(M model, String name, IGeneratorModelContext<T,M,S,O,A,P> modelContext)
+  T extends ITemplateModel<T,M,S>,
+  M extends IOpenApiTemplateModel<T,M,S>,
+  S extends ISchemaTemplateModel<T,M,S>,
+  O extends IObjectSchemaTemplateModel<T,M,S,F>,
+  A extends IArraySchemaTemplateModel<T,M,S>,
+  P extends IPrimitiveSchemaTemplateModel<T,M,S>,
+  F extends IFieldTemplateModel<T,M,S>
+  >
+    S generate(M model, String name, IGeneratorModelContext<T,M,S,O,A,P,F> modelContext)
   {
     switch(getType())
     {
@@ -126,7 +118,9 @@ public class ResolvedSchema extends ResolvedSchemaEntity implements IResolvedSch
         {
           for(Entry<String, IResolvedSchema> entry : propertiesObject.getResolvedProperties().entrySet())
           {
-            entity.addField(entry.getKey(), entry.getValue().generate(model, entry.getKey(), modelContext));
+            S typeSchema = entry.getValue().generate(model, entry.getKey(), modelContext);
+            
+            entity.addField(modelContext.generateField(model, entry.getValue(), entry.getKey(), typeSchema));
           }
         }
         
