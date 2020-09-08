@@ -23,6 +23,10 @@ package com.symphony.oss.canon2.parser;
  * to various case conventions.
  * 
  * @author Bruce Skingle
+ * 
+ * @param <T> The concrete type of ITemplateModel
+ * @param <M> The concrete type of IOpenApiTemplateModel
+ * @param <S> The concrete type of ISchemaTemplateModel
  *
  */
 public abstract class TemplateModel<
@@ -30,6 +34,7 @@ T extends ITemplateModel<T,M,S>,
 M extends IOpenApiTemplateModel<T,M,S>,
 S extends ISchemaTemplateModel<T,M,S>
 >
+implements ITemplateModel<T,M,S>
 {
   private final String[]               templates_;
   private final String                 name_;
@@ -39,30 +44,39 @@ S extends ISchemaTemplateModel<T,M,S>
   private final String                 snakeCapitalizedName_;
   private final M         model_;
 
+  /**
+   * Constructor.
+   * 
+   * @param name      The name of the entity represented by this model.
+   * @param model     The IOpenApiTemplateModel to which this entity belongs.
+   * @param templates The list of template names which should be run against this model.
+   */
   public TemplateModel(String name, M model, String ...templates)
   {
     model_ = model ;
     name_ = name;
     templates_ = templates;
 
-    
     camelName_ = toCamelCase(name_);
     camelCapitalizedName_ = capitalize(camelName_);
     snakeName_ = toSnakeCase(name_);
     snakeCapitalizedName_ = capitalize(snakeName_);
   }
 
-  /**
-   * Return the list of template names which should be run against this model.
-   * 
-   * @return The list of template names which should be run against this model.
-   */
+  @Override
   public String[] getTemaplates()
   {
     return templates_;
   }
 
-  private String toCamelCase(String name)
+  /**
+   * Convert the given name to camelCase
+   * 
+   * @param name a name.
+   * 
+   * @return the given name to camelCase
+   */
+  public static String toCamelCase(String name)
   {
     int i=0;
     StringBuilder s = new StringBuilder();
@@ -94,7 +108,14 @@ S extends ISchemaTemplateModel<T,M,S>
     return s.toString();
   }
   
-  private String toSnakeCase(String name)
+  /**
+   * Convert the given name to snake_case
+   * 
+   * @param name a name.
+   * 
+   * @return the given name to snake_case
+   */
+  public static String toSnakeCase(String name)
   {
     int i=0;
     StringBuilder s = new StringBuilder(Character.toLowerCase(name.charAt(i)));
@@ -117,70 +138,51 @@ S extends ISchemaTemplateModel<T,M,S>
     return s.toString();
   }
 
-  private static String capitalize(String name)
+  /**
+   * Return the given name with the initial letter capitalised.
+   * 
+   * @param name A name.
+   * 
+   * @return the given name with the initial letter capitalised.
+   */
+  public static String capitalize(String name)
   {
     return name.substring(0, 1).toUpperCase() + name.substring(1);
   }
 
-  /**
-   * Return the OpenApiObject template model.
-   * 
-   * @return The OpenApiObject template model.
-   */
+  @Override
   public M getModel()
   {
     return model_;
   }
   
-  /**
-   * Return the name of this model entity as written in the input spec.
-   * 
-   * @return The name of this model entity as written in the input spec.
-   */
+  @Override
   public String getName()
   {
     return name_;
   }
 
-  /**
-   * Return the name of this model entity in camelCase with a lower case initial letter.
-   * 
-   * @return The name of this model entity in camelCase with a lower case initial letter.
-   */
+  @Override
   public String getCamelName()
   {
     return camelName_;
   }
 
-  /**
-   * Return the name of this model entity in CamelCase with an upper case initial letter.
-   * 
-   * @return The name of this model entity in CamelCase with an upper case initial letter.
-   */
+  @Override
   public String getCamelCapitalizedName()
   {
     return camelCapitalizedName_;
   }
 
-  /**
-   * Return the name of this model entity in snake_case with a lower case initial letter.
-   * 
-   * @return The name of this model entity in snake_case with a lower case initial letter.
-   */
+  @Override
   public String getSnakeName()
   {
     return snakeName_;
   }
   
-  /**
-  * Return the name of this model entity in Snake_case with an upper case initial letter.
-  * 
-  * @return The name of this model entity in Snake_case with an upper case initial letter.
-  */
+  @Override
   public String getSnakeCapitalizedName()
   {
     return snakeCapitalizedName_;
   }
-
-//  public abstract Collection<S> getChildren();
 }

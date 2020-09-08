@@ -19,11 +19,15 @@
 package com.symphony.oss.canon2.generator.java;
 
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
+import com.symphony.oss.canon2.parser.GenerationException;
 import com.symphony.oss.canon2.parser.IObjectSchemaTemplateModel;
+import com.symphony.oss.canon2.parser.IResolvedSchema;
+import com.symphony.oss.canon2.parser.SchemaType;
 
 public class JavaObjectSchemaTemplateModel extends JavaSchemaTemplateModel
 implements IObjectSchemaTemplateModel<
@@ -34,14 +38,24 @@ JavaFieldTemplateModel
 >
 {
   private List<JavaFieldTemplateModel> fields_ = new LinkedList<>();
+  private Map<String, JavaFieldTemplateModel> fieldMap_ = new HashMap<>();
   
-  JavaObjectSchemaTemplateModel(String name, JavaOpenApiTemplateModel model,
+  JavaObjectSchemaTemplateModel(IResolvedSchema entity, String name, JavaOpenApiTemplateModel model,
       String... temaplates)
   {
     super(name, model, temaplates);
     
     imports_.add("javax.annotation.concurrent.Immutable");
     imports_.add("javax.annotation.Nullable");
+    
+//    if(entity.getSuperSchema() == null)
+    imports_.add("com.symphony.oss.canon2.runtime.java.ObjectEntity");
+  }
+
+  @Override
+  public SchemaType getSchemaType()
+  {
+    return SchemaType.OBJECT;
   }
 
   @Override
@@ -57,8 +71,12 @@ JavaFieldTemplateModel
   }
 
   @Override
-  public void addField(JavaFieldTemplateModel field)
+  public void addField(JavaFieldTemplateModel field) throws GenerationException
   {
+    if(fieldMap_.put(field.getCamelName(), field) != null)
+    {
+      throw new GenerationException("Duplicate field name \"" + field.getCamelName() + "\" in " + getName());
+    }
     fields_.add(field);
     
     imports_.addAll(field.imports_);
@@ -80,7 +98,23 @@ JavaFieldTemplateModel
   public String getType()
   {
     return getCamelCapitalizedName();
-    
-    //getCamelCapitalizedName();
+  }
+
+  @Override
+  public String getCopyPrefix()
+  {
+    return "";
+  }
+
+  @Override
+  public String getCopySuffix()
+  {
+    return "";
+  }
+
+  @Override
+  public boolean hasName(String name)
+  {
+    return fieldMap_.containsKey(name);
   }
 }

@@ -36,4 +36,10 @@ S extends ISchemaTemplateModel<T,M,S>
   {
     super(name, model, templates);
   }
+
+  @Override
+  public SchemaType getSchemaType()
+  {
+    return SchemaType.PRIMITIVE;
+  }
 }

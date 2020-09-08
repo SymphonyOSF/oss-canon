@@ -20,6 +20,7 @@ package com.symphony.oss.canon2.generator.java;
 
 import java.util.Map;
 
+import com.symphony.oss.canon2.parser.GenerationException;
 import com.symphony.oss.canon2.parser.GeneratorModelContext;
 import com.symphony.oss.canon2.parser.IModelContext;
 import com.symphony.oss.canon2.parser.IResolvedModel;
@@ -49,21 +50,21 @@ class JavaGeneratorModelContext extends GeneratorModelContext<IJavaTemplateModel
   }
 
   @Override
-  public JavaOpenApiTemplateModel generateOpenApiObject(IResolvedModel resolvedModel)
+  public JavaOpenApiTemplateModel generateOpenApiObject(IResolvedModel resolvedModel, String name)
   {
-    return new JavaOpenApiTemplateModel(resolvedModel, getSourceContext().getInputSourceName(), "Model");
+    return new JavaOpenApiTemplateModel(resolvedModel, name, "Model");
   }
 
   
   @Override
   public JavaObjectSchemaTemplateModel generateObjectSchema(JavaOpenApiTemplateModel model, IResolvedSchema entity, String name)
   {
-    return new JavaObjectSchemaTemplateModel(name, model, "Object");
+    return new JavaObjectSchemaTemplateModel(entity, name, model, "Object");
   }
 
   @Override
   public JavaArraySchemaTemplateModel generateArraySchema(JavaOpenApiTemplateModel model, IResolvedSchema entity,
-      String name, CanonCardinality cardinality)
+      String name, CanonCardinality cardinality) throws GenerationException
   {
     return new JavaArraySchemaTemplateModel(entity,  name, cardinality, model, this,  "Array");
   }
@@ -76,9 +77,10 @@ class JavaGeneratorModelContext extends GeneratorModelContext<IJavaTemplateModel
   }
 
   @Override
-  public JavaFieldTemplateModel generateField(JavaOpenApiTemplateModel model, IResolvedSchema entity, String name, JavaSchemaTemplateModel typeSchema)
+  public JavaFieldTemplateModel generateField(JavaOpenApiTemplateModel model, IResolvedSchema entity, String name,
+      JavaSchemaTemplateModel typeSchema, boolean required)
   {
-    return new JavaFieldTemplateModel(name, model, typeSchema);
+    return new JavaFieldTemplateModel(entity, name, model, typeSchema, required);
   }
 
 //  private String getJavaCardinality(String cardinality)

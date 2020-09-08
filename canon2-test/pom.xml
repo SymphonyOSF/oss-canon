@@ -34,7 +34,7 @@
     
     <dependency>
       <groupId>${project.groupId}</groupId>
-      <artifactId>canon-runtime-java</artifactId>
+      <artifactId>canon2-runtime-java</artifactId>
       <version>${project.version}</version>
     </dependency>
     
@@ -65,10 +65,10 @@
       <artifactId>javax.servlet-api</artifactId>
     </dependency>
     
-    <dependency>
+    <!-- <dependency>
       <groupId>com.fasterxml.jackson.core</groupId>
       <artifactId>jackson-databind</artifactId>
-    </dependency>
+    </dependency> -->
     <dependency>
        <groupId>com.google.guava</groupId>
        <artifactId>guava</artifactId>

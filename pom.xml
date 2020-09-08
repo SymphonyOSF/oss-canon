@@ -112,6 +112,7 @@
 	<module>canon2-maven-plugin</module>
 	<module>canon2-test</module>
 	<module>canon2-generator-java</module>
+	<module>canon2-runtime-java</module>
 	</modules>
 
 	<build>

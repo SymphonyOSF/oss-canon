@@ -79,7 +79,6 @@ public class GenerationContext
   private Deque<ModelContext>                  validateQueue_      = new LinkedList<>();
   private Deque<ModelContext>                  generateQueue_      = new LinkedList<>();
   private Map<URL, IOpenApiObject>             modelMap_           = new HashMap<>();
-  private Map<ISchema, IResolvedSchema>        schemaResolution_   = new HashMap<>();
 
   private GenerationContext(AbstractBuilder<?,?> builder)
   {
@@ -604,7 +603,7 @@ public class GenerationContext
       this.consumer = consumer;
     }
 
-    void generateFor()
+    void generateFor() throws GenerationException
     {
       IJsonObject<?> generatorConfig = context.getModel().getXCanonGenerators().getJsonObject().getRequiredObject(generator.getLanguage());
     
@@ -630,26 +629,4 @@ public class GenerationContext
   {
     return templateDebug_;
   }
-  
-  synchronized IResolvedSchema resolve(IOpenApiObject openApiObject, ISchema schema)
-  {
-    
-    IResolvedSchema resolvedSchema = schemaResolution_.get(schema);
-    
-    if(resolvedSchema == null)
-    {
-      resolvedSchema = schema.resolve(openApiObject, this);
-      schemaResolution_.put(schema, resolvedSchema);
-    }
-    
-    return resolvedSchema;
-  }
-  
-//  public void visitAllModels(IModelVisitor visitor)
-//  {
-//    for(OpenApiObject model : generateQueue_)
-//    {
-//      visitor.visit(model);
-//    }
-//  }
 }

@@ -23,6 +23,7 @@ import org.slf4j.LoggerFactory;
 
 import com.symphony.oss.canon2.parser.CanonGenerator;
 import com.symphony.oss.canon2.parser.IModelContext;
+import com.symphony.oss.canon2.parser.INamedModelEntity;
 import com.symphony.oss.canon2.parser.IPathNameConstructor;
 import com.symphony.oss.commons.dom.json.IJsonObject;
 
@@ -40,6 +41,7 @@ JavaFieldTemplateModel
   // IDs in the model
   static final String          GEN_PACKAGE                  = "genPackage";
   static final String          FACADE_PACKAGE               = "facadePackage";
+  static final String LANGUAGE                       = "java";
 
   // IDs of generated attributes
   static final String PREFIX                       = "java";
@@ -95,5 +97,88 @@ JavaFieldTemplateModel
   public JavaGeneratorModelContext createModelContext(IModelContext context, IJsonObject<?> generatorConfig)
   {
     return new JavaGeneratorModelContext(this, context, generatorConfig);
+  }
+
+  @Override
+  public String getIdentifierName(String name, INamedModelEntity entity)
+  {
+    String identifier = entity.getXCanonIdentifier(LANGUAGE);
+    
+    if(identifier != null)
+    {
+      if(!isValidIdentifier(identifier))
+        log_.error("Element " + name + " has the Java name \"" + identifier + "\" but that is not a valid Java identifier.");
+      
+      return identifier;
+    }
+    
+    identifier = entity.getXCanonIdentifier();
+    
+    if(identifier != null)
+    {
+      return toIdentifier(identifier);
+    }
+    
+    return toIdentifier(name);
+  }
+  
+  private boolean isValidIdentifier(String identifier)
+  {
+    if(identifier.length() == 0)
+      return false;
+    
+    if(!Character.isJavaIdentifierStart(identifier.charAt(0)))
+    {
+      return false;
+    }
+    
+    for(int i=1 ; i<identifier.length() ; i++)
+    {
+      if(!Character.isJavaIdentifierPart(identifier.charAt(i)))
+      {
+        return false;
+      }
+    }
+    
+    return true;
+  }
+
+  private static String toIdentifier(String name)
+  {
+    StringBuilder s = new StringBuilder();
+    int i=1;
+    
+    
+    if(Character.isJavaIdentifierStart(name.charAt(0)))
+    {
+      s.append(Character.toLowerCase(name.charAt(0)));
+    }
+    else
+    {
+      s.append('_');
+    }
+    
+    while(i<name.length())
+    {
+      char c = name.charAt(i++);
+   
+      if(c=='_' || c=='-' || !Character.isJavaIdentifierStart(c))
+      {
+        if(i<name.length())
+        {
+          s.append(Character.toUpperCase(name.charAt(i++)));
+        }
+        else
+        {
+          s.append('_');
+        }
+      }
+      else
+      {
+        s.append(c);
+      }
+    }
+    
+    return s.toString();
   }
 }

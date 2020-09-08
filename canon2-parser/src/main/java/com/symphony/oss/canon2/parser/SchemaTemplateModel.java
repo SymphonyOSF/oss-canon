@@ -36,4 +36,6 @@ S extends ISchemaTemplateModel<T,M,S>
   {
     super(name, model, templates);
   }
+  
+  public abstract SchemaType getSchemaType();
 }

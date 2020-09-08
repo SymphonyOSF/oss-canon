@@ -38,10 +38,10 @@ F extends IFieldTemplateModel<T,M,S>
 {
   IModelContext getSourceContext();
 
-  M generateOpenApiObject(IResolvedModel entity);
+  M generateOpenApiObject(IResolvedModel entity, String name);
 
   O generateObjectSchema(M model, IResolvedSchema entity, String name);
-  A generateArraySchema(M model, IResolvedSchema entity, String name, CanonCardinality cardinality);
+  A generateArraySchema(M model, IResolvedSchema entity, String name, CanonCardinality cardinality) throws GenerationException;
 
   ICanonGenerator<T,M,S,O,A,P,F> getGenerator();
 
@@ -51,5 +51,5 @@ F extends IFieldTemplateModel<T,M,S>
 
   P generatePrimativeSchema(M model, IResolvedSchema entity, String name);
   
-  F generateField(M model, IResolvedSchema entity, String name, S typeSchema);
+  F generateField(M model, IResolvedSchema entity, String name, S typeSchema, boolean required);
 }

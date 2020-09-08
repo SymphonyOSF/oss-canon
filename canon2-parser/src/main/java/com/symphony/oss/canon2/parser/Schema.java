@@ -27,6 +27,7 @@ package com.symphony.oss.canon2.parser;
 
 import java.util.Map.Entry;
 
+import javax.annotation.Nullable;
 import javax.annotation.concurrent.Immutable;
 
 import com.symphony.oss.canon.runtime.IModelRegistry;
@@ -45,8 +46,8 @@ import com.symphony.oss.commons.dom.json.MutableJsonObject;
 public class Schema extends SchemaEntity implements ISchema
 {
 //  private final ImmutableMap<String, ISchema> fields_;
-private final ISchema          itemsSchema_;
-private final IReferenceObject itemsReference_;
+  private final ISchema          itemsSchema_;
+  private final IReferenceObject itemsReference_;
   
   /**
    * Constructor from builder.
@@ -82,6 +83,12 @@ private final IReferenceObject itemsReference_;
     {
       return null;
     }
+  }
+  
+  @Override
+  public @Nullable String getXCanonIdentifier(String language)
+  {
+    return getJsonObject().getString(Canon2.X_CANON + language + Canon2.IDENTIFIER_SUFFIX, null);
   }
   
   /**
@@ -130,10 +137,12 @@ private final IReferenceObject itemsReference_;
   }
 
   @Override
-  public IResolvedSchema resolve(IOpenApiObject openApiObject, GenerationContext generationContext)
+  public IResolvedSchema resolve(IOpenApiObject openApiObject, SchemaResolver resolver, GenerationContext generationContext, String name)
   {
     ResolvedSchema.Builder builder = new ResolvedSchema.Builder()
         .withValues(getJsonObject(), false, generationContext.getModelRegistry())
+        //.withNameCollision(nameCollision)
+        //.withTypeName(typeName)
         ;
     
     IPropertiesObject                 propertiesObject  = getProperties();
@@ -141,6 +150,7 @@ private final IReferenceObject itemsReference_;
     if(propertiesObject != null)
     {
       ResolvedPropertiesObject.Builder  propertiesBuilder = new ResolvedPropertiesObject.Builder();
+      ResolvedPropertiesObject.Builder  innerClassesBuilder = new ResolvedPropertiesObject.Builder();
       
       for(Entry<String, Object> entry : propertiesObject.getProperties().entrySet())
       {
@@ -148,18 +158,33 @@ private final IReferenceObject itemsReference_;
         {
           ISchema schema = (ISchema)entry.getValue();
           
-          propertiesBuilder.withProperty(entry.getKey(), generationContext.resolve(openApiObject, schema));
+          IResolvedSchema resolvedProperty = resolver.resolve(openApiObject, generationContext, schema, entry.getKey());
+          
+          propertiesBuilder.withProperty(entry.getKey(), resolvedProperty);
+          innerClassesBuilder.withProperty(entry.getKey(), resolvedProperty);
         }
         else
         {
-          Named<ISchema> namedSchema = fetchSchema(openApiObject, generationContext, ((IReferenceObject)entry.getValue()));
-          String type = namedSchema.getName();
+          IReferenceObject ref = (IReferenceObject)entry.getValue();
           
-          propertiesBuilder.withProperty(entry.getKey(), generationContext.resolve(openApiObject, namedSchema.getValue()));
+          String refName = ref.getFragment();
+          int i = refName.lastIndexOf('/');
+          
+          if(i != -1)
+            refName = refName.substring(i+1);
+          
+          ISchema schema = fetchSchema(openApiObject, generationContext, ref);
+          
+          IResolvedSchema resolvedSchema = resolver.resolve(openApiObject, generationContext, schema, refName);
+          
+          propertiesBuilder.withProperty(entry.getKey(), resolvedSchema);
         }
       }
       
-      builder.withResolvedProperties(propertiesBuilder.build());
+      builder
+        .withResolvedProperties(propertiesBuilder.build())
+        .withInnerClasses(innerClassesBuilder.build())
+        ;
     }
 
     
@@ -167,19 +192,20 @@ private final IReferenceObject itemsReference_;
     
     if(schema == null && itemsReference_ != null)
     {
-      Named<ISchema> namedSchema = fetchSchema(openApiObject, generationContext, itemsReference_);
-      schema = namedSchema.getValue();
+      schema = fetchSchema(openApiObject, generationContext, itemsReference_);
     }
     
     if(schema != null)
     {
-      builder.withResolvedItems(generationContext.resolve(openApiObject, schema));
+      builder.withResolvedItems(resolver.resolve(openApiObject, generationContext, schema, null));
     }
+    
+    builder.withXCanonIdentifier(getXCanonIdentifier());
     
     return builder.build();
   }
   
-  private Named<ISchema> fetchSchema(IOpenApiObject openApiObject, GenerationContext generationContext, IReferenceObject ref)
+  private ISchema fetchSchema(IOpenApiObject openApiObject, GenerationContext generationContext, IReferenceObject ref)
   {
     if(ref.getBaseUrl() == null)
     {

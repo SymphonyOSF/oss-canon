@@ -19,37 +19,19 @@
 package com.symphony.oss.canon2.parser;
 
 /**
- * A wrapped object with a name.
+ * A template model which contains named entities.
  * 
  * @author Bruce Skingle
- * 
- * @param <T> The type of the wrapped object. 
  *
  */
-class Named<T>
+public interface ITemplateModelNamespace
 {
-  private final String name_;
-  private final T value_;
-  
-  public Named(String name, T value)
-  {
-    name_ = name;
-    value_ = value;
-  }
-
-  public String getName()
-  {
-    return name_;
-  }
-
-  public T getValue()
-  {
-    return value_;
-  }
-
-  @Override
-  public String toString()
-  {
-    return "Named [name_=" + name_ + ", value_=" + value_ + "]";
-  }
+  /**
+   * Return true iff the given name already exists in this namespace.
+   * 
+   * @param name The name of interest.
+   * 
+   * @return true iff the given name already exists in this namespace.
+   */
+  boolean hasName(String name);
 }

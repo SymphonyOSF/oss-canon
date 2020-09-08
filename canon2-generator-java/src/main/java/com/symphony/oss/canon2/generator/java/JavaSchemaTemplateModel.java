@@ -18,10 +18,10 @@
 
 package com.symphony.oss.canon2.generator.java;
 
+import java.math.BigInteger;
 import java.util.Set;
 import java.util.TreeSet;
 
-import com.symphony.oss.canon2.parser.ISchema;
 import com.symphony.oss.canon2.parser.SchemaTemplateModel;
 
 public abstract class JavaSchemaTemplateModel
@@ -41,6 +41,7 @@ implements IJavaTemplateModel
     
     imports_.add("javax.annotation.concurrent.Immutable");
     imports_.add("javax.annotation.Nullable");
+    imports_.add("com.symphony.oss.canon.json.model.JsonObject");
   }
 
   @Override
@@ -53,5 +54,39 @@ implements IJavaTemplateModel
   public Set<String> getImports()
   {
     return imports_;
+  }
+
+  public String getConstructPrefix()
+  {
+    return "/*ConstructPrefix*/";
+  }
+
+  public String getConstructSuffix()
+  {
+    return "";
+  }
+
+  public abstract String getCopyPrefix();
+
+  public abstract String getCopySuffix();
+
+  public BigInteger getMinimum()
+  {
+    return null;
+  }
+  
+  public BigInteger getMaximum()
+  {
+    return null;
+  }
+  
+  public boolean getExclusiveMinimum()
+  {
+    return false;
+  }
+
+  public boolean getExclusiveMaximum()
+  {
+    return false;
   }
 }

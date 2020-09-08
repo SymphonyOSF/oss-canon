@@ -26,32 +26,23 @@
 package com.symphony.oss.canon2.parser;
 
 import java.util.Map.Entry;
-import java.util.function.Consumer;
 
+import javax.annotation.Nullable;
 import javax.annotation.concurrent.Immutable;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.symphony.oss.commons.immutable.ImmutableByteArray;
-
+import com.symphony.oss.canon.runtime.IModelRegistry;
+import com.symphony.oss.canon2.parser.model.OpenApiObjectEntity;
 import com.symphony.oss.commons.dom.json.ImmutableJsonObject;
 import com.symphony.oss.commons.dom.json.MutableJsonObject;
-
-import com.symphony.oss.canon.runtime.IEntity;
-import com.symphony.oss.canon.runtime.IModelRegistry;
-
-
-import com.symphony.oss.canon2.parser.model.OpenApiObjectEntity;
-import com.symphony.oss.canon2.parser.model.IOpenApiObjectEntity;
-import com.symphony.oss.canon2.parser.model.CanonModel;
 
 /**
  * Facade for Object ObjectSchema(OpenApiObject)
  * Generated from ObjectSchema(OpenApiObject) at #/components/schemas/OpenApiObject
  */
 @Immutable
-@SuppressWarnings("unused")
 public class OpenApiObject extends OpenApiObjectEntity implements IOpenApiObject
 {
   private static Logger log_ = LoggerFactory.getLogger(OpenApiObject.class);
@@ -97,20 +88,25 @@ public class OpenApiObject extends OpenApiObjectEntity implements IOpenApiObject
     super(other);
   }
   
-  @SuppressWarnings("unchecked")
   @Override
-  public <T extends ICanonModelEntity> Named<T> get(String fragment, Class<T> type)
+  public @Nullable String getXCanonIdentifier(String language)
   {
-    Named<? extends ICanonModelEntity> entity = get(fragment.split("/"), 1);
+    return getJsonObject().getString(Canon2.X_CANON + language + Canon2.IDENTIFIER_SUFFIX, null);
+  }
+
+  @Override
+  public <T extends ICanonModelEntity> T get(String fragment, Class<T> type)
+  {
+    ICanonModelEntity entity = get(fragment.split("/"), 1);
     
-    if(type.isInstance(entity.getValue()))
-      return (Named<T>)entity; //type.cast(entity);
+    if(type.isInstance(entity))
+      return type.cast(entity);
     
     throw new IllegalArgumentException("Expected " + type + " but found " + entity.getClass());
   }
   
   @Override
-  public Named<? extends ICanonModelEntity> get(String[] parts, int index)
+  public ICanonModelEntity get(String[] parts, int index)
   {
     switch(parts[index])
     {
@@ -150,10 +146,11 @@ public class OpenApiObject extends OpenApiObjectEntity implements IOpenApiObject
     
     
     ISchemasObject schemas = getComponents().getSchemas();
+    SchemaResolver resolver = new SchemaResolver();
     
     for(Entry<String, ISchema> entry : schemas.getSchemas().entrySet())
     {
-      builder.withResolvedSchema(entry.getKey(), generationContext.resolve(this, entry.getValue()));
+      builder.withResolvedSchema(entry.getKey(), resolver.resolve(this, generationContext, entry.getValue(), entry.getKey()));
     }
     
     return builder.build();

@@ -11,11 +11,11 @@
  # @param mutable       "Mutable" for builders and "Immutable" for objects
  #----------------------------------------------------------------------------------------------------->
 <#macro generateCreateFieldFromJsonDomNode indent field var ifValidation mutable>
-  <#switch field.getSchemaType>
-    <#case OBJECT>
-${indent}if(node instanceof ImmutableJsonObject)
+  <#switch field.typeSchema.schemaType>
+    <#case "OBJECT">
+${indent}if(node instanceof JsonObject)
 ${indent}{
-${indent}  ${var} = modelRegistry.newInstance((ImmutableJsonObject)node, ${field.elementSchema.camelCapitalizedName}.TYPE_ID, I${field.elementSchema.camelCapitalizedName}.class);
+${indent}  ${var} = modelRegistry.newInstance((ImmutableJsonObject)node, ${field.typeSchema.camelCapitalizedName}.TYPE_ID, I${field.typeSchema.camelCapitalizedName}.class);
 ${indent}}
 ${indent}else ${ifValidation}
 ${indent}{
@@ -23,28 +23,38 @@ ${indent}  throw new IllegalArgumentException("${field.camelName} must be an Obj
 ${indent}}
     <#break>
     
-    <#case ARRAY>
+    <#case "ARRAY">
 ${indent}if(node instanceof Json${field.cardinality})
 ${indent}{
-${indent}  ${var} = ${fieldType}.newBuilder().with((Json${fieldCardinality}<?>)node).build();
+${indent}  ${var} = ${fieldType}.newBuilder().with((Json${field.cardinality})node).build();
 <@checkItemLimits indent field field.camelName var/>
 ${indent}}
 ${indent}else ${ifValidation}
 ${indent}{
-${indent}  throw new IllegalArgumentException("${field.camelName} must be an array node not " + node.getClass().getName());
+${indent}  throw new IllegalArgumentException("${field.camelName} must be a Json${field.cardinality} node not " + node.getClass().getName());
 ${indent}}
     <#break>
     
-    <#case PRIMITIVE>
+    <#case "PRIMITIVE">
+${indent}if(node instanceof I${field.typeSchema.type}Provider)
+${indent}{
+${indent}  ${field.typeSchema.type} value = ${field.typeSchema.constructPrefix}((I${field.typeSchema.type}Provider)node).as${field.typeSchema.type}()${field.typeSchema.constructSuffix};
+      <@checkFieldLimits "${indent}" field "value"/>
+${indent}  ${var} = ${field.typeSchema.constructPrefix}value${field.typeSchema.constructSuffix};
+${indent}}
+${indent}else ${ifValidation}
+${indent}{
+${indent}    throw new IllegalArgumentException("${field.camelName} must be an instance of I${field.typeSchema.type}Provider not " + node.getClass().getName());
+${indent}}
     <#break>
     
     <#default>
-UNEXPECTED SCHEMA TYPE ${field.getSchemaType} in generateCreateFieldFromJsonDomNode
+UNEXPECTED SCHEMA TYPE ${field.typeSchema.schemaType} in generateCreateFieldFromJsonDomNode
     <#break>
   </#switch>
 
 
-
+<#-- 
   <#if field.isComponent>
     <#if field.isObjectSchema>
 
@@ -58,7 +68,7 @@ ${indent}  ${javaElementFieldClassName} value = ((I${javaElementFieldClassName}P
 
 ${indent}  try
 ${indent}  {
-${indent}    ${var} = ${javaConstructTypePrefix}value${javaConstructTypePostfix};
+${indent}    ${var} = ${javaconstructPrefix}value${javaconstructPostfix};
 ${indent}  }
 ${indent}  catch(RuntimeException e)
 ${indent}  {
@@ -88,7 +98,7 @@ ${indent}    ${javaElementFieldClassName} value = ((I${javaElementFieldClassName
 <@createTypeDefValue indent field.baseSchema.items.baseSchema "list" "value"/>
 ${indent}  }
 ${indent}}
-${indent}    ${var} = ${javaTypeCopyPrefix}list${javaTypeCopyPostfix};
+${indent}    ${var} = ${field.typeSchema.constructPrefix}list${field.typeSchema.constructSuffix};
     <#else>
       <#if field.baseSchema.items.isComponent>
 ${indent}  ${var} = ${field.elementSchema.camelCapitalizedName}.FACTORY.new${mutable}${fieldCardinality}((JsonArray<?>)node, modelRegistry);
@@ -108,16 +118,50 @@ ${indent}}
     <#else> 
 ${indent}if(node instanceof I${javaElementFieldClassName}Provider)
 ${indent}{
-${indent}  ${javaFieldClassName} value = ${javaConstructTypePrefix}((I${javaElementFieldClassName}Provider)node).as${javaElementFieldClassName}()${javaConstructTypePostfix};
+${indent}  ${javaFieldClassName} value = ${javaconstructPrefix}((I${javaElementFieldClassName}Provider)node).as${javaElementFieldClassName}()${javaconstructPostfix};
       <#if requiresChecks && ifValidation == "">
         <@checkLimits "${indent}  " field "value"/>
       </#if>
-${indent}  ${var} = ${javaTypeCopyPrefix}value${javaTypeCopyPostfix};
+${indent}  ${var} = ${field.typeSchema.constructPrefix}value${field.typeSchema.constructSuffix};
 ${indent}}
 ${indent}else ${ifValidation}
 ${indent}{
 ${indent}    throw new IllegalArgumentException("${field.camelName} must be an instance of ${javaFieldClassName} not " + node.getClass().getName());
 ${indent}}
     </#if>
+  </#if> -->
+</#macro>
+
+<#------------------------------------------------------------------------------------------------------
+ # Generate limit checks for the given field if necessary
+ #
+ # @param indent    An indent string which is output at the start of each line generated
+ # @param field     A field model describing the field
+ # @param var       A java variable containing the value being checked
+ #----------------------------------------------------------------------------------------------------->
+<#macro checkFieldLimits indent field var>
+  <#if field.typeSchema.minimum??>
+    <#if field.typeSchema.exclusiveMinimum>
+${indent}if(${var} != null && ${var} <= ${field.typeSchema.minimum})
+${indent}  throw new IllegalArgumentException("Value " + ${var} + " of ${field.name} is less than or equal to the exclusive minimum allowed of ${field.typeSchema.minimum}");
+    <#else>
+${indent}if(${var} != null && ${var} < ${field.typeSchema.minimum})
+${indent}  throw new IllegalArgumentException("Value " + ${var} + " of ${field.name} is less than the minimum allowed of ${field.typeSchema.minimum}");
+    </#if>
+  </#if>
+  <#if field.typeSchema.maximum??>
+    <#if field.typeSchema.exclusiveMaximum>
+${indent}if(${var} != null && ${var} >= ${field.typeSchema.maximum})
+${indent}  throw new IllegalArgumentException("Value " + ${var} + " of ${field.name} is greater than or equal to the exclusive maximum allowed of ${field.typeSchema.maximum}");
+    <#else>
+${indent}if(${var} != null && ${var} > ${field.typeSchema.maximum})
+${indent}  throw new IllegalArgumentException("Value " + ${var} + " of ${field.name} is greater than the maximum allowed of ${field.typeSchema.maximum}");
+    </#if>
+  
+  </#if>
+  <#if field.required>
+${indent}if(${var} == null)
+${indent}  throw new IllegalArgumentException("${field.camelName} is required.");
+  
   </#if>
 </#macro>

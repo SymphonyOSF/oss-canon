@@ -67,11 +67,10 @@ import com.google.common.collect.ImmutableSet;
  * Generated from ${entity} at {entity.context.path}
  */
 @Immutable
-@SuppressWarnings("unused")
 <#if entity.superSchema??>
 public abstract class ${entity.camelCapitalizedName}Entity extends ${entity.superSchema.baseSchema.camelCapitalizedName}
 <#else>
-public abstract class ${entity.camelCapitalizedName}Entity extends Entity
+public abstract class ${entity.camelCapitalizedName}Entity extends ObjectEntity
 </#if>
 {
   /** Type ID */
@@ -87,7 +86,7 @@ public abstract class ${entity.camelCapitalizedName}Entity extends Entity
   
   private final ${"ImmutableSet<String>"?right_pad(25)}   unknownKeys_;
 <#list entity.fields as field>
-  // field ${field}
+  // field ${field} field.typeSchema.name=${field.typeSchema.name}
   private final ${field.type?right_pad(25)}  _${field.camelName}_;
 </#list>
 
@@ -96,29 +95,41 @@ public abstract class ${entity.camelCapitalizedName}Entity extends Entity
    * 
    * @param builder A mutable builder containing all values.
    */
-  public ${entity.camelCapitalizedName}Entity(${entity.camelCapitalizedName}.Abstract${entity.camelCapitalizedName}Builder<?,?> builder)
+  public ${entity.camelCapitalizedName}Entity(AbstractBuilder<?,?> builder)
   {
     super(builder);
     
 <#list entity.fields as field>
-    _${field.camelName}_ = ${javaTypeCopyPrefix}builder.get${field.camelCapitalizedName}()${javaTypeCopyPostfix};
-
-<#if requiresChecks>
-<@checkLimits "    " field  "_" + field.camelName + "_"/>
- 
-<#else>
-  <#if field.required>
+    _${field.camelName}_ = ${field.typeSchema.copyPrefix}builder.get${field.camelCapitalizedName}()${field.typeSchema.copySuffix};
+    <@checkFieldLimits "    " field "_${field.camelName}_"/>
+<#-- <#if field.typeSchema.minimum??>
+  <#if field.typeSchema.exclusiveMinimum>
+    if(_${field.camelName}_ != null && _${field.camelName}_ <= ${field.typeSchema.minimum})
+      throw new IllegalArgumentException("Value " +_${field.camelName}_ + " of _${field.camelName}_ is less than or equal to the exclusive minimum allowed of ${field.typeSchema.minimum}");
+  <#else>
+    if(_${field.camelName}_ != null && _${field.camelName}_ < ${field.typeSchema.minimum})
+      throw new IllegalArgumentException("Value " +_${field.camelName}_ + " of _${field.camelName}_ is less than the minimum allowed of ${field.typeSchema.minimum}");
+  </#if>
+</#if>
+<#if field.typeSchema.maximum??>
+  <#if field.typeSchema.exclusiveMaximum>
+    if(_${field.camelName}_ != null && _${field.camelName}_ >= ${field.typeSchema.maximum})
+      throw new IllegalArgumentException("Value " +_${field.camelName}_ + " of _${field.camelName}_ is greater than or equal to the exclusive maximum allowed of ${field.typeSchema.maximum}");
+  <#else>
+    if(_${field.camelName}_ != null && _${field.camelName}_ > ${field.typeSchema.maximum})
+      throw new IllegalArgumentException("Value " +_${field.camelName}_ + " of _${field.camelName}_ is greater than the maximum allowed of ${field.typeSchema.maximum}");
+  </#if>
+            
+</#if>
+<#if field.required>
     if(_${field.camelName}_ == null)
       throw new IllegalArgumentException("${field.camelName} is required.");
       
-  </#if>
-</#if>
+</#if> -->
 </#list>
-
-
     unknownKeys_ = ImmutableSet.of();
   }
-  
+<#-- 
   /**
    * Set the _type attribute of the given mutable JSON object to the type ID of this type if it is null and
    * return an immutable copy.
@@ -147,7 +158,7 @@ public abstract class ${entity.camelCapitalizedName}Entity extends Entity
   }
   
 
-
+ -->
    
   /**
    * Constructor from serialised form.
@@ -155,12 +166,9 @@ public abstract class ${entity.camelCapitalizedName}Entity extends Entity
    * @param jsonObject An immutable JSON object containing the serialized form of the object.
    * @param modelRegistry A model registry to use to deserialize any nested objects.
    */
-  public ${entity.camelCapitalizedName}Entity(ImmutableJsonObject jsonObject, IModelRegistry modelRegistry)
+  public ${entity.camelCapitalizedName}Entity(JsonObject jsonObject)
   {
-    super(jsonObject, modelRegistry);
-    
-    if(jsonObject == null)
-      throw new IllegalArgumentException("jsonObject is required");
+    super(jsonObject);
   
     Set<String> keySet = new HashSet<>(super.getCanonUnknownKeys());
     
@@ -602,7 +610,7 @@ public abstract class ${entity.camelCapitalizedName}Entity extends Entity
         throw new IllegalArgumentException("${field.camelName} is required.");
   
     </#if>
-      _${field.camelName}_ = ${javaConstructTypePrefix}value${javaConstructTypePostfix};
+      _${field.camelName}_ = ${field.typeSchema.constructPrefix}value${field.typeSchema.constructSuffix};
       return self();
     }
     </#if>

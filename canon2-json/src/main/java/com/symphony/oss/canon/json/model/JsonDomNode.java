@@ -31,7 +31,7 @@ import com.symphony.oss.commons.fluent.BaseAbstractBuilder;
  *
  */
 @Immutable
-public abstract class JsonDomNode
+public abstract class JsonDomNode implements Comparable<JsonDomNode>
 {
   static final String INDENT_LEVEL = "  ";
   
@@ -60,6 +60,24 @@ public abstract class JsonDomNode
     }
     
     return stringValue_;
+  }
+  
+  @Override
+  public int hashCode()
+  {
+    return toString().hashCode();
+  }
+
+  @Override
+  public boolean equals(Object other)
+  {
+    return other instanceof JsonDom && toString().equals(((JsonDom)other).toString());
+  }
+
+  @Override
+  public int compareTo(JsonDomNode other)
+  {
+    return toString().compareTo(other.toString());
   }
   
   /**

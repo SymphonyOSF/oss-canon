@@ -32,20 +32,27 @@ S extends ISchemaTemplateModel<T,M,S>>
   implements IFieldTemplateModel<T,M,S>
 {
   private final S typeSchema_;
+  private final boolean required_;
   
   public FieldTemplateModel(String name, M model,
-      S typeSchema,
+      S typeSchema, boolean required,
       String[] temaplates)
   {
     super(name, model, temaplates);
     
     typeSchema_ = typeSchema;
+    required_ = required;
   }
 
   @Override
   public S getTypeSchema()
   {
     return typeSchema_;
+  }
+
+  public boolean getRequired()
+  {
+    return required_;
   }
   
 }

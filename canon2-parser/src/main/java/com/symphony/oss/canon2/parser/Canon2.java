@@ -1,7 +1,7 @@
 /*
  *
  *
- * Copyright 2017 Symphony Communication Services, LLC.
+ * Copyright 2017, 2020 Symphony Communication Services, LLC.
  *
  * Licensed to The Symphony Software Foundation (SSF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -32,10 +32,6 @@ import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.symphony.oss.canon.json.ParserException;
-import com.symphony.oss.canon.runtime.Entity;
-import com.symphony.oss.commons.writer.IndentedWriter;
-
 public class Canon2
 {
   private static Logger log_ = LoggerFactory.getLogger(Canon2.class);
@@ -43,8 +39,12 @@ public class Canon2
   /* General Constants */
   public static final String    TEMPLATE              = "template";
   public static final String    PROFORMA              = "proforma";
-//
-//  /* JSON Constants */
+
+  /* JSON Constants */
+  public static final String    X_CANON                = "x-canon-";
+
+  public static final String IDENTIFIER_SUFFIX = "-identifier";
+  
 //  public static final String    X_MODEL               = "model";
 //  public static final String    X_ID                  = "id";
 //  public static final String    VERSION               = "version";

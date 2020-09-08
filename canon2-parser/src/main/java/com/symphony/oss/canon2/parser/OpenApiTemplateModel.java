@@ -19,8 +19,10 @@
 package com.symphony.oss.canon2.parser;
 
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 
 import com.symphony.oss.canon2.parser.model.SemanticVersion;
 
@@ -39,6 +41,7 @@ S extends ISchemaTemplateModel<T,M,S>>
 {
   private final IOpenApiObject resolvedModel_;
   private final List<S>        schemas_ = new LinkedList<>();
+  private final Map<String,S>  schemaMap_ = new HashMap<>();
 
   private final Integer        canonMajorVersion_;
   private final Integer        canonMinorVersion_;
@@ -95,12 +98,16 @@ S extends ISchemaTemplateModel<T,M,S>>
   @Override
   public M getModel()
   {
-    return (M)this;
+    return asOpenApiTemplateModel();
   }
 
   @Override
-  public void addSchema(S schema)
+  public void addSchema(S schema) throws GenerationException
   {
+    if(schemaMap_.put(schema.getCamelName(), schema) != null)
+    {
+      throw new GenerationException("Duplicate schema name \"" + schema.getCamelName() + "\"");
+    }
     schemas_.add(schema);
   }
 
@@ -114,5 +121,11 @@ S extends ISchemaTemplateModel<T,M,S>>
   public Collection<T> getChildren()
   {
     return (Collection<T>) getSchemas();
+  }
+
+  @Override
+  public boolean hasName(String name)
+  {
+    return schemaMap_.containsKey(name);
   }
 }

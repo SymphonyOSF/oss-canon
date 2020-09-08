@@ -46,6 +46,12 @@ implements IJavaTemplateModel
   }
 
   @Override
+  public JavaOpenApiTemplateModel asOpenApiTemplateModel()
+  {
+    return this;
+  }
+
+  @Override
   public Set<String> getImports()
   {
     return imports_;

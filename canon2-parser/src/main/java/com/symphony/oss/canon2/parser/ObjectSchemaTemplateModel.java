@@ -33,8 +33,14 @@ F extends IFieldTemplateModel<T,M,S>
   extends SchemaTemplateModel<T,M,S>
   implements IObjectSchemaTemplateModel<T,M,S,F>
 {
-  public ObjectSchemaTemplateModel( String name, M model, String... templates)
+  public ObjectSchemaTemplateModel(String name, M model, String... templates)
   {
     super(name, model, templates);
+  }
+
+  @Override
+  public SchemaType getSchemaType()
+  {
+    return SchemaType.OBJECT;
   }
 }

@@ -18,28 +18,29 @@
 
 package com.symphony.oss.canon2.parser;
 
+import javax.annotation.Nullable;
+
 /**
- * Base implementation of ISchemaTemplateModel.
- * 
+ * A model entity which supports the x-canon-identifier attribute.
+ *  
  * @author Bruce Skingle
  *
  */
-public abstract class ArraySchemaTemplateModel<
-T extends ITemplateModel<T,M,S>,
-M extends IOpenApiTemplateModel<T,M,S>,
-S extends ISchemaTemplateModel<T,M,S>
->
-  extends SchemaTemplateModel<T,M,S>
-  implements IArraySchemaTemplateModel<T,M,S>
+public interface INamedModelEntity
 {
-  public ArraySchemaTemplateModel(String name, M model, String... templates)
-  {
-    super(name, model, templates);
-  }
-
-  @Override
-  public SchemaType getSchemaType()
-  {
-    return SchemaType.ARRAY;
-  }
+  /**
+   * Return the x-canon-identifier attribute.
+   * 
+   * @return The x-canon-identifier attribute.
+   */
+  public @Nullable String getXCanonIdentifier();
+  
+  /**
+   * Return the x-canon-${LANGUAGE}-identifier attribute.
+   * 
+   * @param language The target generation language. 
+   * 
+   * @return The x-canon-${LANGUAGE}-identifier attribute.
+   */
+  public @Nullable String getXCanonIdentifier(String language);
 }

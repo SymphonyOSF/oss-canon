@@ -42,34 +42,34 @@ S extends ISchemaTemplateModel<T,M,S>>
    * @return The name of this model entity as written in the input spec.
    */
   String getName();
-//  
-//  /**
-//   * Return the name of this model entity in camelCase with a lower case initial letter.
-//   * 
-//   * @return The name of this model entity in camelCase with a lower case initial letter.
-//   */
-//  String getCamelName();
-//
-//  /**
-//   * Return the name of this model entity in snake_case with a lower case initial letter.
-//   * 
-//   * @return The name of this model entity in snake_case with a lower case initial letter.
-//   */
-//  String getSnakeName();
-//
-//  /**
-//   * Return the name of this model entity in CamelCase with an upper case initial letter.
-//   * 
-//   * @return The name of this model entity in CamelCase with an upper case initial letter.
-//   */
-//  String getCamelCapitalizedName();
-//  
-//  /**
-//   * Return the name of this model entity in Snake_case with an upper case initial letter.
-//   * 
-//   * @return The name of this model entity in Snake_case with an upper case initial letter.
-//   */
-//  String getSnakeCapitalizedName();
+  
+  /**
+   * Return the name of this model entity in camelCase with a lower case initial letter.
+   * 
+   * @return The name of this model entity in camelCase with a lower case initial letter.
+   */
+  String getCamelName();
+
+  /**
+   * Return the name of this model entity in snake_case with a lower case initial letter.
+   * 
+   * @return The name of this model entity in snake_case with a lower case initial letter.
+   */
+  String getSnakeName();
+
+  /**
+   * Return the name of this model entity in CamelCase with an upper case initial letter.
+   * 
+   * @return The name of this model entity in CamelCase with an upper case initial letter.
+   */
+  String getCamelCapitalizedName();
+  
+  /**
+   * Return the name of this model entity in Snake_case with an upper case initial letter.
+   * 
+   * @return The name of this model entity in Snake_case with an upper case initial letter.
+   */
+  String getSnakeCapitalizedName();
 
   /**
    * Return the list of template names which should be run against this model.

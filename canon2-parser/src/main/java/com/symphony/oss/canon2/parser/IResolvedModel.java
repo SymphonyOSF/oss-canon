@@ -48,7 +48,7 @@ public interface IResolvedModel
   O extends IObjectSchemaTemplateModel<T,M,S,F>,
   A extends IArraySchemaTemplateModel<T,M,S>,
   P extends IPrimitiveSchemaTemplateModel<T,M,S>,
-  F extends IFieldTemplateModel<T,M,S>> M generate(IGeneratorModelContext<T,M,S,O,A,P,F> modelContext);
+  F extends IFieldTemplateModel<T,M,S>> M generate(IGeneratorModelContext<T,M,S,O,A,P,F> modelContext) throws GenerationException;
 
   ImmutableMap<String, IResolvedSchema> getResolvedSchemas();
 }

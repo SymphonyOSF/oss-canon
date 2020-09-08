@@ -27,18 +27,10 @@ package com.symphony.oss.canon2.parser;
 
 import javax.annotation.concurrent.Immutable;
 
-import com.symphony.oss.commons.immutable.ImmutableByteArray;
-
+import com.symphony.oss.canon.runtime.IModelRegistry;
+import com.symphony.oss.canon2.parser.model.ComponentsObjectEntity;
 import com.symphony.oss.commons.dom.json.ImmutableJsonObject;
 import com.symphony.oss.commons.dom.json.MutableJsonObject;
-
-import com.symphony.oss.canon.runtime.IEntity;
-import com.symphony.oss.canon.runtime.IModelRegistry;
-
-
-import com.symphony.oss.canon2.parser.model.ComponentsObjectEntity;
-import com.symphony.oss.canon2.parser.model.IComponentsObjectEntity;
-import com.symphony.oss.canon2.parser.model.CanonModel;
 
 /**
  * Facade for Object ObjectSchema(ComponentsObject)
@@ -93,7 +85,7 @@ public class ComponentsObject extends ComponentsObjectEntity implements ICompone
   }
   
   @Override
-  public Named<? extends ICanonModelEntity> get(String[] parts, int index)
+  public ICanonModelEntity get(String[] parts, int index)
   {
     switch(parts[index])
     {

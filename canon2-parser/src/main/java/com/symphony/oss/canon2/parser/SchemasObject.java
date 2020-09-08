@@ -30,7 +30,6 @@ import java.util.Map;
 
 import javax.annotation.concurrent.Immutable;
 
-import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.symphony.oss.canon.runtime.IModelRegistry;
 import com.symphony.oss.canon2.parser.model.SchemasObjectEntity;
@@ -114,14 +113,14 @@ public class SchemasObject extends SchemasObjectEntity implements ISchemasObject
   }
   
   @Override
-  public Named<? extends ICanonModelEntity> get(String[] parts, int index)
+  public ICanonModelEntity get(String[] parts, int index)
   {
     ISchema schema = schemas_.get(parts[index]);
     
     if(schema == null)
       return super.get(parts, index);
     else
-      return new Named<ISchema>(parts[index], schema);
+      return schema;
   }
 }
 /*----------------------------------------------------------------------------------------------------

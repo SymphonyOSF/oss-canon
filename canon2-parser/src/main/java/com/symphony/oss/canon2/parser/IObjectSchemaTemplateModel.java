@@ -26,7 +26,7 @@ public interface IObjectSchemaTemplateModel<
   S extends ISchemaTemplateModel<T,M,S>,
   F extends IFieldTemplateModel<T,M,S>
   >
-    extends ISchemaTemplateModel<T,M,S>
+    extends ISchemaTemplateModel<T,M,S>, ITemplateModelNamespace
 {
   /**
    * Return this object as an ISchemaTemplateModel.
@@ -38,7 +38,7 @@ public interface IObjectSchemaTemplateModel<
    */
   S asSchemaTemplateModel();
   
-  void addField(F field);
+  void addField(F field) throws GenerationException;
   
   Collection<F> getFields();
   

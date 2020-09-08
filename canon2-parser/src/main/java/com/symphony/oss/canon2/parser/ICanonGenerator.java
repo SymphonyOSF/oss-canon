@@ -47,4 +47,6 @@ F extends IFieldTemplateModel<T,M,S>>
   String getLanguage();
 
   Set<String> getTemplatesFor(TemplateType type, String templateGroup);
+
+  String getIdentifierName(String name, INamedModelEntity entity);
 }

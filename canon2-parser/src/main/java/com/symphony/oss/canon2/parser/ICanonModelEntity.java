@@ -43,7 +43,7 @@ public interface ICanonModelEntity extends IEntity
    * 
    * @throws IllegalArgumentException if the given path is invalid.
    */
-  default Named<? extends ICanonModelEntity> get(String[] parts, int index)
+  default ICanonModelEntity get(String[] parts, int index)
   {
     throw new IllegalArgumentException("No path element " + parts[index]);
   }

@@ -51,7 +51,7 @@ public interface IResolvedSchema
   P extends IPrimitiveSchemaTemplateModel<T,M,S>,
   F extends IFieldTemplateModel<T,M,S>
   >
-    S generate(M model, String name, IGeneratorModelContext<T,M,S,O,A,P,F> modelContext);
+    S generate(M model, String name, IGeneratorModelContext<T,M,S,O,A,P,F> modelContext) throws GenerationException;
 }
 /*----------------------------------------------------------------------------------------------------
  * End of template proforma/java/Object/I_.java.ftl

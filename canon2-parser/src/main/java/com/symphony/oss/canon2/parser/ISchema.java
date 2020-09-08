@@ -37,10 +37,10 @@ import com.symphony.oss.canon2.parser.model.ISchemaEntity;
  */
 @Immutable
 public interface ISchema
-  extends ISchemaEntity
+  extends ISchemaEntity, INamedModelEntity
 {
 
-  IResolvedSchema resolve(IOpenApiObject openApiObject, GenerationContext generationContext);
+  IResolvedSchema resolve(IOpenApiObject openApiObject, SchemaResolver resolver, GenerationContext generationContext, String name);
 
   void validate(GenerationContext generationContext);
   

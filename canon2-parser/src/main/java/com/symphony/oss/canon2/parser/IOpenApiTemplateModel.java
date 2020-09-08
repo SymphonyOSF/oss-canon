@@ -33,7 +33,7 @@ public interface IOpenApiTemplateModel<
   T extends ITemplateModel<T,M,S>,
   M extends IOpenApiTemplateModel<T,M,S>,
   S extends ISchemaTemplateModel<T,M,S>>
-    extends ITemplateModel<T,M,S>
+    extends ITemplateModel<T,M,S>, ITemplateModelNamespace
 {
   /**
    * Return this object as an ITemplateModel.
@@ -46,11 +46,22 @@ public interface IOpenApiTemplateModel<
   T asTemplateModel();
   
   /**
+   * Return this object as an IOpenApiTemplateModel.
+   * 
+   * This method is needed to maintain type safety.
+   * 
+   * @return this object as an OpenApiTemplateModel.
+   */
+  M asOpenApiTemplateModel();
+  
+  /**
    * Add the given schema to this model.
    * 
    * @param schema A schema to be added to this model.
+   * 
+   * @throws GenerationException If there is a duplicate name. 
    */
-  void addSchema(S schema);
+  void addSchema(S schema) throws GenerationException;
 
   /**
    * Return all schemas in this model.

@@ -23,7 +23,9 @@
       "MessageId": {
         "type": "string",
         "format": "byte",
-        "facade": true
+        "facade": true,
+        "minimum": 2.1,
+        "maximum": 7.2 
       },
       "DoubleTypedef": {
         "description": "A double typedef with a facade.",
@@ -70,6 +72,7 @@
       },
       "SimpleObject": {
         "type": "object",
+        "required": ["name"],
         "properties": {
           "name": {
             "type": "string"
@@ -193,13 +196,20 @@
       
       "AllTheTypes": {
         "type": "object",
+        "required": [
+          "intField",
+          "int64Field"
+        ],
         "properties": {
           "intField": {
             "type": "integer"
           },
           "int64Field": {
               "type": "integer",
-              "format": "int64"
+              "format": "int64",
+              "minimum": 6,
+              "maximum": 8,
+              "exclusiveMaximum": true
           },
           "int32Field": {
               "type": "integer",
@@ -208,15 +218,18 @@
           "doubleField": {
               "type": "number"
           },
-          "floatField": {
+          "collideField": {
               "type": "number",
               "format": "float"
           },
-          "booleanField": {
-              "type": "boolean"
+          "collide_field": {
+              "type": "boolean",
+              "x-canon-identifier": "non-java-Collide-Field"
           },
-          "stringField": {
-              "type": "string"
+          "collide-field": {
+              "type": "string",
+              "x-canon-identifier": "non-java-identifier",
+              "x-canon-java-identifier": "javaCollideField"
           },
           "byteStringField": {
               "type": "string",
@@ -225,11 +238,23 @@
           "objectField": {
               "$ref": "#/components/schemas/SimpleObject"
           },
+          "inlineObjectField": {
+            "type": "object",
+            "required": ["name"],
+            "properties": {
+              "name": {
+                "type": "string"
+              },
+              "value": {
+                "type": "integer"
+              }
+            }
+          },
           "typeDefField": {
               "$ref": "#/components/schemas/IntTypedef"
           },
-          "directExternalField": {
-              "$ref": "#/components/schemas/DirectHash"
+          "raison_d'être": {
+              "type": "string"
           },
           "indirectExternalField": {
               "$ref": "#/components/schemas/Hash"

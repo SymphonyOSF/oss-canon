@@ -26,8 +26,11 @@
 package com.symphony.oss.canon2.parser;
 
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Set;
 
 import javax.annotation.concurrent.Immutable;
 
@@ -118,22 +121,27 @@ F extends IFieldTemplateModel<T,M,S>
   P extends IPrimitiveSchemaTemplateModel<T,M,S>,
   F extends IFieldTemplateModel<T,M,S>
   >
-  M generate(IGeneratorModelContext<T,M,S,O,A,P,F> modelContext)
+  M generate(IGeneratorModelContext<T,M,S,O,A,P,F> modelContext) throws GenerationException
   {
     log_.info("generate model");
     
-    M parentModel = modelContext.generateOpenApiObject(this);
+    M parentModel = modelContext.generateOpenApiObject(this, modelContext.getGenerator().getIdentifierName(modelContext.getSourceContext().getInputSourceName(), this));
+    
+    NameCollisionDetector ncd = new NameCollisionDetector(modelContext.getGenerator(), getResolvedSchemas());
+    
+    ncd.logCollisions();
     
     for(Entry<String, IResolvedSchema> entry : getResolvedSchemas().entrySet())
     {
-      S model = entry.getValue().generate(parentModel, entry.getKey(), modelContext);
+      S model = entry.getValue().generate(parentModel, entry.getKey(), 
+          modelContext);
       
       parentModel.addSchema(model);
     }
     
     return parentModel;
   }
-  
+
   @Override
   public ImmutableMap<String, IResolvedSchema> getResolvedSchemas()
   {

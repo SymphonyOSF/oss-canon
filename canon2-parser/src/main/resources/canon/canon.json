@@ -44,6 +44,9 @@
           "x-canon-generators": {
             "$ref": "#/components/schemas/CanonGeneratorConfig"
           },
+          "x-canon-identifier": {
+            "type": "string"
+          },
           "paths": {
             "$ref": "#/components/schemas/PathsObject"
           },
@@ -140,6 +143,12 @@
           "format": {
             "type": "string"
           },
+          "#minimum": {
+            "type": "number"
+          },
+          "#maxnimum": {
+            "type": "number"
+          },
           "properties": {
             "$ref": "#/components/schemas/PropertiesObject"
           },
@@ -148,6 +157,16 @@
           },
           "x-canon-cardinality": {
             "$ref": "#/components/schemas/CanonCardinality"
+          },
+          "x-canon-identifier": {
+            "type": "string"
+          },
+          "required": {
+            "type": "array",
+            "x-canon-cardinality": "SET",
+            "items": {
+              "type": "string"
+            }
           }
         }
       },
@@ -192,6 +211,9 @@
             "$ref": "#/components/schemas/Schema"
           },
           "resolvedProperties": {
+            "$ref": "#/components/schemas/ResolvedPropertiesObject"
+          },
+          "innerClasses": {
             "$ref": "#/components/schemas/ResolvedPropertiesObject"
           }
         }

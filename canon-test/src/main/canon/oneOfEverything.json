@@ -134,6 +134,12 @@
         "description": "A default String.",
         "type": "string"
       },
+      "DefStringMinMax": {
+        "description": "A default String.",
+        "type": "string",
+        "minimum": -123.25,
+        "maximum": 80000.25
+      },
       "StringOfBytes": {
         "description": "A byte String.",
         "type": "string",
@@ -220,6 +226,12 @@
             "description": "Seconds measured from the standard Java epoch of 1970-01-01T00:00:00Z where instants after the epoch have positive values, and earlier instants have negative values.",
             "type": "integer",
             "format": "int64"
+          },
+          "aString": {
+            "description": "A string with min max",
+            "type": "string",
+            "minimum": -77723.00025,
+            "maximum": 7650000.00025
           },
           "aFloat": {
             "description": "A float",
