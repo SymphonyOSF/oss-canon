@@ -161,12 +161,32 @@
           "x-canon-identifier": {
             "type": "string"
           },
+          "x-canon-facade": {
+            "type": "boolean"
+          },
           "required": {
             "type": "array",
             "x-canon-cardinality": "SET",
             "items": {
               "type": "string"
             }
+          },
+          "enum": {
+            "type": "array",
+            "x-canon-cardinality": "SET",
+            "items": {
+              "type": "string"
+            }
+          },
+          "minItems": {
+              "type": "integer",
+              "format": "int32",
+              "minimum": 0
+          },
+          "maxItems": {
+              "type": "integer",
+              "format": "int32",
+              "minimum": 0
           }
         }
       },
@@ -215,6 +235,12 @@
           },
           "innerClasses": {
             "$ref": "#/components/schemas/ResolvedPropertiesObject"
+          },
+          "isGenerated": {
+            "type": "boolean"
+          },
+          "name": {
+            "type": "string"
           }
         }
       },

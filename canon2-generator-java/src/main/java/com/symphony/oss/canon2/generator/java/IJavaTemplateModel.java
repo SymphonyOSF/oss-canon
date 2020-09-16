@@ -36,13 +36,6 @@ JavaSchemaTemplateModel
   Set<String> getImports();
   
   /**
-   * Return the java type of this class.
-   * 
-   * @return the java type of this class.
-   */
-  String getType();
-  
-  /**
    * Return the name of this model entity in camelCase with a lower case initial letter.
    * 
    * @return The name of this model entity in camelCase with a lower case initial letter.

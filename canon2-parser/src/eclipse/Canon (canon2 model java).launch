@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<launchConfiguration type="org.eclipse.jdt.launching.localJavaApplication">
+    <listAttribute key="org.eclipse.debug.core.MAPPED_RESOURCE_PATHS">
+        <listEntry value="/canon-launch/src/main/java/com/symphony/oss/canon/launch/Canon2Launch.java"/>
+    </listAttribute>
+    <listAttribute key="org.eclipse.debug.core.MAPPED_RESOURCE_TYPES">
+        <listEntry value="1"/>
+    </listAttribute>
+    <booleanAttribute key="org.eclipse.jdt.launching.ATTR_USE_START_ON_FIRST_THREAD" value="true"/>
+    <stringAttribute key="org.eclipse.jdt.launching.CLASSPATH_PROVIDER" value="org.eclipse.m2e.launchconfig.classpathProvider"/>
+    <stringAttribute key="org.eclipse.jdt.launching.MAIN_TYPE" value="com.symphony.oss.canon.launch.Canon2Launch"/>
+    <stringAttribute key="org.eclipse.jdt.launching.MODULE_NAME" value="canon-launch"/>
+    <stringAttribute key="org.eclipse.jdt.launching.PROGRAM_ARGUMENTS" value="-v -g com.symphony.oss.canon2.generator.java.JavaGenerator:${project_loc:canon2-generator-java}/src/main/resources/canon -o ${project_loc:canon2-model} ${project_loc:canon2-model}/src/main/resources/canon/canon.json"/>
+    <stringAttribute key="org.eclipse.jdt.launching.PROJECT_ATTR" value="canon-launch"/>
+    <stringAttribute key="org.eclipse.jdt.launching.SOURCE_PATH_PROVIDER" value="org.eclipse.m2e.launchconfig.sourcepathProvider"/>
+</launchConfiguration>

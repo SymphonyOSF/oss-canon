@@ -34,11 +34,11 @@ S extends ISchemaTemplateModel<T,M,S>>
   private final S typeSchema_;
   private final boolean required_;
   
-  public FieldTemplateModel(String name, M model,
+  public FieldTemplateModel(String name, String identifier, M model,
       S typeSchema, boolean required,
       String[] temaplates)
   {
-    super(name, model, temaplates);
+    super(name, identifier, model, temaplates);
     
     typeSchema_ = typeSchema;
     required_ = required;

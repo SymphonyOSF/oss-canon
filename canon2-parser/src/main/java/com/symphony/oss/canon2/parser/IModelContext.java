@@ -32,4 +32,8 @@ public interface IModelContext
 
   IOpenApiObject getModel();
 
+  void error(String error);
+
+  String getInputSourceFileName();
+
 }

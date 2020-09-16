@@ -64,6 +64,7 @@ class FreemarkerModel
     map.put("yearMonth",  new SimpleDateFormat("yyyy-MM").format(now));
     map.put("date",  new SimpleDateFormat("yyyy-MM-dd HH:mm:ss z").format(now));
     map.put("inputSource",  modelContext.getSourceContext().getInputSource());
+    map.put("inputSourceFileName",  modelContext.getSourceContext().getInputSourceFileName());
     
     return map;
   }

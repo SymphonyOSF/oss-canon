@@ -113,6 +113,7 @@
 	<module>canon2-test</module>
 	<module>canon2-generator-java</module>
 	<module>canon2-runtime-java</module>
+	<module>canon2-model</module>
 	</modules>
 
 	<build>

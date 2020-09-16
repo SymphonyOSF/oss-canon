@@ -51,6 +51,13 @@ S extends ISchemaTemplateModel<T,M,S>
    */
   S getTypeSchema();
   
+  /**
+   * Return true if this field is required, or has validation limits. 
+   * 
+   * @return true if this field is required, or has validation limits.
+   */
+  boolean getHasLimits();
+  
   @SuppressWarnings("unchecked")
   @Override
   default Collection<T> getChildren()

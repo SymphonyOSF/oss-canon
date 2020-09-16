@@ -36,8 +36,7 @@ class JavaGeneratorModelContext extends GeneratorModelContext<IJavaTemplateModel
   public JavaGeneratorModelContext(JavaGenerator javaGenerator, IModelContext context, IJsonObject<?> generatorConfig)
   {
     super(javaGenerator, context,
-        new JavaPathNameConstructor(generatorConfig.getRequiredString(JavaGenerator.GEN_PACKAGE)),
-        new JavaPathNameConstructor(generatorConfig.getRequiredString(JavaGenerator.FACADE_PACKAGE)));
+        new JavaPathNameConstructor(generatorConfig.getRequiredString(JavaGenerator.GEN_PACKAGE)));
     
     generatorConfig_ = generatorConfig;
   }
@@ -46,41 +45,57 @@ class JavaGeneratorModelContext extends GeneratorModelContext<IJavaTemplateModel
   public void populateTemplateModel(Map<String, Object> map)
   {
     map.put(JavaGenerator.GEN_PACKAGE, generatorConfig_.getRequiredString(JavaGenerator.GEN_PACKAGE));
-    map.put(JavaGenerator.FACADE_PACKAGE, generatorConfig_.getRequiredString(JavaGenerator.FACADE_PACKAGE));
   }
 
   @Override
-  public JavaOpenApiTemplateModel generateOpenApiObject(IResolvedModel resolvedModel, String name)
+  public JavaOpenApiTemplateModel generateOpenApiObject(IResolvedModel resolvedModel, String name, String identifier)
   {
-    return new JavaOpenApiTemplateModel(resolvedModel, name, "Model");
+    return new JavaOpenApiTemplateModel(resolvedModel, name, identifier, "Model");
   }
 
   
   @Override
-  public JavaObjectSchemaTemplateModel generateObjectSchema(JavaOpenApiTemplateModel model, IResolvedSchema entity, String name)
+  public JavaObjectSchemaTemplateModel generateObjectSchema(JavaOpenApiTemplateModel model, IResolvedSchema entity, String name, String identifier, boolean isReference) throws GenerationException
   {
-    return new JavaObjectSchemaTemplateModel(entity, name, model, "Object");
+    if(isReference)
+      return new JavaObjectSchemaTemplateModel(entity, name, identifier, model, this);
+    else
+      return new JavaObjectSchemaTemplateModel(entity, name, identifier, model, this, "Object");
   }
 
   @Override
   public JavaArraySchemaTemplateModel generateArraySchema(JavaOpenApiTemplateModel model, IResolvedSchema entity,
-      String name, CanonCardinality cardinality) throws GenerationException
+      String name, String identifier, boolean isReference, CanonCardinality cardinality) throws GenerationException
   {
-    return new JavaArraySchemaTemplateModel(entity,  name, cardinality, model, this,  "Array");
+    if(isReference)
+      return new JavaArraySchemaTemplateModel(entity,  name, identifier, cardinality, model, this);
+    else
+      return new JavaArraySchemaTemplateModel(entity,  name, identifier, cardinality, model, this,  "Array");
   }
 
   @Override
   public JavaPrimitiveSchemaTemplateModel generatePrimativeSchema(
-      JavaOpenApiTemplateModel model, IResolvedSchema entity, String name)
+      JavaOpenApiTemplateModel model, IResolvedSchema entity, String name, String identifier, boolean isReference) throws GenerationException
   {
-    return new JavaPrimitiveSchemaTemplateModel(entity,  name, model);
+    if(isReference || (!entity.getIsGenerated() && entity.getEnum().isEmpty()))
+    {
+      return new JavaPrimitiveSchemaTemplateModel(entity,  name, identifier, model);
+    }
+    else if(entity.getEnum().isEmpty())
+    {
+      return new JavaPrimitiveSchemaTemplateModel(entity,  name, identifier, model, "TypeDef");
+    }
+    else
+    {
+      return new JavaPrimitiveSchemaTemplateModel(entity,  name, identifier, model, "Enum");
+    }
   }
 
   @Override
-  public JavaFieldTemplateModel generateField(JavaOpenApiTemplateModel model, IResolvedSchema entity, String name,
+  public JavaFieldTemplateModel generateField(JavaOpenApiTemplateModel model, IResolvedSchema entity, String name, String identifier,
       JavaSchemaTemplateModel typeSchema, boolean required)
   {
-    return new JavaFieldTemplateModel(entity, name, model, typeSchema, required);
+    return new JavaFieldTemplateModel(entity, name, identifier, model, typeSchema, required);
   }
 
 //  private String getJavaCardinality(String cardinality)

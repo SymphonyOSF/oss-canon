@@ -30,14 +30,14 @@ class SchemaResolver
 {
   private Map<String, IResolvedSchema>        schemaResolution_   = new HashMap<>();
 
-  synchronized IResolvedSchema resolve(IOpenApiObject openApiObject, GenerationContext generationContext, ISchema schema, String name)
+  synchronized IResolvedSchema resolve(IOpenApiObject openApiObject, GenerationContext generationContext, ModelContext modelContext, ISchema schema, String name, boolean isGenerated)
   {
     
     IResolvedSchema resolvedSchema = schemaResolution_.get(name);
     
     if(resolvedSchema == null)
     {
-      resolvedSchema = schema.resolve(openApiObject, this, generationContext, name);
+      resolvedSchema = schema.resolve(openApiObject, this, generationContext, modelContext, isGenerated, name);
       schemaResolution_.put(name, resolvedSchema);
     }
     

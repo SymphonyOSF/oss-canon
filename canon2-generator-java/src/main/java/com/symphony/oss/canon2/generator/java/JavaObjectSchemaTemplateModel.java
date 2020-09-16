@@ -23,6 +23,7 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import com.symphony.oss.canon2.parser.GenerationException;
 import com.symphony.oss.canon2.parser.IObjectSchemaTemplateModel;
@@ -37,19 +38,60 @@ JavaSchemaTemplateModel,
 JavaFieldTemplateModel
 >
 {
+//  private static final String[] IMPORTS = new String[] 
+//  {
+//    "javax.annotation.concurrent.Immutable",
+//    "javax.annotation.Nullable",
+//    "com.google.common.collect.ImmutableSet",
+//    "java.util.List",
+//    "java.util.Set",
+//    "java.util.HashSet",
+//    "com.symphony.oss.canon2.runtime.java.ModelRegistry"
+//  };
+  
   private List<JavaFieldTemplateModel> fields_ = new LinkedList<>();
   private Map<String, JavaFieldTemplateModel> fieldMap_ = new HashMap<>();
+  private List<JavaSchemaTemplateModel> innerClasses_ = new LinkedList<>();
+  private boolean hasLimits_;
   
-  JavaObjectSchemaTemplateModel(IResolvedSchema entity, String name, JavaOpenApiTemplateModel model,
-      String... temaplates)
+  JavaObjectSchemaTemplateModel(IResolvedSchema entity, String name, String identifier, JavaOpenApiTemplateModel model,
+      JavaGeneratorModelContext modelContext, String... temaplates) throws GenerationException
   {
-    super(name, model, temaplates);
+    super(entity, name, identifier, model, temaplates);
     
-    imports_.add("javax.annotation.concurrent.Immutable");
-    imports_.add("javax.annotation.Nullable");
+    for(Entry<String, IResolvedSchema> entry : entity.getInnerClasses().getResolvedProperties().entrySet())
+    {
+      System.err.println(entry);
+      JavaSchemaTemplateModel innerClass = entry.getValue().generate(model, entry.getKey(), modelContext, false);
+      innerClasses_.add(innerClass);
+//      innerClasses_.add(modelContext.generateObjectSchema(model, entry.getValue(), entry.getKey(), false));
+    }
     
 //    if(entity.getSuperSchema() == null)
-    imports_.add("com.symphony.oss.canon2.runtime.java.ObjectEntity");
+    //imports_.add("com.symphony.oss.canon2.runtime.java.ObjectEntity");
+  }
+
+  @Override
+  public String getJsonNodeType()
+  {
+    return "JsonObject";
+  }
+
+  @Override
+  public String getFullyQualifiedJsonNodeType()
+  {
+    return "com.symphony.oss.canon.json.model.JsonObject";
+  }
+
+  public List<JavaSchemaTemplateModel> getInnerClasses()
+  {
+    return innerClasses_;
+  }
+  
+  @Override
+  public boolean getHasLimits()
+  {
+    return hasLimits_;
   }
 
   @Override
@@ -73,13 +115,16 @@ JavaFieldTemplateModel
   @Override
   public void addField(JavaFieldTemplateModel field) throws GenerationException
   {
-    if(fieldMap_.put(field.getCamelName(), field) != null)
-    {
-      throw new GenerationException("Duplicate field name \"" + field.getCamelName() + "\" in " + getName());
-    }
+//    if(fieldMap_.put(field.getCamelName(), field) != null)
+//    {
+//      throw new GenerationException("Duplicate field name \"" + field.getCamelName() + "\" in " + getName());
+//    }
     fields_.add(field);
     
     imports_.addAll(field.imports_);
+    
+    if(field.getHasLimits())
+      hasLimits_ = true;
   }
   
   @Override
@@ -91,7 +136,7 @@ JavaFieldTemplateModel
   @Override
   public String toString()
   {
-    return "JavaObjectSchemaTemplateModel [fields_=" + fields_ + ", imports_=" + imports_ + "]";
+    return "JavaObjectSchemaTemplateModel [fields_=" + fields_ +  "]";
   }
 
   @Override

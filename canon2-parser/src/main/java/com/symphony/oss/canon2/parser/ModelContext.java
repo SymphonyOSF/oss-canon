@@ -30,6 +30,8 @@ import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
@@ -50,10 +52,11 @@ class ModelContext implements IModelContext
   private final Map<String, String>   uriMap_;
   
   private final String          inputSource_;
+  private final String          inputSourceFileName_;
   private final String          inputSourceName_;
   private final boolean         referencedModel_;
   private Reader                reader_;
-  private int                   errorCnt_;
+  private List<String>          errors_ = new LinkedList<>();
   
   
 
@@ -87,7 +90,7 @@ class ModelContext implements IModelContext
     
     if(path == null || path.length()==0 || "/".equals(path))
     {
-      inputSourceName_ = url_.getHost();
+      inputSourceFileName_ = inputSourceName_ = url_.getHost();
     }
     else
     {
@@ -96,8 +99,7 @@ class ModelContext implements IModelContext
       if(i != -1)
         path = path.substring(i+1);
       
-      
-      
+      inputSourceFileName_ = path;
       inputSourceName_ = trim(path);
     }
   }
@@ -203,6 +205,12 @@ class ModelContext implements IModelContext
     return inputSourceName_;
   }
   
+  @Override
+  public String getInputSourceFileName()
+  {
+    return inputSourceFileName_;
+  }
+
   public void addReferencedModel(URI uri) throws GenerationException
   {
     try
@@ -250,8 +258,24 @@ class ModelContext implements IModelContext
     }
   }
   
-  public boolean  hasErrors()
+  public boolean  printErrors()
   {
-    return errorCnt_ > 0;
+    if(errors_.isEmpty())
+      return false;
+    
+    log_.error("=============================================================================================================================");
+    log_.error(errors_.size() + " errors encountered:");
+    for(String error : errors_)
+      log_.error(error);
+    log_.error("=============================================================================================================================");
+    
+    return true;
+  }
+
+  @Override
+  public void error(String error)
+  {
+    log_.error(error);
+    errors_.add(error);
   }
 }

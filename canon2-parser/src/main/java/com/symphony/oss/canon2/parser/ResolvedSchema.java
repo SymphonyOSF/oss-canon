@@ -25,8 +25,6 @@
 
 package com.symphony.oss.canon2.parser;
 
-import java.util.LinkedList;
-import java.util.List;
 import java.util.Map.Entry;
 
 import javax.annotation.concurrent.Immutable;
@@ -111,7 +109,7 @@ public class ResolvedSchema extends ResolvedSchemaEntity implements IResolvedSch
   P extends IPrimitiveSchemaTemplateModel<T,M,S>,
   F extends IFieldTemplateModel<T,M,S>
   >
-    S generate(M model, String name, IGeneratorModelContext<T,M,S,O,A,P,F> modelContext) throws GenerationException
+    S generate(M model, String name, IGeneratorModelContext<T,M,S,O,A,P,F> modelContext, boolean isReference) throws GenerationException
   {
     String identifier = modelContext.getGenerator().getIdentifierName(name, this);
     
@@ -120,25 +118,26 @@ public class ResolvedSchema extends ResolvedSchemaEntity implements IResolvedSch
       case "object":
       {
         //IObjectSchemaTemplateModel<S> 
-        O entity = modelContext.generateObjectSchema(model, this, identifier);
+        O entity = modelContext.generateObjectSchema(model, this, name, identifier, isReference);
         
         IResolvedPropertiesObject propertiesObject = getResolvedProperties();
         
         if(propertiesObject != null)
         {
-          NameCollisionDetector ncd = new NameCollisionDetector(modelContext.getGenerator(), propertiesObject.getResolvedProperties());
+          NameCollisionDetector ncd = new NameCollisionDetector(modelContext.getGenerator(), propertiesObject.getResolvedProperties(), false);
           
-          ncd.logCollisions();
+          ncd.logCollisions(modelContext.getSourceContext());
           
           for(Entry<String, IResolvedSchema> entry : propertiesObject.getResolvedProperties().entrySet())
           {
             String propertyIdentifier = modelContext.getGenerator().getIdentifierName(entry.getKey(), entry.getValue());
+//            String typeIdentifier = modelContext.getGenerator().getIdentifierName(entry.getValue().getName(), entry.getValue());
             
-             S typeSchema = entry.getValue().generate(model, propertyIdentifier,
-                modelContext);
+             S typeSchema = entry.getValue().generate(model, entry.getValue().getName(),
+                modelContext, true);
             boolean required = getRequired().contains(entry.getKey());
             
-            entity.addField(modelContext.generateField(model, entry.getValue(), propertyIdentifier, 
+            entity.addField(modelContext.generateField(model, entry.getValue(), entry.getKey(), propertyIdentifier, 
                 typeSchema, required));
           }
         }
@@ -153,13 +152,13 @@ public class ResolvedSchema extends ResolvedSchemaEntity implements IResolvedSch
           cardinality = CanonCardinality.LIST; 
         }
         
-        return (S) modelContext.generateArraySchema(model, this, identifier, cardinality);
+        return (S) modelContext.generateArraySchema(model, this, name, identifier, isReference, cardinality);
         
       case "number":
       case "boolean":
       case "string":
       case "integer":
-        return (S) modelContext.generatePrimativeSchema(model, this, identifier);
+        return (S) modelContext.generatePrimativeSchema(model, this, name, identifier, isReference);
         
       default:
         throw new CodingFault("Unknown schema type " + getType());

@@ -113,7 +113,7 @@ public class SchemasObject extends SchemasObjectEntity implements ISchemasObject
   }
   
   @Override
-  public ICanonModelEntity get(String[] parts, int index)
+  public ICanonModelEntity get(String[] parts, int index) throws GenerationException
   {
     ISchema schema = schemas_.get(parts[index]);
     

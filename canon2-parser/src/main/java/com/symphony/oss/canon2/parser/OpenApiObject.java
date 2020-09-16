@@ -95,18 +95,18 @@ public class OpenApiObject extends OpenApiObjectEntity implements IOpenApiObject
   }
 
   @Override
-  public <T extends ICanonModelEntity> T get(String fragment, Class<T> type)
+  public <T extends ICanonModelEntity> T get(String fragment, Class<T> type) throws GenerationException
   {
     ICanonModelEntity entity = get(fragment.split("/"), 1);
     
     if(type.isInstance(entity))
       return type.cast(entity);
     
-    throw new IllegalArgumentException("Expected " + type + " but found " + entity.getClass());
+    throw new GenerationException("Expected " + type + " but found " + entity.getClass());
   }
   
   @Override
-  public ICanonModelEntity get(String[] parts, int index)
+  public ICanonModelEntity get(String[] parts, int index) throws GenerationException
   {
     switch(parts[index])
     {
@@ -131,7 +131,7 @@ public class OpenApiObject extends OpenApiObjectEntity implements IOpenApiObject
   }
 
   @Override
-  public IResolvedModel resolve(GenerationContext generationContext)
+  public IResolvedModel resolve(GenerationContext generationContext, ModelContext modelContext)
   {
     log_.info("resolve model");
     
@@ -150,7 +150,7 @@ public class OpenApiObject extends OpenApiObjectEntity implements IOpenApiObject
     
     for(Entry<String, ISchema> entry : schemas.getSchemas().entrySet())
     {
-      builder.withResolvedSchema(entry.getKey(), resolver.resolve(this, generationContext, entry.getValue(), entry.getKey()));
+      builder.withResolvedSchema(entry.getKey(), resolver.resolve(this, generationContext, modelContext, entry.getValue(), entry.getKey(), true));
     }
     
     return builder.build();

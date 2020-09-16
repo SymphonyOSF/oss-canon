@@ -125,16 +125,19 @@ F extends IFieldTemplateModel<T,M,S>
   {
     log_.info("generate model");
     
-    M parentModel = modelContext.generateOpenApiObject(this, modelContext.getGenerator().getIdentifierName(modelContext.getSourceContext().getInputSourceName(), this));
+    String name = modelContext.getSourceContext().getInputSourceName();
+    String identifier = modelContext.getGenerator().getIdentifierName(modelContext.getSourceContext().getInputSourceName(), this);
     
-    NameCollisionDetector ncd = new NameCollisionDetector(modelContext.getGenerator(), getResolvedSchemas());
+    M parentModel = modelContext.generateOpenApiObject(this, name, identifier);
     
-    ncd.logCollisions();
+    NameCollisionDetector ncd = new NameCollisionDetector(modelContext.getGenerator(), getResolvedSchemas(), true);
+    
+    ncd.logCollisions(modelContext.getSourceContext());
     
     for(Entry<String, IResolvedSchema> entry : getResolvedSchemas().entrySet())
     {
       S model = entry.getValue().generate(parentModel, entry.getKey(), 
-          modelContext);
+          modelContext, false);
       
       parentModel.addSchema(model);
     }

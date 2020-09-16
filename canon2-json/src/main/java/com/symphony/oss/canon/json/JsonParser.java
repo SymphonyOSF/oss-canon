@@ -21,7 +21,10 @@ package com.symphony.oss.canon.json;
 import java.io.IOException;
 import java.util.function.Consumer;
 
+import org.apache.commons.codec.binary.Base64;
+
 import com.symphony.oss.canon.json.model.JsonArray;
+import com.symphony.oss.canon.json.model.JsonBase64String;
 import com.symphony.oss.canon.json.model.JsonBoolean;
 import com.symphony.oss.canon.json.model.JsonDom;
 import com.symphony.oss.canon.json.model.JsonDomNode;
@@ -213,10 +216,16 @@ public class JsonParser extends Parser
       {
         case QUOTE:
           String stringValue = getQuotedString();
-          return new JsonString.Builder()
-              .withValue(stringValue)
-              .withContext(context)
-              .build();
+          if(Base64.isBase64(stringValue))
+            return new JsonBase64String.Builder()
+                .withValue(stringValue)
+                .withContext(context)
+                .build();
+          else
+            return new JsonString.Builder()
+                .withValue(stringValue)
+                .withContext(context)
+                .build();
           
         case 't':
           expectString("true");

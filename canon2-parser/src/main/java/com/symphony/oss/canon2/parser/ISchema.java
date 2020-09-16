@@ -25,6 +25,8 @@
 
 package com.symphony.oss.canon2.parser;
 
+import java.util.Set;
+
 import javax.annotation.concurrent.Immutable;
 
 import com.symphony.oss.canon2.parser.model.ISchemaEntity;
@@ -40,7 +42,7 @@ public interface ISchema
   extends ISchemaEntity, INamedModelEntity
 {
 
-  IResolvedSchema resolve(IOpenApiObject openApiObject, SchemaResolver resolver, GenerationContext generationContext, String name);
+  IResolvedSchema resolve(IOpenApiObject openApiObject, SchemaResolver resolver, GenerationContext generationContext, ModelContext modelContext, boolean isGenerated, String name);
 
   void validate(GenerationContext generationContext);
   
@@ -49,6 +51,8 @@ public interface ISchema
   IReferenceObject getItemsReference();
 
   void fetchReferences(GenerationContext generationContext) throws GenerationException;
+
+//  Set<?> getEnumValues(String type) throws GenerationException;
 
 //  ImmutableMap<String, ISchema> getFields();
 }

@@ -25,11 +25,15 @@ import java.util.TreeMap;
 
 import javax.annotation.Nullable;
 
+import org.apache.commons.codec.binary.Base64;
+
 import com.google.common.collect.ImmutableCollection;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 import com.symphony.oss.canon.json.DuplicateAttributeException;
 import com.symphony.oss.canon.json.IParserContext;
+import com.symphony.oss.commons.immutable.ImmutableByteArray;
+import com.symphony.oss.commons.type.provider.IStringProvider;
 
 /**
  * A JSON object.
@@ -37,7 +41,7 @@ import com.symphony.oss.canon.json.IParserContext;
  * @author Bruce Skingle
  *
  */
-public class JsonObject extends JsonDomNode
+public class JsonObject extends JsonDomNode implements IJsonOrBuilder<JsonObject, Void>
 {
   private final ImmutableMap<String, JsonDomNode> children_;
   
@@ -48,6 +52,18 @@ public class JsonObject extends JsonDomNode
     children_ = builder.children_ == null ? ImmutableMap.of() : ImmutableMap.copyOf(builder.children_);
   }
   
+  @Override
+  public JsonObject getJson()
+  {
+    return this;
+  }
+
+  @Override
+  public Void getBuilder()
+  {
+    return null;
+  }
+
   @Override
   void toString(StringBuilder s, String indent)
   {
@@ -103,6 +119,18 @@ public class JsonObject extends JsonDomNode
   public @Nullable JsonDomNode get(String name)
   {
     return children_.get(name);
+  }
+  
+  /**
+   * Return true iff an attribute with the given name exists.
+   * 
+   * @param name An attribute name of interest.
+   * 
+   * @return true iff an attribute with the given name exists.
+   */
+  public boolean containsKey(String name)
+  {
+    return children_.containsKey(name);
   }
   
   /**
@@ -171,13 +199,143 @@ public class JsonObject extends JsonDomNode
     {
       if(children_ == null)
         children_ = canonicalize_ ? new TreeMap<>() : new LinkedHashMap<>();
-        
-      children_.put(name, new JsonString.Builder().withValue(value).build());
+      
+      JsonString node = Base64.isBase64(value) ?
+          new JsonBase64String.Builder().withValue(value).build() :
+          new JsonString.Builder().withValue(value).build();
+          
+      children_.put(name, node);
       
       return self();
     }
-    
 
+    /**
+     * Set the given value as a member of this object with the given name, only if it is non-null.
+     * 
+     * @param name  The name of the new member.
+     * @param value The member.
+     * 
+     * @return This (fluent method).
+     */
+    public T addIfNotNull(String name, JsonDomNode value)
+    {
+      if(value != null)
+        return with(name, value);
+      
+      return self();
+    }
+
+    /**
+     * Set the given value as a member of this object with the given name, only if it is non-null.
+     * 
+     * @param name  The name of the new member.
+     * @param value The member.
+     * 
+     * @return This (fluent method).
+     */
+    public T addIfNotNull(String name, String value)
+    {
+      if(value != null)
+        return with(name, value);
+      
+      return self();
+    }
+
+    /**
+     * Set the given value as a member of this object with the given name, only if it is non-null.
+     * 
+     * @param name  The name of the new member.
+     * @param value The member.
+     * 
+     * @return This (fluent method).
+     */
+    public T addIfNotNull(String name, Boolean value)
+    {
+      if(value != null)
+        return with(name, new JsonBoolean.Builder().withValue(value).build());
+      
+      return self();
+    }
+
+    /**
+     * Set the given value as a member of this object with the given name, only if it is non-null.
+     * 
+     * @param name  The name of the new member.
+     * @param value The member.
+     * 
+     * @return This (fluent method).
+     */
+    public T addIfNotNull(String name, ImmutableByteArray value)
+    {
+      if(value != null)
+        return with(name, new JsonBase64String.Builder().withValue(value).build());
+      
+      return self();
+    }
+
+    /**
+     * Set the given value as a member of this object with the given name, only if it is non-null.
+     * 
+     * @param name  The name of the new member.
+     * @param value The member.
+     * 
+     * @return This (fluent method).
+     */
+    public T addIfNotNull(String name, Double value)
+    {
+      if(value != null)
+        return with(name, new JsonDouble.Builder().withValue(value).build());
+      
+      return self();
+    }
+
+    /**
+     * Set the given value as a member of this object with the given name, only if it is non-null.
+     * 
+     * @param name  The name of the new member.
+     * @param value The member.
+     * 
+     * @return This (fluent method).
+     */
+    public T addIfNotNull(String name, Float value)
+    {
+      if(value != null)
+        return with(name, new JsonFloat.Builder().withValue(value).build());
+      
+      return self();
+    }
+
+    /**
+     * Set the given value as a member of this object with the given name, only if it is non-null.
+     * 
+     * @param name  The name of the new member.
+     * @param value The member.
+     * 
+     * @return This (fluent method).
+     */
+    public T addIfNotNull(String name, Long value)
+    {
+      if(value != null)
+        return with(name, new JsonLong.Builder().withValue(value).build());
+      
+      return self();
+    }
+
+    /**
+     * Set the given value as a member of this object with the given name, only if it is non-null.
+     * 
+     * @param name  The name of the new member.
+     * @param value The member.
+     * 
+     * @return This (fluent method).
+     */
+    public T addIfNotNull(String name, Integer value)
+    {
+      if(value != null)
+        return with(name, new JsonInteger.Builder().withValue(value).build());
+      
+      return self();
+    }
     
     /**
      * Set the given value as a member of this object with the given name.
@@ -225,5 +383,50 @@ public class JsonObject extends JsonDomNode
     {
       return new JsonObject(this);
     }
+  }
+
+  /**
+   * Return the String value of the attribute with the give name.
+   * 
+   * @param name          The name of the attribute of interest.
+   * @param defaultValue  The value to be returned if the attribute does not exist.
+   * 
+   * @return the String value of the attribute with the give name.
+   * 
+   * @throws IllegalStateException if the attribute exists but is not a String value.
+   */
+  public String getString(String name, String defaultValue)
+  {
+    JsonDomNode node = get(name);
+    
+    if(node == null)
+      return defaultValue;
+    
+    if(node instanceof IStringProvider)
+      return ((IStringProvider)node).asString();
+    
+    throw new IllegalStateException("\"" + name + "\" is not a String value.");
+  }
+
+  /**
+   * Return the String value of the attribute with the give name.
+   * 
+   * @param name          The name of the attribute of interest.
+   * 
+   * @return the String value of the attribute with the give name.
+   * 
+   * @throws IllegalStateException if the attribute exists but is not a String value.
+   */
+  public String getRequiredString(String name)
+  {
+    JsonDomNode node = get(name);
+    
+    if(node == null)
+      throw new IllegalStateException("\"" + name + "\" does not exist");
+    
+    if(node instanceof IStringProvider)
+      return ((IStringProvider)node).asString();
+    
+    throw new IllegalStateException("\"" + name + "\" is not a String value.");
   }
 }

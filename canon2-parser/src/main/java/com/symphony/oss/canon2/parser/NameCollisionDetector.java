@@ -31,17 +31,26 @@ import org.slf4j.LoggerFactory;
 
 class NameCollisionDetector
 {
+  private static final String[] STD_JAVA_PACKAGES = new String[]
+  {
+      "java.lang",
+      "java.util"
+  };
+
   private static Logger log_ = LoggerFactory.getLogger(NameCollisionDetector.class);
   
   private Set<List<String>> collisionSet_ = new HashSet<>();
+  private Set<String>       invalidSet_   = new HashSet<>();
   
-  NameCollisionDetector(ICanonGenerator<?,?,?,?,?,?,?> generator, Map<String, IResolvedSchema> schemas)
+  NameCollisionDetector(ICanonGenerator<?,?,?,?,?,?,?> generator, Map<String, IResolvedSchema> schemas, boolean isSchema)
   {
+    int debug=1;
     Map<String, List<String>>   camelMap  = new HashMap<>();
     
     for(Entry<String, IResolvedSchema> entry : schemas.entrySet())
     {
-      String name = generator.getIdentifierName(entry.getKey(), entry.getValue());
+      boolean initial   = isSchema;
+      String  name      = generator.getIdentifierName(entry.getKey(), entry.getValue());
       
       List<String> list = camelMap.get(name);
       
@@ -50,7 +59,37 @@ class NameCollisionDetector
         list = new LinkedList<>();
         camelMap.put(name, list);
       }
-      list.add(entry.getKey());
+      list.add("\"" + entry.getKey() + "\" at " + entry.getValue().getSourceLocation());
+      
+      for(char c : name.toCharArray())
+      {
+        boolean check = initial ? Character.isJavaIdentifierStart(c) : Character.isJavaIdentifierPart(c);
+        
+        initial = false;
+        
+        if(!check)
+        {
+          invalidSet_.add((isSchema ? "Schema" : "Attribute") + " \"" + entry.getKey() + "\" at " + entry.getValue().getSourceLocation() + " (maps to " + name + ")");
+          break;
+        }
+      }
+      
+      if(isSchema)
+      {
+        for(String packageName : STD_JAVA_PACKAGES)
+        {
+          try
+          {
+            Class.forName(packageName + "." +  name);
+            invalidSet_.add("Schema \"" + entry.getKey() + "\" at " + entry.getValue().getSourceLocation() + " (maps to " + name + ")");
+            break;
+          }
+          catch (ClassNotFoundException e)
+          {
+            // This is ok
+          }
+        }
+      }
     }
     
     for(Entry<String, List<String>> entry : camelMap.entrySet())
@@ -65,15 +104,19 @@ class NameCollisionDetector
     return collisionSet_;
   }
 
-  void logCollisions()
+  void logCollisions(IModelContext modelContext)
   {
     for(List<String> c : getCollisionSet())
     {
-      log_.error("The following names would collide when mapped to a Java identifier, user x-canon-java-identifier or x-canon-identifier");
+      modelContext.error("The following names would collide when mapped to a Java identifier, user x-canon-java-identifier or x-canon-identifier");
       
       for(String cn : c)
-        log_.error("  " + cn);
+        modelContext.error("  " + cn);
+    }
+    
+    for(String s : invalidSet_)
+    {
+      modelContext.error(s + " is not a valid Java identifier, user x-canon-java-identifier or x-canon-identifier");
     }
   }
-
 }

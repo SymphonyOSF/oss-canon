@@ -41,11 +41,11 @@ public interface ICanonModelEntity extends IEntity
    * 
    * @return The model element at the given path.
    * 
-   * @throws IllegalArgumentException if the given path is invalid.
+   * @throws GenerationException if the given path is invalid.
    */
-  default ICanonModelEntity get(String[] parts, int index)
+  default ICanonModelEntity get(String[] parts, int index) throws GenerationException
   {
-    throw new IllegalArgumentException("No path element " + parts[index]);
+    throw new GenerationException("No path element " + parts[index]);
   }
   
   /**

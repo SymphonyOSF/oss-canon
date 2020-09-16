@@ -33,15 +33,13 @@ F extends IFieldTemplateModel<T,M,S>>
   private final ICanonGenerator<T,M,S,O,A,P,F> generator_;
   private final IModelContext sourceContext_;
   private final IPathNameConstructor<T> templatePathBuilder_;
-  private final IPathNameConstructor<T> proformaPathBuilder_;
   
   public GeneratorModelContext(ICanonGenerator<T,M,S,O,A,P,F> generator, IModelContext context,
-      IPathNameConstructor<T> templatePathBuilder, IPathNameConstructor<T> proformaPathBuilder)
+      IPathNameConstructor<T> templatePathBuilder)
   {
     generator_ = generator;
     sourceContext_ = context;
     templatePathBuilder_ = templatePathBuilder;
-    proformaPathBuilder_ = proformaPathBuilder;
   }
   
   @Override
@@ -59,15 +57,15 @@ F extends IFieldTemplateModel<T,M,S>>
   @Override
   public IPathNameConstructor<T> getPathBuilder(TemplateType templateType)
   {
-    switch(templateType)
-    {
-      case TEMPLATE:
+//    switch(templateType)
+//    {
+//      case TEMPLATE:
         return templatePathBuilder_;
-      
-      case PROFORMA:
-        return proformaPathBuilder_;
-    }
-    
-    throw new CodingFault("Unexpected TemplateType " + templateType);
+//      
+//      case PROFORMA:
+//        return proformaPathBuilder_;
+//    }
+//    
+//    throw new CodingFault("Unexpected TemplateType " + templateType);
   }
 }

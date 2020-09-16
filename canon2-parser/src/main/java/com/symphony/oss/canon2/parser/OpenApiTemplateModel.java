@@ -47,10 +47,10 @@ S extends ISchemaTemplateModel<T,M,S>>
   private final Integer        canonMinorVersion_;
 
   
-  public OpenApiTemplateModel(IOpenApiObject resolvedModel, String name,
+  public OpenApiTemplateModel(IOpenApiObject resolvedModel, String name, String identifier,
       String[] temaplates)
   {
-    super(name, null, temaplates);
+    super(name, identifier, null, temaplates);
     
     resolvedModel_ = resolvedModel;
     

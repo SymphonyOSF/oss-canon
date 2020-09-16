@@ -10,8 +10,7 @@
   "x-canon-version": "1.0",
   "x-canon-generators": {
     "java": {
-      "genPackage":  "com.symphony.oss.canon.test.typeCheck",
-      "facadePackage":  "com.symphony.oss.canon.test.typeCheck.facade"
+      "genPackage":  "com.symphony.oss.canon.test.typeCheck"
     }
   },
   "components": {
@@ -23,13 +22,13 @@
       "MessageId": {
         "type": "string",
         "format": "byte",
-        "facade": true,
+        "x-canon-facade": true,
         "minimum": 2.1,
         "maximum": 7.2 
       },
       "DoubleTypedef": {
         "description": "A double typedef with a facade.",
-        "facade": true,
+        "x-canon-facade": true,
         "type": "number",
         "format": "double",
         "minimum": -765546546547723.03330025,
@@ -60,15 +59,23 @@
           "javaExternalType":     "TestHash"
         }
       },
-      "DirectHash": {
-        "description": "A Hash value, encoded as Base64, represented by an external class which has our expected factory methods.",
+      "2": {
+        "description": "A value with a problematic name.",
         "type": "string",
         "format": "byte",
-        "x-canon-attributes": {
-          "javaExternalPackage":  "com.symphony.oss.canon.test.oneofeverything",
-          "javaExternalType":     "DirectHash",
-          "isDirectExternal":     "true"
-        }
+        "x-canon-identifier": "Two"
+      },
+      "string": {
+        "description": "A value with a problematic name.",
+        "type": "string",
+        "format": "byte",
+        "x-canon-identifier": "StringTypeDef"
+      },
+      "\"-\"": {
+        "description": "A value with a problematic name.",
+        "type": "string",
+        "format": "byte",
+        "x-canon-identifier": "Hyphen"
       },
       "SimpleObject": {
         "type": "object",
@@ -116,14 +123,15 @@
         }
       },
       
-      "ListOfDirectExternal": {
-        "description": "A list of direct externals.",
+      "[2]": {
+        "description": "A list of 2's.",
         "type": "array",
         "x-canon-cardinality": "LIST",
+        "x-canon-identifier": "listOfTwo",
         "minItems": 1,
         "maxItems": 5,
         "items": {
-          "$ref": "#/components/schemas/DirectHash"
+          "$ref": "#/components/schemas/2"
         }
       },
       "ListOfIndirectExternal": {
@@ -190,6 +198,36 @@
           },
           "aListofTypedefsField": {
             "$ref": "#/components/schemas/ListOfInts"
+          }
+        }
+      },
+      
+      "NestedArray": {
+        "type": "object",
+        "properties": {
+          "intListListField": {
+            "type": "array",
+            "x-canon-cardinality": "LIST",
+            "minItems": 1,
+            "maxItems": 5,
+            "items": {
+              "description": "Level 1 element.",
+              "type": "array",
+              "x-canon-cardinality": "LIST",
+              "minItems": 0,
+              "maxItems": 50,
+              "items": {
+                "description": "Level 2 element.",
+                "type": "array",
+                "x-canon-cardinality": "LIST",
+                "minItems": 0,
+                "maxItems": 500,
+                "items": {
+                  "description": "Level 3 element.",
+                  "type": "integer"
+                }
+              }
+            }
           }
         }
       },
@@ -338,14 +376,15 @@
               "$ref": "#/components/schemas/IntTypedef"
             }
           },
-          "directExternalListField": {
+          "\"-\"": {
             "description": "A list of direct externals.",
             "type": "array",
             "x-canon-cardinality": "LIST",
+            "x-canon-identifier": "hyphen",
             "minItems": 1,
             "maxItems": 5,
             "items": {
-              "$ref": "#/components/schemas/DirectHash"
+              "$ref": "#/components/schemas/2"
             }
           },
           "indirectExternalListField": {
@@ -373,19 +412,19 @@
       
       "FundamentalObject": {
         "type": "object",
-        "facade": true,
+        "x-canon-facade": true,
         "builderFacade": true,
         "required": [
           "absoluteHash"
         ],
         "properties": {
           "absoluteHash": {
-            "$ref": "#/components/schemas/DirectHash"
+            "$ref": "#/components/schemas/Hash"
           },
           "sequenceHashes": {
             "type": "array",
             "items": {
-              "$ref": "#/components/schemas/DirectHash"
+              "$ref": "#/components/schemas/Hash"
             }
           }
         }
@@ -393,7 +432,7 @@
       
       "VersionedObject": {
         "type": "object",
-        "facade": true,
+        "x-canon-facade": true,
         "extends": "#/components/schemas/FundamentalObject",
         "required": [
           "prevHash",
@@ -401,10 +440,10 @@
         ],
         "properties": {
           "prevHash": {
-            "$ref": "#/components/schemas/DirectHash"
+            "$ref": "#/components/schemas/Hash"
           },
           "baseHash": {
-            "$ref": "#/components/schemas/DirectHash"
+            "$ref": "#/components/schemas/Hash"
           }
         }
       }

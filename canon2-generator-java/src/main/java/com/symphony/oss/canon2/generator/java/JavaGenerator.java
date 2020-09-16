@@ -40,7 +40,6 @@ JavaFieldTemplateModel
   
   // IDs in the model
   static final String          GEN_PACKAGE                  = "genPackage";
-  static final String          FACADE_PACKAGE               = "facadePackage";
   static final String LANGUAGE                       = "java";
 
   // IDs of generated attributes
@@ -148,15 +147,14 @@ JavaFieldTemplateModel
     StringBuilder s = new StringBuilder();
     int i=1;
     
-    
-    if(Character.isJavaIdentifierStart(name.charAt(0)))
-    {
-      s.append(Character.toLowerCase(name.charAt(0)));
-    }
-    else
-    {
-      s.append('_');
-    }
+//    if(Character.isJavaIdentifierStart(name.charAt(0)))
+//    {
+      s.append(Character.toUpperCase(name.charAt(0)));
+//    }
+//    else
+//    {
+//      s.append('_');
+//    }
     
     while(i<name.length())
     {

@@ -17,15 +17,10 @@
  *
  *----------------------------------------------------------------------------------------------------
  * Generated from
- *    Input source         ${inputSource}
+ *    Input source         ${inputSourceFileName}
  *    Generator groupId    org.symphonyoss.s2.canon
  *              artifactId canon2-generator-java
  *    Template name        ${.main_template_name!''}
  *    At                   ${date}
  *----------------------------------------------------------------------------------------------------
  */
- 
- // Model  ${model.class}
- // Entity ${entity.class}
- // Model  ${model}
- // Entity ${entity}

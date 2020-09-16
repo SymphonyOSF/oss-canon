@@ -85,7 +85,7 @@ public class ComponentsObject extends ComponentsObjectEntity implements ICompone
   }
   
   @Override
-  public ICanonModelEntity get(String[] parts, int index)
+  public ICanonModelEntity get(String[] parts, int index) throws GenerationException
   {
     switch(parts[index])
     {

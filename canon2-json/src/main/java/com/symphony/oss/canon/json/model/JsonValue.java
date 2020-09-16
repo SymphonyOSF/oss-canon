@@ -21,6 +21,8 @@ package com.symphony.oss.canon.json.model;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 
+import org.apache.commons.codec.binary.Base64;
+
 /**
  * A JSON value.
  * 
@@ -140,6 +142,12 @@ public abstract class JsonValue extends JsonDomNode
       // Not a Double
     }
     
-    return new JsonString.Builder().withValue(stringValue).build();
+    if(Base64.isBase64(stringValue))
+      return new JsonBase64String.Builder()
+          .withValue(stringValue)
+//          .withContext(context)
+          .build();
+    else
+      return new JsonString.Builder().withValue(stringValue).build();
   }
 }

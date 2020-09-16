@@ -30,7 +30,7 @@ public class JsonString extends JsonValue implements IStringProvider
 {
   private final String value_;
 
-  private JsonString(AbstractBuilder<?,?> builder)
+  JsonString(AbstractBuilder<?,?> builder)
   {
     super(builder);
     

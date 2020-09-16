@@ -20,27 +20,19 @@ implements IJavaTemplateModel
 {
   Set<String> imports_ = new TreeSet<>();
   
-  private final String typeName_;
-  
-  public JavaFieldTemplateModel(IResolvedSchema entity, String name, JavaOpenApiTemplateModel model,
+  public JavaFieldTemplateModel(IResolvedSchema entity, String name, String identifier, JavaOpenApiTemplateModel model,
       JavaSchemaTemplateModel typeSchema, boolean required,
       String... temaplates)
   {
-    super(name, model, typeSchema, required, temaplates);
-    
-//    if(entity.getTypeName() == null)
-    {
-      typeName_ = typeSchema.getType();
-    }
-//    else
-//    {
-//      typeName_ = capitalize(toCamelCase(
-//        entity.getTypeName()));
-//      
-////      imports_.add(typeName_);
-//    }
+    super(name, identifier, model, typeSchema, required, temaplates);
     
     imports_.addAll(typeSchema.getImports());
+  }
+
+  @Override
+  public boolean getHasLimits()
+  {
+    return getRequired() || getTypeSchema().getHasLimits();
   }
 
   @Override
@@ -58,12 +50,12 @@ implements IJavaTemplateModel
   @Override
   public String getType()
   {
-    return typeName_; //getTypeSchema().getType();
+    return getTypeSchema().getType();
   }
 
   @Override
   public String toString()
   {
-    return "JavaFieldTemplateModel " + getType() + " " + getCamelName();
+    return "JavaFieldTemplateModel " + getTypeSchema().getCamelCapitalizedName() + " " + getCamelName();
   }
 }

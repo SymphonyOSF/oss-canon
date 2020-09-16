@@ -21,7 +21,10 @@ package com.symphony.oss.canon.json;
 import java.io.IOException;
 import java.util.function.Consumer;
 
+import org.apache.commons.codec.binary.Base64;
+
 import com.symphony.oss.canon.json.model.JsonArray;
+import com.symphony.oss.canon.json.model.JsonBase64String;
 import com.symphony.oss.canon.json.model.JsonDom;
 import com.symphony.oss.canon.json.model.JsonDomNode;
 import com.symphony.oss.canon.json.model.JsonNull;
@@ -493,7 +496,13 @@ public class YamlParser extends Parser
           case DOUBLE_QUOTE:
           {
             String stringValue = getDoubleQuotedString();
-            return new JsonString.Builder()
+            if(Base64.isBase64(stringValue))
+              return new JsonBase64String.Builder()
+                  .withValue(stringValue)
+                  .withContext(context)
+                  .build();
+            else
+              return new JsonString.Builder()
                 .withValue(stringValue)
                 .withContext(context)
                 .build();
@@ -502,7 +511,13 @@ public class YamlParser extends Parser
           case SINGLE_QUOTE:
           {
             String stringValue = getSingleQuotedString();
-            return new JsonString.Builder()
+            if(Base64.isBase64(stringValue))
+              return new JsonBase64String.Builder()
+                  .withValue(stringValue)
+                  .withContext(context)
+                  .build();
+            else
+              return new JsonString.Builder()
                 .withValue(stringValue)
                 .withContext(context)
                 .build();

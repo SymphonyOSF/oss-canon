@@ -26,6 +26,7 @@ import java.util.function.Consumer;
 import javax.annotation.concurrent.Immutable;
 
 import com.google.common.collect.ImmutableList;
+import com.symphony.oss.commons.immutable.ImmutableByteArray;
 
 /**
  * A JSON Array.
@@ -34,7 +35,7 @@ import com.google.common.collect.ImmutableList;
  *
  */
 @Immutable
-public class JsonArray extends JsonDomNode implements Iterable<JsonDomNode>
+public class JsonArray extends JsonDomNode implements Iterable<JsonDomNode>, IJsonOrBuilder<JsonArray, Void>
 {
   private final ImmutableList<JsonDomNode> children_;
 
@@ -43,6 +44,18 @@ public class JsonArray extends JsonDomNode implements Iterable<JsonDomNode>
     super(builder);
     
     children_ = ImmutableList.copyOf(builder.children_);
+  }
+  
+  @Override
+  public JsonArray getJson()
+  {
+    return this;
+  }
+
+  @Override
+  public Void getBuilder()
+  {
+    return null;
   }
   
   @Override
@@ -149,6 +162,111 @@ public class JsonArray extends JsonDomNode implements Iterable<JsonDomNode>
     {
       for(JsonDomNode child : children)
         children_.add(child);
+      
+      return self();
+    }
+    
+    /**
+     * Add the given elements to the array.
+     * 
+     * @param children One or more elements to be added to the array.
+     * 
+     * @return This (fluent method).
+     */
+    public T with(String ...children)
+    {
+      for(String child : children)
+        children_.add(new JsonString.Builder().withValue(child).build());
+      
+      return self();
+    }
+    
+    /**
+     * Add the given elements to the array.
+     * 
+     * @param children One or more elements to be added to the array.
+     * 
+     * @return This (fluent method).
+     */
+    public T with(ImmutableByteArray ...children)
+    {
+      for(ImmutableByteArray child : children)
+        children_.add(new JsonBase64String.Builder().withValue(child).build());
+      
+      return self();
+    }
+    
+    /**
+     * Add the given elements to the array.
+     * 
+     * @param children One or more elements to be added to the array.
+     * 
+     * @return This (fluent method).
+     */
+    public T with(Boolean ...children)
+    {
+      for(Boolean child : children)
+        children_.add(new JsonBoolean.Builder().withValue(child).build());
+      
+      return self();
+    }
+    
+    /**
+     * Add the given elements to the array.
+     * 
+     * @param children One or more elements to be added to the array.
+     * 
+     * @return This (fluent method).
+     */
+    public T with(Double ...children)
+    {
+      for(Double child : children)
+        children_.add(new JsonDouble.Builder().withValue(child).build());
+      
+      return self();
+    }
+    
+    /**
+     * Add the given elements to the array.
+     * 
+     * @param children One or more elements to be added to the array.
+     * 
+     * @return This (fluent method).
+     */
+    public T with(Float ...children)
+    {
+      for(Float child : children)
+        children_.add(new JsonFloat.Builder().withValue(child).build());
+      
+      return self();
+    }
+    
+    /**
+     * Add the given elements to the array.
+     * 
+     * @param children One or more elements to be added to the array.
+     * 
+     * @return This (fluent method).
+     */
+    public T with(Long ...children)
+    {
+      for(Long child : children)
+        children_.add(new JsonLong.Builder().withValue(child).build());
+      
+      return self();
+    }
+    
+    /**
+     * Add the given elements to the array.
+     * 
+     * @param children One or more elements to be added to the array.
+     * 
+     * @return This (fluent method).
+     */
+    public T with(Integer ...children)
+    {
+      for(Integer child : children)
+        children_.add(new JsonInteger.Builder().withValue(child).build());
       
       return self();
     }

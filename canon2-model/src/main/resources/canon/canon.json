@@ -1,0 +1,261 @@
+{
+  "canon": "0.0.1",
+  "info": {
+    "title": "Canon Specification",
+    "license": {
+      "name": "Apache2"
+    }
+  },
+  "x-canon-id": "com.symphony.oss.canon2.model",
+  "x-canon-version": "1.0",
+  "x-canon-generators": {
+    "java": {
+      "genPackage":  "com.symphony.oss.canon2.model"
+    },
+    "ts": {
+      "packageName":  "canon2-model"
+    }
+  },
+  "components": {
+    "schemas": {
+      "SemanticVersion": {
+        "description": "A 3 part semantic version number.",
+        "type": "string"
+      },
+      "OpenApiObject": {
+        "type": "object",
+        "x-canon-facade": true,
+        "required": [
+          "info"
+        ],
+        "properties": {
+          "openapi": {
+            "type": "string"
+          },
+          "canon": {
+            "type": "string"
+          },
+          "info": {
+            "$ref": "#/components/schemas/InfoObject"
+          },
+          "x-canon-id": {
+            "type": "string"
+          },
+          "x-canon-version": {
+            "$ref": "#/components/schemas/SemanticVersion"
+          },
+          "x-canon-generators": {
+            "$ref": "#/components/schemas/CanonGeneratorConfig"
+          },
+          "x-canon-identifier": {
+            "type": "string"
+          },
+          "paths": {
+            "$ref": "#/components/schemas/PathsObject"
+          },
+          "components": {
+            "$ref": "#/components/schemas/ComponentsObject"
+          }
+        }
+      },
+      
+      "InfoObject": {
+        "description": "Metadata about the API.",
+        "type": "object",
+        "x-canon-facade": true,
+        "properties": {
+        }
+      },
+      
+      "CanonGeneratorConfig": {
+        "description": "The available paths and operations for the API.",
+        "type": "object",
+        "x-canon-facade": true,
+        "properties": {
+        }
+      },
+      
+      "PathsObject": {
+        "description": "The available paths and operations for the API.",
+        "type": "object",
+        "x-canon-facade": true,
+        "properties": {
+        }
+      },
+      
+      "ComponentsObject": {
+        "description": "An element to hold various schemas for the specification.",
+        "type": "object",
+        "x-canon-facade": true,
+        "properties": {
+          "schemas": {
+            "$ref": "#/components/schemas/SchemasObject"
+          }
+        }
+      },
+      
+      "SchemasObject": {
+        "description": "An element to hold various schemas for the specification.",
+        "type": "object",
+        "x-canon-facade": true,
+        "properties": {
+        }
+      },
+      
+      "SchemaType": {
+        "description": "Values for the type attribute of a Schema.",
+        "type": "string",
+        "enum": [
+          "boolean",
+          "number",
+          "integer",
+          "string",
+          "object",
+          "array"
+        ]
+      },
+      
+      "CanonCardinality": {
+        "description": "Values for the cardinality of an array Schema.",
+        "type": "string",
+        "enum": [
+          "SET",
+          "LIST"
+        ]
+      },
+      
+      "Schema": {
+        "description": "A data type definition.",
+        "type": "object",
+        "x-canon-facade": true,
+        "properties": {
+          "type": {
+            "type": "string"
+          },
+          "format": {
+            "type": "string"
+          },
+          "minimum": {
+            "type": "number"
+          },
+          "maximum": {
+            "type": "number"
+          },
+          "properties": {
+            "$ref": "#/components/schemas/PropertiesObject"
+          },
+          "x-canon-attributes": {
+            "$ref": "#/components/schemas/CanonAttributes"
+          },
+          "x-canon-cardinality": {
+            "$ref": "#/components/schemas/CanonCardinality"
+          },
+          "x-canon-identifier": {
+            "type": "string"
+          },
+          "x-canon-facade": {
+            "type": "boolean"
+          },
+          "required": {
+            "type": "array",
+            "x-canon-cardinality": "SET",
+            "items": {
+              "type": "string"
+            }
+          },
+          "enum": {
+            "type": "array",
+            "x-canon-cardinality": "SET",
+            "items": {
+              "type": "string"
+            }
+          },
+          "minItems": {
+              "type": "integer",
+              "format": "int32",
+              "minimum": 0
+          },
+          "maxItems": {
+              "type": "integer",
+              "format": "int32",
+              "minimum": 0
+          }
+        }
+      },
+      
+      "CanonAttributes": {
+        "description": "A collection of canon generation attributes.",
+        "type": "object",
+        "x-canon-facade": true,
+        "properties": {
+        }
+      },
+      
+      "PropertiesObject": {
+        "description": "A collection of schema properties (fields).",
+        "type": "object",
+        "x-canon-facade": true,
+        "properties": {
+        }
+      },
+      
+      "ResolvedModel": {
+        "description": "An OpenApi model with all references resolved.",
+        "type": "object",
+        "extends": "#/components/schemas/OpenApiObject",
+        "x-canon-facade": true,
+        "builderFacade": true,
+        "properties": {
+        }
+      },
+            
+      "ResolvedSchema": {
+        "description": "A data type definition with all references resolved.",
+        "type": "object",
+        "extends": "#/components/schemas/Schema",
+        "x-canon-facade": true,
+        "properties": {
+          "resolvedItems": {
+            "$ref": "#/components/schemas/Schema"
+          },
+          "resolvedProperties": {
+            "$ref": "#/components/schemas/ResolvedPropertiesObject"
+          },
+          "innerClasses": {
+            "$ref": "#/components/schemas/ResolvedPropertiesObject"
+          },
+          "isGenerated": {
+            "type": "boolean"
+          },
+          "name": {
+            "type": "string"
+          }
+        }
+      },
+      
+      "ResolvedPropertiesObject": {
+        "description": "A collection of resolved schema properties (fields).",
+        "type": "object",
+        "x-canon-facade": true,
+        "builderFacade": true,
+        "properties": {
+        }
+      },
+      
+      "ReferenceObject": {
+        "description": "A reference.",
+        "type": "object",
+        "x-canon-facade": true,
+        "required": [
+          "$ref"
+        ],
+        "properties": {
+          "$ref": {
+              "type": "string",
+              "format": "uri"
+            }
+        }
+      }
+    }
+  }
+}

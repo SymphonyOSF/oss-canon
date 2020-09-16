@@ -25,16 +25,25 @@
 
 package com.symphony.oss.canon2.parser;
 
+import java.util.HashSet;
 import java.util.Map.Entry;
+import java.util.Set;
 
 import javax.annotation.Nullable;
 import javax.annotation.concurrent.Immutable;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.symphony.oss.canon.runtime.IModelRegistry;
 import com.symphony.oss.canon2.parser.model.SchemaEntity;
 import com.symphony.oss.commons.dom.json.IImmutableJsonDomNode;
+import com.symphony.oss.commons.dom.json.IJsonDomNode;
 import com.symphony.oss.commons.dom.json.ImmutableJsonObject;
+import com.symphony.oss.commons.dom.json.JsonArray;
 import com.symphony.oss.commons.dom.json.MutableJsonObject;
+import com.symphony.oss.commons.type.provider.IIntegerProvider;
+import com.symphony.oss.commons.type.provider.IStringProvider;
 
 /**
  * Facade for Object ObjectSchema(Schema)
@@ -137,12 +146,13 @@ public class Schema extends SchemaEntity implements ISchema
   }
 
   @Override
-  public IResolvedSchema resolve(IOpenApiObject openApiObject, SchemaResolver resolver, GenerationContext generationContext, String name)
+  public IResolvedSchema resolve(IOpenApiObject openApiObject, SchemaResolver resolver, GenerationContext generationContext, ModelContext modelContext, boolean isGenerated, String name)
   {
     ResolvedSchema.Builder builder = new ResolvedSchema.Builder()
         .withValues(getJsonObject(), false, generationContext.getModelRegistry())
         //.withNameCollision(nameCollision)
-        //.withTypeName(typeName)
+        .withIsGenerated(isGenerated)
+        .withName(name)
         ;
     
     IPropertiesObject                 propertiesObject  = getProperties();
@@ -158,10 +168,16 @@ public class Schema extends SchemaEntity implements ISchema
         {
           ISchema schema = (ISchema)entry.getValue();
           
-          IResolvedSchema resolvedProperty = resolver.resolve(openApiObject, generationContext, schema, entry.getKey());
+          IResolvedSchema resolvedProperty = resolver.resolve(openApiObject, generationContext, modelContext, schema, entry.getKey(), false);
           
           propertiesBuilder.withProperty(entry.getKey(), resolvedProperty);
-          innerClassesBuilder.withProperty(entry.getKey(), resolvedProperty);
+          
+          switch(resolvedProperty.getType())
+          {
+            case "object":
+              innerClassesBuilder.withProperty(entry.getKey(), resolvedProperty);
+              break;
+          }
         }
         else
         {
@@ -173,11 +189,18 @@ public class Schema extends SchemaEntity implements ISchema
           if(i != -1)
             refName = refName.substring(i+1);
           
-          ISchema schema = fetchSchema(openApiObject, generationContext, ref);
-          
-          IResolvedSchema resolvedSchema = resolver.resolve(openApiObject, generationContext, schema, refName);
-          
-          propertiesBuilder.withProperty(entry.getKey(), resolvedSchema);
+          try
+          {
+            ISchema schema = fetchSchema(openApiObject, generationContext, ref);
+            
+            IResolvedSchema resolvedSchema = resolver.resolve(openApiObject, generationContext, modelContext, schema, refName, true);
+            
+            propertiesBuilder.withProperty(entry.getKey(), resolvedSchema);
+          }
+          catch(GenerationException e)
+          {
+            modelContext.error("Invalid schema reference \"" + ref.get$ref() + "\" at " + getSourceLocation());
+          }
         }
       }
       
@@ -189,23 +212,33 @@ public class Schema extends SchemaEntity implements ISchema
 
     
     ISchema schema = itemsSchema_;
+    boolean itemsIsGenerated = false;
     
     if(schema == null && itemsReference_ != null)
     {
-      schema = fetchSchema(openApiObject, generationContext, itemsReference_);
+      try
+      {
+        schema = fetchSchema(openApiObject, generationContext, itemsReference_);
+        itemsIsGenerated = true;
+      }
+      catch(GenerationException e)
+      {
+        modelContext.error("Invalid schema reference \"" + itemsReference_.get$ref() + "\" at " + getSourceLocation());
+      }
     }
     
     if(schema != null)
     {
-      builder.withResolvedItems(resolver.resolve(openApiObject, generationContext, schema, null));
+      builder.withResolvedItems(resolver.resolve(openApiObject, generationContext, modelContext, schema, null, itemsIsGenerated));
     }
     
     builder.withXCanonIdentifier(getXCanonIdentifier());
+    builder.withXCanonFacade(getXCanonFacade());
     
     return builder.build();
   }
   
-  private ISchema fetchSchema(IOpenApiObject openApiObject, GenerationContext generationContext, IReferenceObject ref)
+  private ISchema fetchSchema(IOpenApiObject openApiObject, GenerationContext generationContext, IReferenceObject ref) throws GenerationException
   {
     if(ref.getBaseUrl() == null)
     {
@@ -218,6 +251,45 @@ public class Schema extends SchemaEntity implements ISchema
     }
   }
 
+//  @Override
+//  public Set<?> getEnumValues(String type) throws GenerationException
+//  {
+//      IImmutableJsonDomNode enumNode = getJsonObject().get("enum");
+//      
+//      if(enumNode == null)
+//        return null;
+//      
+//      if(enumNode instanceof JsonArray)
+//      {
+//        if(type.equals("Integer"))
+//        {
+//          Set<Integer> result = new HashSet<>();
+//          for(IJsonDomNode element : (JsonArray<?>)enumNode)
+//          {
+//            if(element instanceof IIntegerProvider)
+//              result.add(((IIntegerProvider)element).asInteger());
+//          }
+//          
+//          return result;
+//        }
+//        else if(type.equals("String"))
+//        {
+//          Set<String> result = new HashSet<>();
+//          for(IJsonDomNode element : (JsonArray<?>)enumNode)
+//          {
+//            if(element instanceof IStringProvider)
+//              result.add(((IStringProvider)element).asString());
+//          }
+//          
+//          return result;
+//        }
+//        else
+//            throw new GenerationException("Invalid enum type " + type);
+//      }
+//      
+//      throw new GenerationException("enums must be an array");
+//  }
+  
   @Override
   public ISchema getItemsSchema()
   {

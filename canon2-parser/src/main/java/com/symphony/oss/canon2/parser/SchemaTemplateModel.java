@@ -32,10 +32,8 @@ S extends ISchemaTemplateModel<T,M,S>
   extends TemplateModel<T,M,S>
   implements ISchemaTemplateModel<T,M,S>
 {
-  public SchemaTemplateModel(String name, M model, String... templates)
+  public SchemaTemplateModel(String name, String identifier, M model, String... templates)
   {
-    super(name, model, templates);
+    super(name, identifier, model, templates);
   }
-  
-  public abstract SchemaType getSchemaType();
 }

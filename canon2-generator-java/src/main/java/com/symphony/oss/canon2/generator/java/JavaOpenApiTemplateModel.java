@@ -33,10 +33,10 @@ implements IJavaTemplateModel
 {
   Set<String> imports_ = new TreeSet<>();
   
-  public JavaOpenApiTemplateModel(IOpenApiObject resolvedModel, String name,
+  public JavaOpenApiTemplateModel(IOpenApiObject resolvedModel, String name, String identifier,
       String... temaplates)
   {
-    super(resolvedModel, name, temaplates);
+    super(resolvedModel, name, identifier, temaplates);
   }
 
   @Override

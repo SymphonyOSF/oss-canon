@@ -304,7 +304,14 @@ public class GenerationContext
     
     while((context = parseQueue_.pollFirst()) != null)
     {
-      model = context.parse(modelRegistry_);
+      try
+      {
+        model = context.parse(modelRegistry_);
+      }
+      catch(IllegalStateException e)
+      {
+        throw new GenerationException("Failed to parse model", e);
+      }
       validateQueue_.add(context);
       modelMap_.put(context.getUrl(), model);
       
@@ -314,20 +321,20 @@ public class GenerationContext
     while((context = validateQueue_.pollFirst()) != null)
     {
       validate(context);
-//      
-//      if(!model.getContext().getRootParserContext().getErrors().isEmpty())
-//        throw new ParsingException("Generation failed for " +model.getContext().getRootParserContext().getInputSourceName());
     }
   }
 
-  void validate(ModelContext context)
+  void validate(ModelContext context) throws GenerationException
   {
     IOpenApiObject model = context.getModel();
-    IResolvedModel resolvedModel = model.resolve(this);
+    IResolvedModel resolvedModel = model.resolve(this, context);
     
     context.setResolvedModel(resolvedModel);
     
     model.validate(this);
+    
+    if(context.printErrors())
+      throw new GenerationException("Generation failed for " + context.getInputSourceName());
     
     if(!context.isReferencedModel())
     {
@@ -507,7 +514,7 @@ public class GenerationContext
   //          TemplateModel model = new TemplateModel(modelContext, templateName,
   //              entity);
             
-            generate(FreemarkerModel.newTemplateModel(modelContext, templateName, entity), template, targetFileName);
+            generate(FreemarkerModel.newTemplateModel(modelContext, templateName, entity), templateType, template, targetFileName);
   
           } catch (IOException e)
           {
@@ -517,10 +524,10 @@ public class GenerationContext
         }
       }
       
-      private void generate(Map<String, Object> model, Template template,
+      private void generate(Map<String, Object> model, TemplateType templateType, Template template,
           String targetFileName) throws GenerationException
       {
-        File genPath = new File(getTargetDir(), targetFileName);
+        File genPath = new File(templateType == TemplateType.TEMPLATE ? getTargetDir() : getProformaDir(), targetFileName);
         
         genPath.getParentFile().mkdirs();
         
@@ -539,7 +546,7 @@ public class GenerationContext
         {
           genPath.delete();
         }
-        else if(getCopyDir() != null)
+        else if(templateType == TemplateType.PROFORMA && getCopyDir() != null)
         {
           File copyPath = new File(getCopyDir(), targetFileName);
         
@@ -610,6 +617,9 @@ public class GenerationContext
       IGeneratorModelContext<T,M,S,O,A,P,F> generatorModelContext = generator.createModelContext(context, generatorConfig);
     
       M templateModel = context.getResolvedModel().generate(generatorModelContext);
+      
+      if(context.printErrors())
+        throw new GenerationException("Generation failed for " + context.getInputSourceName());
     
       gather(generatorModelContext, templateModel.asTemplateModel(), consumer);
       //generator.generate(context.getModel(), context, this, consumer);

@@ -50,4 +50,11 @@ public interface ISchemaTemplateModel<
    * @return the type of this schema.
    */
   SchemaType getSchemaType();
+  
+  /**
+   * Return true if this schema or any of its children is required, or has validation limits. 
+   * 
+   * @return true if this schema or any of its children is required, or has validation limits.
+   */
+  boolean getHasLimits();
 }

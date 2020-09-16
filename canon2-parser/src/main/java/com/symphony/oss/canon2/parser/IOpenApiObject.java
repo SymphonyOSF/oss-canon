@@ -37,13 +37,13 @@ import com.symphony.oss.canon2.parser.model.IOpenApiObjectEntity;
 public interface IOpenApiObject
   extends IOpenApiObjectEntity, INamedModelEntity
 {
-  IResolvedModel resolve(GenerationContext generationContext);
+  IResolvedModel resolve(GenerationContext generationContext, ModelContext modelContext);
 
   void validate(GenerationContext generationContext);
 
   void fetchReferences(GenerationContext generationContext) throws GenerationException;
 
-  <T extends ICanonModelEntity> T get(String fragment, Class<T> type);
+  <T extends ICanonModelEntity> T get(String fragment, Class<T> type) throws GenerationException;
 }
 /*----------------------------------------------------------------------------------------------------
  * End of template proforma/java/Object/I_.java.ftl

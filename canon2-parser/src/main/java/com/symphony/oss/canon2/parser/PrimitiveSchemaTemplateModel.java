@@ -32,9 +32,9 @@ S extends ISchemaTemplateModel<T,M,S>
   extends SchemaTemplateModel<T,M,S>
   implements IPrimitiveSchemaTemplateModel<T,M,S>
 {
-  public PrimitiveSchemaTemplateModel(String name, M model,  String... templates)
+  public PrimitiveSchemaTemplateModel(String name, String identifier, M model,  String... templates)
   {
-    super(name, model, templates);
+    super(name, identifier, model, templates);
   }
 
   @Override

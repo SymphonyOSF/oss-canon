@@ -30,6 +30,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 import com.google.common.collect.ImmutableSet;
+import com.symphony.oss.canon.json.model.JsonDomNode;
 import com.symphony.oss.canon.json.model.JsonObject;
 
 /**
@@ -60,6 +61,22 @@ public class ObjectEntity extends Entity
     majorVersion_ = builder.getCanonMajorVersion();
     minorVersion_ = builder.getCanonMinorVersion();
     unknownKeys_  = ImmutableSet.of();
+  }
+  
+  /**
+   * Copy constructor.
+   * 
+   * @param other Another instance from which all attributes are to be copied.
+   */
+  public ObjectEntity(ObjectEntity other)
+  {
+    super(other);
+    
+    jsonObject_   = other.getJsonObject();
+    type_         = other.getCanonType();
+    majorVersion_ = other.getCanonMajorVersion();
+    minorVersion_ = other.getCanonMinorVersion();
+    unknownKeys_  = other.unknownKeys_;
   }
   
   /**
@@ -155,16 +172,26 @@ public class ObjectEntity extends Entity
     return unknownKeys_;
   }
   
-
+  /**
+   * Factory for ObjectEntity and sub-classes.
+   * 
+   * @author Bruce Skingle
+   *
+   * @param <B> Concrete type of the built class.
+   */
+  public static abstract class Factory<B extends ObjectEntity> extends Entity.Factory<B>
+  {
+  }
+  
   /**
    * Builder for ObjectEntity and sub-classes.
    * 
    * @author Bruce Skingle
    *
    * @param <T> Concrete type of the builder.
-   * @param <B> Concrete type of the build class.
+   * @param <B> Concrete type of the built class.
    */
-  public abstract class AbstractBuilder<T extends AbstractBuilder<T,B>, B extends Entity> extends Entity.AbstractBuilder<T,B>
+  public static abstract class AbstractBuilder<T extends AbstractBuilder<T,B>, B extends Entity> extends Entity.AbstractBuilder<T,B>
   {
     /**
      * Constructor.
@@ -176,23 +203,75 @@ public class ObjectEntity extends Entity
       super(type);
     }
 
-    protected abstract String     getCanonType();
-    protected abstract Integer    getCanonMajorVersion();
-    protected abstract Integer    getCanonMinorVersion();
-
-    protected JsonObject getJsonObject()
+    /**
+     * Constructor.
+     * 
+     * @param type Concrete type of the builder.
+     * @param initial Initial values for the builder.
+     */
+    public AbstractBuilder(Class<T> type, B initial)
     {
-      JsonObject.Builder builder = new JsonObject.Builder();
-      
-      populateJson(builder);
-      
-      return builder.build();
+      super(type);
     }
     
+    /**
+     * Return the type id (_type JSON attribute) for entities created by this builder.
+     * 
+     * @return The type id for entities created by this builder.
+     */
+    public abstract String     getCanonType();
+    
+    /**
+     * Return the type version (_version JSON attribute) for this entity.
+     * 
+     * @return The type version for this entity.
+     */
+    public abstract String getCanonVersion();
+    
+    /**
+     * Return the major type version for entities created by this builder.
+     * 
+     * @return The major type version for entities created by this builder.
+     */
+    public abstract Integer    getCanonMajorVersion();
+    
+    /**
+     * Return the minor type version for entities created by this builder.
+     * 
+     * @return The minor type version for entities created by this builder.
+     */
+    public abstract Integer    getCanonMinorVersion();
+
+    @Override
+    protected JsonDomNode getJsonDomNode()
+    {
+      return getJsonObject();
+    }
+
+    protected abstract JsonObject getJsonObject();
+
+    /**
+     * Populate the given JsonObject.Builder with all attributes.
+     * 
+     * This method is called from generated code by super.populateJson(builder).
+     * 
+     * @param builder a JsonObject.Builder.
+     */
     protected void populateJson(JsonObject.Builder builder)
     {
-      builder.with(JSON_TYPE, getCanonType());
-      builder.with(JSON_VERSION, getCanonMajorVersion() + "." + getCanonMinorVersion());
+    }
+    
+    /**
+     * Initialize this builder with the values from the given serialized form.
+     * 
+     * @param jsonObject    The serialized form of an instance of the built type.
+     * @param modelRegistry A model registry.
+     * 
+     * @return This (fluent method).
+     */
+    public T withValues(JsonObject jsonObject, ModelRegistry modelRegistry)
+    {
+      return self();
     }
   }
 }

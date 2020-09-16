@@ -36,13 +36,14 @@ S extends ISchemaTemplateModel<T,M,S>
 >
 implements ITemplateModel<T,M,S>
 {
-  private final String[]               templates_;
-  private final String                 name_;
-  private final String                 camelName_;
-  private final String                 camelCapitalizedName_;
-  private final String                 snakeName_;
-  private final String                 snakeCapitalizedName_;
-  private final M         model_;
+  private final String[] templates_;
+  private final String   name_;
+  private final String   camelName_;
+  private final String   camelCapitalizedName_;
+  private final String   snakeName_;
+  private final String   snakeCapitalizedName_;
+  private final String   snakeUpperCaseName_;
+  private final M        model_;
 
   /**
    * Constructor.
@@ -51,16 +52,17 @@ implements ITemplateModel<T,M,S>
    * @param model     The IOpenApiTemplateModel to which this entity belongs.
    * @param templates The list of template names which should be run against this model.
    */
-  public TemplateModel(String name, M model, String ...templates)
+  public TemplateModel(String name, String identifier, M model, String ...templates)
   {
     model_ = model ;
     name_ = name;
     templates_ = templates;
 
-    camelName_ = toCamelCase(name_);
+    camelName_ = toCamelCase(identifier);
     camelCapitalizedName_ = capitalize(camelName_);
-    snakeName_ = toSnakeCase(name_);
+    snakeName_ = toSnakeCase(identifier);
     snakeCapitalizedName_ = capitalize(snakeName_);
+    snakeUpperCaseName_ = snakeName_.toUpperCase();
   }
 
   @Override
@@ -184,5 +186,11 @@ implements ITemplateModel<T,M,S>
   public String getSnakeCapitalizedName()
   {
     return snakeCapitalizedName_;
+  }
+
+  @Override
+  public String getSnakeUpperCaseName()
+  {
+    return snakeUpperCaseName_;
   }
 }

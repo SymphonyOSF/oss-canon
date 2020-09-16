@@ -44,6 +44,13 @@ S extends ISchemaTemplateModel<T,M,S>>
   String getName();
   
   /**
+   * Return the target language type of this class.
+   * 
+   * @return the target language type of this class.
+   */
+  String getType();
+  
+  /**
    * Return the name of this model entity in camelCase with a lower case initial letter.
    * 
    * @return The name of this model entity in camelCase with a lower case initial letter.
@@ -70,6 +77,13 @@ S extends ISchemaTemplateModel<T,M,S>>
    * @return The name of this model entity in Snake_case with an upper case initial letter.
    */
   String getSnakeCapitalizedName();
+  
+  /**
+   * Return the name of this model entity in upper case SNAKE_CASE.
+   * 
+   * @return The name of this model entity in upper case SNAKE_CASE.
+   */
+  String getSnakeUpperCaseName();
 
   /**
    * Return the list of template names which should be run against this model.
@@ -86,4 +100,5 @@ S extends ISchemaTemplateModel<T,M,S>>
   M getModel();
   
   Collection<T> getChildren();
+
 }
