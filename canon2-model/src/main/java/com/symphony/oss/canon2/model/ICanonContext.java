@@ -16,22 +16,19 @@
  * limitations under the License.
  */
 
-package com.symphony.oss.canon2.parser;
+package com.symphony.oss.canon2.model;
 
-/**
- * The types of OpenApi schema.
- * 
- * @author Bruce Skingle
- *
- */
-public enum SchemaType
+import java.net.URL;
+
+import com.symphony.oss.canon2.runtime.java.ModelRegistry;
+
+public interface ICanonContext
 {
-  /** primitive types number, integer, boolean, string. */
-  PRIMITIVE,
-  
-  /** Object */
-  OBJECT, 
-  
-  /** Array */
-  ARRAY;
+
+  void addReferencedModel(URL url) throws GenerationException;
+
+  ModelRegistry getModelRegistry();
+
+  IModelContext getReferencedModel(URL url);
+
 }

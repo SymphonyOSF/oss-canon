@@ -23,8 +23,8 @@
 
 package com.symphony.oss.canon.launch;
 
+import com.symphony.oss.canon2.model.GenerationException;
 import com.symphony.oss.canon2.parser.Canon2;
-import com.symphony.oss.canon2.parser.GenerationException;
 
 public class Canon2Launch extends Canon2
 { 

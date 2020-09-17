@@ -21,19 +21,19 @@
  * under the License.
  */
 
-package com.symphony.oss.canon2.parser;
+package com.symphony.oss.canon2.model;
 
 import java.util.HashMap;
 import java.util.Map;
 
 class SchemaResolver
 {
-  private Map<String, IResolvedSchema>        schemaResolution_   = new HashMap<>();
+  private Map<String, ResolvedSchema>        schemaResolution_   = new HashMap<>();
 
-  synchronized IResolvedSchema resolve(IOpenApiObject openApiObject, GenerationContext generationContext, ModelContext modelContext, ISchema schema, String name, boolean isGenerated)
+  synchronized ResolvedSchema resolve(OpenApiObject openApiObject, ICanonContext generationContext, IModelContext modelContext, Schema schema, String name, boolean isGenerated)
   {
     
-    IResolvedSchema resolvedSchema = schemaResolution_.get(name);
+    ResolvedSchema resolvedSchema = schemaResolution_.get(name);
     
     if(resolvedSchema == null)
     {

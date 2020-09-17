@@ -18,6 +18,9 @@
 
 package com.symphony.oss.canon2.parser;
 
+import com.symphony.oss.canon2.model.ResolvedSchema;
+import com.symphony.oss.canon2.model.SchemaType;
+
 /**
  * Base implementation of ISchemaTemplateModel.
  * 
@@ -32,8 +35,17 @@ S extends ISchemaTemplateModel<T,M,S>
   extends TemplateModel<T,M,S>
   implements ISchemaTemplateModel<T,M,S>
 {
-  public SchemaTemplateModel(String name, String identifier, M model, String... templates)
+  private final SchemaType schemaType_;
+  
+  public SchemaTemplateModel(ResolvedSchema entity, String name, String identifier, M model, String... templates)
   {
     super(name, identifier, model, templates);
+    
+    schemaType_ = SchemaType.valueOf(entity.getType().toUpperCase());
+  }
+
+  public SchemaType getSchemaType()
+  {
+    return schemaType_;
   }
 }

@@ -20,6 +20,8 @@ package com.symphony.oss.canon2.parser;
 
 import java.util.Collection;
 
+import com.symphony.oss.canon2.model.GenerationException;
+
 /**
  * The template model for the overall OpenApi model.
  * 

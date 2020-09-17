@@ -17,11 +17,11 @@
  *
  *----------------------------------------------------------------------------------------------------
  * Generated from
- *    Input source         file:/Users/bruce/symphony/git-SymphonyOSF/oss-canon/canon2-model/src/main/resources/canon/canon.json
+ *    Input source         canon.json
  *    Generator groupId    org.symphonyoss.s2.canon
  *              artifactId canon2-generator-java
  *    Template name        template/Model/_Model.java.ftl
- *    At                   2020-09-16 13:50:34 BST
+ *    At                   2020-09-16 16:04:42 BST
  *----------------------------------------------------------------------------------------------------
  */
 
@@ -29,24 +29,28 @@ package com.symphony.oss.canon2.model;
 
 import com.symphony.oss.canon2.runtime.java.ObjectEntity;
 
+/**
+ * Model class for canon
+ */
 public class CanonModel
-{ 
+{
+  /** Factories for every object in the model. */
   public static final ObjectEntity.Factory<?>[] FACTORIES = new ObjectEntity.Factory<?>[]
-    {
-      CanonGeneratorConfig.FACTORY,
-      PropertiesObject.FACTORY,
-      ResolvedModel.FACTORY,
-      SchemasObject.FACTORY,
-      InfoObject.FACTORY,
-      OpenApiObject.FACTORY,
-      Schema.FACTORY,
-      CanonAttributes.FACTORY,
-      ComponentsObject.FACTORY,
-      ResolvedPropertiesObject.FACTORY,
-      ReferenceObject.FACTORY,
-      PathsObject.FACTORY,
-      ResolvedSchema.FACTORY
-    };
+  {
+    CanonGeneratorConfig.FACTORY,
+    PropertiesObject.FACTORY,
+    ResolvedModel.FACTORY,
+    SchemasObject.FACTORY,
+    InfoObject.FACTORY,
+    OpenApiObject.FACTORY,
+    Schema.FACTORY,
+    CanonAttributes.FACTORY,
+    ComponentsObject.FACTORY,
+    ResolvedPropertiesObject.FACTORY,
+    ReferenceObject.FACTORY,
+    PathsObject.FACTORY,
+    ResolvedSchema.FACTORY
+  };
     
   private CanonModel()
   {

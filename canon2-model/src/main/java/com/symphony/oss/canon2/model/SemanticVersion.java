@@ -17,11 +17,11 @@
  *
  *----------------------------------------------------------------------------------------------------
  * Generated from
- *    Input source         file:/Users/bruce/symphony/git-SymphonyOSF/oss-canon/canon2-model/src/main/resources/canon/canon.json
+ *    Input source         canon.json
  *    Generator groupId    org.symphonyoss.s2.canon
  *              artifactId canon2-generator-java
  *    Template name        template/TypeDef/_.java.ftl
- *    At                   2020-09-16 13:40:31 BST
+ *    At                   2020-09-16 16:04:42 BST
  *----------------------------------------------------------------------------------------------------
  */
 
@@ -38,7 +38,7 @@ import com.symphony.oss.commons.type.provider.IValueProvider;
 
 /**
  * TypeDef implementation for canon.SemanticVersion
- * Generated from com.symphony.oss.canon2.generator.java.JavaPrimitiveSchemaTemplateModel@d4342c2 at {entity.context.path}
+ * Generated from com.symphony.oss.canon2.generator.java.JavaPrimitiveSchemaTemplateModel@2bbf180e at {entity.context.path}
  */
 @Immutable
 public class SemanticVersion extends TypeDef implements IStringProvider, Comparable<SemanticVersion>

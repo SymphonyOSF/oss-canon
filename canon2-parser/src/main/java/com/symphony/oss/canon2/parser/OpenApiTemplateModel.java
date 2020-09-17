@@ -24,7 +24,9 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
-import com.symphony.oss.canon2.parser.model.SemanticVersion;
+import com.symphony.oss.canon2.model.GenerationException;
+import com.symphony.oss.canon2.model.OpenApiObject;
+import com.symphony.oss.canon2.model.SemanticVersion;
 
 /**
  * Template model object for the OpenApi top-level model.
@@ -39,7 +41,7 @@ S extends ISchemaTemplateModel<T,M,S>>
   extends TemplateModel<T,M,S>
   implements IOpenApiTemplateModel<T,M,S>
 {
-  private final IOpenApiObject resolvedModel_;
+  private final OpenApiObject  resolvedModel_;
   private final List<S>        schemas_ = new LinkedList<>();
   private final Map<String,S>  schemaMap_ = new HashMap<>();
 
@@ -47,7 +49,7 @@ S extends ISchemaTemplateModel<T,M,S>>
   private final Integer        canonMinorVersion_;
 
   
-  public OpenApiTemplateModel(IOpenApiObject resolvedModel, String name, String identifier,
+  public OpenApiTemplateModel(OpenApiObject resolvedModel, String name, String identifier,
       String[] temaplates)
   {
     super(name, identifier, null, temaplates);

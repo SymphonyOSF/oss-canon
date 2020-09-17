@@ -25,13 +25,12 @@
 
 package com.symphony.oss.canon2.parser;
 
-
-import com.symphony.oss.canon.runtime.IEntity;
+import com.symphony.oss.canon2.model.GenerationException;
 
 /**
  * Base interface for Canon model entities.
  */
-public interface ICanonModelEntity extends IEntity
+public interface ICanonModelEntity
 {
   /**
    * Get the model entity at the given path.

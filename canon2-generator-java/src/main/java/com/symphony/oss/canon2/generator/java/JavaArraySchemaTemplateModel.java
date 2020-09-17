@@ -6,13 +6,11 @@
 
 package com.symphony.oss.canon2.generator.java;
 
-import java.math.BigInteger;
-
-import com.symphony.oss.canon2.parser.GenerationException;
+import com.symphony.oss.canon2.model.CanonCardinality;
+import com.symphony.oss.canon2.model.GenerationException;
+import com.symphony.oss.canon2.model.ResolvedSchema;
+import com.symphony.oss.canon2.model.SchemaType;
 import com.symphony.oss.canon2.parser.IArraySchemaTemplateModel;
-import com.symphony.oss.canon2.parser.IResolvedSchema;
-import com.symphony.oss.canon2.parser.SchemaType;
-import com.symphony.oss.canon2.parser.model.CanonCardinality;
 import com.symphony.oss.commons.fault.CodingFault;
 
 public class JavaArraySchemaTemplateModel extends JavaSchemaTemplateModel
@@ -36,7 +34,7 @@ JavaSchemaTemplateModel>
   private final Integer maxItems_;
   private final String typeNew_;
   
-  JavaArraySchemaTemplateModel(IResolvedSchema entity, String name, String identifier, CanonCardinality cardinality, JavaOpenApiTemplateModel model,
+  JavaArraySchemaTemplateModel(ResolvedSchema entity, String name, String identifier, CanonCardinality cardinality, JavaOpenApiTemplateModel model,
       JavaGeneratorModelContext generatorModelContext, String ...templates) throws GenerationException
   {
     super(entity, name, identifier, model, templates);
@@ -45,9 +43,9 @@ JavaSchemaTemplateModel>
     
 //    imports_.add("java.util.List");
     
-    IResolvedSchema resolvedItems = (IResolvedSchema) entity.getResolvedItems(); // trust me
+    ResolvedSchema resolvedItems = (ResolvedSchema) entity.getResolvedItems(); // trust me
     
-    elementType_ = resolvedItems.generate(model, "items", generatorModelContext, entity.getItemsSchema() == null);
+    elementType_ = generatorModelContext.generateSchema(resolvedItems, model, "items", generatorModelContext, entity.getItemsSchema() == null);
     
     switch(cardinality)
     {

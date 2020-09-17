@@ -20,7 +20,10 @@ ${indent}{
 ${indent}}
 ${indent}${var}.with("${name}", arrayBuilder.build());
     <#break>
-    <#case "PRIMITIVE">
+    <#case "STRING">
+    <#case "NUMBER">
+    <#case "INTEGER">
+    <#case "BOOLEAN">
 ${indent}${var}.addIfNotNull("${name}", ${source}${schema.getValue});
     <#break>
     
@@ -43,10 +46,12 @@ ${indent}{
       <@generateCreateArrayJsonDomNode "${indent}  " schema.elementType "item" "arrayBuilder"/>
 ${indent}}
     <#break>
-    <#case "PRIMITIVE">
+    <#case "STRING">
+    <#case "NUMBER">
+    <#case "INTEGER">
+    <#case "BOOLEAN">
 ${indent}${var}.with(${source}${schema.getValue});
     <#break>
-    
     <#default>
 UNEXPECTED SCHEMA TYPE ${schema.schemaType} in generateCreateJsonDomNodeFromField
     <#break>
@@ -97,7 +102,10 @@ ${indent}  throw new IllegalArgumentException("${name} must be a JsonArray node 
 ${indent}}
     <#break>
     
-    <#case "PRIMITIVE">
+    <#case "STRING">
+    <#case "NUMBER">
+    <#case "INTEGER">
+    <#case "BOOLEAN">
       <@generateCreatePrimitiveFieldFromJsonDomNode  indent node schema name var ifValidation/>
     <#break>
     

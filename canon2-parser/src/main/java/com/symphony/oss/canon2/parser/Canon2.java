@@ -32,6 +32,8 @@ import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.symphony.oss.canon2.model.GenerationException;
+
 public class Canon2
 {
   private static Logger log_ = LoggerFactory.getLogger(Canon2.class);
@@ -350,7 +352,7 @@ public class Canon2
         System.out.println(f.getAbsolutePath());
     }
     
-    GenerationContext.Builder builder = new GenerationContext.Builder()
+    CanonContext.Builder builder = new CanonContext.Builder()
         .withTargetDir(outputDir_ + "/target/generated-sources")
         .withProformaDir(outputDir_ + "/target/proforma-sources")
         .withCopyDir(outputDir_ + "/target/proforma-copy")
@@ -367,7 +369,7 @@ public class Canon2
     }
 
     
-    GenerationContext generationContext = builder.build();
+    CanonContext generationContext = builder.build();
     
     for (File f : files)
       generationContext.addGenerationSource(f);

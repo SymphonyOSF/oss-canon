@@ -17,24 +17,39 @@
  *
  *----------------------------------------------------------------------------------------------------
  * Generated from
- *    Input source         file:/Users/bruce/symphony/git-SymphonyOSF/oss-canon/canon2-model/src/main/resources/canon/canon.json
+ *    Input source         canon.json
  *    Generator groupId    org.symphonyoss.s2.canon
  *              artifactId canon2-generator-java
  *    Template name        proforma/Object/_.java.ftl
- *    At                   2020-09-16 13:40:31 BST
+ *    At                   2020-09-16 16:04:42 BST
  *----------------------------------------------------------------------------------------------------
  */
 
 package com.symphony.oss.canon2.model;
 
+import java.util.Map.Entry;
+
+import javax.annotation.Nullable;
 import javax.annotation.concurrent.Immutable;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.symphony.oss.canon.json.model.JsonObject;
+import com.symphony.oss.canon2.runtime.java.Entity;
 import com.symphony.oss.canon2.runtime.java.ModelRegistry;
 
+
+/**
+ * Facade for Object  OpenApiObject canon
+ * Object com.symphony.oss.canon2.generator.java.JavaOpenApiTemplateModel@4df50bcc
+ * Generated from JavaObjectSchemaTemplateModel [fields_=[JavaFieldTemplateModel ComponentsObject components, JavaFieldTemplateModel CanonGeneratorConfig xCanonGenerators, JavaFieldTemplateModel Openapi openapi, JavaFieldTemplateModel PathsObject paths, JavaFieldTemplateModel XCanonId xCanonId, JavaFieldTemplateModel SemanticVersion xCanonVersion, JavaFieldTemplateModel XCanonIdentifier xCanonIdentifier, JavaFieldTemplateModel Canon canon, JavaFieldTemplateModel InfoObject info]] at {entity.context.path}
+ */
 @Immutable
-public class OpenApiObject extends OpenApiObjectEntity
+public class OpenApiObject extends OpenApiObjectEntity implements INamedModelEntity
 {
+  private static Logger log_ = LoggerFactory.getLogger(OpenApiObject.class);
+  
   /**
    * Constructor from builder.
    * 
@@ -64,6 +79,82 @@ public class OpenApiObject extends OpenApiObjectEntity
   public OpenApiObject(OpenApiObject other)
   {
     super(other);
+  }
+  
+  @Override
+  public @Nullable String getXCanonIdentifier(String language)
+  {
+    return getJsonObject().getString("x-canon-" + language + "-identifier", null);
+  }
+
+  public <T extends Entity> T get(String fragment, Class<T> type)
+  {
+    Entity entity = get(fragment.split("/"), 1);
+    
+    if(type.isInstance(entity))
+      return type.cast(entity);
+    
+    throw new IllegalArgumentException("Expected " + type + " but found " + entity.getClass());
+  }
+  
+  public Entity get(String[] parts, int index)
+  {
+    switch(parts[index])
+    {
+      case "components":
+        return getComponents().get(parts, index + 1);
+    }
+    
+    throw new IllegalArgumentException("No path element " + parts[index]);
+  }
+
+  public void fetchReferences(ICanonContext generationContext) throws GenerationException
+  {
+    log_.info("fetchReferences");
+    
+    SchemasObject schemas = getComponents().getSchemas();
+    
+    for(Schema schema : schemas.getSchemas().values())
+    {
+      schema.fetchReferences(generationContext);
+    }
+  }
+
+  public ResolvedModel resolve(ICanonContext generationContext, IModelContext modelContext)
+  {
+    log_.info("resolve model");
+    
+    ResolvedModel.Builder builder = new ResolvedModel.Builder()
+        .withValues(getJsonObject(), generationContext.getModelRegistry());
+    
+    // dodge canon1 bugs
+
+    builder.withXCanonId(getXCanonId());
+    builder.withXCanonVersion(getXCanonVersion());
+    builder.withXCanonGenerators(getXCanonGenerators());
+    
+    
+    SchemasObject schemas = getComponents().getSchemas();
+    SchemaResolver resolver = new SchemaResolver();
+    
+    for(Entry<String, Schema> entry : schemas.getSchemas().entrySet())
+    {
+      builder.withResolvedSchema(entry.getKey(), resolver.resolve(this, generationContext, modelContext, entry.getValue(), entry.getKey(), true));
+    }
+    
+    return builder.build();
+  }
+
+  public void validate(ICanonContext generationContext)
+  {
+    log_.info("validate model");
+    
+    SchemasObject schemas = getComponents().getSchemas();
+    
+    for(Schema schema : schemas.getSchemas().values())
+    {
+      schema.validate(generationContext);
+    }
   }
   
   /**

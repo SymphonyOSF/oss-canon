@@ -21,7 +21,7 @@ package com.symphony.oss.canon2.generator.java;
 import java.util.Set;
 import java.util.TreeSet;
 
-import com.symphony.oss.canon2.parser.IOpenApiObject;
+import com.symphony.oss.canon2.model.OpenApiObject;
 import com.symphony.oss.canon2.parser.OpenApiTemplateModel;
 
 public class JavaOpenApiTemplateModel extends OpenApiTemplateModel<
@@ -33,7 +33,7 @@ implements IJavaTemplateModel
 {
   Set<String> imports_ = new TreeSet<>();
   
-  public JavaOpenApiTemplateModel(IOpenApiObject resolvedModel, String name, String identifier,
+  public JavaOpenApiTemplateModel(OpenApiObject resolvedModel, String name, String identifier,
       String... temaplates)
   {
     super(resolvedModel, name, identifier, temaplates);

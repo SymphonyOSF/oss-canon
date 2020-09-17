@@ -38,7 +38,11 @@ import java.util.Map.Entry;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.symphony.oss.canon.runtime.IModelRegistry;
+import com.symphony.oss.canon2.model.GenerationException;
+import com.symphony.oss.canon2.model.IModelContext;
+import com.symphony.oss.canon2.model.OpenApiObject;
+import com.symphony.oss.canon2.model.ResolvedModel;
+import com.symphony.oss.canon2.runtime.java.ModelRegistry;
 
 class ModelContext implements IModelContext
 {
@@ -46,9 +50,9 @@ class ModelContext implements IModelContext
 
 
   private final URL                   url_;
-  private final GenerationContext     generationContext_;
-  private IOpenApiObject        model_;
-  private IResolvedModel        resolvedModel_;
+  private final CanonContext     generationContext_;
+  private OpenApiObject        model_;
+  private ResolvedModel        resolvedModel_;
   private final Map<String, String>   uriMap_;
   
   private final String          inputSource_;
@@ -60,7 +64,7 @@ class ModelContext implements IModelContext
   
   
 
-  public ModelContext(GenerationContext modelSetParserContext, URL url, boolean referencedModel, Map<String, String> uriMap) throws GenerationException
+  public ModelContext(CanonContext modelSetParserContext, URL url, boolean referencedModel, Map<String, String> uriMap) throws GenerationException
   {
     this(modelSetParserContext, url, openStream(url), referencedModel, uriMap);
   }
@@ -77,7 +81,7 @@ class ModelContext implements IModelContext
     }
   }
 
-  public ModelContext(GenerationContext generationContext, URL baseUrl, Reader reader, boolean referencedModel, Map<String, String> uriMap)
+  public ModelContext(CanonContext generationContext, URL baseUrl, Reader reader, boolean referencedModel, Map<String, String> uriMap)
   {
     generationContext_ = generationContext;
     url_ = baseUrl;
@@ -142,11 +146,11 @@ class ModelContext implements IModelContext
 //    }
 //  }
   
-  IOpenApiObject parse(IModelRegistry modelRegistry)
+  OpenApiObject parse(ModelRegistry modelRegistry)
   {
     log_.info("Parsing {}...", getInputSource());
     
-    model_ = modelRegistry.parseOne(getReader(), OpenApiObject.TYPE_ID, IOpenApiObject.class);
+    model_ = modelRegistry.parseOne(getReader(), OpenApiObject.TYPE_ID, OpenApiObject.class);
     
 //    if(errorCnt_ == 0)
       log_.info("Parsing of {} completed OK.", getInputSource());
@@ -159,17 +163,17 @@ class ModelContext implements IModelContext
   }
   
   @Override
-  public IOpenApiObject getModel()
+  public OpenApiObject getModel()
   {
     return model_;
   }
 
-  IResolvedModel getResolvedModel()
+  ResolvedModel getResolvedModel()
   {
     return resolvedModel_;
   }
 
-  void setResolvedModel(IResolvedModel resolvedModel)
+  void setResolvedModel(ResolvedModel resolvedModel)
   {
     resolvedModel_ = resolvedModel;
   }
@@ -243,7 +247,7 @@ class ModelContext implements IModelContext
       : new URL(url_, uri.toString());
   }
 
-  public IOpenApiObject getModel(URI uri)
+  public OpenApiObject getModel(URI uri)
   {
     
     try

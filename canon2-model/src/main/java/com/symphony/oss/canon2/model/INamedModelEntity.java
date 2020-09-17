@@ -16,30 +16,31 @@
  * limitations under the License.
  */
 
-package com.symphony.oss.canon2.parser;
+package com.symphony.oss.canon2.model;
+
+import javax.annotation.Nullable;
 
 /**
- * Template model for primitive types number, integer, boolean, string.
- * 
+ * A model entity which supports the x-canon-identifier attribute.
+ *  
  * @author Bruce Skingle
  *
  */
-public abstract class PrimitiveSchemaTemplateModel<
-T extends ITemplateModel<T,M,S>,
-M extends IOpenApiTemplateModel<T,M,S>,
-S extends ISchemaTemplateModel<T,M,S>
->
-  extends SchemaTemplateModel<T,M,S>
-  implements IPrimitiveSchemaTemplateModel<T,M,S>
+public interface INamedModelEntity
 {
-  public PrimitiveSchemaTemplateModel(String name, String identifier, M model,  String... templates)
-  {
-    super(name, identifier, model, templates);
-  }
-
-  @Override
-  public SchemaType getSchemaType()
-  {
-    return SchemaType.PRIMITIVE;
-  }
+  /**
+   * Return the x-canon-identifier attribute.
+   * 
+   * @return The x-canon-identifier attribute.
+   */
+  public @Nullable String getXCanonIdentifier();
+  
+  /**
+   * Return the x-canon-${LANGUAGE}-identifier attribute.
+   * 
+   * @param language The target generation language. 
+   * 
+   * @return The x-canon-${LANGUAGE}-identifier attribute.
+   */
+  public @Nullable String getXCanonIdentifier(String language);
 }

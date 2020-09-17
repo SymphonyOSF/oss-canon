@@ -23,11 +23,14 @@ import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.Map.Entry;
+import java.util.Set;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import com.symphony.oss.canon2.model.IModelContext;
+import com.symphony.oss.canon2.model.ResolvedSchema;
 
 class NameCollisionDetector
 {
@@ -42,12 +45,12 @@ class NameCollisionDetector
   private Set<List<String>> collisionSet_ = new HashSet<>();
   private Set<String>       invalidSet_   = new HashSet<>();
   
-  NameCollisionDetector(ICanonGenerator<?,?,?,?,?,?,?> generator, Map<String, IResolvedSchema> schemas, boolean isSchema)
+  NameCollisionDetector(ICanonGenerator<?,?,?,?,?,?,?> generator, Map<String, ResolvedSchema> schemas, boolean isSchema)
   {
     int debug=1;
     Map<String, List<String>>   camelMap  = new HashMap<>();
     
-    for(Entry<String, IResolvedSchema> entry : schemas.entrySet())
+    for(Entry<String, ResolvedSchema> entry : schemas.entrySet())
     {
       boolean initial   = isSchema;
       String  name      = generator.getIdentifierName(entry.getKey(), entry.getValue());

@@ -34,6 +34,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.Map.Entry;
 import java.util.function.Consumer;
 
 import org.slf4j.Logger;
@@ -42,9 +43,18 @@ import org.slf4j.LoggerFactory;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.io.Files;
-import com.symphony.oss.canon.runtime.ModelRegistry;
-import com.symphony.oss.canon2.parser.model.CanonModel;
-import com.symphony.oss.commons.dom.json.IJsonObject;
+import com.symphony.oss.canon.json.model.JsonObject;
+import com.symphony.oss.canon2.model.CanonCardinality;
+import com.symphony.oss.canon2.model.CanonModel;
+import com.symphony.oss.canon2.model.GenerationException;
+import com.symphony.oss.canon2.model.ICanonContext;
+import com.symphony.oss.canon2.model.IModelContext;
+import com.symphony.oss.canon2.model.OpenApiObject;
+import com.symphony.oss.canon2.model.ResolvedModel;
+import com.symphony.oss.canon2.model.ResolvedPropertiesObject;
+import com.symphony.oss.canon2.model.ResolvedSchema;
+import com.symphony.oss.canon2.runtime.java.ModelRegistry;
+import com.symphony.oss.commons.fault.CodingFault;
 import com.symphony.oss.commons.fluent.BaseAbstractBuilder;
 
 import freemarker.template.Configuration;
@@ -59,9 +69,9 @@ import freemarker.template.TemplateException;
  * @author Bruce Skingle
  *
  */
-public class GenerationContext
+public class CanonContext implements ICanonContext
 {
-  private static Logger                        log_                = LoggerFactory.getLogger(GenerationContext.class);
+  private static Logger                        log_                = LoggerFactory.getLogger(CanonContext.class);
 
   private final File                           targetDir_;
   private final File                           proformaDir_;
@@ -70,17 +80,18 @@ public class GenerationContext
   private final ImmutableMap<String, String>   uriMap_;
   private final boolean                        templateDebug_;
   
-  private final ModelRegistry                  modelRegistry_      = new ModelRegistry()
-      .withFactories(CanonModel.FACTORIES);
+  private final ModelRegistry                  modelRegistry_      = new ModelRegistry.Builder()
+      .withFactories(CanonModel.FACTORIES)
+      .build();
 
   private Map<URL, ModelContext>               generationContexts_ = new HashMap<>();
   private Map<URL, ModelContext>               referencedContexts_ = new HashMap<>();
   private Deque<ModelContext>                  parseQueue_         = new LinkedList<>();
   private Deque<ModelContext>                  validateQueue_      = new LinkedList<>();
   private Deque<ModelContext>                  generateQueue_      = new LinkedList<>();
-  private Map<URL, IOpenApiObject>             modelMap_           = new HashMap<>();
+  private Map<URL, OpenApiObject>              modelMap_           = new HashMap<>();
 
-  private GenerationContext(AbstractBuilder<?,?> builder)
+  private CanonContext(AbstractBuilder<?,?> builder)
   {
     log_.info("GenerationContext created");
     
@@ -92,7 +103,7 @@ public class GenerationContext
     templateDebug_ = builder.templateDebug_;
   }
   
-  public static abstract class AbstractBuilder<T extends AbstractBuilder<T,B>, B extends GenerationContext> extends BaseAbstractBuilder<T,B>
+  public static abstract class AbstractBuilder<T extends AbstractBuilder<T,B>, B extends CanonContext> extends BaseAbstractBuilder<T,B>
   {
     private File                  targetDir_;
     private File                  proformaDir_;
@@ -192,7 +203,7 @@ public class GenerationContext
     }
   }
   
-  public static class Builder extends AbstractBuilder<Builder, GenerationContext>
+  public static class Builder extends AbstractBuilder<Builder, CanonContext>
   {
     public Builder()
     {
@@ -200,9 +211,9 @@ public class GenerationContext
     }
 
     @Override
-    protected GenerationContext construct()
+    protected CanonContext construct()
     {
-      return new GenerationContext(this);
+      return new CanonContext(this);
     }
   }
 
@@ -235,7 +246,8 @@ public class GenerationContext
     return targetDir;
   }
 
-  ModelRegistry getModelRegistry()
+  @Override
+  public ModelRegistry getModelRegistry()
   {
     return modelRegistry_;
   }
@@ -300,7 +312,7 @@ public class GenerationContext
   public void process() throws GenerationException
   {
     ModelContext context;
-    IOpenApiObject model;
+    OpenApiObject model;
     
     while((context = parseQueue_.pollFirst()) != null)
     {
@@ -326,8 +338,8 @@ public class GenerationContext
 
   void validate(ModelContext context) throws GenerationException
   {
-    IOpenApiObject model = context.getModel();
-    IResolvedModel resolvedModel = model.resolve(this, context);
+    OpenApiObject model = context.getModel();
+    ResolvedModel resolvedModel = model.resolve(this, context);
     
     context.setResolvedModel(resolvedModel);
     
@@ -342,7 +354,8 @@ public class GenerationContext
     }
   }
 
-  void addReferencedModel(URL url) throws GenerationException
+  @Override
+  public void addReferencedModel(URL url) throws GenerationException
   {
     if(url != null)
     {
@@ -357,12 +370,13 @@ public class GenerationContext
     }
   }
   
-  ModelContext getReferencedModel(URL url)
+  @Override
+  public IModelContext getReferencedModel(URL url)
   {
     return referencedContexts_.get(url);
   }
   
-  public IOpenApiObject getModel(URL url)
+  public OpenApiObject getModel(URL url)
   {
     return modelMap_.get(url);
   }
@@ -612,11 +626,11 @@ public class GenerationContext
 
     void generateFor() throws GenerationException
     {
-      IJsonObject<?> generatorConfig = context.getModel().getXCanonGenerators().getJsonObject().getRequiredObject(generator.getLanguage());
+      JsonObject generatorConfig = context.getModel().getXCanonGenerators().getJsonObject().getRequiredObject(generator.getLanguage());
     
       IGeneratorModelContext<T,M,S,O,A,P,F> generatorModelContext = generator.createModelContext(context, generatorConfig);
     
-      M templateModel = context.getResolvedModel().generate(generatorModelContext);
+      M templateModel = generatorModelContext.generateModel(context.getResolvedModel(), generatorModelContext);
       
       if(context.printErrors())
         throw new GenerationException("Generation failed for " + context.getInputSourceName());

@@ -25,10 +25,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import com.symphony.oss.canon2.parser.GenerationException;
+import com.symphony.oss.canon2.model.GenerationException;
+import com.symphony.oss.canon2.model.ResolvedSchema;
 import com.symphony.oss.canon2.parser.IObjectSchemaTemplateModel;
-import com.symphony.oss.canon2.parser.IResolvedSchema;
-import com.symphony.oss.canon2.parser.SchemaType;
 
 public class JavaObjectSchemaTemplateModel extends JavaSchemaTemplateModel
 implements IObjectSchemaTemplateModel<
@@ -54,15 +53,15 @@ JavaFieldTemplateModel
   private List<JavaSchemaTemplateModel> innerClasses_ = new LinkedList<>();
   private boolean hasLimits_;
   
-  JavaObjectSchemaTemplateModel(IResolvedSchema entity, String name, String identifier, JavaOpenApiTemplateModel model,
+  JavaObjectSchemaTemplateModel(ResolvedSchema entity, String name, String identifier, JavaOpenApiTemplateModel model,
       JavaGeneratorModelContext modelContext, String... temaplates) throws GenerationException
   {
     super(entity, name, identifier, model, temaplates);
     
-    for(Entry<String, IResolvedSchema> entry : entity.getInnerClasses().getResolvedProperties().entrySet())
+    for(Entry<String, ResolvedSchema> entry : entity.getInnerClasses().getResolvedProperties().entrySet())
     {
       System.err.println(entry);
-      JavaSchemaTemplateModel innerClass = entry.getValue().generate(model, entry.getKey(), modelContext, false);
+      JavaSchemaTemplateModel innerClass = modelContext.generateSchema(entry.getValue(), model, entry.getKey(), modelContext, false);
       innerClasses_.add(innerClass);
 //      innerClasses_.add(modelContext.generateObjectSchema(model, entry.getValue(), entry.getKey(), false));
     }
@@ -92,12 +91,6 @@ JavaFieldTemplateModel
   public boolean getHasLimits()
   {
     return hasLimits_;
-  }
-
-  @Override
-  public SchemaType getSchemaType()
-  {
-    return SchemaType.OBJECT;
   }
 
   @Override

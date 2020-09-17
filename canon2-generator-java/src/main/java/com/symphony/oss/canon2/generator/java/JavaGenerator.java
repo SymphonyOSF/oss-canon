@@ -21,11 +21,11 @@ package com.symphony.oss.canon2.generator.java;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.symphony.oss.canon.json.model.JsonObject;
+import com.symphony.oss.canon2.model.IModelContext;
+import com.symphony.oss.canon2.model.INamedModelEntity;
 import com.symphony.oss.canon2.parser.CanonGenerator;
-import com.symphony.oss.canon2.parser.IModelContext;
-import com.symphony.oss.canon2.parser.INamedModelEntity;
 import com.symphony.oss.canon2.parser.IPathNameConstructor;
-import com.symphony.oss.commons.dom.json.IJsonObject;
 
 public class JavaGenerator extends CanonGenerator<
 IJavaTemplateModel, JavaOpenApiTemplateModel,
@@ -93,7 +93,7 @@ JavaFieldTemplateModel
   }
 
   @Override
-  public JavaGeneratorModelContext createModelContext(IModelContext context, IJsonObject<?> generatorConfig)
+  public JavaGeneratorModelContext createModelContext(IModelContext context, JsonObject generatorConfig)
   {
     return new JavaGeneratorModelContext(this, context, generatorConfig);
   }

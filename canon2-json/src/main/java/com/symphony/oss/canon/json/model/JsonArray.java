@@ -18,6 +18,8 @@
 
 package com.symphony.oss.canon.json.model;
 
+import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
@@ -207,6 +209,36 @@ public class JsonArray extends JsonDomNode implements Iterable<JsonDomNode>, IJs
     {
       for(Boolean child : children)
         children_.add(new JsonBoolean.Builder().withValue(child).build());
+      
+      return self();
+    }
+    
+    /**
+     * Add the given elements to the array.
+     * 
+     * @param children One or more elements to be added to the array.
+     * 
+     * @return This (fluent method).
+     */
+    public T with(BigDecimal ...children)
+    {
+      for(BigDecimal child : children)
+        children_.add(new JsonBigDecimal.Builder().withValue(child).build());
+      
+      return self();
+    }
+    
+    /**
+     * Add the given elements to the array.
+     * 
+     * @param children One or more elements to be added to the array.
+     * 
+     * @return This (fluent method).
+     */
+    public T with(BigInteger ...children)
+    {
+      for(BigInteger child : children)
+        children_.add(new JsonBigInteger.Builder().withValue(child).build());
       
       return self();
     }

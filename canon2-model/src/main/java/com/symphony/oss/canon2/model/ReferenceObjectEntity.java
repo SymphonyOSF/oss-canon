@@ -17,18 +17,17 @@
  *
  *----------------------------------------------------------------------------------------------------
  * Generated from
- *    Input source         file:/Users/bruce/symphony/git-SymphonyOSF/oss-canon/canon2-model/src/main/resources/canon/canon.json
+ *    Input source         canon.json
  *    Generator groupId    org.symphonyoss.s2.canon
  *              artifactId canon2-generator-java
  *    Template name        template/Object/_Entity.java.ftl
- *    At                   2020-09-16 13:40:31 BST
+ *    At                   2020-09-16 16:04:42 BST
  *----------------------------------------------------------------------------------------------------
  */
 
 package com.symphony.oss.canon2.model;
 
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 import javax.annotation.Nullable;
@@ -43,7 +42,7 @@ import com.symphony.oss.commons.type.provider.IStringProvider;
 
 /**
  * Implementation for Object  ReferenceObject canon
- * Object com.symphony.oss.canon2.generator.java.JavaOpenApiTemplateModel@25d250c6
+ * Object com.symphony.oss.canon2.generator.java.JavaOpenApiTemplateModel@4df50bcc
  * Generated from JavaObjectSchemaTemplateModel [fields_=[JavaFieldTemplateModel $ref $ref]] at {entity.context.path}
  */
 @Immutable
@@ -282,10 +281,11 @@ public abstract class ReferenceObjectEntity extends ObjectEntity
       return super.withValues(jsonObject, modelRegistry);
     }
     
-    public void populateAllFields(List<Object> result)
+    /* void populateAllFields(List<Object> result)
     {
       result.add(_$ref_);
-    }
+    }*/
+
     /**
      * Return the value of the $ref attribute.
      *
@@ -327,7 +327,7 @@ public abstract class ReferenceObjectEntity extends ObjectEntity
       return builder.build();
     }
     
-    @Override 
+    @Override
     public void populateJson(JsonObject.Builder builder)
     {
       super.populateJson(builder);

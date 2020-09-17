@@ -21,7 +21,8 @@ package com.symphony.oss.canon2.parser;
 import java.util.Collection;
 import java.util.Collections;
 
-import com.symphony.oss.canon2.parser.model.CanonCardinality;
+import com.symphony.oss.canon2.model.CanonCardinality;
+import com.symphony.oss.canon2.model.SchemaType;
 
 public interface IArraySchemaTemplateModel<
   T extends ITemplateModel<T,M,S>,

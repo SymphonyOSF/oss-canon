@@ -20,6 +20,9 @@ package com.symphony.oss.canon2.parser;
 
 import java.util.Collection;
 
+import com.symphony.oss.canon2.model.GenerationException;
+import com.symphony.oss.canon2.model.SchemaType;
+
 public interface IObjectSchemaTemplateModel<
   T extends ITemplateModel<T,M,S>,
   M extends IOpenApiTemplateModel<T,M,S>,

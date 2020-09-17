@@ -21,7 +21,7 @@
  * under the License.
  */
 
-package com.symphony.oss.canon2.parser;
+package com.symphony.oss.canon2.model;
 
 /**
  * An exception encountered while generating.

@@ -18,11 +18,14 @@
 
 package com.symphony.oss.canon.json.model;
 
+import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.TreeMap;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 import org.apache.commons.codec.binary.Base64;
@@ -141,6 +144,47 @@ public class JsonObject extends JsonDomNode implements IJsonOrBuilder<JsonObject
   public ImmutableSet<String> getNames()
   {
     return children_.keySet();
+  }
+  
+  /**
+   * Return the object attribute with the given name, or null if there is no attribute with the given name.
+   * 
+   * @param name The name of the required object.
+   * 
+   * @return The required object or null.
+   * 
+   * @throws IllegalStateException if the attribute exists but is not an object.
+   */
+  public @Nullable JsonObject getObject(String name)
+  {
+    JsonDomNode node = get(name);
+    
+    if(node == null)
+      return null;
+    
+    if(node instanceof JsonObject)
+      return (JsonObject) node;
+    
+    throw new IllegalStateException("\"" + name + "\" is not an object");
+  }
+  
+  /**
+   * Return the object attribute with the given name
+   * 
+   * @param name The name of the required object.
+   * 
+   * @return The required object.
+   * 
+   * @throws IllegalStateException if the attribute does not exist or is not an object.
+   */
+  public @Nonnull JsonObject getRequiredObject(String name)
+  {
+    JsonDomNode node = get(name);
+    
+    if(node instanceof JsonObject)
+      return (JsonObject) node;
+    
+    throw new IllegalStateException("\"" + name + "\" is not an object");
   }
 
   /**
@@ -269,6 +313,38 @@ public class JsonObject extends JsonDomNode implements IJsonOrBuilder<JsonObject
     {
       if(value != null)
         return with(name, new JsonBase64String.Builder().withValue(value).build());
+      
+      return self();
+    }
+
+    /**
+     * Set the given value as a member of this object with the given name, only if it is non-null.
+     * 
+     * @param name  The name of the new member.
+     * @param value The member.
+     * 
+     * @return This (fluent method).
+     */
+    public T addIfNotNull(String name, BigDecimal value)
+    {
+      if(value != null)
+        return with(name, new JsonBigDecimal.Builder().withValue(value).build());
+      
+      return self();
+    }
+
+    /**
+     * Set the given value as a member of this object with the given name, only if it is non-null.
+     * 
+     * @param name  The name of the new member.
+     * @param value The member.
+     * 
+     * @return This (fluent method).
+     */
+    public T addIfNotNull(String name, BigInteger value)
+    {
+      if(value != null)
+        return with(name, new JsonBigInteger.Builder().withValue(value).build());
       
       return self();
     }

@@ -23,11 +23,10 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Set;
 import java.util.TreeSet;
 
-import com.symphony.oss.canon2.parser.IResolvedSchema;
+import com.symphony.oss.canon2.model.ResolvedSchema;
 import com.symphony.oss.canon2.parser.SchemaTemplateModel;
 
 public abstract class JavaSchemaTemplateModel
@@ -50,10 +49,10 @@ implements IJavaTemplateModel
 
   private final boolean generateFacade_;
   
-  JavaSchemaTemplateModel(IResolvedSchema entity, String name, String identifier, JavaOpenApiTemplateModel model,
+  JavaSchemaTemplateModel(ResolvedSchema entity, String name, String identifier, JavaOpenApiTemplateModel model,
       String... templates)
   {
-    super(name, identifier, model, templates);
+    super(entity, name, identifier, model, templates);
     
 //    for(String importString : IMPORTS )
 //    {

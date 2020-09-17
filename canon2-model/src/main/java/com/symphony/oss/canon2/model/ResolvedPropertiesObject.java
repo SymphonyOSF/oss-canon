@@ -17,24 +17,37 @@
  *
  *----------------------------------------------------------------------------------------------------
  * Generated from
- *    Input source         file:/Users/bruce/symphony/git-SymphonyOSF/oss-canon/canon2-model/src/main/resources/canon/canon.json
+ *    Input source         canon.json
  *    Generator groupId    org.symphonyoss.s2.canon
  *              artifactId canon2-generator-java
  *    Template name        proforma/Object/_.java.ftl
- *    At                   2020-09-16 13:40:31 BST
+ *    At                   2020-09-16 16:04:42 BST
  *----------------------------------------------------------------------------------------------------
  */
 
 package com.symphony.oss.canon2.model;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import javax.annotation.concurrent.Immutable;
 
+import com.google.common.collect.ImmutableMap;
 import com.symphony.oss.canon.json.model.JsonObject;
 import com.symphony.oss.canon2.runtime.java.ModelRegistry;
+import com.symphony.oss.commons.fault.CodingFault;
 
+
+/**
+ * Facade for Object  ResolvedPropertiesObject canon
+ * Object com.symphony.oss.canon2.generator.java.JavaOpenApiTemplateModel@4df50bcc
+ * Generated from JavaObjectSchemaTemplateModel [fields_=[]] at {entity.context.path}
+ */
 @Immutable
 public class ResolvedPropertiesObject extends ResolvedPropertiesObjectEntity
 {
+  private final ImmutableMap<String, ResolvedSchema> properties_;
+  
   /**
    * Constructor from builder.
    * 
@@ -43,6 +56,8 @@ public class ResolvedPropertiesObject extends ResolvedPropertiesObjectEntity
   public ResolvedPropertiesObject(AbstractBuilder<?,?> builder)
   {
     super(builder);
+    
+    properties_ = ImmutableMap.copyOf(builder.properties_);
   }
   
   /**
@@ -54,16 +69,22 @@ public class ResolvedPropertiesObject extends ResolvedPropertiesObjectEntity
   public ResolvedPropertiesObject(JsonObject jsonObject, ModelRegistry modelRegistry)
   {
     super(jsonObject, modelRegistry);
+    throw new CodingFault("Not serializable");
   }
    
-  /**
-   * Copy constructor.
-   * 
-   * @param other Another instance from which all attributes are to be copied.
-   */
-  public ResolvedPropertiesObject(ResolvedPropertiesObject other)
+//  /**
+//   * Copy constructor.
+//   * 
+//   * @param other Another instance from which all attributes are to be copied.
+//   */
+//  public ResolvedPropertiesObject(ResolvedPropertiesObject other)
+//  {
+//    super(other);
+//  }
+  
+  public ImmutableMap<String, ResolvedSchema> getResolvedProperties()
   {
-    super(other);
+    return properties_;
   }
   
   /**
@@ -74,6 +95,8 @@ public class ResolvedPropertiesObject extends ResolvedPropertiesObjectEntity
    */
   public static abstract class AbstractBuilder<T extends AbstractBuilder<T,B>, B extends ResolvedPropertiesObject> extends ResolvedPropertiesObjectEntity.AbstractBuilder<T,B>
   {
+    private Map<String, ResolvedSchema> properties_ = new HashMap<>();
+    
     protected AbstractBuilder(Class<T> type)
     {
       super(type);
@@ -82,6 +105,13 @@ public class ResolvedPropertiesObject extends ResolvedPropertiesObjectEntity
     protected AbstractBuilder(Class<T> type, B initial)
     {
       super(type, initial);
+    }
+    
+    public T withProperty(String name, ResolvedSchema schema)
+    {
+      properties_.put(name, schema);
+      
+      return self();
     }
   }
 }

@@ -20,20 +20,20 @@ package com.symphony.oss.canon2.generator.java;
 
 import java.util.Map;
 
-import com.symphony.oss.canon2.parser.GenerationException;
+import com.symphony.oss.canon.json.model.JsonObject;
+import com.symphony.oss.canon2.model.CanonCardinality;
+import com.symphony.oss.canon2.model.GenerationException;
+import com.symphony.oss.canon2.model.IModelContext;
+import com.symphony.oss.canon2.model.ResolvedModel;
+import com.symphony.oss.canon2.model.ResolvedSchema;
 import com.symphony.oss.canon2.parser.GeneratorModelContext;
-import com.symphony.oss.canon2.parser.IModelContext;
-import com.symphony.oss.canon2.parser.IResolvedModel;
-import com.symphony.oss.canon2.parser.IResolvedSchema;
-import com.symphony.oss.canon2.parser.model.CanonCardinality;
-import com.symphony.oss.commons.dom.json.IJsonObject;
 
 class JavaGeneratorModelContext extends GeneratorModelContext<IJavaTemplateModel, JavaOpenApiTemplateModel, JavaSchemaTemplateModel, JavaObjectSchemaTemplateModel,
   JavaArraySchemaTemplateModel, JavaPrimitiveSchemaTemplateModel, JavaFieldTemplateModel>
 {
-  private IJsonObject<?> generatorConfig_;
+  private JsonObject generatorConfig_;
 
-  public JavaGeneratorModelContext(JavaGenerator javaGenerator, IModelContext context, IJsonObject<?> generatorConfig)
+  public JavaGeneratorModelContext(JavaGenerator javaGenerator, IModelContext context, JsonObject generatorConfig)
   {
     super(javaGenerator, context,
         new JavaPathNameConstructor(generatorConfig.getRequiredString(JavaGenerator.GEN_PACKAGE)));
@@ -48,14 +48,14 @@ class JavaGeneratorModelContext extends GeneratorModelContext<IJavaTemplateModel
   }
 
   @Override
-  public JavaOpenApiTemplateModel generateOpenApiObject(IResolvedModel resolvedModel, String name, String identifier)
+  public JavaOpenApiTemplateModel generateOpenApiObject(ResolvedModel resolvedModel, String name, String identifier)
   {
     return new JavaOpenApiTemplateModel(resolvedModel, name, identifier, "Model");
   }
 
   
   @Override
-  public JavaObjectSchemaTemplateModel generateObjectSchema(JavaOpenApiTemplateModel model, IResolvedSchema entity, String name, String identifier, boolean isReference) throws GenerationException
+  public JavaObjectSchemaTemplateModel generateObjectSchema(JavaOpenApiTemplateModel model, ResolvedSchema entity, String name, String identifier, boolean isReference) throws GenerationException
   {
     if(isReference)
       return new JavaObjectSchemaTemplateModel(entity, name, identifier, model, this);
@@ -64,7 +64,7 @@ class JavaGeneratorModelContext extends GeneratorModelContext<IJavaTemplateModel
   }
 
   @Override
-  public JavaArraySchemaTemplateModel generateArraySchema(JavaOpenApiTemplateModel model, IResolvedSchema entity,
+  public JavaArraySchemaTemplateModel generateArraySchema(JavaOpenApiTemplateModel model, ResolvedSchema entity,
       String name, String identifier, boolean isReference, CanonCardinality cardinality) throws GenerationException
   {
     if(isReference)
@@ -75,7 +75,7 @@ class JavaGeneratorModelContext extends GeneratorModelContext<IJavaTemplateModel
 
   @Override
   public JavaPrimitiveSchemaTemplateModel generatePrimativeSchema(
-      JavaOpenApiTemplateModel model, IResolvedSchema entity, String name, String identifier, boolean isReference) throws GenerationException
+      JavaOpenApiTemplateModel model, ResolvedSchema entity, String name, String identifier, boolean isReference) throws GenerationException
   {
     if(isReference || (!entity.getIsGenerated() && entity.getEnum().isEmpty()))
     {
@@ -92,7 +92,7 @@ class JavaGeneratorModelContext extends GeneratorModelContext<IJavaTemplateModel
   }
 
   @Override
-  public JavaFieldTemplateModel generateField(JavaOpenApiTemplateModel model, IResolvedSchema entity, String name, String identifier,
+  public JavaFieldTemplateModel generateField(JavaOpenApiTemplateModel model, ResolvedSchema entity, String name, String identifier,
       JavaSchemaTemplateModel typeSchema, boolean required)
   {
     return new JavaFieldTemplateModel(entity, name, identifier, model, typeSchema, required);

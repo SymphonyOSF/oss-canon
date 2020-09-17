@@ -50,10 +50,4 @@ S extends ISchemaTemplateModel<T,M,S>
   {
     return ImmutableList.of();
   }
-
-  @Override
-  default SchemaType getSchemaType()
-  {
-    return SchemaType.PRIMITIVE;
-  }
 }

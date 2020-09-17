@@ -37,17 +37,20 @@
       <artifactId>canon2-json</artifactId>
       <version>${project.version}</version>
     </dependency>
-    
     <dependency>
       <groupId>${project.groupId}</groupId>
-      <artifactId>canon-runtime-java</artifactId>
+      <artifactId>canon2-runtime-java</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>${project.groupId}</groupId>
+      <artifactId>canon2-model</artifactId>
       <version>${project.version}</version>
     </dependency>
     
     <dependency>
       <groupId>org.freemarker</groupId>
       <artifactId>freemarker</artifactId>
-      <version>2.3.30</version>
     </dependency>
     
     <dependency>
@@ -112,7 +115,7 @@
     </pluginRepository>
   </pluginRepositories> -->
   
-  <build>
+  <!-- <build>
     <pluginManagement>
       <plugins>
         <plugin>
@@ -120,7 +123,7 @@
           <artifactId>canon-maven-plugin</artifactId>
           <version>${canon.template.version}</version>
         </plugin>
-        <!--This plugin's configuration is used to store Eclipse m2e settings only. It has no influence on the Maven build itself.-->
+        This plugin's configuration is used to store Eclipse m2e settings only. It has no influence on the Maven build itself.
         <plugin>
           <groupId>org.eclipse.m2e</groupId>
           <artifactId>lifecycle-mapping</artifactId>
@@ -200,5 +203,5 @@
         </executions>
       </plugin>
     </plugins>
-  </build>
+  </build> -->
 </project>

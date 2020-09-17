@@ -17,24 +17,53 @@
  *
  *----------------------------------------------------------------------------------------------------
  * Generated from
- *    Input source         file:/Users/bruce/symphony/git-SymphonyOSF/oss-canon/canon2-model/src/main/resources/canon/canon.json
+ *    Input source         canon.json
  *    Generator groupId    org.symphonyoss.s2.canon
  *              artifactId canon2-generator-java
  *    Template name        proforma/Object/_.java.ftl
- *    At                   2020-09-16 13:40:31 BST
+ *    At                   2020-09-16 16:04:42 BST
  *----------------------------------------------------------------------------------------------------
  */
 
 package com.symphony.oss.canon2.model;
+
+import java.net.MalformedURLException;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.net.URL;
 
 import javax.annotation.concurrent.Immutable;
 
 import com.symphony.oss.canon.json.model.JsonObject;
 import com.symphony.oss.canon2.runtime.java.ModelRegistry;
 
+
+/**
+ * Facade for Object  ReferenceObject canon
+ * Object com.symphony.oss.canon2.generator.java.JavaOpenApiTemplateModel@4df50bcc
+ * Generated from JavaObjectSchemaTemplateModel [fields_=[JavaFieldTemplateModel $ref $ref]] at {entity.context.path}
+ */
 @Immutable
 public class ReferenceObject extends ReferenceObjectEntity
 {
+  class UriParts
+  {
+    private final URI            uri_;
+    private final String         path_;
+    private final String         fragment_;
+    private final URL            baseUrl_;
+    
+    public UriParts(URI uri, String path, String fragment, URL baseUrl)
+    {
+      uri_ = uri;
+      path_ = path;
+      fragment_ = fragment;
+      baseUrl_ = baseUrl;
+    }
+  }
+  
+  private final UriParts uriParts_;
+  
   /**
    * Constructor from builder.
    * 
@@ -43,6 +72,8 @@ public class ReferenceObject extends ReferenceObjectEntity
   public ReferenceObject(AbstractBuilder<?,?> builder)
   {
     super(builder);
+    
+    uriParts_ = initUriParts();
   }
   
   /**
@@ -54,6 +85,8 @@ public class ReferenceObject extends ReferenceObjectEntity
   public ReferenceObject(JsonObject jsonObject, ModelRegistry modelRegistry)
   {
     super(jsonObject, modelRegistry);
+    
+    uriParts_ = initUriParts();
   }
    
   /**
@@ -64,6 +97,65 @@ public class ReferenceObject extends ReferenceObjectEntity
   public ReferenceObject(ReferenceObject other)
   {
     super(other);
+    
+    uriParts_ = initUriParts();
+  }
+  
+  private UriParts initUriParts()
+  {
+    String text = get$ref();
+    
+    try
+    {
+      if(text == null || text.length()==0)
+      {
+        throw new IllegalStateException("Empty URI");
+      }
+      
+      URI uri = new URI(text);
+      String s = uri.toString();
+      int i = s.indexOf('#');
+      
+      if(i== -1)
+      {
+        return new UriParts(uri, uri.getPath(), uri.getFragment(), uri.toURL());
+      }
+      else if(i == 0)
+      {
+        // starts with # - local fragment
+        return new UriParts(uri, null, uri.getFragment(), null);
+      }
+      else
+      {
+        try
+        {
+          return new UriParts(uri, uri.getPath(), uri.getFragment(), new URL(s.substring(0, i)));
+        }
+        catch (MalformedURLException e)
+        {
+          throw new IllegalStateException("Invalid base URL \"%s\"" + s.substring(0, i), e);
+        }
+      }
+    }
+    catch (URISyntaxException | MalformedURLException e)
+    {
+      throw new IllegalStateException("Invalid base URI \"%s\"" + text, e);
+    }
+  }
+
+  public UriParts getUriParts()
+  {
+    return uriParts_;
+  }
+  
+  public URL getBaseUrl()
+  {
+    return uriParts_.baseUrl_;
+  }
+
+  public String getFragment()
+  {
+    return uriParts_.fragment_;
   }
   
   /**

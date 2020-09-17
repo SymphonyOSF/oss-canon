@@ -18,6 +18,8 @@
 
 package com.symphony.oss.canon2.parser;
 
+import com.symphony.oss.canon2.model.SchemaType;
+
 /**
  * Super interface for template models for all schema types.
  * 

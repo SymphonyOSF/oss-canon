@@ -144,6 +144,9 @@
           "properties": {
             "$ref": "#/components/schemas/PropertiesObject"
           },
+          "x-canon-extends": {
+            "$ref": "#/components/schemas/ReferenceObject"
+          },
           "x-canon-attributes": {
             "$ref": "#/components/schemas/CanonAttributes"
           },
@@ -172,12 +175,10 @@
           },
           "minItems": {
               "type": "integer",
-              "format": "int32",
               "minimum": 0
           },
           "maxItems": {
               "type": "integer",
-              "format": "int32",
               "minimum": 0
           }
         }
@@ -202,7 +203,9 @@
       "ResolvedModel": {
         "description": "An OpenApi model with all references resolved.",
         "type": "object",
-        "extends": "#/components/schemas/OpenApiObject",
+        "x-canon-extends": {
+          "$ref": "#/components/schemas/OpenApiObject"
+        },
         "x-canon-facade": true,
         "builderFacade": true,
         "properties": {
@@ -212,7 +215,9 @@
       "ResolvedSchema": {
         "description": "A data type definition with all references resolved.",
         "type": "object",
-        "extends": "#/components/schemas/Schema",
+        "x-canon-extends": {
+          "$ref": "#/components/schemas/Schema"
+        },
         "x-canon-facade": true,
         "properties": {
           "resolvedItems": {

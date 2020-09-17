@@ -20,7 +20,11 @@ package com.symphony.oss.canon2.parser;
 
 import java.util.Map;
 
-import com.symphony.oss.canon2.parser.model.CanonCardinality;
+import com.symphony.oss.canon2.model.CanonCardinality;
+import com.symphony.oss.canon2.model.GenerationException;
+import com.symphony.oss.canon2.model.IModelContext;
+import com.symphony.oss.canon2.model.ResolvedModel;
+import com.symphony.oss.canon2.model.ResolvedSchema;
 
 public interface IGeneratorModelContext<
 T extends ITemplateModel<T,M,S>,
@@ -38,10 +42,10 @@ F extends IFieldTemplateModel<T,M,S>
 {
   IModelContext getSourceContext();
 
-  M generateOpenApiObject(IResolvedModel entity, String name, String identifier) throws GenerationException;
+  M generateOpenApiObject(ResolvedModel entity, String name, String identifier) throws GenerationException;
 
-  O generateObjectSchema(M model, IResolvedSchema entity, String name, String identifier, boolean isReference) throws GenerationException;
-  A generateArraySchema(M model, IResolvedSchema entity, String name, String identifier, boolean isReference, CanonCardinality cardinality) throws GenerationException;
+  O generateObjectSchema(M model, ResolvedSchema entity, String name, String identifier, boolean isReference) throws GenerationException;
+  A generateArraySchema(M model, ResolvedSchema entity, String name, String identifier, boolean isReference, CanonCardinality cardinality) throws GenerationException;
 
   ICanonGenerator<T,M,S,O,A,P,F> getGenerator();
 
@@ -49,7 +53,14 @@ F extends IFieldTemplateModel<T,M,S>
 
   void populateTemplateModel(Map<String, Object> map);
 
-  P generatePrimativeSchema(M model, IResolvedSchema entity, String name, String identifier, boolean isReference) throws GenerationException;
+  P generatePrimativeSchema(M model, ResolvedSchema entity, String name, String identifier, boolean isReference) throws GenerationException;
   
-  F generateField(M model, IResolvedSchema entity, String name, String identifier, S typeSchema, boolean required);
+  F generateField(M model, ResolvedSchema entity, String name, String identifier, S typeSchema, boolean required);
+
+  // these things are really generate operations, maybe the things above should be renamed...
+  M generateModel(ResolvedModel resolvedModel, IGeneratorModelContext<T, M, S, O, A, P, F> modelContext)
+      throws GenerationException;
+
+  S generateSchema(ResolvedSchema resolvedSchema, M model, String name,
+      IGeneratorModelContext<T, M, S, O, A, P, F> modelContext, boolean isReference) throws GenerationException;
 }

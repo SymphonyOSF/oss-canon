@@ -16,30 +16,24 @@
  * limitations under the License.
  */
 
-package com.symphony.oss.canon2.parser;
+package com.symphony.oss.canon2.model;
 
-/**
- * Base implementation of ISchemaTemplateModel.
- * 
- * @author Bruce Skingle
- *
- */
-public abstract class ArraySchemaTemplateModel<
-T extends ITemplateModel<T,M,S>,
-M extends IOpenApiTemplateModel<T,M,S>,
-S extends ISchemaTemplateModel<T,M,S>
->
-  extends SchemaTemplateModel<T,M,S>
-  implements IArraySchemaTemplateModel<T,M,S>
+import java.net.URL;
+
+public interface IModelContext
 {
-  public ArraySchemaTemplateModel(String name, String identifier, M model, String... templates)
-  {
-    super(name, identifier, model, templates);
-  }
 
-  @Override
-  public SchemaType getSchemaType()
-  {
-    return SchemaType.ARRAY;
-  }
+  
+  URL getUrl();
+
+  String getInputSource();
+
+  String getInputSourceName();
+
+  OpenApiObject getModel();
+
+  void error(String error);
+
+  String getInputSourceFileName();
+
 }

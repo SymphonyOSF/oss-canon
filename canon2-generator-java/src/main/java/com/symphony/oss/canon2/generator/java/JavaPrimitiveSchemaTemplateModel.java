@@ -17,13 +17,12 @@ import org.slf4j.LoggerFactory;
 
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
-import com.symphony.oss.canon2.parser.GenerationException;
-import com.symphony.oss.canon2.parser.ICanonAttributes;
+import com.symphony.oss.canon.json.model.JsonDomNode;
+import com.symphony.oss.canon2.model.CanonAttributes;
+import com.symphony.oss.canon2.model.GenerationException;
+import com.symphony.oss.canon2.model.ResolvedSchema;
+import com.symphony.oss.canon2.model.Schema;
 import com.symphony.oss.canon2.parser.IPrimitiveSchemaTemplateModel;
-import com.symphony.oss.canon2.parser.IResolvedSchema;
-import com.symphony.oss.canon2.parser.ISchema;
-import com.symphony.oss.canon2.parser.SchemaType;
-import com.symphony.oss.commons.dom.json.IImmutableJsonDomNode;
 import com.symphony.oss.commons.fault.CodingFault;
 import com.symphony.oss.commons.type.provider.IBooleanProvider;
 
@@ -65,7 +64,7 @@ JavaSchemaTemplateModel>
   private final String                       externalType_;
   private final boolean isGenerated_;
 
-  JavaPrimitiveSchemaTemplateModel(IResolvedSchema entity, String name, String identifier, JavaOpenApiTemplateModel model,
+  JavaPrimitiveSchemaTemplateModel(ResolvedSchema entity, String name, String identifier, JavaOpenApiTemplateModel model,
        String... templates) throws GenerationException
   { 
     super(entity, name, identifier, model, templates);
@@ -135,7 +134,7 @@ JavaSchemaTemplateModel>
       exclusiveMaximum_ = false;
     }
     
-    ICanonAttributes attr = entity.getXCanonAttributes();
+    CanonAttributes attr = entity.getXCanonAttributes();
     
     if(attr != null)
     {
@@ -224,7 +223,7 @@ JavaSchemaTemplateModel>
     return minimum_!=null || maximum_ != null;
   }
 
-  private String initType(ISchema entity)
+  private String initType(Schema entity)
   {
 
     switch(entity.getType())
@@ -246,7 +245,9 @@ JavaSchemaTemplateModel>
         }
         else
         {
-          return "Double";
+          imports_.add("java.math.BigDecimal");
+
+          return "BigDecimal";
         }
         
       case "integer":
@@ -263,7 +264,9 @@ JavaSchemaTemplateModel>
         }
         else
         {
-          return "Long";
+          imports_.add("java.math.BigInteger");
+
+          return "BigInteger";
         }
         
       case "boolean":
@@ -298,13 +301,13 @@ JavaSchemaTemplateModel>
     }
   }
 
-  private BigInteger getBigInteger(ISchema entity, String name)
+  private BigInteger getBigInteger(Schema entity, String name)
   {
     switch(entity.getType())
     {
       case "number":
       case "integer":
-        IImmutableJsonDomNode node = entity.getJsonObject().get(name);
+        JsonDomNode node = entity.getJsonObject().get(name);
       
         if(node == null)
         {
@@ -327,13 +330,13 @@ JavaSchemaTemplateModel>
     return null;
   }
   
-  private boolean getBoolean(ISchema entity, String name)
+  private boolean getBoolean(Schema entity, String name)
   {
     switch(entity.getType())
     {
       case "number":
       case "integer":
-        IImmutableJsonDomNode node = entity.getJsonObject().get(name);
+        JsonDomNode node = entity.getJsonObject().get(name);
       
         if(node instanceof IBooleanProvider)
         {
@@ -344,16 +347,10 @@ JavaSchemaTemplateModel>
     return false;
   }
 
-  private void warnBadFormat(ISchema entity)
+  private void warnBadFormat(Schema entity)
   {
 
     log_.warn("Unrecognized " + entity.getType() + " format \"" + entity.getFormat() + "\" ignored at " + entity.getSourceLocation());
-  }
-
-  @Override
-  public SchemaType getSchemaType()
-  {
-    return SchemaType.PRIMITIVE;
   }
 
   public String getType()

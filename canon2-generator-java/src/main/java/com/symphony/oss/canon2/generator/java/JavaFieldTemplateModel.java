@@ -9,8 +9,8 @@ package com.symphony.oss.canon2.generator.java;
 import java.util.Set;
 import java.util.TreeSet;
 
+import com.symphony.oss.canon2.model.ResolvedSchema;
 import com.symphony.oss.canon2.parser.FieldTemplateModel;
-import com.symphony.oss.canon2.parser.IResolvedSchema;
 
 public class JavaFieldTemplateModel extends FieldTemplateModel<
 IJavaTemplateModel,
@@ -20,7 +20,7 @@ implements IJavaTemplateModel
 {
   Set<String> imports_ = new TreeSet<>();
   
-  public JavaFieldTemplateModel(IResolvedSchema entity, String name, String identifier, JavaOpenApiTemplateModel model,
+  public JavaFieldTemplateModel(ResolvedSchema entity, String name, String identifier, JavaOpenApiTemplateModel model,
       JavaSchemaTemplateModel typeSchema, boolean required,
       String... temaplates)
   {

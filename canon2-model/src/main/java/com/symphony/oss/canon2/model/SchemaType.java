@@ -17,11 +17,11 @@
  *
  *----------------------------------------------------------------------------------------------------
  * Generated from
- *    Input source         file:/Users/bruce/symphony/git-SymphonyOSF/oss-canon/canon2-model/src/main/resources/canon/canon.json
+ *    Input source         canon.json
  *    Generator groupId    org.symphonyoss.s2.canon
  *              artifactId canon2-generator-java
  *    Template name        template/Enum/_.java.ftl
- *    At                   2020-09-16 13:40:31 BST
+ *    At                   2020-09-16 16:04:42 BST
  *----------------------------------------------------------------------------------------------------
  */
 package com.symphony.oss.canon2.model;
@@ -30,19 +30,25 @@ import javax.annotation.concurrent.Immutable;
 
 /**
  * Enum  SchemaType canon
- * Model com.symphony.oss.canon2.generator.java.JavaOpenApiTemplateModel@25d250c6
- * Generated from com.symphony.oss.canon2.generator.java.JavaPrimitiveSchemaTemplateModel@43301423 at {entity.context.path}
+ * Model com.symphony.oss.canon2.generator.java.JavaOpenApiTemplateModel@4df50bcc
+ * Generated from com.symphony.oss.canon2.generator.java.JavaPrimitiveSchemaTemplateModel@2f112965 at {entity.context.path}
  */
-
 @Immutable
 public enum SchemaType
 {
+  /** STRING */
   STRING("string"),
-    NUMBER("number"),
-    ARRAY("array"),
-    OBJECT("object"),
-    X_XBOOLEAN("XXboolean"),
-    INTEGER("integer");
+  /** NUMBER */
+  NUMBER("number"),
+  /** ARRAY */
+  ARRAY("array"),
+  /** OBJECT */
+  OBJECT("object"),
+  /** BOOLEAN */
+  BOOLEAN("boolean"),
+  /** INTEGER */
+  INTEGER("integer")
+  ;
   
   private final String value_;
   
