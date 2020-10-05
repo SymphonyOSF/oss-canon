@@ -27,7 +27,6 @@ import java.util.Set;
 import java.util.TreeSet;
 
 import com.symphony.oss.canon2.generator.SchemaTemplateModel;
-import com.symphony.oss.canon2.model.ResolvedOpenApiObject;
 import com.symphony.oss.canon2.model.ResolvedSchema;
 
 public abstract class JavaSchemaTemplateModel
@@ -46,7 +45,13 @@ implements IJavaTemplateModel
 //        "com.symphony.oss.canon.json.model.JsonDomNode"
 //      };
   
-  Set<String> imports_ = new TreeSet<>();
+  /** Set of imports any class implementing this schema needs */
+  private Set<String> imports_ = new TreeSet<>();
+  
+  /** Package Name of import */
+  private String packageName_;
+  /** import needed by classes which reference this schema */
+  private String import_;
 
   private final boolean generateFacade_;
   
@@ -57,8 +62,11 @@ implements IJavaTemplateModel
 
     if(isExternal() && resolvedSchema.isGenerated())
     {
-      imports_.add(packageName + "." + getCamelCapitalizedName());
+      addImport(packageName + "." + getCamelCapitalizedName());
     }
+    
+    setImport(packageName,  getCamelCapitalizedName());
+    
     
 //    for(String importString : IMPORTS )
 //    {
@@ -71,8 +79,42 @@ implements IJavaTemplateModel
 //    }
     
     generateFacade_ = resolvedSchema.getSchema().getXCanonFacade() == null ? false : resolvedSchema.getSchema().getXCanonFacade();
+}
+  
+  void setAndAddImport(String packageName, String camelCapitalizedName)
+  {
+    setImport(packageName, camelCapitalizedName);
+    addImport(import_);
   }
   
+  void setImport(String fullyQualifiedName)
+  {
+    int i = fullyQualifiedName.lastIndexOf('.');
+    
+    setImport(fullyQualifiedName.substring(0, i), fullyQualifiedName.substring(i+1));
+  }
+  
+  void setImport(String packageName, String camelCapitalizedName)
+  {
+    packageName_ = packageName;
+    import_ = packageName + "." + camelCapitalizedName;
+  }
+
+  void addImport(String fullyQualifiedImport)
+  {
+    imports_.add(fullyQualifiedImport);
+  }
+
+  public String getPackageName()
+  {
+    return packageName_;
+  }
+
+  public String getImport()
+  {
+    return import_;
+  }
+
   public List<String> sortImports(List<String> list)
   {
     String[] groups = new String[]

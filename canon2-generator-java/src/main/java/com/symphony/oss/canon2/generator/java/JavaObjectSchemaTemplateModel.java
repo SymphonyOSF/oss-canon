@@ -67,7 +67,9 @@ JavaFieldTemplateModel
   public void addField(String name, JavaFieldTemplateModel field)
   {
     fieldMap_.put(name, field);
-    imports_.addAll(field.imports_);
+    
+    if(!getPackageName().equals(field.getTypeSchema().getPackageName()))
+      addImport(field.getTypeSchema().getImport());
     
     if(field.getHasLimits())
       hasLimits_ = true;

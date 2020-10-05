@@ -5,6 +5,9 @@
 </#if>
 <#include "/copyrightHeader.ftl"/>
 <#include "/macros.ftl"/>
+<#list entity.imports as import>
+//T0 ${import}
+</#list>
 <#assign imports = entity.imports + [
   "javax.annotation.concurrent.Immutable",
   "javax.annotation.Nullable",
@@ -21,6 +24,7 @@
     "${schema.fullyQualifiedJsonNodeType}"
   ]>
   <#if schema.externalType??>
+  // T1 ${schema.externalPackage}.${schema.externalType}
     <#assign imports = imports + [
       "${schema.externalPackage}.${schema.externalType}"
     ]>
@@ -45,6 +49,7 @@
   </#switch>
 </#macro>
 <#list entity.fields as field>
+//T2 
   <@importType field.typeSchema />
   <#if field.typeSchema.schemaType == "ARRAY">
     <@importArrayJsonType field.typeSchema />

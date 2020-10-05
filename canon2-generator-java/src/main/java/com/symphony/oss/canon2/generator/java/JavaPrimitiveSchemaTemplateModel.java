@@ -157,6 +157,7 @@ JavaSchemaTemplateModel>
       constructPrefix = getCamelCapitalizedName() + "Builder.build(";
       getValuePrefix = getCamelCapitalizedName() + "Builder.to" + javaType_ + "(";
       getValueSuffix = ")";
+      setAndAddImport(externalPackage_, externalType_);
     }
     else
     {
@@ -263,7 +264,7 @@ JavaSchemaTemplateModel>
         }
         else
         {
-          imports_.add("java.math.BigDecimal");
+          setAndAddImport("java.math", "BigDecimal");
 
           return "BigDecimal";
         }
@@ -282,7 +283,7 @@ JavaSchemaTemplateModel>
         }
         else
         {
-          imports_.add("java.math.BigInteger");
+          setAndAddImport("java.math", "BigInteger");
 
           return "BigInteger";
         }
@@ -300,7 +301,7 @@ JavaSchemaTemplateModel>
           switch(entity.getFormat())
           {
             case "byte":
-              imports_.add("com.symphony.oss.commons.immutable.ImmutableByteArray");
+              setAndAddImport("com.symphony.oss.commons.immutable", "ImmutableByteArray");
               return "ImmutableByteArray";
               
             default:

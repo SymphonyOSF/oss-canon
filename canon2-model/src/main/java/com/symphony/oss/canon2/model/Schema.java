@@ -236,7 +236,11 @@ public class Schema extends SchemaEntity implements INamedModelEntity
   private boolean isGenerated(String type)
   {
     // TODO: replace with type enum
-    return "object".equals(type) || "array".equals(type);
+    
+    if("array".equals(type))
+      System.err.println("HERE");
+    
+    return "object".equals(type); // || "array".equals(type);
     
   }
 
@@ -250,7 +254,6 @@ public class Schema extends SchemaEntity implements INamedModelEntity
   {
     Schema schema;
     String uri;
-    boolean external;
     
     URI x = ref.getBaseUri();
     if(ref.getBaseUri() == null)
@@ -271,11 +274,10 @@ public class Schema extends SchemaEntity implements INamedModelEntity
       {
         URL url = new URL(sourceContext.getUrl(), ref.getBaseUri().toString());
         
-        SourceContext refGenContext = modelContext.getReferencedModel(url);
-        schema = refGenContext.getModel().get(ref.getFragment(), Schema.class);
+        sourceContext = modelContext.getReferencedModel(url);
+        schema = sourceContext.getModel().get(ref.getFragment(), Schema.class);
         uri = ref.get$ref();
-        external = true;
-        openApiObjectBuilder = refGenContext.getResolvedOpenApiObjectBuilder();
+        openApiObjectBuilder = sourceContext.getResolvedOpenApiObjectBuilder();
       }
       catch (MalformedURLException e)
       {

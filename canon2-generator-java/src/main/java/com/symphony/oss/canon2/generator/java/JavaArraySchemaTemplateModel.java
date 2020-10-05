@@ -54,7 +54,10 @@ JavaSchemaTemplateModel>
   public void setElementType(JavaSchemaTemplateModel elementType)
   {
     elementType_ = elementType;
-    imports_.addAll(elementType.imports_);
+    
+    setImport(elementType.getImport());
+    if(!getPackageName().equals(elementType.getPackageName()))
+      addImport(elementType.getImport());
     
     switch(cardinality_)
     {
