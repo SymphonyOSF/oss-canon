@@ -62,7 +62,6 @@
       "InfoObject": {
         "description": "Metadata about the API.",
         "type": "object",
-        "x-canon-facade": true,
         "properties": {
         }
       },
@@ -70,7 +69,6 @@
       "CanonGeneratorConfig": {
         "description": "The available paths and operations for the API.",
         "type": "object",
-        "x-canon-facade": true,
         "properties": {
         }
       },
@@ -78,7 +76,6 @@
       "PathsObject": {
         "description": "The available paths and operations for the API.",
         "type": "object",
-        "x-canon-facade": true,
         "properties": {
         }
       },
@@ -188,7 +185,6 @@
       "CanonAttributes": {
         "description": "A collection of canon generation attributes.",
         "type": "object",
-        "x-canon-facade": true,
         "properties": {
         }
       },

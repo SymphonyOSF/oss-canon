@@ -63,8 +63,7 @@ ${import}
 </#list>
 <#macro generateObject indent entity className superClassName classModifier>
 ${indent}/**
-${indent} * Implementation for Object  ${entity.name} ${model.name}
-${indent} * Object ${model}
+${indent} * Implementation for Object ${entity}
 <#if entity.summary??>
 ${indent} *
 ${indent} * ${entity.summary}

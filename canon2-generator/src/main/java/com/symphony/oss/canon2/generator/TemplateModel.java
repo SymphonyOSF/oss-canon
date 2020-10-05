@@ -140,20 +140,22 @@ implements ITemplateModel<T,M,S>
   {
     int i=0;
     StringBuilder s = new StringBuilder(Character.toLowerCase(name.charAt(i)));
-    
+    boolean startWord=true;
     while(i<name.length())
     {
       char c = name.charAt(i++);
       
       if(Character.isUpperCase(c))
       {
-        if(i>1)
+        if(!startWord)
           s.append('_');
         s.append(Character.toLowerCase(c));
+        startWord=true;
       }
       else
       {
         s.append(c);
+        startWord=false;
       }
     }
     return s.toString();
@@ -216,5 +218,11 @@ implements ITemplateModel<T,M,S>
   public String getSnakeUpperCaseName()
   {
     return snakeUpperCaseName_;
+  }
+
+  @Override
+  public String toString()
+  {
+    return getName();
   }
 }

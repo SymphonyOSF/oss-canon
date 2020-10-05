@@ -143,12 +143,6 @@ JavaFieldTemplateModel
   }
 
   @Override
-  public String toString()
-  {
-    return "JavaObjectSchemaTemplateModel [fields_=" + fieldMap_.keySet() +  "]";
-  }
-
-  @Override
   public String getType()
   {
     return getCamelCapitalizedName();

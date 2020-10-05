@@ -12,7 +12,7 @@ import com.symphony.oss.canon2.runtime.java.ModelRegistry;
 
 /**
  * Facade for Object  ${entity.name} ${model.name}
- * Object ${model}
+ * Object ${entity}
 <#if entity.summary??>
  *
  * ${entity.summary}
@@ -23,7 +23,7 @@ import com.symphony.oss.canon2.runtime.java.ModelRegistry;
  * ${description}
 </#list>
 </#if>
- * Generated from ${entity} at {entity.context.path}
+ * Generated from ${entity}
  */
 @Immutable
 public class ${entity.type} extends ${entity.type}Entity
