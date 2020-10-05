@@ -45,18 +45,17 @@
           "green"
         ]
       },
-      "Hash": {
-        "description": "A Hash value, encoded as Base64, represented by an external class which we cant change so we need a factory generated.",
+      "Instant": {
+        "description": "A nanosecond resolution timestamp, compatible with the Java8 definition of Instant.",
         "type": "string",
-        "format": "byte",
         "# This is a test comment.": [],
         "# This is a another comment.": [
           "I can put stuff in here",
           "so I have as much space as I need."
         ],
         "x-canon-attributes": {
-          "javaExternalPackage":  "com.symphony.oss.canon.test.oneofeverything",
-          "javaExternalType":     "TestHash"
+          "javaExternalPackage": "java.time",
+          "javaExternalType": "Instant"
         }
       },
       "2": {
@@ -96,7 +95,7 @@
             "type": "string"
           },
           "userId": {
-            "$ref": "https://models.oss.symphony.com/core.json#/components/schemas/PodAndUserId"
+            "$ref": "typedef.json#/components/schemas/UserId"
           }
         }
       },
@@ -134,14 +133,14 @@
           "$ref": "#/components/schemas/2"
         }
       },
-      "ListOfIndirectExternal": {
-        "description": "A list of indirect externals.",
+      "ListOfExternal": {
+        "description": "A list of externals.",
         "type": "array",
         "x-canon-cardinality": "LIST",
         "minItems": 1,
         "maxItems": 5,
         "items": {
-          "$ref": "#/components/schemas/Hash"
+          "$ref": "#/components/schemas/Instant"
         }
       },
       "ListOfEnums": {
@@ -294,8 +293,8 @@
           "raison_d'être": {
               "type": "string"
           },
-          "indirectExternalField": {
-              "$ref": "#/components/schemas/Hash"
+          "externalField": {
+              "$ref": "#/components/schemas/Instant"
           },
           "enumsField": {
               "$ref": "#/components/schemas/Colour"
@@ -387,14 +386,14 @@
               "$ref": "#/components/schemas/2"
             }
           },
-          "indirectExternalListField": {
-            "description": "A list of indirect externals.",
+          "externalListField": {
+            "description": "A list of externals.",
             "type": "array",
             "x-canon-cardinality": "LIST",
             "minItems": 1,
             "maxItems": 5,
             "items": {
-              "$ref": "#/components/schemas/Hash"
+              "$ref": "#/components/schemas/Instant"
             }
           },
           "enumsListField": {
@@ -415,16 +414,16 @@
         "x-canon-facade": true,
         "builderFacade": true,
         "required": [
-          "absoluteHash"
+          "instant"
         ],
         "properties": {
-          "absoluteHash": {
-            "$ref": "#/components/schemas/Hash"
+          "instant": {
+            "$ref": "#/components/schemas/Instant"
           },
-          "sequenceHashes": {
+          "instantList": {
             "type": "array",
             "items": {
-              "$ref": "#/components/schemas/Hash"
+              "$ref": "#/components/schemas/Instant"
             }
           }
         }
@@ -435,15 +434,15 @@
         "x-canon-facade": true,
         "extends": "#/components/schemas/FundamentalObject",
         "required": [
-          "prevHash",
-          "baseHash"
+          "instant1",
+          "instant2"
         ],
         "properties": {
-          "prevHash": {
-            "$ref": "#/components/schemas/Hash"
+          "instant1": {
+            "$ref": "#/components/schemas/Instant"
           },
-          "baseHash": {
-            "$ref": "#/components/schemas/Hash"
+          "instant2": {
+            "$ref": "#/components/schemas/Instant"
           }
         }
       }

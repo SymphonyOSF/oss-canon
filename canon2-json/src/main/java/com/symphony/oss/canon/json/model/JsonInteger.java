@@ -18,8 +18,10 @@
 
 package com.symphony.oss.canon.json.model;
 
+import java.math.BigDecimal;
 import java.math.BigInteger;
 
+import com.symphony.oss.commons.type.provider.IBigDecimalProvider;
 import com.symphony.oss.commons.type.provider.IBigIntegerProvider;
 import com.symphony.oss.commons.type.provider.IIntegerProvider;
 import com.symphony.oss.commons.type.provider.ILongProvider;
@@ -31,7 +33,7 @@ import com.symphony.oss.commons.type.provider.INumberProvider;
  * @author Bruce Skingle
  *
  */
-public class JsonInteger extends JsonValue implements INumberProvider, IBigIntegerProvider, ILongProvider, IIntegerProvider
+public class JsonInteger extends JsonValue implements INumberProvider, IBigIntegerProvider, IBigDecimalProvider, ILongProvider, IIntegerProvider
 {
   private final Integer value_;
 
@@ -64,6 +66,12 @@ public class JsonInteger extends JsonValue implements INumberProvider, IBigInteg
   public Long asLong()
   {
     return (long)value_;
+  }
+
+  @Override
+  public BigDecimal asBigDecimal()
+  {
+    return BigDecimal.valueOf(value_);
   }
 
   @Override

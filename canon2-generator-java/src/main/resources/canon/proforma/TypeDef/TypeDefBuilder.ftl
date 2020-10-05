@@ -1,61 +1,43 @@
 <#include "/copyrightHeader.ftl"/>
 <#include "/macros.ftl"/>
+<#assign imports = entity.imports + [
+  "${entity.externalPackage}.${entity.externalType}",
+  "${entity.fullyQualifiedJsonNodeType}",
+  "javax.annotation.concurrent.Immutable",
+  "javax.annotation.Nonnull"
+  ]>
 
 package ${genPackage};
 
-import javax.annotation.concurrent.Immutable;
+<#list entity.sortImports(imports) as import>
+${import}
+</#list>
 
 @Immutable
-public class ${entity.type} extends ${entity.type}Entity
+public class ${entity.type}Builder
 {
   /**
-   * Constructor from builder.
-   * 
-   * @param builder A mutable builder containing all values.
-   */
-  public ${entity.type}(AbstractBuilder<?,?> builder)
-  {
-    super(builder);
-  }
-  
-  /**
-   * Constructor from serialised form.
-   * 
-   * @param jsonObject An immutable JSON object containing the serialized form of the object.
-   * @param modelRegistry A model registry to use to deserialize any nested objects.
-   */
-  public ${entity.type}(JsonObject jsonObject, IModelRegistry modelRegistry)
-  {
-    super(jsonObject, modelRegistry);
-  }
-   
-  /**
-   * Copy constructor.
-   * 
-   * @param other Another instance from which all attributes are to be copied.
-   */
-  public ${entity.type}(${entity.type} other)
-  {
-    super(other);
-  }
-  
-  /**
-   * Abstract builder for ${entity.type}. If there are sub-classes of this type then their builders sub-class this builder.
+   * Constructor from a ${entity.javaType} value.
    *
-   * @param <B> The concrete type of the builder, used for fluent methods.
-   * @param <T> The concrete type of the built object.
+   * @param value the value of the required instance.
+   * 
+   * @return A ${entity.javaType} deserialized from the given ${entity.type} value.
    */
-  public static abstract class AbstractBuilder<B extends AbstractBuilder<B,T>, T extends ${entity.type}Entity> extends AbstractEntityBuilder<B,T>
+  public static ${entity.type} build(@Nonnull ${entity.javaType} value)
   {
-    protected AbstractBuilder(Class<B> type)
-    {
-      super(type);
-    }
-    
-    protected AbstractBuilder(Class<B> type, ${entity.type}Entity initial)
-    {
-      super(type, initial);
-    }
+    return ${entity.type}.parse(value);
+  }
+  
+  /**
+   * Return the serialized form of the given ${entity.type} value.
+   * 
+   * @param instance An Instant value.
+   * 
+   * @return The serialized form of the given ${entity.type} value.
+   */
+  public static String to${entity.javaType}(${entity.type} instance)
+  {
+    return instance.toString();
   }
 }
 <#include "/footer.ftl">

@@ -33,7 +33,12 @@
     </dependency>
     <dependency>
       <groupId>com.symphony.oss.canon</groupId>
-      <artifactId>canon2-parser</artifactId>
+      <artifactId>canon2-model</artifactId>
+      <version>0.3.0-SNAPSHOT</version>
+    </dependency>
+    <dependency>
+      <groupId>com.symphony.oss.canon</groupId>
+      <artifactId>canon2-generator</artifactId>
       <version>0.3.0-SNAPSHOT</version>
     </dependency>
     <dependency>

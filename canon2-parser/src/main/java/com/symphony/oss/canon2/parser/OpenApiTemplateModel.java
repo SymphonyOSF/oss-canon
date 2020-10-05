@@ -25,6 +25,7 @@ import java.util.List;
 import java.util.Map;
 
 import com.symphony.oss.canon2.model.GenerationException;
+import com.symphony.oss.canon2.model.IModelContext;
 import com.symphony.oss.canon2.model.OpenApiObject;
 import com.symphony.oss.canon2.model.SemanticVersion;
 
@@ -49,12 +50,12 @@ S extends ISchemaTemplateModel<T,M,S>>
   private final Integer        canonMinorVersion_;
 
   
-  public OpenApiTemplateModel(OpenApiObject resolvedModel, String name, String identifier,
+  public OpenApiTemplateModel(IModelContext modelContext, String name, String identifier,
       String[] temaplates)
   {
     super(name, identifier, null, temaplates);
     
-    resolvedModel_ = resolvedModel;
+    resolvedModel_ = modelContext.getModel();
     
     String[] parts = getCanonVersion().getValue().split("\\.");
     

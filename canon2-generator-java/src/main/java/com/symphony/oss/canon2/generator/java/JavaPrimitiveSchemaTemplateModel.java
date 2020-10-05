@@ -9,6 +9,7 @@ package com.symphony.oss.canon2.generator.java;
 import java.math.BigInteger;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -18,11 +19,11 @@ import org.slf4j.LoggerFactory;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 import com.symphony.oss.canon.json.model.JsonDomNode;
+import com.symphony.oss.canon2.generator.IPrimitiveSchemaTemplateModel;
 import com.symphony.oss.canon2.model.CanonAttributes;
 import com.symphony.oss.canon2.model.GenerationException;
 import com.symphony.oss.canon2.model.ResolvedSchema;
 import com.symphony.oss.canon2.model.Schema;
-import com.symphony.oss.canon2.parser.IPrimitiveSchemaTemplateModel;
 import com.symphony.oss.commons.fault.CodingFault;
 import com.symphony.oss.commons.type.provider.IBooleanProvider;
 
@@ -56,7 +57,8 @@ JavaSchemaTemplateModel>
   private final String                       jsonNodeType_;
   private final String                       constructPrefix_;
   private final String                       constructSuffix_;
-  private final String                       getValue_;
+  private final String                       getValuePrefix_;
+  private final String                       getValueSuffix_;
   private final Set<String>                  quotedEnumValues_;
   private final Set<String>                  enumValues_;
   private final ImmutableMap<String, String> enumMap_;
@@ -64,83 +66,97 @@ JavaSchemaTemplateModel>
   private final String                       externalType_;
   private final boolean isGenerated_;
 
-  JavaPrimitiveSchemaTemplateModel(ResolvedSchema entity, String name, String identifier, JavaOpenApiTemplateModel model,
+  JavaPrimitiveSchemaTemplateModel(String name, ResolvedSchema resolvedSchema, String identifier, String packageName, JavaOpenApiTemplateModel model,
        String... templates) throws GenerationException
   { 
-    super(entity, name, identifier, model, templates);
+    super(name, resolvedSchema, identifier, packageName, model, templates);
     
-    javaType_ = initType(entity);
-    isGenerated_ = entity.getIsGenerated() == null ? false : entity.getIsGenerated();
+    javaType_ = initType(resolvedSchema.getSchema());
+    isGenerated_ = resolvedSchema.isGenerated();
 
     String constructPrefix = null;
-    String getValue = "";
+    String getValuePrefix = "";
+    String getValueSuffix = "";
     
-    Set<String> quotedValues = new HashSet<>(entity.getEnum().size());
-    Set<String> values = new HashSet<>(entity.getEnum().size());
-    Map<String, String> valueMap = new HashMap<>();
+    List<String> enumList = resolvedSchema.getSchema().getEnum();
     
-    for(Object v : entity.getEnum())
+    if(enumList==null || enumList.isEmpty())
     {
-      String value = toSnakeCase(v.toString()).toUpperCase();
-      String quotedValue;
-      
-      if("String".equals(javaType_))
-      {
-        quotedValue = "\"" + v + "\"";
-      }
-      else
-      {
-        quotedValue = v.toString();
-      }
-      
-      quotedValues.add(quotedValue);
-      values.add(value);
-      valueMap.put(value, quotedValue);
+      enumValues_ = ImmutableSet.of();
+      quotedEnumValues_ = ImmutableSet.of();
+      enumMap_ = ImmutableMap.of();
     }
-    
-    enumValues_ = ImmutableSet.copyOf(values);
-    quotedEnumValues_ = ImmutableSet.copyOf(quotedValues);
-    enumMap_ = ImmutableMap.copyOf(valueMap);
+    else
+    {
+      Set<String> quotedValues = new HashSet<>(enumList.size());
+      Set<String> values = new HashSet<>(enumList.size());
+      Map<String, String> valueMap = new HashMap<>();
+      
+      for(Object v : enumList)
+      {
+        String value = toSnakeCase(v.toString()).toUpperCase();
+        String quotedValue;
+        
+        if("String".equals(javaType_))
+        {
+          quotedValue = "\"" + v + "\"";
+        }
+        else
+        {
+          quotedValue = v.toString();
+        }
+        
+        quotedValues.add(quotedValue);
+        values.add(value);
+        valueMap.put(value, quotedValue);
+      }
+      
+      enumValues_ = ImmutableSet.copyOf(values);
+      quotedEnumValues_ = ImmutableSet.copyOf(quotedValues);
+      enumMap_ = ImmutableMap.copyOf(valueMap);
+    }
     
 //    imports_.add("com.symphony.oss.commons.type.provider.I" + javaType_ + "Provider");
     jsonNodeType_ = "I" + javaType_ + "Provider";
     
     if(enumValues_.isEmpty())
     {
-      type_ = entity.getIsGenerated() ? 
+      type_ = resolvedSchema.isGenerated() ? 
           getCamelCapitalizedName() : 
             javaType_;
-      primitiveType_ = entity.getIsGenerated() ? javaType_ : null;
-      if(entity.getIsGenerated())
+      primitiveType_ = resolvedSchema.isGenerated() ? javaType_ : null;
+      if(resolvedSchema.isGenerated())
       {
         constructPrefix = "new " + getType() + "(";
-        getValue = ".getValue()";
+        getValueSuffix = ".getValue()";
       }
-      minimum_ = getBigInteger(entity, "minimum");
-      maximum_ = getBigInteger(entity, "maximum");
-      exclusiveMinimum_ = getBoolean(entity, "exclusiveMinimum");
-      exclusiveMaximum_ = getBoolean(entity, "exclusiveMaximum");
+      minimum_ = getBigInteger(resolvedSchema.getSchema(), "minimum");
+      maximum_ = getBigInteger(resolvedSchema.getSchema(), "maximum");
+      exclusiveMinimum_ = getBoolean(resolvedSchema.getSchema(), "exclusiveMinimum");
+      exclusiveMaximum_ = getBoolean(resolvedSchema.getSchema(), "exclusiveMaximum");
       
     }
     else
     {
-      type_ = entity.getIsGenerated() ? getCamelCapitalizedName() : null;
+      type_ = resolvedSchema.isGenerated() ? getCamelCapitalizedName() : null;
       primitiveType_ = javaType_;
       constructPrefix = type_ + ".valueOf(";
-      getValue = ".getValue()";
+      getValueSuffix = ".getValue()";
       minimum_ = null;
       maximum_ = null;
       exclusiveMinimum_ = false;
       exclusiveMaximum_ = false;
     }
     
-    CanonAttributes attr = entity.getXCanonAttributes();
+    CanonAttributes attr = resolvedSchema.getSchema().getXCanonAttributes();
     
     if(attr != null)
     {
       externalPackage_ = attr.getJsonObject().getString("javaExternalPackage", "");
       externalType_ = attr.getJsonObject().getString("javaExternalType", null);
-      constructPrefix = getCamelCapitalizedName() + "Builder.newInstance(";
+      constructPrefix = getCamelCapitalizedName() + "Builder.build(";
+      getValuePrefix = getCamelCapitalizedName() + "Builder.to" + javaType_ + "(";
+      getValueSuffix = ")";
     }
     else
     {
@@ -172,9 +188,11 @@ JavaSchemaTemplateModel>
       constructPrefix_ = constructPrefix;
       constructSuffix_ = ")";
     }
-    getValue_ = getValue;
+    getValuePrefix_ = getValuePrefix;
+    getValueSuffix_ = getValueSuffix;
   }
 
+  @Override
   public boolean getIsGenerated()
   {
     return isGenerated_;
@@ -387,9 +405,14 @@ JavaSchemaTemplateModel>
     return constructSuffix_;
   }
 
-  public String getGetValue()
+  public String getGetValueSuffix()
   {
-    return getValue_;
+    return getValueSuffix_;
+  }
+
+  public String getGetValuePrefix()
+  {
+    return getValuePrefix_;
   }
 
   @Override

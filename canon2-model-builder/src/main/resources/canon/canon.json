@@ -98,7 +98,8 @@
         "description": "An element to hold various schemas for the specification.",
         "type": "object",
         "x-canon-facade": true,
-        "properties": {
+        "additionalProperties": {
+          "$ref": "#/components/schemas/Schema"
         }
       },
       
@@ -196,32 +197,59 @@
         "description": "A collection of schema properties (fields).",
         "type": "object",
         "x-canon-facade": true,
-        "properties": {
+        "additionalProperties": {
+          "$ref": "#/components/schemas/Schema"
         }
       },
       
-      "ResolvedModel": {
+      "ResolvedOpenApiObject": {
         "description": "An OpenApi model with all references resolved.",
         "type": "object",
-        "x-canon-extends": {
-          "$ref": "#/components/schemas/OpenApiObject"
-        },
         "x-canon-facade": true,
         "builderFacade": true,
         "properties": {
+          "openApiObject": {
+            "$ref": "#/components/schemas/OpenApiObject"
+          },
+          "components": {
+            "$ref": "#/components/schemas/ResolvedComponentsObject"
+          }
+        }
+      },
+      
+      "ResolvedComponentsObject": {
+        "description": "An element to hold various resolved schemas for the specification.",
+        "type": "object",
+        "x-canon-facade": true,
+        "properties": {
+          "schemas": {
+            "$ref": "#/components/schemas/ResolvedSchemasObject"
+          }
+        }
+      },
+      
+      "ResolvedSchemasObject": {
+        "description": "An element to hold various schemas for the specification.",
+        "type": "object",
+        "x-canon-facade": true,
+        "additionalProperties": {
+          "$ref": "#/components/schemas/ResolvedSchema"
         }
       },
             
       "ResolvedSchema": {
         "description": "A data type definition with all references resolved.",
         "type": "object",
-        "x-canon-extends": {
-          "$ref": "#/components/schemas/Schema"
-        },
         "x-canon-facade": true,
         "properties": {
-          "resolvedItems": {
+          "schema": {
             "$ref": "#/components/schemas/Schema"
+          },
+          "resolvedItems": {
+            "$ref": "#/components/schemas/ResolvedSchema"
+          },
+          "resolvedExtends": {
+            "$ref": "#/components/schemas/ResolvedSchema"
           },
           "resolvedProperties": {
             "$ref": "#/components/schemas/ResolvedPropertiesObject"
@@ -234,6 +262,9 @@
           },
           "name": {
             "type": "string"
+          },
+          "uri": {
+            "type": "string"
           }
         }
       },
@@ -243,7 +274,8 @@
         "type": "object",
         "x-canon-facade": true,
         "builderFacade": true,
-        "properties": {
+        "additionalProperties": {
+          "$ref": "#/components/schemas/ResolvedSchema"
         }
       },
       

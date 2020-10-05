@@ -60,9 +60,9 @@ import org.apache.maven.project.MavenProject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.symphony.oss.canon2.generator.CanonGenerationContext;
+import com.symphony.oss.canon2.generator.ICanonGenerator;
 import com.symphony.oss.canon2.model.GenerationException;
-import com.symphony.oss.canon2.parser.CanonContext;
-import com.symphony.oss.canon2.parser.ICanonGenerator;
 
 @Mojo( name = "generate-sources", defaultPhase = LifecyclePhase.GENERATE_SOURCES )
 public class GenerateMojo extends AbstractMojo
@@ -177,7 +177,7 @@ public class GenerateMojo extends AbstractMojo
       
       
       
-      CanonContext.Builder builder = new CanonContext.Builder()
+      CanonGenerationContext.Builder builder = new CanonGenerationContext.Builder()
           .withTargetDir(targetDir)
           .withProformaDir(proformaTargetDir)
           .withCopyDir(proformaCopyDir);
@@ -205,7 +205,7 @@ public class GenerateMojo extends AbstractMojo
         copyArtefact(builder, ta.getGroupId(), ta.getArtifactId(), ta.getVersion(), ta.getPrefix(), null);
       }
       
-      CanonContext generationContext = builder.build();
+      CanonGenerationContext generationContext = builder.build();
       
       for(File src : srcList)
       {
@@ -221,7 +221,7 @@ public class GenerateMojo extends AbstractMojo
 //      System.err.println("\n\n\n\n\n\n\n=============================================================================================================================================================\n");
 //      generationContext.addTemplateDirectory(canonDir);
       
-      generationContext.generate();
+//      generationContext.generate();
     }
     catch (GenerationException e)
     {
@@ -249,7 +249,7 @@ public class GenerateMojo extends AbstractMojo
     }
   }
 
-  private void copyArtefact(CanonContext.Builder generationContext, String artefactGroupId, String artefactArtifactId, String artefactVersion, String artefactPrefix, String artefactSuffix) throws MojoExecutionException
+  private void copyArtefact(CanonGenerationContext.Builder generationContext, String artefactGroupId, String artefactArtifactId, String artefactVersion, String artefactPrefix, String artefactSuffix) throws MojoExecutionException
   {
     try
     {

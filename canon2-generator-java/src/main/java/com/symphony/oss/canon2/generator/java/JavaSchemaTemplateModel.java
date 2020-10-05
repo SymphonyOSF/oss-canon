@@ -26,8 +26,9 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
 
+import com.symphony.oss.canon2.generator.SchemaTemplateModel;
+import com.symphony.oss.canon2.model.ResolvedOpenApiObject;
 import com.symphony.oss.canon2.model.ResolvedSchema;
-import com.symphony.oss.canon2.parser.SchemaTemplateModel;
 
 public abstract class JavaSchemaTemplateModel
 extends SchemaTemplateModel<
@@ -49,10 +50,15 @@ implements IJavaTemplateModel
 
   private final boolean generateFacade_;
   
-  JavaSchemaTemplateModel(ResolvedSchema entity, String name, String identifier, JavaOpenApiTemplateModel model,
+  JavaSchemaTemplateModel(String name, ResolvedSchema resolvedSchema, String identifier, String packageName, JavaOpenApiTemplateModel model,
       String... templates)
   {
-    super(entity, name, identifier, model, templates);
+    super(name, resolvedSchema, identifier, model, templates);
+
+    if(isExternal() && resolvedSchema.isGenerated())
+    {
+      imports_.add(packageName + "." + getCamelCapitalizedName());
+    }
     
 //    for(String importString : IMPORTS )
 //    {
@@ -64,7 +70,7 @@ implements IJavaTemplateModel
 //      imports_.add(importString);
 //    }
     
-    generateFacade_ = entity.getXCanonFacade() == null ? false : entity.getXCanonFacade();
+    generateFacade_ = resolvedSchema.getSchema().getXCanonFacade() == null ? false : resolvedSchema.getSchema().getXCanonFacade();
   }
   
   public List<String> sortImports(List<String> list)
@@ -172,5 +178,11 @@ implements IJavaTemplateModel
   public boolean getExclusiveMaximum()
   {
     return false;
+  }
+  
+  @Override
+  public boolean getIsGenerated()
+  {
+    return true;
   }
 }

@@ -20,14 +20,11 @@ package com.symphony.oss.canon2.generator.java;
 
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 
+import com.symphony.oss.canon2.generator.IObjectSchemaTemplateModel;
 import com.symphony.oss.canon2.model.GenerationException;
 import com.symphony.oss.canon2.model.ResolvedSchema;
-import com.symphony.oss.canon2.parser.IObjectSchemaTemplateModel;
 
 public class JavaObjectSchemaTemplateModel extends JavaSchemaTemplateModel
 implements IObjectSchemaTemplateModel<
@@ -48,26 +45,43 @@ JavaFieldTemplateModel
 //    "com.symphony.oss.canon2.runtime.java.ModelRegistry"
 //  };
   
-  private List<JavaFieldTemplateModel> fields_ = new LinkedList<>();
   private Map<String, JavaFieldTemplateModel> fieldMap_ = new HashMap<>();
-  private List<JavaSchemaTemplateModel> innerClasses_ = new LinkedList<>();
+  private Map<String, JavaSchemaTemplateModel> innerClassMap_ = new HashMap<>();
   private boolean hasLimits_;
+  private JavaSchemaTemplateModel superType_;
   
-  JavaObjectSchemaTemplateModel(ResolvedSchema entity, String name, String identifier, JavaOpenApiTemplateModel model,
-      JavaGeneratorModelContext modelContext, String... temaplates) throws GenerationException
+  
+  JavaObjectSchemaTemplateModel(String name, ResolvedSchema resolvedSchema, String identifier, String packageName, JavaOpenApiTemplateModel model,
+      String... temaplates) throws GenerationException
   {
-    super(entity, name, identifier, model, temaplates);
+    super(name, resolvedSchema, identifier, packageName, model, temaplates);
+  }
+  
+  @Override
+  public void setExtends(JavaSchemaTemplateModel extendsSchema)
+  {
+    superType_ = extendsSchema;
+  }
+
+  @Override
+  public void addField(String name, JavaFieldTemplateModel field)
+  {
+    fieldMap_.put(name, field);
+    imports_.addAll(field.imports_);
     
-    for(Entry<String, ResolvedSchema> entry : entity.getInnerClasses().getResolvedProperties().entrySet())
-    {
-      System.err.println(entry);
-      JavaSchemaTemplateModel innerClass = modelContext.generateSchema(entry.getValue(), model, entry.getKey(), modelContext, false);
-      innerClasses_.add(innerClass);
-//      innerClasses_.add(modelContext.generateObjectSchema(model, entry.getValue(), entry.getKey(), false));
-    }
-    
-//    if(entity.getSuperSchema() == null)
-    //imports_.add("com.symphony.oss.canon2.runtime.java.ObjectEntity");
+    if(field.getHasLimits())
+      hasLimits_ = true;
+  }
+
+  @Override
+  public void addInnerClass(String name, JavaSchemaTemplateModel innerClass)
+  {
+    innerClassMap_.put(name, innerClass);
+  }
+
+  public JavaSchemaTemplateModel getSuperType()
+  {
+    return superType_;
   }
 
   @Override
@@ -82,9 +96,9 @@ JavaFieldTemplateModel
     return "com.symphony.oss.canon.json.model.JsonObject";
   }
 
-  public List<JavaSchemaTemplateModel> getInnerClasses()
+  public Collection<JavaSchemaTemplateModel> getInnerClasses()
   {
-    return innerClasses_;
+    return innerClassMap_.values();
   }
   
   @Override
@@ -105,31 +119,31 @@ JavaFieldTemplateModel
     return this;
   }
 
-  @Override
-  public void addField(JavaFieldTemplateModel field) throws GenerationException
-  {
-//    if(fieldMap_.put(field.getCamelName(), field) != null)
-//    {
-//      throw new GenerationException("Duplicate field name \"" + field.getCamelName() + "\" in " + getName());
-//    }
-    fields_.add(field);
-    
-    imports_.addAll(field.imports_);
-    
-    if(field.getHasLimits())
-      hasLimits_ = true;
-  }
+//  @Override
+//  public void addField(JavaFieldTemplateModel field) throws GenerationException
+//  {
+////    if(fieldMap_.put(field.getCamelName(), field) != null)
+////    {
+////      throw new GenerationException("Duplicate field name \"" + field.getCamelName() + "\" in " + getName());
+////    }
+//    fields_.add(field);
+//    
+//    imports_.addAll(field.imports_);
+//    
+//    if(field.getHasLimits())
+//      hasLimits_ = true;
+//  }
   
   @Override
   public Collection<JavaFieldTemplateModel> getFields()
   {
-    return fields_;
+    return fieldMap_.values();
   }
 
   @Override
   public String toString()
   {
-    return "JavaObjectSchemaTemplateModel [fields_=" + fields_ +  "]";
+    return "JavaObjectSchemaTemplateModel [fields_=" + fieldMap_.keySet() +  "]";
   }
 
   @Override

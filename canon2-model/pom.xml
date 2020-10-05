@@ -34,6 +34,11 @@
     
     <dependency>
       <groupId>${project.groupId}</groupId>
+      <artifactId>canon2-json</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>${project.groupId}</groupId>
       <artifactId>canon2-runtime-java</artifactId>
       <version>${project.version}</version>
     </dependency>
@@ -93,93 +98,14 @@
     </dependency> -->
     
     <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-api</artifactId>
+    </dependency>
+    
+    <dependency>
         <groupId>junit</groupId>
         <artifactId>junit</artifactId>
         <scope>test</scope>
       </dependency>
   </dependencies>
-  
-  <properties>
-    <canon.generator.groupid>${project.groupId}</canon.generator.groupid>
-    <canon.generator.java>canon2-generator-java</canon.generator.java>
-    <canon.generator.version>${project.version}</canon.generator.version>
-  </properties>
-  
-  <build>
-    <plugins>
-      <plugin>
-        <groupId>com.symphony.oss.canon</groupId>
-        <artifactId>canon2-maven-plugin</artifactId>
-        <version>${project.version}</version>
-        <executions>
-          <execution>
-            <phase>generate-sources</phase>
-            <goals>
-              <goal>generate-sources</goal>
-            </goals>
-            <configuration>
-              <srcDirs>src/main/resources/canon</srcDirs>
-              <!-- <proformaCopyDir>target/proforma-copy</proformaCopyDir> -->
-              
-              <generatorArtifacts>
-                <generatorArtifact>
-                  <groupId>${canon.generator.groupid}</groupId>
-                  <artifactId>${canon.generator.java}</artifactId>
-                  <version>${canon.generator.version}</version>
-                </generatorArtifact>
-              </generatorArtifacts>
-            </configuration>
-          </execution>
-        </executions>
-      </plugin>
-    </plugins>
-    <pluginManagement>
-      <plugins>
-        <!--This plugin's configuration is used to store Eclipse m2e settings only. It has no influence on the Maven build itself.-->
-        <plugin>
-          <groupId>org.eclipse.m2e</groupId>
-          <artifactId>lifecycle-mapping</artifactId>
-          <version>1.0.0</version>
-          <configuration>
-            <lifecycleMappingMetadata>
-              <pluginExecutions>
-                <pluginExecution>
-                  <pluginExecutionFilter>
-                    <groupId>
-                      com.symphony.oss.canon
-                    </groupId>
-                    <artifactId>
-                      canon-maven-plugin
-                    </artifactId>
-                    <versionRange>
-                      [0.0.1-SNAPSHOT,)
-                    </versionRange>
-                    <goals>
-                      <goal>generate-sources</goal>
-                    </goals>
-                  </pluginExecutionFilter>
-                  <action>
-                    <ignore />
-                  </action>
-                </pluginExecution>
-                <pluginExecution>
-                  <pluginExecutionFilter>
-                    <groupId>com.symphony.oss.canon</groupId>
-                    <artifactId>canon2-maven-plugin</artifactId>
-                    <versionRange>[0.3.0-SNAPSHOT,)</versionRange>
-                    <goals>
-                      <goal>generate-sources</goal>
-                    </goals>
-                  </pluginExecutionFilter>
-                  <action>
-                    <ignore></ignore>
-                  </action>
-                </pluginExecution>
-              </pluginExecutions>
-            </lifecycleMappingMetadata>
-          </configuration>
-        </plugin>
-      </plugins>
-    </pluginManagement>
-  </build>
 </project>

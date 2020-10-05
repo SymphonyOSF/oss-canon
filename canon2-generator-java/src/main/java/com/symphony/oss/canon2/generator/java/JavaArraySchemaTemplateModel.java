@@ -6,11 +6,12 @@
 
 package com.symphony.oss.canon2.generator.java;
 
+import java.math.BigInteger;
+
+import com.symphony.oss.canon2.generator.IArraySchemaTemplateModel;
 import com.symphony.oss.canon2.model.CanonCardinality;
-import com.symphony.oss.canon2.model.GenerationException;
 import com.symphony.oss.canon2.model.ResolvedSchema;
 import com.symphony.oss.canon2.model.SchemaType;
-import com.symphony.oss.canon2.parser.IArraySchemaTemplateModel;
 import com.symphony.oss.commons.fault.CodingFault;
 
 public class JavaArraySchemaTemplateModel extends JavaSchemaTemplateModel
@@ -26,28 +27,36 @@ JavaSchemaTemplateModel>
   
   private JavaSchemaTemplateModel elementType_;
   
-  private final CanonCardinality cardinality_;
-
-  private final String type_;
-  private final String copyPrefix_;
-  private final Integer minItems_;
-  private final Integer maxItems_;
-  private final String typeNew_;
+  private final CanonCardinality  cardinality_;
   
-  JavaArraySchemaTemplateModel(ResolvedSchema entity, String name, String identifier, CanonCardinality cardinality, JavaOpenApiTemplateModel model,
-      JavaGeneratorModelContext generatorModelContext, String ...templates) throws GenerationException
+  private String            type_;
+  private String            copyPrefix_;
+  private final BigInteger        minItems_;
+  private final BigInteger        maxItems_;
+  private String            typeNew_;
+  
+  JavaArraySchemaTemplateModel(String name, ResolvedSchema resolvedSchema, String identifier, String packageName, CanonCardinality cardinality, JavaOpenApiTemplateModel model,
+      String ...templates)
   {
-    super(entity, name, identifier, model, templates);
+    super(name, resolvedSchema, identifier, packageName, model, templates);
     
     cardinality_ = cardinality;
     
-//    imports_.add("java.util.List");
+    //generator.generateSchema(resolvedItems, model, "items", resolvedSchema.getSchema().getItemsSchema() == null);
     
-    ResolvedSchema resolvedItems = (ResolvedSchema) entity.getResolvedItems(); // trust me
+
     
-    elementType_ = generatorModelContext.generateSchema(resolvedItems, model, "items", generatorModelContext, entity.getItemsSchema() == null);
+    minItems_ = resolvedSchema.getSchema().getMinItems();
+    maxItems_ = resolvedSchema.getSchema().getMaxItems();
+  }
+
+  @Override
+  public void setElementType(JavaSchemaTemplateModel elementType)
+  {
+    elementType_ = elementType;
+    imports_.addAll(elementType.imports_);
     
-    switch(cardinality)
+    switch(cardinality_)
     {
       case SET:
 //        imports_.add("java.util.Set");
@@ -68,11 +77,8 @@ JavaSchemaTemplateModel>
         break;
         
       default:
-        throw new CodingFault("Unknown cardinality " + cardinality);
+        throw new CodingFault("Unknown cardinality " + cardinality_);
     }
-    
-    minItems_ = entity.getMinItems();
-    maxItems_ = entity.getMaxItems();
   }
 
   @Override
@@ -99,12 +105,12 @@ JavaSchemaTemplateModel>
     return minItems_ != null || maxItems_ != null;
   }
 
-  public Integer getMinItems()
+  public BigInteger getMinItems()
   {
     return minItems_;
   }
 
-  public Integer getMaxItems()
+  public BigInteger getMaxItems()
   {
     return maxItems_;
   }

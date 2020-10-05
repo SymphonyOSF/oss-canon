@@ -1,5 +1,5 @@
-/**
- * GENERATED CODE - DO NOT EDIT OR CHECK IN TO SOURCE CODE CONTROL
+/*
+ *
  *
  * Copyright 2020 Symphony Communication Services, LLC.
  *
@@ -14,84 +14,221 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *
- *----------------------------------------------------------------------------------------------------
- * Generated from
- *    Input source         canon.json
- *    Generator groupId    org.symphonyoss.s2.canon
- *              artifactId canon2-generator-java
- *    Template name        proforma/Object/_.java.ftl
- *    At                   2020-09-16 16:04:42 BST
- *----------------------------------------------------------------------------------------------------
  */
 
 package com.symphony.oss.canon2.model;
 
-import javax.annotation.concurrent.Immutable;
+import java.util.Map;
 
-import com.symphony.oss.canon.json.model.JsonObject;
-import com.symphony.oss.canon2.runtime.java.ModelRegistry;
+import javax.annotation.Nonnull;
 
-
-/**
- * Facade for Object  ResolvedSchema canon
- * Object com.symphony.oss.canon2.generator.java.JavaOpenApiTemplateModel@4df50bcc
- * Generated from JavaObjectSchemaTemplateModel [fields_=[JavaFieldTemplateModel IsGenerated isGenerated, JavaFieldTemplateModel Name name, JavaFieldTemplateModel Schema resolvedItems, JavaFieldTemplateModel ResolvedPropertiesObject resolvedProperties, JavaFieldTemplateModel ResolvedPropertiesObject innerClasses]] at {entity.context.path}
- */
-@Immutable
-public class ResolvedSchema extends ResolvedSchemaEntity implements INamedModelEntity
+public class ResolvedSchema implements IResolvedEntity
 {
-  /**
-   * Constructor from builder.
-   * 
-   * @param builder A mutable builder containing all values.
-   */
-  public ResolvedSchema(AbstractBuilder<?,?> builder)
+  private final String                                    name_;
+  private final String                                    uri_;
+  private final Schema                                    schema_;
+  private final boolean                                   generated_;
+  private final ResolvedSchema.SingletonBuilder           resolvedItemsBuilder_;
+  private final ResolvedSchema.SingletonBuilder           resolvedExtendsBuilder_;
+  private final ResolvedPropertiesObject.SingletonBuilder resolvedPropertiesBuilder_;
+  private final ResolvedPropertiesObject.SingletonBuilder innerClassesBuilder_;
+  private final ResolvedOpenApiObject.SingletonBuilder    openApiObjectBuilder_; 
+  
+  private ResolvedSchema(SingletonBuilder builder)
   {
-    super(builder);
+    name_                       = builder.name_;
+    uri_                        = builder.uri_;
+    schema_                     = builder.schema_;
+    generated_                  = builder.generated_;
+    resolvedItemsBuilder_       = builder.resolvedItemsBuilder_;
+    resolvedExtendsBuilder_     = builder.resolvedExtendsBuilder_;
+    resolvedPropertiesBuilder_  = builder.resolvedPropertiesBuilder_;
+    innerClassesBuilder_        = builder.innerClassesBuilder_;
+    openApiObjectBuilder_       = builder.openApiObjectBuilder_;
   }
   
-  /**
-   * Constructor from serialised form.
-   * 
-   * @param jsonObject An immutable JSON object containing the serialized form of the object.
-   * @param modelRegistry A model registry to use to deserialize any nested objects.
-   */
-  public ResolvedSchema(JsonObject jsonObject, ModelRegistry modelRegistry)
+  public static class SingletonBuilder
   {
-    super(jsonObject, modelRegistry);
-  }
-   
-  /**
-   * Copy constructor.
-   * 
-   * @param other Another instance from which all attributes are to be copied.
-   */
-  public ResolvedSchema(ResolvedSchema other)
-  {
-    super(other);
-  }
-  
-  /**
-   * Abstract builder for ResolvedSchema. If there are sub-classes of this type then their builders sub-class this builder.
-   *
-   * @param <B> The concrete type of the builder, used for fluent methods.
-   * @param <T> The concrete type of the built object.
-   */
-  public static abstract class AbstractBuilder<T extends AbstractBuilder<T,B>, B extends ResolvedSchema> extends ResolvedSchemaEntity.AbstractBuilder<T,B>
-  {
-    protected AbstractBuilder(Class<T> type)
+    String                                    name_;
+    String                                    uri_;
+    Schema                                    schema_;
+    boolean                                   generated_;
+    ResolvedSchema.SingletonBuilder           resolvedItemsBuilder_;
+    ResolvedSchema.SingletonBuilder           resolvedExtendsBuilder_;
+    ResolvedPropertiesObject.SingletonBuilder resolvedPropertiesBuilder_;
+    ResolvedPropertiesObject.SingletonBuilder innerClassesBuilder_;
+    ResolvedOpenApiObject.SingletonBuilder    openApiObjectBuilder_; 
+    ResolvedSchema                            built_;
+
+    public SingletonBuilder()
     {
-      super(type);
+      System.out.println("ResolvedSchema.SingletonBuilder()");
     }
     
-    protected AbstractBuilder(Class<T> type, B initial)
+    public SingletonBuilder withName(String name)
     {
-      super(type, initial);
+      if(built_ != null)
+        throw new IllegalStateException("SingletonBuilder has already been built");
+      
+      name_ = name;
+      
+      return this;
+    }
+    
+    public SingletonBuilder withUri(String uri)
+    {
+      if(built_ != null)
+        throw new IllegalStateException("SingletonBuilder has already been built");
+      
+      uri_ = uri;
+      
+      return this;
+    }
+    
+    public SingletonBuilder withResolvedOpenApiObject(ResolvedOpenApiObject.SingletonBuilder openApiObjectBuilder)
+    {
+      if(built_ != null)
+        throw new IllegalStateException("SingletonBuilder has already been built");
+      
+      openApiObjectBuilder_ = openApiObjectBuilder;
+      
+      return this;
+    }
+    
+    public SingletonBuilder withResolvedItems(ResolvedSchema.SingletonBuilder resolvedItemsBuilder)
+    {
+      if(built_ != null)
+        throw new IllegalStateException("SingletonBuilder has already been built");
+      
+      resolvedItemsBuilder_ = resolvedItemsBuilder;
+      
+      return this;
+    }
+    
+    public SingletonBuilder withResolvedExtends(ResolvedSchema.SingletonBuilder resolvedExtendsBuilder)
+    {
+      if(built_ != null)
+        throw new IllegalStateException("SingletonBuilder has already been built");
+      
+      resolvedExtendsBuilder_ = resolvedExtendsBuilder;
+      
+      return this;
+    }
+    
+    public SingletonBuilder withResolvedProperties(ResolvedPropertiesObject.SingletonBuilder resolvedPropertiesBuilder)
+    {
+      if(built_ != null)
+        throw new IllegalStateException("SingletonBuilder has already been built");
+      
+      resolvedPropertiesBuilder_ = resolvedPropertiesBuilder;
+      
+      return this;
+    }
+    
+    public SingletonBuilder withInnerClasses(ResolvedPropertiesObject.SingletonBuilder innerClassesBuilder)
+    {
+      if(built_ != null)
+        throw new IllegalStateException("SingletonBuilder has already been built");
+      
+      innerClassesBuilder_ = innerClassesBuilder;
+      
+      return this;
+    }
+    
+    public ResolvedSchema build()
+    {
+      System.err.println("ResolvedSchema build() " + this);
+      if(built_ == null)
+      {
+        if(resolvedPropertiesBuilder_ == null)
+          throw new IllegalStateException("resolvedPropertiesBuilder is required");
+        
+        built_ = new ResolvedSchema(this);
+      }
+      
+      return built_;
+    }
+
+    public SingletonBuilder withSchema(Schema schema)
+    {
+      schema_ = schema;
+      
+      return this;
+    }
+
+    public SingletonBuilder withGenerated(boolean generated)
+    {
+      generated_ = generated;
+      
+      return this;
     }
   }
+
+  public String getName()
+  {
+    return name_;
+  }
+
+  public String getUri()
+  {
+    return uri_;
+  }
+
+  public Schema getSchema()
+  {
+    return schema_;
+  }
+
+  public boolean isGenerated()
+  {
+    return generated_;
+  }
+
+  public ResolvedSchema getResolvedItems()
+  {
+    if(resolvedItemsBuilder_ == null)
+      return null;
+    
+    return resolvedItemsBuilder_.build();
+  }
+
+  public ResolvedSchema getResolvedExtends()
+  {
+    if(resolvedExtendsBuilder_ == null)
+      return null;
+    
+    return resolvedExtendsBuilder_.build();
+  }
+
+  public @Nonnull Map<String, ResolvedSchema> getResolvedProperties()
+  {
+    if(resolvedPropertiesBuilder_ == null)
+      return null;
+    
+    return resolvedPropertiesBuilder_.build().getResolvedProperties();
+  }
+
+  public ResolvedPropertiesObject getInnerClasses()
+  {
+    if(innerClassesBuilder_ == null)
+      return null;
+    
+    return innerClassesBuilder_.build();
+  }
+
+  @Override
+  public ResolvedOpenApiObject getResolvedOpenApiObject()
+  {
+    if(openApiObjectBuilder_ == null)
+      return null;
+    
+    return openApiObjectBuilder_.build();
+  }
+
+  public void validate(CanonModelContext modelContext)
+  {
+    // TODO Auto-generated method stub
+    
+  }
+  
 }
-/*----------------------------------------------------------------------------------------------------
- * End of template proforma/Object/_.java.ftl
- * End of code generation
- *------------------------------------------------------------------------------------------------- */

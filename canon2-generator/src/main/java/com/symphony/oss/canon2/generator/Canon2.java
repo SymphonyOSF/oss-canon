@@ -21,7 +21,7 @@
  * under the License.
  */
 
-package com.symphony.oss.canon2.parser;
+package com.symphony.oss.canon2.generator;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -301,7 +301,7 @@ public class Canon2
     try
     {
       Class<?> generatorClass = Class.forName(parts[0]);
-      ICanonGenerator generator = (ICanonGenerator)generatorClass.newInstance();
+      ICanonGenerator<?,?,?,?,?,?,?> generator = (ICanonGenerator<?,?,?,?,?,?,?>)generatorClass.newInstance();
       File f = new File(parts[1]);
       
       if (!f.exists())
@@ -352,7 +352,7 @@ public class Canon2
         System.out.println(f.getAbsolutePath());
     }
     
-    CanonContext.Builder builder = new CanonContext.Builder()
+    CanonGenerationContext.Builder builder = new CanonGenerationContext.Builder()
         .withTargetDir(outputDir_ + "/target/generated-sources")
         .withProformaDir(outputDir_ + "/target/proforma-sources")
         .withCopyDir(outputDir_ + "/target/proforma-copy")
@@ -360,7 +360,7 @@ public class Canon2
         ;
     
     
-    for(ICanonGenerator generator : generators_)
+    for(ICanonGenerator<?,?,?,?,?,?,?> generator : generators_)
       builder.withGenerator(generator);
     
     if (verbose_)
@@ -369,14 +369,12 @@ public class Canon2
     }
 
     
-    CanonContext generationContext = builder.build();
+    CanonGenerationContext generationContext = builder.build();
     
     for (File f : files)
       generationContext.addGenerationSource(f);
 
     generationContext.process();
-    
-    generationContext.generate();
   }
 
   private void error(String format, Object... args)

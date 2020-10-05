@@ -1,5 +1,5 @@
-<#if entity.superSchema??>
-<#assign superClassName = entity.superSchema.baseSchema.type/>
+<#if entity.superType??>
+<#assign superClassName = entity.superType.type/>
 <#else>
 <#assign superClassName = "ObjectEntity">
 </#if>
@@ -15,17 +15,39 @@
   "com.symphony.oss.canon2.runtime.java.ObjectEntity",
   "com.symphony.oss.canon.json.model.JsonObject"
   ]>
-<#list entity.fields as field>
+<#macro importType schema>
   <#assign imports = imports + [
     "com.symphony.oss.canon.json.model.JsonDomNode",
-    "${field.typeSchema.fullyQualifiedJsonNodeType}"
+    "${schema.fullyQualifiedJsonNodeType}"
   ]>
-  <#if field.typeSchema.schemaType == "ARRAY" && field.typeSchema.cardinality == "LIST">
+  <#if schema.externalType??>
     <#assign imports = imports + [
-      "java.util.List",
-      "java.util.LinkedList",
-      "com.google.common.collect.ImmutableList"
+      "${schema.externalPackage}.${schema.externalType}"
     ]>
+  </#if>
+</#macro>
+<#macro importArrayJsonType schema>
+  <#switch schema.schemaType>
+    <#case "ARRAY">
+      <#if schema.cardinality == "LIST">
+        <#assign imports = imports + [
+          "java.util.List",
+          "java.util.LinkedList",
+          "com.google.common.collect.ImmutableList"
+        ]>
+      </#if>
+      <@importArrayJsonType schema.elementType />
+      <#break>
+    <#case "OBJECT">
+      <#break>
+    <#default>
+    <@importType schema />
+  </#switch>
+</#macro>
+<#list entity.fields as field>
+  <@importType field.typeSchema />
+  <#if field.typeSchema.schemaType == "ARRAY">
+    <@importArrayJsonType field.typeSchema />
   </#if>
 </#list>
 
@@ -153,10 +175,10 @@ ${indent}
 ${indent}    Set<String> keySet = new HashSet<>(super.getCanonUnknownKeys());
 ${indent}    
 <#list entity.fields as field>
-${indent}    if(keySet.remove("${field.name}"))
+${indent}    if(keySet.remove("${field.quotedName}"))
 ${indent}    {
-${indent}      JsonDomNode  node = jsonObject.get("${field.name}");
-  <@generateCreateFieldFromJsonDomNode "      " "node" field.typeSchema field.name "_${field.camelName}_" ""/>
+${indent}      JsonDomNode  node = jsonObject.get("${field.quotedName}");
+  <@generateCreateFieldFromJsonDomNode "      " "node" field.typeSchema field.quotedName "_${field.camelName}_" ""/>
 ${indent}    }
 ${indent}    else
 ${indent}    {
@@ -441,10 +463,10 @@ ${indent}    {
 ${indent}      super.withValues(jsonObject, ignoreValidation);
 </#if>    
 <#list entity.fields as field>
-${indent}      if(jsonObject.containsKey("${field.camelName}"))
+${indent}      if(jsonObject.containsKey("${field.quotedName}"))
 ${indent}      {
-${indent}        JsonDomNode  node = jsonObject.get("${field.camelName}");
-  <@generateCreateFieldFromJsonDomNode "        " "node" field.typeSchema field.name "_${field.camelName}_" "if(!modelRegistry.getParserValidation().isIgnoreInvalidAttributes())"/>
+${indent}        JsonDomNode  node = jsonObject.get("${field.quotedName}");
+  <@generateCreateFieldFromJsonDomNode "        " "node" field.typeSchema field.quotedName "_${field.camelName}_" "if(!modelRegistry.getParserValidation().isIgnoreInvalidAttributes())"/>
 ${indent}      }
 </#list>
 ${indent}      return super.withValues(jsonObject, modelRegistry);
@@ -490,7 +512,13 @@ ${indent}    {
 ${indent}      _${field.camelName}_ = ${field.typeSchema.copyPrefix}value${field.typeSchema.copySuffix};
 ${indent}      return self();
 ${indent}    }
-    <#if field.typeSchema.schemaType == "ARRAY" && field.typeSchema.elementType.isGenerated>
+// field.typeSchema.schemaType ${field.typeSchema.schemaType}
+<#if field.typeSchema.schemaType == "ARRAY">
+// field.typeSchema.elementType.class ${field.typeSchema.elementType.class}
+// field.typeSchema.elementType.name ${field.typeSchema.elementType.name}
+// field.typeSchema.elementType.isGenerated ${field.typeSchema.elementType.isGenerated?then('Y', 'N')}
+</#if>
+    <#if field.typeSchema.schemaType == "ARRAY" && field.typeSchema.elementType.schemaType == "PRIMITIVE" && field.typeSchema.elementType.primitiveType??>
 ${indent}  
 ${indent}    /**
 ${indent}     * Set the value of the ${field.name} attribute.
@@ -551,7 +579,7 @@ ${indent}      super.populateJson(builder);
 ${indent}  
 ${indent}      if(get${field.camelCapitalizedName}() != null)
 ${indent}      {
-        <@generateCreateJsonDomNodeFromField "          " field.typeSchema field.name "get${field.camelCapitalizedName}()" "builder"/>
+        <@generateCreateJsonDomNodeFromField "          " field.typeSchema field.quotedName "get${field.camelCapitalizedName}()" "builder"/>
 ${indent}      }
   </#list>
 ${indent}    }

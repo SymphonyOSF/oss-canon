@@ -102,6 +102,18 @@ public class ComponentsObject extends ComponentsObjectEntity
       super(type, initial);
     }
   }
+
+  public ResolvedComponentsObject.SingletonBuilder link(ResolvedOpenApiObject.SingletonBuilder openApiObjectBuilder, CanonModelContext modelContext, SourceContext sourceContext, String uri) throws GenerationException
+  {
+    ResolvedComponentsObject.SingletonBuilder builder = new ResolvedComponentsObject.SingletonBuilder();
+    
+    if(getSchemas() != null)
+    {
+      builder.withSchemas(getSchemas().link(openApiObjectBuilder, modelContext, sourceContext, uri + "/schemas"));
+    }
+    
+    return builder;
+  }
 }
 /*----------------------------------------------------------------------------------------------------
  * End of template proforma/Object/_.java.ftl

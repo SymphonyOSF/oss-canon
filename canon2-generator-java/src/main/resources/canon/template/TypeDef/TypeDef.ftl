@@ -63,7 +63,7 @@ public ${classModifier}class ${className} extends TypeDef implements ${entity.js
     }
     else
     {
-      throw new IllegalArgumentException("value} must be an instance of ${entity.jsonNodeType} not " + node.getClass().getName());
+      throw new IllegalArgumentException("value must be an instance of ${entity.jsonNodeType} not " + node.getClass().getName());
     }
   }
   

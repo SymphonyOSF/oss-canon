@@ -20,7 +20,7 @@ package com.symphony.oss.canon2.generator.java;
 
 import java.util.Set;
 
-import com.symphony.oss.canon2.parser.ITemplateModel;
+import com.symphony.oss.canon2.generator.ITemplateModel;
 
 public interface IJavaTemplateModel extends ITemplateModel<
 IJavaTemplateModel,

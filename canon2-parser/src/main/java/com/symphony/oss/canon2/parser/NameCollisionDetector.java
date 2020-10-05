@@ -18,6 +18,8 @@
 
 package com.symphony.oss.canon2.parser;
 
+import java.net.URL;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
@@ -29,8 +31,13 @@ import java.util.Set;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.google.common.collect.ImmutableMap;
+import com.symphony.oss.canon2.model.GenerationException;
+import com.symphony.oss.canon2.model.ICanonContext;
 import com.symphony.oss.canon2.model.IModelContext;
-import com.symphony.oss.canon2.model.ResolvedSchema;
+import com.symphony.oss.canon2.model.ReferenceObject;
+import com.symphony.oss.canon2.model.Schema;
+import com.symphony.oss.canon2.model.SchemaInfo;
 
 class NameCollisionDetector
 {
@@ -45,15 +52,40 @@ class NameCollisionDetector
   private Set<List<String>> collisionSet_ = new HashSet<>();
   private Set<String>       invalidSet_   = new HashSet<>();
   
-  NameCollisionDetector(ICanonGenerator<?,?,?,?,?,?,?> generator, Map<String, ResolvedSchema> schemas, boolean isSchema)
+//  public static NameCollisionDetector create(ICanonContext canonContext, URL url, ICanonGenerator<?,?,?,?,?,?,?> generator, Map<String, Object> schemaOrReferences, boolean isSchema) throws GenerationException
+//  {
+//    Map<String, Schema> schemas = new HashMap<>(schemaOrReferences.size());
+//    
+//    for(Entry<String, Object> entry : schemaOrReferences.entrySet())
+//    {
+//      if(entry.getValue() instanceof Schema)
+//      {
+//        schemas.put(entry.getKey(), (Schema)entry.getValue());
+//      }
+//      else if(entry.getValue() instanceof ReferenceObject)
+//      {
+//        ReferenceObject ref = (ReferenceObject)entry.getValue();
+//        
+//        schemas.put(entry.getKey(), canonContext.getSchemaInfo(ref.getAbsoluteUri(url)).getSchema());
+//      }
+//      else
+//      {
+//        throw new GenerationException("Unexpected schema or reference " + entry.getValue().getClass());
+//      }
+//    }
+//    
+//    return new NameCollisionDetector(generator, schemas, isSchema);
+//  }
+  
+  NameCollisionDetector(ICanonGenerator<?,?,?,?,?,?,?> generator, List<SchemaInfo> schemas, boolean isSchema)
   {
     int debug=1;
     Map<String, List<String>>   camelMap  = new HashMap<>();
     
-    for(Entry<String, ResolvedSchema> entry : schemas.entrySet())
+    for(SchemaInfo schemaInfo : schemas)
     {
       boolean initial   = isSchema;
-      String  name      = generator.getIdentifierName(entry.getKey(), entry.getValue());
+      String  name      = generator.getIdentifierName(schemaInfo.getName(), schemaInfo.getSchema());
       
       List<String> list = camelMap.get(name);
       
@@ -62,7 +94,7 @@ class NameCollisionDetector
         list = new LinkedList<>();
         camelMap.put(name, list);
       }
-      list.add("\"" + entry.getKey() + "\" at " + entry.getValue().getSourceLocation());
+      list.add("\"" + schemaInfo.getName() + "\" at " + schemaInfo.getSchema().getSourceLocation());
       
       for(char c : name.toCharArray())
       {
@@ -72,7 +104,7 @@ class NameCollisionDetector
         
         if(!check)
         {
-          invalidSet_.add((isSchema ? "Schema" : "Attribute") + " \"" + entry.getKey() + "\" at " + entry.getValue().getSourceLocation() + " (maps to " + name + ")");
+          invalidSet_.add((isSchema ? "Schema" : "Attribute") + " \"" + schemaInfo.getName() + "\" at " + schemaInfo.getSchema().getSourceLocation() + " (maps to " + name + ")");
           break;
         }
       }
@@ -84,7 +116,7 @@ class NameCollisionDetector
           try
           {
             Class.forName(packageName + "." +  name);
-            invalidSet_.add("Schema \"" + entry.getKey() + "\" at " + entry.getValue().getSourceLocation() + " (maps to " + name + ")");
+            invalidSet_.add("Schema \"" + schemaInfo.getName() + "\" at " + schemaInfo.getSchema().getSourceLocation() + " (maps to " + name + ")");
             break;
           }
           catch (ClassNotFoundException e)

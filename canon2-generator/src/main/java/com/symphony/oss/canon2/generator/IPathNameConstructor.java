@@ -21,26 +21,12 @@
  * under the License.
  */
 
-package com.symphony.oss.canon2.model;
+package com.symphony.oss.canon2.generator;
 
-import java.util.HashMap;
-import java.util.Map;
+import com.symphony.oss.canon2.model.GenerationException;
 
-class SchemaResolver
+@FunctionalInterface
+public interface IPathNameConstructor<T extends ITemplateModel<?,?,?>>
 {
-  private Map<String, ResolvedSchema>        schemaResolution_   = new HashMap<>();
-
-  synchronized ResolvedSchema resolve(OpenApiObject openApiObject, ICanonContext generationContext, IModelContext modelContext, Schema schema, String name, boolean isGenerated)
-  {
-    
-    ResolvedSchema resolvedSchema = schemaResolution_.get(name);
-    
-    if(resolvedSchema == null)
-    {
-      resolvedSchema = schema.resolve(openApiObject, this, generationContext, modelContext, isGenerated, name);
-      schemaResolution_.put(name, resolvedSchema);
-    }
-    
-    return resolvedSchema;
-  }
+  String  constructFile(String templateName, T entity) throws GenerationException;
 }

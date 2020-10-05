@@ -51,14 +51,22 @@ public class ReferenceObject extends ReferenceObjectEntity
     private final URI            uri_;
     private final String         path_;
     private final String         fragment_;
-    private final URL            baseUrl_;
+    private final URI            baseUri_;
+    private final String         name_;
     
-    public UriParts(URI uri, String path, String fragment, URL baseUrl)
+    public UriParts(URI uri, String path, String fragment, URI baseUri)
     {
       uri_ = uri;
       path_ = path;
       fragment_ = fragment;
-      baseUrl_ = baseUrl;
+      baseUri_ = baseUri;
+      
+      int i = fragment_.lastIndexOf('/');
+      
+      if(i == -1)
+        name_ = fragment_;
+      else
+        name_ = fragment_.substring(i+1);
     }
   }
   
@@ -118,7 +126,7 @@ public class ReferenceObject extends ReferenceObjectEntity
       
       if(i== -1)
       {
-        return new UriParts(uri, uri.getPath(), uri.getFragment(), uri.toURL());
+        return new UriParts(uri, uri.getPath(), uri.getFragment(), uri);
       }
       else if(i == 0)
       {
@@ -127,17 +135,17 @@ public class ReferenceObject extends ReferenceObjectEntity
       }
       else
       {
-        try
-        {
-          return new UriParts(uri, uri.getPath(), uri.getFragment(), new URL(s.substring(0, i)));
-        }
-        catch (MalformedURLException e)
-        {
-          throw new IllegalStateException("Invalid base URL \"%s\"" + s.substring(0, i), e);
-        }
+//        try
+//        {
+          return new UriParts(uri, uri.getPath(), uri.getFragment(), new URI(s.substring(0, i)));
+//        }
+//        catch (MalformedURLException e)
+//        {
+//          throw new IllegalStateException("Invalid base URL \"%s\"" + s.substring(0, i), e);
+//        }
       }
     }
-    catch (URISyntaxException | MalformedURLException e)
+    catch (URISyntaxException e)
     {
       throw new IllegalStateException("Invalid base URI \"%s\"" + text, e);
     }
@@ -148,14 +156,27 @@ public class ReferenceObject extends ReferenceObjectEntity
     return uriParts_;
   }
   
-  public URL getBaseUrl()
+  public URI getBaseUri()
   {
-    return uriParts_.baseUrl_;
+    return uriParts_.baseUri_;
   }
 
   public String getFragment()
   {
     return uriParts_.fragment_;
+  }
+
+  public String getName()
+  {
+    return uriParts_.name_;
+  }
+
+  public String getAbsoluteUri(URL url)
+  {
+    if(uriParts_.baseUri_ == null)
+      return url + "#" + uriParts_.fragment_;
+    else
+      return get$ref();
   }
   
   /**
@@ -175,6 +196,14 @@ public class ReferenceObject extends ReferenceObjectEntity
     {
       super(type, initial);
     }
+  }
+
+  public URL getAbsoluteBaseUrl(URL context) throws MalformedURLException
+  {
+    if(getBaseUri() == null)
+      return context;
+    
+    return new URL(context, getBaseUri().toString());
   }
 }
 /*----------------------------------------------------------------------------------------------------

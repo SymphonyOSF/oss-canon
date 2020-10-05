@@ -29,6 +29,7 @@ package com.symphony.oss.canon2.model;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import javax.annotation.concurrent.Immutable;
 
@@ -126,6 +127,19 @@ public class SchemasObject extends SchemasObjectEntity
     {
       super(type, initial);
     }
+  }
+
+  public ResolvedPropertiesObject.SingletonBuilder link(ResolvedOpenApiObject.SingletonBuilder openApiObjectBuilder, CanonModelContext modelContext, SourceContext sourceContext, String uri) throws GenerationException
+  {
+    ResolvedPropertiesObject.SingletonBuilder builder = new ResolvedPropertiesObject.SingletonBuilder();
+    
+    for(Entry<String, Schema> entry : getSchemas().entrySet())
+    {
+      builder.with(entry.getKey(),
+          modelContext.link(openApiObjectBuilder, sourceContext, entry.getKey(), uri + "/" + entry.getKey(), entry.getValue(), true));
+    }
+    
+    return builder;
   }
 }
 /*----------------------------------------------------------------------------------------------------

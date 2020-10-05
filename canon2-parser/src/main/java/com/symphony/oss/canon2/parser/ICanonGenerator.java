@@ -22,6 +22,7 @@ import java.io.File;
 import java.util.Set;
 
 import com.symphony.oss.canon.json.model.JsonObject;
+import com.symphony.oss.canon2.model.ICanonContext;
 import com.symphony.oss.canon2.model.IModelContext;
 import com.symphony.oss.canon2.model.INamedModelEntity;
 
@@ -44,7 +45,7 @@ F extends IFieldTemplateModel<T,M,S>>
   
   ICanonGenerator<T,M,S,O,A,P,F> withTemplateDir(File templateDir);
 
-  IGeneratorModelContext<T,M,S,O,A,P,F> createModelContext(IModelContext context, JsonObject generatorConfig);
+  IGeneratorModelContext<T,M,S,O,A,P,F> createModelContext(ICanonContext canonContext, IModelContext context, JsonObject generatorConfig);
 
   String getLanguage();
 

@@ -41,7 +41,7 @@ import org.slf4j.LoggerFactory;
 import com.symphony.oss.canon2.model.GenerationException;
 import com.symphony.oss.canon2.model.IModelContext;
 import com.symphony.oss.canon2.model.OpenApiObject;
-import com.symphony.oss.canon2.model.ResolvedModel;
+import com.symphony.oss.canon2.model.SchemaInfo;
 import com.symphony.oss.canon2.runtime.java.ModelRegistry;
 
 class ModelContext implements IModelContext
@@ -52,7 +52,6 @@ class ModelContext implements IModelContext
   private final URL                   url_;
   private final CanonContext     generationContext_;
   private OpenApiObject        model_;
-  private ResolvedModel        resolvedModel_;
   private final Map<String, String>   uriMap_;
   
   private final String          inputSource_;
@@ -61,6 +60,9 @@ class ModelContext implements IModelContext
   private final boolean         referencedModel_;
   private Reader                reader_;
   private List<String>          errors_ = new LinkedList<>();
+
+
+  private List<SchemaInfo> schemas_ = new LinkedList<>();
   
   
 
@@ -168,16 +170,6 @@ class ModelContext implements IModelContext
     return model_;
   }
 
-  ResolvedModel getResolvedModel()
-  {
-    return resolvedModel_;
-  }
-
-  void setResolvedModel(ResolvedModel resolvedModel)
-  {
-    resolvedModel_ = resolvedModel;
-  }
-
   /**
    * @return True iff this is a referenced model, and generation should not be performed.
    */
@@ -281,5 +273,17 @@ class ModelContext implements IModelContext
   {
     log_.error(error);
     errors_.add(error);
+  }
+
+  @Override
+  public List<SchemaInfo> getSchemas()
+  {
+    return schemas_;
+  }
+
+  @Override
+  public void addSchema(SchemaInfo schema)
+  {
+    schemas_.add(schema);
   }
 }

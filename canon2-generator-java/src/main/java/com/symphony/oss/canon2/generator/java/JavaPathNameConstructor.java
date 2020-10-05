@@ -26,8 +26,8 @@ package com.symphony.oss.canon2.generator.java;
 import java.io.File;
 import java.util.regex.Matcher;
 
+import com.symphony.oss.canon2.generator.PathNameConstructor;
 import com.symphony.oss.canon2.model.GenerationException;
-import com.symphony.oss.canon2.parser.PathNameConstructor;
 
 class JavaPathNameConstructor extends PathNameConstructor<IJavaTemplateModel>
 {

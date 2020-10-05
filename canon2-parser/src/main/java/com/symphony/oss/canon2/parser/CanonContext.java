@@ -50,9 +50,8 @@ import com.symphony.oss.canon2.model.GenerationException;
 import com.symphony.oss.canon2.model.ICanonContext;
 import com.symphony.oss.canon2.model.IModelContext;
 import com.symphony.oss.canon2.model.OpenApiObject;
-import com.symphony.oss.canon2.model.ResolvedModel;
-import com.symphony.oss.canon2.model.ResolvedPropertiesObject;
 import com.symphony.oss.canon2.model.ResolvedSchema;
+import com.symphony.oss.canon2.model.SchemaInfo;
 import com.symphony.oss.canon2.runtime.java.ModelRegistry;
 import com.symphony.oss.commons.fault.CodingFault;
 import com.symphony.oss.commons.fluent.BaseAbstractBuilder;
@@ -90,7 +89,8 @@ public class CanonContext implements ICanonContext
   private Deque<ModelContext>                  validateQueue_      = new LinkedList<>();
   private Deque<ModelContext>                  generateQueue_      = new LinkedList<>();
   private Map<URL, OpenApiObject>              modelMap_           = new HashMap<>();
-
+  private Map<String, ResolvedSchema.Builder>  schemaMap_          = new HashMap<>();
+  
   private CanonContext(AbstractBuilder<?,?> builder)
   {
     log_.info("GenerationContext created");
@@ -247,6 +247,21 @@ public class CanonContext implements ICanonContext
   }
 
   @Override
+  public void resolve(SchemaInfo info)
+  {
+    if(schemaMap_.put(info.getUri(), info) == null)
+    {
+      info.resolve(this);
+    }
+  }
+  
+  @Override
+  public SchemaInfo getSchemaInfo(String absoluteUri)
+  {
+    return schemaMap_.get(absoluteUri);
+  }
+
+  @Override
   public ModelRegistry getModelRegistry()
   {
     return modelRegistry_;
@@ -339,9 +354,7 @@ public class CanonContext implements ICanonContext
   void validate(ModelContext context) throws GenerationException
   {
     OpenApiObject model = context.getModel();
-    ResolvedModel resolvedModel = model.resolve(this, context);
-    
-    context.setResolvedModel(resolvedModel);
+    model.resolve(this, context);
     
     model.validate(this);
     
@@ -628,9 +641,9 @@ public class CanonContext implements ICanonContext
     {
       JsonObject generatorConfig = context.getModel().getXCanonGenerators().getJsonObject().getRequiredObject(generator.getLanguage());
     
-      IGeneratorModelContext<T,M,S,O,A,P,F> generatorModelContext = generator.createModelContext(context, generatorConfig);
+      IGeneratorModelContext<T,M,S,O,A,P,F> generatorModelContext = generator.createModelContext(CanonContext.this, context, generatorConfig);
     
-      M templateModel = generatorModelContext.generateModel(context.getResolvedModel(), generatorModelContext);
+      M templateModel = generatorModelContext.generateModel();
       
       if(context.printErrors())
         throw new GenerationException("Generation failed for " + context.getInputSourceName());

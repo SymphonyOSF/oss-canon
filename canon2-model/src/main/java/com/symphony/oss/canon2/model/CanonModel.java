@@ -39,17 +39,14 @@ public class CanonModel
   {
     CanonGeneratorConfig.FACTORY,
     PropertiesObject.FACTORY,
-    ResolvedModel.FACTORY,
     SchemasObject.FACTORY,
     InfoObject.FACTORY,
     OpenApiObject.FACTORY,
     Schema.FACTORY,
     CanonAttributes.FACTORY,
     ComponentsObject.FACTORY,
-    ResolvedPropertiesObject.FACTORY,
     ReferenceObject.FACTORY,
-    PathsObject.FACTORY,
-    ResolvedSchema.FACTORY
+    PathsObject.FACTORY
   };
     
   private CanonModel()

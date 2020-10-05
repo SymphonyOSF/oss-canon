@@ -27,6 +27,9 @@
 
 package com.symphony.oss.canon2.model;
 
+import java.net.MalformedURLException;
+import java.net.URI;
+import java.net.URL;
 import java.util.Map.Entry;
 
 import javax.annotation.Nullable;
@@ -34,6 +37,7 @@ import javax.annotation.concurrent.Immutable;
 
 import com.symphony.oss.canon.json.model.JsonDomNode;
 import com.symphony.oss.canon.json.model.JsonObject;
+import com.symphony.oss.canon2.model.ResolvedSchema.SingletonBuilder;
 import com.symphony.oss.canon2.runtime.java.Entity;
 import com.symphony.oss.canon2.runtime.java.ModelRegistry;
 
@@ -44,7 +48,7 @@ import com.symphony.oss.canon2.runtime.java.ModelRegistry;
  * Generated from JavaObjectSchemaTemplateModel [fields_=[JavaFieldTemplateModel MaxItems maxItems, JavaFieldTemplateModel Format format, JavaFieldTemplateModel CanonCardinality xCanonCardinality, JavaFieldTemplateModel XCanonIdentifier xCanonIdentifier, JavaFieldTemplateModel Type type, JavaFieldTemplateModel XCanonFacade xCanonFacade, JavaFieldTemplateModel Enum enum, JavaFieldTemplateModel Required required, JavaFieldTemplateModel MinItems minItems, JavaFieldTemplateModel CanonAttributes xCanonAttributes, JavaFieldTemplateModel Maximum maximum, JavaFieldTemplateModel Minimum minimum, JavaFieldTemplateModel PropertiesObject properties]] at {entity.context.path}
  */
 @Immutable
-public class Schema extends SchemaEntity
+public class Schema extends SchemaEntity implements INamedModelEntity
 {
   //private final ImmutableMap<String, ISchema> fields_;
   private final Schema          itemsSchema_;
@@ -117,37 +121,37 @@ public class Schema extends SchemaEntity
   {
     return getJsonObject().getString("x-canon-" + language + "-identifier", null);
   }
-
-  public ResolvedSchema resolve(OpenApiObject openApiObject, SchemaResolver resolver, ICanonContext generationContext, IModelContext modelContext, boolean isGenerated, String name)
+  
+  //public void resolve(CanonModelContext generationContext, SchemaInfo schemaInfo)
+  
+  public void link(ResolvedOpenApiObject.SingletonBuilder openApiObjectBuilder, ResolvedSchema.SingletonBuilder builder, CanonModelContext modelContext, SourceContext sourceContext, String uri,  boolean generated) throws GenerationException
   {
-    ResolvedSchema.Builder builder = new ResolvedSchema.Builder()
-        .withValues(getJsonObject(), generationContext.getModelRegistry())
-        //.withNameCollision(nameCollision)
-        .withIsGenerated(isGenerated)
-        .withName(name)
+    ResolvedPropertiesObject.SingletonBuilder  resolvedPropertiesBuilder = new ResolvedPropertiesObject.SingletonBuilder();
+    ResolvedPropertiesObject.SingletonBuilder  innerClassesBuilder       = new ResolvedPropertiesObject.SingletonBuilder();
+    builder
+        .withSchema(this)
+        .withResolvedProperties(resolvedPropertiesBuilder)
+        .withInnerClasses( innerClassesBuilder)
+        .withGenerated(generated)
         ;
     
-    PropertiesObject                 propertiesObject  = getProperties();
+    PropertiesObject propertiesObject  = getProperties();
     
     if(propertiesObject != null)
     {
-      ResolvedPropertiesObject.Builder  propertiesBuilder = new ResolvedPropertiesObject.Builder();
-      ResolvedPropertiesObject.Builder  innerClassesBuilder = new ResolvedPropertiesObject.Builder();
-      
       for(Entry<String, Object> entry : propertiesObject.getProperties().entrySet())
       {
         if(entry.getValue() instanceof Schema)
         {
           Schema schema = (Schema)entry.getValue();
           
-          ResolvedSchema resolvedProperty = resolver.resolve(openApiObject, generationContext, modelContext, schema, entry.getKey(), false);
+          ResolvedSchema.SingletonBuilder resolvedProperty = modelContext.link(openApiObjectBuilder, sourceContext, entry.getKey(), uri + "/" + entry.getKey(), schema, isGenerated(schema.getType()));
+          resolvedPropertiesBuilder.with(entry.getKey(), resolvedProperty);
           
-          propertiesBuilder.withProperty(entry.getKey(), resolvedProperty);
-          
-          switch(resolvedProperty.getType())
+          switch(schema.getType())
           {
             case "object":
-              innerClassesBuilder.withProperty(entry.getKey(), resolvedProperty);
+              innerClassesBuilder.with(entry.getKey(), resolvedProperty);
               break;
           }
         }
@@ -155,77 +159,131 @@ public class Schema extends SchemaEntity
         {
           ReferenceObject ref = (ReferenceObject)entry.getValue();
           
-          String refName = ref.getFragment();
-          int i = refName.lastIndexOf('/');
-          
-          if(i != -1)
-            refName = refName.substring(i+1);
-          
           try
           {
-            Schema schema = fetchSchema(openApiObject, generationContext, ref);
-            
-            ResolvedSchema resolvedSchema = resolver.resolve(openApiObject, generationContext, modelContext, schema, refName, true);
-            
-            propertiesBuilder.withProperty(entry.getKey(), resolvedSchema);
+//            Schema schema = fetchSchema(modelContext, sourceContext, ref);
+//            ResolvedSchema.SingletonBuilder resolvedProperty = modelContext.link(sourceContext, sourceContext.getSchemaUri(entry.getKey()), schema, false); // isGenerated was true here in the previous version, what does this actually mean?
+            resolvedPropertiesBuilder.with(entry.getKey(), fetchSchema(openApiObjectBuilder, modelContext, sourceContext, ref, true));
           }
           catch(GenerationException e)
           {
-            modelContext.error("Invalid schema reference \"" + ref.get$ref() + "\" at " + getSourceLocation());
+            sourceContext.error("Invalid schema reference \"" + ref.get$ref() + "\" at " + getSourceLocation());
           }
         }
       }
-      
-      builder
-        .withResolvedProperties(propertiesBuilder.build())
-        .withInnerClasses(innerClassesBuilder.build())
-        ;
     }
 
+    if(itemsSchema_ != null)
+    { 
+      builder.withResolvedItems(
+          modelContext.link(openApiObjectBuilder, sourceContext, "items BRUCE 001", uri + "/items", itemsSchema_, isGenerated(itemsSchema_.getType()))
+          //itemsSchema_.link(modelContext, sourceContext, uri + "/items", true)
+          );
+    }
+    else if(itemsReference_ != null)
+    {
+//      Schema schema = fetchSchema(modelContext, sourceContext, itemsReference_, uri, "items", false);
+      builder.withResolvedItems(fetchSchema(openApiObjectBuilder, modelContext, sourceContext, itemsReference_, true));
+      
+//          modelContext.link(sourceContext, uri + "/items", schema, generated)
+//          schema.link(modelContext, sourceContext, itemsReference_.getAbsoluteUri(sourceContext.getUrl()), false));
+    }
     
-    Schema schema = itemsSchema_;
-    boolean itemsIsGenerated = false;
+//    Schema schema = itemsSchema_;
+//    boolean itemsIsGenerated = false;
+//    String  itemsName = "items";
+//    String itemsPath = schemaInfo.getName() + "/items";
+//    
+//    if(schema == null && itemsReference_ != null)
+//    {
+//      try
+//      {
+//        schema = fetchSchema(schemaInfo.getOpenApiObject(), generationContext, itemsReference_);
+//        itemsIsGenerated = true;
+//        itemsName = itemsPath = itemsReference_.getName();
+//      }
+//      catch(GenerationException e)
+//      {
+//        schemaInfo.getModelContext().error("Invalid schema reference \"" + itemsReference_.get$ref() + "\" at " + getSourceLocation());
+//      }
+//    }
+//    
+//    if(schema != null)
+//    {
+//      SchemaInfo itemsInfo = new SchemaInfo(schemaInfo, itemsName, itemsPath, schema, itemsIsGenerated);
+//      
+//      generationContext.resolve(itemsInfo);
+//      
+//      schemaInfo.setItems(itemsInfo);
+//      
+////      builder.withResolvedItems(resolver.resolve(openApiObject, generationContext, modelContext, schema, null, itemsIsGenerated));
+//    }
     
-    if(schema == null && itemsReference_ != null)
+    if(getXCanonExtends() != null)
     {
       try
       {
-        schema = fetchSchema(openApiObject, generationContext, itemsReference_);
-        itemsIsGenerated = true;
+        //Schema extendsSchema = fetchSchema(modelContext, sourceContext, getXCanonExtends());
+        builder.withResolvedExtends(fetchSchema(openApiObjectBuilder, modelContext, sourceContext, getXCanonExtends(), true));
       }
       catch(GenerationException e)
       {
-        modelContext.error("Invalid schema reference \"" + itemsReference_.get$ref() + "\" at " + getSourceLocation());
+        sourceContext.error("Invalid schema reference \"" + getXCanonExtends().get$ref() + "\" at " + getSourceLocation());
       }
     }
-    
-    if(schema != null)
-    {
-      builder.withResolvedItems(resolver.resolve(openApiObject, generationContext, modelContext, schema, null, itemsIsGenerated));
-    }
-    
-    builder.withXCanonIdentifier(getXCanonIdentifier());
-    builder.withXCanonFacade(getXCanonFacade());
-    
-    return builder.build();
   }
   
+  private boolean isGenerated(String type)
+  {
+    // TODO: replace with type enum
+    return "object".equals(type) || "array".equals(type);
+    
+  }
+
   public String getSourceLocation()
   {
     return "unknown location";
   }
 
-  private Schema fetchSchema(OpenApiObject openApiObject, ICanonContext generationContext, ReferenceObject ref) throws GenerationException
+  private SingletonBuilder fetchSchema(ResolvedOpenApiObject.SingletonBuilder openApiObjectBuilder, CanonModelContext modelContext, SourceContext sourceContext, ReferenceObject ref,
+      boolean generated) throws GenerationException
   {
-    if(ref.getBaseUrl() == null)
+    Schema schema;
+    String uri;
+    boolean external;
+    
+    URI x = ref.getBaseUri();
+    if(ref.getBaseUri() == null)
     {
-      return openApiObject.get(ref.getFragment(), Schema.class);
+      try
+      {
+        schema = sourceContext.getModel().get(ref.getFragment(), Schema.class);
+      }
+      catch(IllegalArgumentException e)
+      {
+        throw new GenerationException("No such schema \"" + ref.getFragment() + "\"");
+      }
+      uri = sourceContext.getUrl() + ref.getFragment();
     }
     else
     {
-      IModelContext refGenContext = generationContext.getReferencedModel(ref.getBaseUrl());
-      return refGenContext.getModel().get(ref.getFragment(), Schema.class);
+      try
+      {
+        URL url = new URL(sourceContext.getUrl(), ref.getBaseUri().toString());
+        
+        SourceContext refGenContext = modelContext.getReferencedModel(url);
+        schema = refGenContext.getModel().get(ref.getFragment(), Schema.class);
+        uri = ref.get$ref();
+        external = true;
+        openApiObjectBuilder = refGenContext.getResolvedOpenApiObjectBuilder();
+      }
+      catch (MalformedURLException e)
+      {
+        throw new GenerationException(e);
+      }
     }
+    
+    return modelContext.link(openApiObjectBuilder, sourceContext, ref.getName(), uri, schema, generated);
   }
 
 //  @Override
@@ -277,30 +335,35 @@ public class Schema extends SchemaEntity
     return itemsReference_;
   }
 
-  public void validate(ICanonContext generationContext)
+  public void fetchReferences(CanonModelContext generationContext, SourceContext sourceContext) throws GenerationException
   {
-    // TODO Auto-generated method stub
-    
-  }
-
-  public void fetchReferences(ICanonContext generationContext) throws GenerationException
-  {
-    PropertiesObject propertiesObject = getProperties();
-    
-    if(propertiesObject != null)
+    try
     {
-      for(Entry<String, Object> entry : propertiesObject.getProperties().entrySet())
+      PropertiesObject propertiesObject = getProperties();
+      
+      if(propertiesObject != null)
       {
-        if(entry.getValue() instanceof ReferenceObject)
+        for(Entry<String, Object> entry : propertiesObject.getProperties().entrySet())
         {
-          generationContext.addReferencedModel(((ReferenceObject)entry.getValue()).getBaseUrl());
+          if(entry.getValue() instanceof ReferenceObject)
+          {
+            
+            generationContext.addReferencedModel(((ReferenceObject)entry.getValue()).getAbsoluteBaseUrl(sourceContext.getUrl()));
+          }
         }
       }
+      
+      if(itemsReference_ != null)
+      {
+        generationContext.addReferencedModel((itemsReference_).getAbsoluteBaseUrl(sourceContext.getUrl()));
+//        URL url = new URL(sourceContext.getUrl(), itemsReference_.getBaseUri().toString());
+//        
+//        generationContext.addReferencedModel(url);
+      }
     }
-    
-    if(itemsReference_ != null)
+    catch(MalformedURLException e)
     {
-      generationContext.addReferencedModel(itemsReference_.getBaseUrl());
+      throw new GenerationException(e);
     }
   }
   
@@ -321,6 +384,16 @@ public class Schema extends SchemaEntity
     {
       super(type, initial);
     }
+  }
+
+  /**
+   * Return true if this schema is an enum.
+   * 
+   * @return true if this schema is an enum.
+   */
+  public boolean isEnum()
+  {
+    return getEnum() != null && !getEnum().isEmpty();
   }
 }
 /*----------------------------------------------------------------------------------------------------

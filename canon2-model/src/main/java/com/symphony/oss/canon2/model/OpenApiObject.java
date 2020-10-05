@@ -27,14 +27,13 @@
 
 package com.symphony.oss.canon2.model;
 
-import java.util.Map.Entry;
-
 import javax.annotation.Nullable;
 import javax.annotation.concurrent.Immutable;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.google.common.collect.ImmutableMap;
 import com.symphony.oss.canon.json.model.JsonObject;
 import com.symphony.oss.canon2.runtime.java.Entity;
 import com.symphony.oss.canon2.runtime.java.ModelRegistry;
@@ -108,7 +107,7 @@ public class OpenApiObject extends OpenApiObjectEntity implements INamedModelEnt
     throw new IllegalArgumentException("No path element " + parts[index]);
   }
 
-  public void fetchReferences(ICanonContext generationContext) throws GenerationException
+  public void fetchReferences(CanonModelContext generationContext, SourceContext sourceContext) throws GenerationException
   {
     log_.info("fetchReferences");
     
@@ -116,46 +115,55 @@ public class OpenApiObject extends OpenApiObjectEntity implements INamedModelEnt
     
     for(Schema schema : schemas.getSchemas().values())
     {
-      schema.fetchReferences(generationContext);
+      schema.fetchReferences(generationContext, sourceContext);
     }
   }
 
-  public ResolvedModel resolve(ICanonContext generationContext, IModelContext modelContext)
+  public void link(ResolvedOpenApiObject.SingletonBuilder builder, CanonModelContext modelContext, SourceContext sourceContext, String uri) throws GenerationException
   {
-    log_.info("resolve model");
+    log_.info("link model");
     
-    ResolvedModel.Builder builder = new ResolvedModel.Builder()
-        .withValues(getJsonObject(), generationContext.getModelRegistry());
-    
-    // dodge canon1 bugs
-
-    builder.withXCanonId(getXCanonId());
-    builder.withXCanonVersion(getXCanonVersion());
-    builder.withXCanonGenerators(getXCanonGenerators());
-    
-    
-    SchemasObject schemas = getComponents().getSchemas();
-    SchemaResolver resolver = new SchemaResolver();
-    
-    for(Entry<String, Schema> entry : schemas.getSchemas().entrySet())
+    if(getComponents() != null)
     {
-      builder.withResolvedSchema(entry.getKey(), resolver.resolve(this, generationContext, modelContext, entry.getValue(), entry.getKey(), true));
-    }
-    
-    return builder.build();
-  }
-
-  public void validate(ICanonContext generationContext)
-  {
-    log_.info("validate model");
-    
-    SchemasObject schemas = getComponents().getSchemas();
-    
-    for(Schema schema : schemas.getSchemas().values())
-    {
-      schema.validate(generationContext);
+      builder.withComponents(getComponents().link(builder, modelContext, sourceContext, uri + "/components"));
     }
   }
+
+//  public void resolve(CanonModelContext modellContext, SourceContext sourceContext)
+//  {
+//    log_.info("resolve model");
+//    
+////    ResolvedModel.Builder builder = new ResolvedModel.Builder()
+////        .withValues(getJsonObject(), generationContext.getModelRegistry());
+////    
+////    // dodge canon1 bugs
+////
+////    builder.withXCanonId(getXCanonId());
+////    builder.withXCanonVersion(getXCanonVersion());
+////    builder.withXCanonGenerators(getXCanonGenerators());
+//    
+//    List<SchemaInfo>  modelInfo   = new LinkedList<>();
+//    SchemasObject     schemas     = getComponents().getSchemas();
+//    boolean           isGenerated = true;
+////    SchemaResolver resolver = new SchemaResolver();
+//    
+//    for(Entry<String, Schema> entry : schemas.getSchemas().entrySet())
+//    {
+//      String      name    = entry.getKey();
+//      Schema      schema  = entry.getValue();
+//      SchemaInfo  info    = new SchemaInfo(this, sourceContext, name, name, schema, isGenerated);
+//      
+//      modellContext.resolve(info);
+//      
+//      sourceContext.addSchema(info);
+//      
+//      //builder.withResolvedSchema(entry.getKey(), resolver.resolve(this, generationContext, modelContext, entry.getValue(), entry.getKey(), true));
+//    }
+//    
+//    //return builder.build();
+//  }
+
+
   
   /**
    * Abstract builder for OpenApiObject. If there are sub-classes of this type then their builders sub-class this builder.
@@ -174,6 +182,11 @@ public class OpenApiObject extends OpenApiObjectEntity implements INamedModelEnt
     {
       super(type, initial);
     }
+  }
+
+  public ImmutableMap<String, Schema> getSchemas()
+  {
+    return getComponents().getSchemas().getSchemas();
   }
 }
 /*----------------------------------------------------------------------------------------------------

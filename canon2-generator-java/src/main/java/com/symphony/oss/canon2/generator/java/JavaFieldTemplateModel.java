@@ -9,8 +9,8 @@ package com.symphony.oss.canon2.generator.java;
 import java.util.Set;
 import java.util.TreeSet;
 
+import com.symphony.oss.canon2.generator.FieldTemplateModel;
 import com.symphony.oss.canon2.model.ResolvedSchema;
-import com.symphony.oss.canon2.parser.FieldTemplateModel;
 
 public class JavaFieldTemplateModel extends FieldTemplateModel<
 IJavaTemplateModel,
@@ -20,13 +20,18 @@ implements IJavaTemplateModel
 {
   Set<String> imports_ = new TreeSet<>();
   
-  public JavaFieldTemplateModel(ResolvedSchema entity, String name, String identifier, JavaOpenApiTemplateModel model,
+  public JavaFieldTemplateModel(String name, ResolvedSchema resolvedSchema, String identifier, JavaOpenApiTemplateModel model,
       JavaSchemaTemplateModel typeSchema, boolean required,
       String... temaplates)
   {
-    super(name, identifier, model, typeSchema, required, temaplates);
+    super(name, resolvedSchema, identifier, model, typeSchema, required, temaplates);
     
     imports_.addAll(typeSchema.getImports());
+    
+    if(model != typeSchema.getModel())
+    {
+      System.err.println("EXTERNAL");
+    }
   }
 
   @Override
@@ -57,5 +62,11 @@ implements IJavaTemplateModel
   public String toString()
   {
     return "JavaFieldTemplateModel " + getTypeSchema().getCamelCapitalizedName() + " " + getCamelName();
+  }
+  
+  @Override
+  public boolean getIsGenerated()
+  {
+    return getTypeSchema().getIsGenerated();
   }
 }

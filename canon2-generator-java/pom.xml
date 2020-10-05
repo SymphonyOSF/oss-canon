@@ -27,9 +27,35 @@
   
   <dependencies>
     <dependency>
-      <groupId>com.symphony.oss.canon</groupId>
-      <artifactId>canon2-parser</artifactId>
+      <groupId>${project.groupId}</groupId>
+      <artifactId>canon2-json</artifactId>
       <version>${project.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>${project.groupId}</groupId>
+      <artifactId>canon2-model</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>com.symphony.oss.canon</groupId>
+      <artifactId>canon2-generator</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+    
+    <dependency>
+      <groupId>com.symphony.oss.commons</groupId>
+      <artifactId>commons-core</artifactId>
+      <version>${oss.commons.version}</version>
+    </dependency>
+    
+    <dependency>
+       <groupId>com.google.guava</groupId>
+       <artifactId>guava</artifactId>
+    </dependency>
+    
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-api</artifactId>
     </dependency>
   </dependencies>
 </project>

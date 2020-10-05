@@ -18,7 +18,7 @@
 
 package com.symphony.oss.canon2.parser;
 
-import com.symphony.oss.canon2.model.ResolvedSchema;
+import com.symphony.oss.canon2.model.SchemaInfo;
 import com.symphony.oss.canon2.model.SchemaType;
 
 /**
@@ -37,11 +37,11 @@ S extends ISchemaTemplateModel<T,M,S>
 {
   private final SchemaType schemaType_;
   
-  public SchemaTemplateModel(ResolvedSchema entity, String name, String identifier, M model, String... templates)
+  public SchemaTemplateModel(SchemaInfo schemaInfo, String name, String identifier, M model, String... templates)
   {
     super(name, identifier, model, templates);
     
-    schemaType_ = SchemaType.valueOf(entity.getType().toUpperCase());
+    schemaType_ = SchemaType.valueOf(schemaInfo.getSchema().getType().toUpperCase());
   }
 
   public SchemaType getSchemaType()

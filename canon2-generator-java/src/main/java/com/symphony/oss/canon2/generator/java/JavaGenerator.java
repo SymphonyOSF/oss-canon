@@ -18,14 +18,23 @@
 
 package com.symphony.oss.canon2.generator.java;
 
+import java.util.Map;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.symphony.oss.canon.json.model.JsonObject;
-import com.symphony.oss.canon2.model.IModelContext;
+import com.symphony.oss.canon2.generator.CanonGenerator;
+import com.symphony.oss.canon2.generator.IPathNameConstructor;
+import com.symphony.oss.canon2.model.CanonCardinality;
+import com.symphony.oss.canon2.model.GenerationException;
 import com.symphony.oss.canon2.model.INamedModelEntity;
-import com.symphony.oss.canon2.parser.CanonGenerator;
-import com.symphony.oss.canon2.parser.IPathNameConstructor;
+import com.symphony.oss.canon2.model.IResolvedEntity;
+import com.symphony.oss.canon2.model.OpenApiObject;
+import com.symphony.oss.canon2.model.ResolvedOpenApiObject;
+import com.symphony.oss.canon2.model.ResolvedSchema;
+import com.symphony.oss.canon2.model.SourceContext;
+
 
 public class JavaGenerator extends CanonGenerator<
 IJavaTemplateModel, JavaOpenApiTemplateModel,
@@ -39,7 +48,7 @@ JavaFieldTemplateModel
   private static Logger log_ = LoggerFactory.getLogger(JavaGenerator.class);
   
   // IDs in the model
-  static final String          GEN_PACKAGE                  = "genPackage";
+  private static final String          GEN_PACKAGE                  = "genPackage";
   static final String LANGUAGE                       = "java";
 
   // IDs of generated attributes
@@ -48,10 +57,7 @@ JavaFieldTemplateModel
   static final String IMPORTS                      = PREFIX + "Imports";
   static final String CLASS_NAME                   = PREFIX + "ClassName";
   static final String GENERATED_BUILDER_CLASS_NAME = PREFIX + "GeneratedBuilderClassName";
-  
-  private IPathNameConstructor templatePathBuilder_;
-  private IPathNameConstructor proformaPathBuilder_;
-  
+
   /**
    * Constructor.
    */
@@ -92,12 +98,44 @@ JavaFieldTemplateModel
 //    });
   }
 
-  @Override
-  public JavaGeneratorModelContext createModelContext(IModelContext context, JsonObject generatorConfig)
+//  @Override
+//  public JavaGeneratorModelContext createModelContext(ICanonContext canonContext, IModelContext context, JsonObject generatorConfig)
+//  {
+//    return new JavaGeneratorModelContext(this, canonContext, context, generatorConfig);
+//  }
+
+  public String getJavaGenerationPackage(SourceContext sourceContext)
   {
-    return new JavaGeneratorModelContext(this, context, generatorConfig);
+    return getJavaGenerationPackage(sourceContext.getModel());
+  }
+  
+
+
+  public String getJavaGenerationPackage(OpenApiObject model)
+  {
+    JsonObject config = getConfig(model);
+    
+    if(config == null)
+      return getDefaultGenerationPackage(model);
+    
+    return config.getString(JavaGenerator.GEN_PACKAGE, model.getXCanonId());
   }
 
+  private String getDefaultGenerationPackage(OpenApiObject model)
+  {
+    String defaultGenerationPackage = model.getXCanonId();
+    
+    if(defaultGenerationPackage == null)
+      return "canon.generated";
+    
+    return defaultGenerationPackage;
+  }
+
+  public String getJavaGenerationPackage(IResolvedEntity resolvedEntity)
+  {
+    return getJavaGenerationPackage(resolvedEntity.getResolvedOpenApiObject().getModel());
+  }
+  
   @Override
   public String getIdentifierName(String name, INamedModelEntity entity)
   {
@@ -121,6 +159,12 @@ JavaFieldTemplateModel
     return toIdentifier(name);
   }
   
+  @Override
+  public IPathNameConstructor<IJavaTemplateModel> createPathBuilder(SourceContext sourceContext)
+  {
+    return new JavaPathNameConstructor(getJavaGenerationPackage(sourceContext));
+  }
+
   private boolean isValidIdentifier(String identifier)
   {
     if(identifier.length() == 0)
@@ -147,20 +191,20 @@ JavaFieldTemplateModel
     StringBuilder s = new StringBuilder();
     int i=1;
     
-//    if(Character.isJavaIdentifierStart(name.charAt(0)))
-//    {
+    if(Character.isJavaIdentifierStart(name.charAt(0)))
+    {
       s.append(Character.toUpperCase(name.charAt(0)));
-//    }
-//    else
-//    {
-//      s.append('_');
-//    }
+    }
+    else
+    {
+      s.append('_');
+    }
     
     while(i<name.length())
     {
       char c = name.charAt(i++);
    
-      if(c=='_' || c=='-' || !Character.isJavaIdentifierStart(c))
+      if(c=='_' || c=='-' || !Character.isJavaIdentifierPart(c))
       {
         if(i<name.length())
         {
@@ -178,5 +222,62 @@ JavaFieldTemplateModel
     }
     
     return s.toString();
+  }
+
+  @Override
+  public void populateTemplateModel(SourceContext sourceContext, Map<String, Object> map)
+  {
+    
+    map.put(JavaGenerator.GEN_PACKAGE, getJavaGenerationPackage(sourceContext));
+  }
+
+  @Override
+  public JavaOpenApiTemplateModel generateOpenApiObject(SourceContext context, String name, ResolvedOpenApiObject resolvedOpenApiObject, String identifier)
+  {
+    return new JavaOpenApiTemplateModel(context, name, resolvedOpenApiObject, identifier, getJavaGenerationPackage(resolvedOpenApiObject), "Model");
+  }
+
+  
+  @Override
+  public JavaObjectSchemaTemplateModel generateObjectSchema(JavaOpenApiTemplateModel model, String name, ResolvedSchema resolvedSchema, String identifier, boolean isReference) throws GenerationException
+  {
+    if(isReference)
+      return new JavaObjectSchemaTemplateModel(name, resolvedSchema, identifier, getJavaGenerationPackage(resolvedSchema), model);
+    else
+      return new JavaObjectSchemaTemplateModel(name, resolvedSchema, identifier, getJavaGenerationPackage(resolvedSchema), model, "Object");
+  }
+
+  @Override
+  public JavaArraySchemaTemplateModel generateArraySchema(JavaOpenApiTemplateModel model, String name, ResolvedSchema resolvedSchema, String identifier, boolean isReference, CanonCardinality cardinality) throws GenerationException
+  {
+    if(isReference)
+      return new JavaArraySchemaTemplateModel(name, resolvedSchema, identifier, getJavaGenerationPackage(resolvedSchema), cardinality, model);
+    else
+      return new JavaArraySchemaTemplateModel(name, resolvedSchema, identifier, getJavaGenerationPackage(resolvedSchema), cardinality, model,  "Array");
+  }
+
+  @Override
+  public JavaPrimitiveSchemaTemplateModel generatePrimativeSchema(
+      JavaOpenApiTemplateModel model, String name, ResolvedSchema resolvedSchema, String identifier, boolean isReference) throws GenerationException
+  {
+    if(isReference || (!resolvedSchema.isGenerated() && !resolvedSchema.getSchema().isEnum()))
+    {
+      return new JavaPrimitiveSchemaTemplateModel(name, resolvedSchema, identifier, getJavaGenerationPackage(resolvedSchema), model);
+    }
+    else if(!resolvedSchema.getSchema().isEnum())
+    {
+      return new JavaPrimitiveSchemaTemplateModel(name, resolvedSchema, identifier, getJavaGenerationPackage(resolvedSchema), model, "TypeDef");
+    }
+    else
+    {
+      return new JavaPrimitiveSchemaTemplateModel(name, resolvedSchema, identifier, getJavaGenerationPackage(resolvedSchema), model, "Enum");
+    }
+  }
+
+  @Override
+  public JavaFieldTemplateModel generateField(JavaOpenApiTemplateModel model, String name, ResolvedSchema resolvedSchema, String identifier,
+      JavaSchemaTemplateModel typeSchema, boolean required)
+  {
+    return new JavaFieldTemplateModel(name, resolvedSchema, identifier, model, typeSchema, required);
   }
 }

@@ -19,7 +19,9 @@
 package com.symphony.oss.canon2.model;
 
 import java.net.URL;
+import java.util.List;
 
+@Deprecated
 public interface IModelContext
 {
 
@@ -35,5 +37,9 @@ public interface IModelContext
   void error(String error);
 
   String getInputSourceFileName();
+
+  void addSchema(SchemaInfo schema);
+
+  List<SchemaInfo> getSchemas();
 
 }

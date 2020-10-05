@@ -16,7 +16,7 @@ ${indent}${var}.addIfNotNull("${name}", ${source}.getJsonObject());
 ${indent}JsonArray.Builder arrayBuilder = new JsonArray.Builder();
 ${indent}for(${schema.elementType.type} item : ${source})
 ${indent}{
-      <@generateCreateArrayJsonDomNode "${indent}  " schema.elementType "item" "arrayBuilder"/>
+      <@generateCreateArrayJsonDomNode "${indent}  " 1 schema.elementType "item" "arrayBuilder"/>
 ${indent}}
 ${indent}${var}.with("${name}", arrayBuilder.build());
     <#break>
@@ -24,7 +24,7 @@ ${indent}${var}.with("${name}", arrayBuilder.build());
     <#case "NUMBER">
     <#case "INTEGER">
     <#case "BOOLEAN">
-${indent}${var}.addIfNotNull("${name}", ${source}${schema.getValue});
+${indent}${var}.addIfNotNull("${name}", ${schema.getValuePrefix}${source}${schema.getValueSuffix});
     <#break>
     
     <#default>
@@ -33,24 +33,25 @@ UNEXPECTED SCHEMA TYPE ${schema.schemaType} in generateCreateJsonDomNodeFromFiel
   </#switch>
 </#macro>
 
-<#macro generateCreateArrayJsonDomNode indent schema source var>
+<#macro generateCreateArrayJsonDomNode indent cnt schema source var>
   <#switch schema.schemaType>
     <#case "OBJECT">
 ${indent}${var}.with(${source}.getJsonObject());
     <#break>
     <#case "ARRAY">
-${indent}JsonArray.Builder arrayBuilder = new JsonArray.Builder();
+${indent}JsonArray.Builder arrayBuilder${cnt} = new JsonArray.Builder();
 
-${indent}for(${schema.elementType.type} item : ${source})
+${indent}for(${schema.elementType.type} item${cnt} : ${source})
 ${indent}{
-      <@generateCreateArrayJsonDomNode "${indent}  " schema.elementType "item" "arrayBuilder"/>
+      <@generateCreateArrayJsonDomNode "${indent}  " cnt+1 schema.elementType "item${cnt}" "arrayBuilder${cnt}"/>
 ${indent}}
+${indent}${var}.with(arrayBuilder${cnt}.build());
     <#break>
     <#case "STRING">
     <#case "NUMBER">
     <#case "INTEGER">
     <#case "BOOLEAN">
-${indent}${var}.with(${source}${schema.getValue});
+${indent}${var}.with(${schema.getValuePrefix}${source}${schema.getValueSuffix});
     <#break>
     <#default>
 UNEXPECTED SCHEMA TYPE ${schema.schemaType} in generateCreateJsonDomNodeFromField
@@ -70,7 +71,10 @@ UNEXPECTED SCHEMA TYPE ${schema.schemaType} in generateCreateJsonDomNodeFromFiel
  # @param ifValidation  If set then an if statement which guards validation checks
  #----------------------------------------------------------------------------------------------------->
 <#macro generateCreateFieldFromJsonDomNode indent node schema name var ifValidation>
-//HERE0 ${node}
+<@generateCreateFieldFromJsonDomNodePrivate indent 0 node schema name var ifValidation/>
+</#macro>
+
+<#macro generateCreateFieldFromJsonDomNodePrivate indent cnt node schema name var ifValidation>
   <#switch schema.schemaType>
     <#case "OBJECT">
 ${indent}if(${node} instanceof JsonObject)
@@ -86,15 +90,26 @@ ${indent}}
     <#case "ARRAY">
 ${indent}if(${node} instanceof JsonArray)
 ${indent}{
-${indent}List<${schema.elementType.javaType}> itemList = new LinkedList<>();
-${indent}for(JsonDomNode item : (JsonArray)${node})
-${indent}{
-${indent}  ${schema.elementType.javaType} itemValue = null;
-        <@generateCreateFieldFromJsonDomNode "${indent}  " "item" schema.elementType "${name} items" "itemValue" ifValidation/>
-${indent}  itemList.add(itemValue);
-${indent}}
-${indent}${var} = ImmutableList.copyOf(itemList);
-      <@checkItemLimits indent schema name var/>
+      <#if schema.cardinality == "LIST">
+${indent}  ${schema.type} itemList${cnt} = new LinkedList<>();
+${indent}  for(JsonDomNode item${cnt} : (JsonArray)${node})
+${indent}  {
+${indent}    ${schema.elementType.type} itemValue${cnt} = null;
+        <@generateCreateFieldFromJsonDomNodePrivate "${indent}    " cnt+1 "item${cnt}" schema.elementType "${name} items" "itemValue${cnt}" ifValidation/>
+${indent}    itemList${cnt}.add(itemValue${cnt});
+${indent}  }
+${indent}  ${var} = ImmutableList.copyOf(itemList${cnt});
+      <#else>
+${indent}  Set<${schema.elementType.type}> itemSet${cnt} = new HashSet<>();
+${indent}  for(JsonDomNode item${cnt} : (JsonArray)${node})
+${indent}  {
+${indent}    ${schema.elementType.type} itemValue${cnt} = null;
+        <@generateCreateFieldFromJsonDomNode "${indent}    " "item${cnt}" schema.elementType "${name} items" "itemValue${cnt}" ifValidation/>
+${indent}    itemSet${cnt}.add(itemValue${cnt});
+${indent}  }
+${indent}  ${var} = ImmutableSet.copyOf(itemSet${cnt});
+      </#if>
+        <@checkItemLimits "${indent}  " schema name var/>
 ${indent}}
 ${indent}else ${ifValidation}
 ${indent}{
