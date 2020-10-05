@@ -26,49 +26,22 @@
   <artifactId>canon2-model-builder</artifactId>
   
   <dependencies>
-    <!-- <dependency>
-      <groupId>${project.groupId}</groupId>
-      <artifactId>canon2-parser</artifactId>
-      <version>${project.version}</version>
-    </dependency> -->
-    
     <dependency>
       <groupId>${project.groupId}</groupId>
       <artifactId>canon2-runtime-java</artifactId>
       <version>${project.version}</version>
     </dependency>
-    
-    <!-- <dependency>
-      <groupId>com.symphony.oss.fugue</groupId>
-      <artifactId>fugue-core</artifactId>
-      <version>${oss.fugue.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>com.symphony.oss.fugue</groupId>
-      <artifactId>fugue-http</artifactId>
-      <version>${oss.fugue.version}</version>
-    </dependency> -->
 
     <dependency>
       <groupId>com.symphony.oss.commons</groupId>
       <artifactId>commons-core</artifactId>
       <version>${oss.commons.version}</version>
     </dependency>
-    <!-- <dependency>
-      <groupId>com.symphony.oss.commons</groupId>
-      <artifactId>commons-dom</artifactId>
-      <version>${oss.commons.version}</version>
-    </dependency> -->
     
     <dependency>
       <groupId>javax.servlet</groupId>
       <artifactId>javax.servlet-api</artifactId>
     </dependency>
-    
-    <!-- <dependency>
-      <groupId>com.fasterxml.jackson.core</groupId>
-      <artifactId>jackson-databind</artifactId>
-    </dependency> -->
     <dependency>
        <groupId>com.google.guava</groupId>
        <artifactId>guava</artifactId>
@@ -82,15 +55,6 @@
       <groupId>org.apache.httpcomponents</groupId>
       <artifactId>httpclient</artifactId>
      </dependency>
-    
-    <!-- <dependency>
-      <groupId>com.github.java-json-tools</groupId>
-      <artifactId>json-schema-core</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>com.github.java-json-tools</groupId>
-      <artifactId>json-schema-validator</artifactId>
-    </dependency> -->
     
     <dependency>
         <groupId>junit</groupId>
@@ -128,6 +92,26 @@
                   <version>${canon.generator.version}</version>
                 </generatorArtifact>
               </generatorArtifacts>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>build-helper-maven-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>add-source</id>
+            <phase>generate-sources</phase>
+            <goals>
+              <goal>add-source</goal>
+            </goals>
+            <configuration>
+              <sources>
+                <source>target/generated-sources/java</source>
+                <source>target/proforma-sources/java</source>
+              </sources>
             </configuration>
           </execution>
         </executions>
