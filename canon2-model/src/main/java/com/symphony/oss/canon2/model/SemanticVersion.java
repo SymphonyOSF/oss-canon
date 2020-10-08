@@ -21,7 +21,7 @@
  *    Generator groupId    org.symphonyoss.s2.canon
  *              artifactId canon2-generator-java
  *    Template name        template/TypeDef/_.java.ftl
- *    At                   2020-09-16 16:04:42 BST
+ *    At                   2020-10-08 13:45:16 BST
  *----------------------------------------------------------------------------------------------------
  */
 
@@ -38,7 +38,7 @@ import com.symphony.oss.commons.type.provider.IValueProvider;
 
 /**
  * TypeDef implementation for canon.SemanticVersion
- * Generated from com.symphony.oss.canon2.generator.java.JavaPrimitiveSchemaTemplateModel@2bbf180e at {entity.context.path}
+ * Generated from SemanticVersion at {entity.context.path}
  */
 @Immutable
 public class SemanticVersion extends TypeDef implements IStringProvider, Comparable<SemanticVersion>
@@ -73,7 +73,7 @@ public class SemanticVersion extends TypeDef implements IStringProvider, Compara
     }
     else
     {
-      throw new IllegalArgumentException("value} must be an instance of IStringProvider not " + node.getClass().getName());
+      throw new IllegalArgumentException("value must be an instance of IStringProvider not " + node.getClass().getName());
     }
   }
   

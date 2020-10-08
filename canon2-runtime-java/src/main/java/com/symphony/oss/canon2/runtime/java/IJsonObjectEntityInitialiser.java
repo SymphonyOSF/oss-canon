@@ -28,12 +28,6 @@ import com.symphony.oss.canon.json.model.JsonDomNode;
 public interface IJsonObjectEntityInitialiser
 extends IObjectEntityInitialiser
 { 
-  /**
-   * Return a ModelRegistry for deserialization.
-   * 
-   * @return a ModelRegistry for deserialization.
-   */
-  ModelRegistry getModelRegistry();
 
   /**
    * Return the attribute wit the given name.

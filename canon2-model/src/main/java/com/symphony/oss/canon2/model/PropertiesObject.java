@@ -1,5 +1,5 @@
 /**
- * GENERATED CODE - DO NOT EDIT OR CHECK IN TO SOURCE CODE CONTROL
+ * Proforma implementation:
  *
  * Copyright 2020 Symphony Communication Services, LLC.
  *
@@ -21,7 +21,7 @@
  *    Generator groupId    org.symphonyoss.s2.canon
  *              artifactId canon2-generator-java
  *    Template name        proforma/Object/_.java.ftl
- *    At                   2020-09-16 16:04:42 BST
+ *    At                   2020-10-08 13:02:45 BST
  *----------------------------------------------------------------------------------------------------
  */
 
@@ -34,13 +34,12 @@ import javax.annotation.concurrent.Immutable;
 
 import com.google.common.collect.ImmutableMap;
 import com.symphony.oss.canon.json.model.JsonObject;
-import com.symphony.oss.canon2.runtime.java.ModelRegistry;
 
 
 /**
  * Facade for Object  PropertiesObject canon
- * Object com.symphony.oss.canon2.generator.java.JavaOpenApiTemplateModel@4df50bcc
- * Generated from JavaObjectSchemaTemplateModel [fields_=[]] at {entity.context.path}
+ * Object PropertiesObject
+ * Generated from PropertiesObject
  */
 @Immutable
 public class PropertiesObject extends PropertiesObjectEntity
@@ -48,61 +47,31 @@ public class PropertiesObject extends PropertiesObjectEntity
   private final ImmutableMap<String, Object> properties_;
   
   /**
-   * Constructor from builder.
+   * Constructor.
    * 
-   * @param builder A mutable builder containing all values.
+   * @param initialiser Initialiser, may be JSON serialisation, builder or another instance.
    */
-  public PropertiesObject(AbstractBuilder<?,?> builder)
+  protected PropertiesObject(Initialiser initialiser)
   {
-    super(builder);
+    super(initialiser);
     
-    properties_ = initProperties(null);
-  }
-  
-  /**
-   * Constructor from serialised form.
-   * 
-   * @param jsonObject An immutable JSON object containing the serialized form of the object.
-   * @param modelRegistry A model registry to use to deserialize any nested objects.
-   */
-  public PropertiesObject(JsonObject jsonObject, ModelRegistry modelRegistry)
-  {
-    super(jsonObject, modelRegistry);
-    
-    properties_ = initProperties(modelRegistry);
-  }
-   
-  /**
-   * Copy constructor.
-   * 
-   * @param other Another instance from which all attributes are to be copied.
-   */
-  public PropertiesObject(PropertiesObject other)
-  {
-    super(other);
-    
-    properties_ = other.getProperties();
-  }
-  
-  private ImmutableMap<String, Object> initProperties(ModelRegistry modelRegistry)
-  {
     Map<String, Object> properties = new HashMap<>();
     
     for(String name : getCanonUnknownKeys())
     {
       JsonObject json = getJsonObject().getObject(name);
       if(json.get("$ref") == null)
-        properties.put(name, new Schema(json, modelRegistry));
+        properties.put(name, Schema.FACTORY.newInstance(json, initialiser.getModelRegistry()));
       else
-        properties.put(name, new ReferenceObject(json, modelRegistry));
+        properties.put(name, ReferenceObject.FACTORY.newInstance(json, initialiser.getModelRegistry()));
     }
     
-    return ImmutableMap.copyOf(properties);
+    properties_ = ImmutableMap.copyOf(properties);
   }
+  
 
-  public ImmutableMap<String, Object> getProperties()
+  public interface IInstanceOrBuilder extends PropertiesObjectEntity.IInstanceOrBuilder
   {
-    return properties_;
   }
   
   /**
@@ -111,7 +80,9 @@ public class PropertiesObject extends PropertiesObjectEntity
    * @param <B> The concrete type of the builder, used for fluent methods.
    * @param <T> The concrete type of the built object.
    */
-  public static abstract class AbstractBuilder<T extends AbstractBuilder<T,B>, B extends PropertiesObject> extends PropertiesObjectEntity.AbstractBuilder<T,B>
+  public static abstract class AbstractBuilder<T extends AbstractBuilder<T,B>, B extends PropertiesObject>
+    extends PropertiesObjectEntity.AbstractBuilder<T,B>
+    implements IInstanceOrBuilder
   {
     protected AbstractBuilder(Class<T> type)
     {
@@ -122,6 +93,11 @@ public class PropertiesObject extends PropertiesObjectEntity
     {
       super(type, initial);
     }
+  }
+
+  public ImmutableMap<String, Object> getProperties()
+  {
+    return properties_;
   }
 }
 /*----------------------------------------------------------------------------------------------------

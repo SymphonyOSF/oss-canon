@@ -21,14 +21,11 @@
  *    Generator groupId    org.symphonyoss.s2.canon
  *              artifactId canon2-generator-java
  *    Template name        template/Object/_Entity.java.ftl
- *    At                   2020-09-16 16:04:42 BST
+ *    At                   2020-10-08 13:45:16 BST
  *----------------------------------------------------------------------------------------------------
  */
 
 package com.symphony.oss.canon2.model;
-
-import java.util.HashSet;
-import java.util.Set;
 
 import javax.annotation.Nullable;
 import javax.annotation.concurrent.Immutable;
@@ -36,13 +33,14 @@ import javax.annotation.concurrent.Immutable;
 import com.google.common.collect.ImmutableSet;
 import com.symphony.oss.canon.json.model.JsonDomNode;
 import com.symphony.oss.canon.json.model.JsonObject;
+import com.symphony.oss.canon2.runtime.java.IObjectEntityInitialiser;
+import com.symphony.oss.canon2.runtime.java.JsonObjectEntityInitialiser;
 import com.symphony.oss.canon2.runtime.java.ModelRegistry;
 import com.symphony.oss.canon2.runtime.java.ObjectEntity;
 
 /**
- * Implementation for Object  ComponentsObject canon
- * Object com.symphony.oss.canon2.generator.java.JavaOpenApiTemplateModel@4df50bcc
- * Generated from JavaObjectSchemaTemplateModel [fields_=[JavaFieldTemplateModel SchemasObject schemas]] at {entity.context.path}
+ * Implementation for Object ComponentsObject
+ * Generated from ComponentsObject at {entity.context.path}
  */
 @Immutable
 public abstract class ComponentsObjectEntity extends ObjectEntity
@@ -57,93 +55,78 @@ public abstract class ComponentsObjectEntity extends ObjectEntity
   public static final Integer TYPE_MINOR_VERSION = 0;
   /** Factory instance */
   public static final Factory FACTORY = new Factory();
-  
+
   private final ImmutableSet<String>        unknownKeys_;
   // field JavaFieldTemplateModel SchemasObject schemas field.typeSchema.name=SchemasObject
   private final SchemasObject              _schemas_;
 
   /**
-   * Constructor from builder.
-   * 
-   * @param builder A mutable builder containing all values.
+   * Constructor.
+   *
+   * @param initialiser Initialiser, may be JSON serialisation, builder or another instance.
    */
-  public ComponentsObjectEntity(AbstractBuilder<?,?> builder)
+  public ComponentsObjectEntity(Initialiser initialiser)
   {
-    super(builder);
-    
-    _schemas_ = builder.getSchemas();
-    unknownKeys_ = ImmutableSet.of();
-  }
-   
-  /**
-   * Constructor from serialised form.
-   * 
-   * @param jsonObject An immutable JSON object containing the serialized form of the object.
-   * @param modelRegistry A model registry to use to deserialize any nested objects.
-   */
-  public ComponentsObjectEntity(JsonObject jsonObject, ModelRegistry modelRegistry)
-  {
-    super(jsonObject);
-  
-    Set<String> keySet = new HashSet<>(super.getCanonUnknownKeys());
-    
-    if(keySet.remove("schemas"))
+    super(initialiser);
+
+    if(initialiser instanceof JsonObjectEntityInitialiser)
     {
-      JsonDomNode  node = jsonObject.get("schemas");
-//HERE0 node
-      if(node instanceof JsonObject)
+      JsonObjectEntityInitialiser jsonInitialiser = (JsonObjectEntityInitialiser)initialiser;
+
+      JsonDomNode  node;
+
+      node = jsonInitialiser.get("schemas");
+      if(node != null)
       {
-        _schemas_ = modelRegistry.newInstance((JsonObject)node, SchemasObject.TYPE_ID, SchemasObject.class);
+        if(node instanceof JsonObject)
+        {
+          _schemas_ = jsonInitialiser.getModelRegistry().newInstance((JsonObject)node, SchemasObject.TYPE_ID, SchemasObject.class);
+        }
+        else 
+        {
+          throw new IllegalArgumentException("schemas must be an Object node not " + node.getClass().getName());
+        }
       }
-      else 
+      else
       {
-        throw new IllegalArgumentException("schemas must be an Object node not " + node.getClass().getName());
+        _schemas_ = null;
       }
+      unknownKeys_ = jsonInitialiser.getCanonUnknownKeys();
     }
     else
     {
-      _schemas_ = null;
+      IInstanceOrBuilder builder =  initialiser.getInstanceOrBuilder();
+
+      if(builder == null)
+      {
+        throw new IllegalArgumentException("Initializer is not an JsonObjectEntityInitialiser but getInstanceOrBuilder() returns null");
+      }
+      _schemas_ = builder.getSchemas();
+      unknownKeys_ = builder.getCanonUnknownKeys();
     }
-
-    unknownKeys_ = ImmutableSet.copyOf(keySet);
   }
-   
-  /**
-   * Copy constructor.
-   * 
-   * @param other Another instance from which all attributes are to be copied.
-   */
-  public ComponentsObjectEntity(ComponentsObject other)
-  {
-    super(other);
-    
-    _schemas_ = other.getSchemas();
-
-    unknownKeys_ = other.getCanonUnknownKeys();
-  }
-  
   @Override
   public ImmutableSet<String> getCanonUnknownKeys()
   {
     return unknownKeys_;
   }
-  
+
   /**
    * Return the value of the schemas attribute.
    *
    * @return the value of the schemas attribute.
    */
-  public SchemasObject getSchemas()
+  public @Nullable SchemasObject getSchemas()
   {
     return _schemas_;
-  }    
+  }
 
   @Override
   public boolean equals(Object obj)
   {
     if(obj instanceof ComponentsObjectEntity)
       return toString().equals(((ComponentsObjectEntity)obj).toString());
-    
+
     return false;
   }
 
@@ -153,57 +136,199 @@ public abstract class ComponentsObjectEntity extends ObjectEntity
     return toString().hashCode();
   }
 
-  
+
   /**
    * Factory class for ComponentsObject.
    */
-  public static class Factory extends ObjectEntity.Factory<ComponentsObjectEntity>
+  public static class Factory extends ObjectEntity.Factory<ComponentsObject>
   {
     @Override
     public String getCanonType()
     {
       return TYPE_ID;
     }
-    
+
     /**
      * Return the type version (_version JSON attribute) for entities created by this factory.
-     * 
+     *
      * @return The type version for entities created by this factory.
      */
     public String getCanonVersion()
     {
       return TYPE_VERSION;
     }
-    
+
     /**
      * Return the major type version for entities created by this factory.
-     * 
+     *
      * @return The major type version for entities created by this factory.
      */
     public @Nullable Integer getCanonMajorVersion()
     {
       return TYPE_MAJOR_VERSION;
     }
-    
+
     /**
      * Return the minjor type version for entities created by this factory.
-     * 
+     *
      * @return The minor type version for entities created by this factory.
      */
     public @Nullable Integer getCanonMinorVersion()
     {
       return TYPE_MINOR_VERSION;
     }
-    
+
     @Override
     public ComponentsObject newInstance(JsonObject jsonObject, ModelRegistry modelRegistry)
     {
-      return new ComponentsObject(jsonObject, modelRegistry);
+      return new ComponentsObject(new JsonInitialiser(jsonObject, modelRegistry));
     }
   }
- 
+
+
+
+  /**
+   * Initialiser for ComponentsObject
+   */
   
-   
+  public interface Initialiser extends IObjectEntityInitialiser
+  {
+    IInstanceOrBuilder getInstanceOrBuilder();
+  }
+
+  public static class JsonInitialiser extends JsonObjectEntityInitialiser implements Initialiser
+  {
+    public JsonInitialiser(JsonObject jsonObject, ModelRegistry modelRegistry)
+    {
+      super(jsonObject, modelRegistry);
+    }
+
+    @Override
+    public IInstanceOrBuilder getInstanceOrBuilder()
+    {
+      return null;
+    }
+  }
+
+  /**
+   * Instance or Builder for Object ComponentsObject
+   */
+  public interface IInstanceOrBuilder extends IObjectEntityInitialiser
+  {
+    
+    /**
+     * Return the value of the schemas attribute.
+     *
+     * @return the value of the schemas attribute.
+     */
+    @Nullable SchemasObject getSchemas();
+  }
+
+
+  /**
+   * Abstract builder for ComponentsObject. If there are sub-classes of this type then their builders sub-class this builder.
+   *
+   * @param <T> The concrete type of the builder, used for fluent methods.
+   * @param <B> The concrete type of the built object.
+   */
+  public static abstract class AbstractBuilder<T extends AbstractBuilder<T,B>, B extends ComponentsObjectEntity>
+    extends ObjectEntity.AbstractBuilder<T,B>
+    implements IInstanceOrBuilder, Initialiser
+  {
+    protected SchemasObject              _schemas_;
+
+    protected AbstractBuilder(Class<T> type)
+    {
+      super(type);
+    }
+
+    @Override
+    public IInstanceOrBuilder getInstanceOrBuilder()
+    {
+      return this;
+    }
+
+    protected AbstractBuilder(Class<T> type, B initial)
+    {
+      super(type, initial);
+
+      _schemas_ = initial.getSchemas();
+    }
+
+    @Override
+    public T withValues(JsonObject jsonObject, ModelRegistry modelRegistry)
+    {
+      if(jsonObject.containsKey("schemas"))
+      {
+        JsonDomNode  node = jsonObject.get("schemas");
+        if(node instanceof JsonObject)
+        {
+          _schemas_ = modelRegistry.newInstance((JsonObject)node, SchemasObject.TYPE_ID, SchemasObject.class);
+        }
+        else if(!modelRegistry.getParserValidation().isIgnoreInvalidAttributes())
+        {
+          throw new IllegalArgumentException("schemas must be an Object node not " + node.getClass().getName());
+        }
+      }
+      return super.withValues(jsonObject, modelRegistry);
+    }
+
+    /* void populateAllFields(List<Object> result)
+    {
+      result.add(_schemas_);
+    }*/
+
+    /**
+     * Return the value of the schemas attribute.
+     *
+     * @return the value of the schemas attribute.
+     */
+    @Override
+    public @Nullable SchemasObject getSchemas()
+    {
+      return _schemas_;
+    }
+
+    /**
+     * Set the value of the schemas attribute.
+     *
+     * @param value The value to be set.
+     *
+     * @return This (fluent method).
+     */
+     // base type SchemasObject
+     // base name SchemasObject
+    public T withSchemas(SchemasObject value)
+    {
+      _schemas_ = value;
+      return self();
+    }
+// field.typeSchema.schemaType OBJECT
+
+    @Override
+    public JsonObject getJsonObject()
+    {
+      JsonObject.Builder builder = new JsonObject.Builder();
+
+      builder.addIfNotNull(JSON_TYPE, ComponentsObjectEntity.TYPE_ID);
+      builder.addIfNotNull(JSON_VERSION, ComponentsObjectEntity.TYPE_VERSION);
+
+      populateJson(builder);
+
+      return builder.build();
+    }
+
+    @Override
+    public void populateJson(JsonObject.Builder builder)
+    {
+      super.populateJson(builder);
+
+      if(getSchemas() != null)
+      {
+          builder.addIfNotNull("schemas", getSchemas().getJsonObject());
+      }
+    }
+
   /**
    * Builder for ComponentsObject
    */
@@ -219,7 +344,7 @@ public abstract class ComponentsObjectEntity extends ObjectEntity
 
     /**
      * Constructor initialised from another object instance.
-     * 
+     *
      * @param initial An instance of the built type from which values are to be initialised.
      */
     public Builder(ComponentsObject initial)
@@ -233,116 +358,20 @@ public abstract class ComponentsObjectEntity extends ObjectEntity
       return new ComponentsObject(this);
     }
   }
-  
-  
-  /**
-   * Abstract builder for ComponentsObject. If there are sub-classes of this type then their builders sub-class this builder.
-   *
-   * @param <T> The concrete type of the builder, used for fluent methods.
-   * @param <B> The concrete type of the built object.
-   */
-  public static abstract class AbstractBuilder<T extends AbstractBuilder<T,B>, B extends ComponentsObjectEntity>
-    extends ObjectEntity.AbstractBuilder<T,B>
-  {
-    protected SchemasObject              _schemas_;
-  
-    protected AbstractBuilder(Class<T> type)
-    {
-      super(type);
-    }
-    
-    protected AbstractBuilder(Class<T> type, B initial)
-    {
-      super(type, initial);
-      
-      _schemas_ = initial.getSchemas();
-    }
-    
-    @Override
-    public T withValues(JsonObject jsonObject, ModelRegistry modelRegistry)
-    {
-      if(jsonObject.containsKey("schemas"))
-      {
-        JsonDomNode  node = jsonObject.get("schemas");
-//HERE0 node
-        if(node instanceof JsonObject)
-        {
-          _schemas_ = modelRegistry.newInstance((JsonObject)node, SchemasObject.TYPE_ID, SchemasObject.class);
-        }
-        else if(!modelRegistry.getParserValidation().isIgnoreInvalidAttributes())
-        {
-          throw new IllegalArgumentException("schemas must be an Object node not " + node.getClass().getName());
-        }
-      }
-      return super.withValues(jsonObject, modelRegistry);
-    }
-    
-    /* void populateAllFields(List<Object> result)
-    {
-      result.add(_schemas_);
-    }*/
 
-    /**
-     * Return the value of the schemas attribute.
-     *
-     * @return the value of the schemas attribute.
-     */
-    public SchemasObject getSchemas()
-    {
-      return _schemas_;
-    }
-
-    /**
-     * Set the value of the schemas attribute.
-     *
-     * @param value The value to be set. 
-     *
-     * @return This (fluent method).
-     */
-     // base type SchemasObject
-     // base name SchemasObject
-    public T withSchemas(SchemasObject value)
-    {
-      _schemas_ = value;
-      return self();
-    }
-    
-    @Override 
-    public JsonObject getJsonObject()
-    {
-      JsonObject.Builder builder = new JsonObject.Builder();
-      
-      builder.addIfNotNull(JSON_TYPE, ComponentsObjectEntity.TYPE_ID);
-      builder.addIfNotNull(JSON_VERSION, ComponentsObjectEntity.TYPE_VERSION);
-
-      populateJson(builder);
-  
-      return builder.build();
-    }
-    
-    @Override
-    public void populateJson(JsonObject.Builder builder)
-    {
-      super.populateJson(builder);
-  
-      if(getSchemas() != null)
-      {
-          builder.addIfNotNull("schemas", getSchemas().getJsonObject());
-      }
-    }
 
     @Override
     public String getCanonType()
     {
       return TYPE_ID;
     }
-    
+
     @Override
     public String getCanonVersion()
     {
       return TYPE_VERSION;
     }
-    
+
     @Override
     public @Nullable Integer getCanonMajorVersion()
     {
@@ -355,7 +384,7 @@ public abstract class ComponentsObjectEntity extends ObjectEntity
       return TYPE_MINOR_VERSION;
     }
   }
-  
+
   // entity.name ComponentsObject
   // entity.class class com.symphony.oss.canon2.generator.java.JavaObjectSchemaTemplateModel
 }

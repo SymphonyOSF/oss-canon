@@ -21,7 +21,7 @@
  *    Generator groupId    org.symphonyoss.s2.canon
  *              artifactId canon2-generator-java
  *    Template name        template/Enum/_.java.ftl
- *    At                   2020-09-16 16:04:42 BST
+ *    At                   2020-10-08 13:45:16 BST
  *----------------------------------------------------------------------------------------------------
  */
 package com.symphony.oss.canon2.model;
@@ -30,8 +30,8 @@ import javax.annotation.concurrent.Immutable;
 
 /**
  * Enum  SchemaType canon
- * Model com.symphony.oss.canon2.generator.java.JavaOpenApiTemplateModel@4df50bcc
- * Generated from com.symphony.oss.canon2.generator.java.JavaPrimitiveSchemaTemplateModel@2f112965 at {entity.context.path}
+ * Model canon
+ * Generated from SchemaType at {entity.context.path}
  */
 @Immutable
 public enum SchemaType

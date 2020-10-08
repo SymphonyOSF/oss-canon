@@ -61,9 +61,9 @@ public class PropertiesObject extends PropertiesObjectEntity
     {
       JsonObject json = getJsonObject().getObject(name);
       if(json.get("$ref") == null)
-        properties.put(name, Schema.FACTORY.newInstance(json /*, modelRegistry*/ ));
+        properties.put(name, Schema.FACTORY.newInstance(json, initialiser.getModelRegistry()));
       else
-        properties.put(name, ReferenceObject.FACTORY.newInstance(json /*, modelRegistry*/ ));
+        properties.put(name, ReferenceObject.FACTORY.newInstance(json, initialiser.getModelRegistry()));
     }
     
     properties_ = ImmutableMap.copyOf(properties);

@@ -68,4 +68,11 @@ extends IEntityInitialiser
    * @return The set of unknown keys  in the JSON from which this object was deserialized;
    */
   ImmutableSet<String> getCanonUnknownKeys();
+  
+  /**
+   * Return a ModelRegistry for deserialization.
+   * 
+   * @return a ModelRegistry for deserialization.
+   */
+  ModelRegistry getModelRegistry();
 }

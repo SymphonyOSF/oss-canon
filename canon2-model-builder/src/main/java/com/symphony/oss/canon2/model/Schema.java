@@ -39,6 +39,7 @@ import com.symphony.oss.canon.json.model.JsonDomNode;
 import com.symphony.oss.canon.json.model.JsonObject;
 import com.symphony.oss.canon2.core.CanonModelContext;
 import com.symphony.oss.canon2.core.GenerationException;
+import com.symphony.oss.canon2.core.INamedModelEntity;
 import com.symphony.oss.canon2.core.ResolvedOpenApiObject;
 import com.symphony.oss.canon2.core.ResolvedPropertiesObject;
 import com.symphony.oss.canon2.core.ResolvedSchema;
@@ -53,7 +54,7 @@ import com.symphony.oss.canon2.runtime.java.Entity;
  * Generated from Schema
  */
 @Immutable
-public class Schema extends SchemaEntity
+public class Schema extends SchemaEntity implements INamedModelEntity
 {
   //private final ImmutableMap<String, ISchema> fields_;
   private final Schema          itemsSchema_;
@@ -76,9 +77,9 @@ public class Schema extends SchemaEntity
       JsonObject itemsObject = (JsonObject)itemsNode;
       
       if(itemsObject.get("$ref") == null)
-        items = Schema.FACTORY.newInstance(itemsObject /*, modelRegistry */);
+        items = Schema.FACTORY.newInstance(itemsObject, initialiser.getModelRegistry());
       else
-        items = ReferenceObject.FACTORY.newInstance(itemsObject /*, modelRegistry */);
+        items = ReferenceObject.FACTORY.newInstance(itemsObject, initialiser.getModelRegistry());
     }
     
     itemsSchema_    = items instanceof Schema ? (Schema)items : null;

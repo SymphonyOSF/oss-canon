@@ -21,29 +21,28 @@
  *    Generator groupId    org.symphonyoss.s2.canon
  *              artifactId canon2-generator-java
  *    Template name        template/Object/_Entity.java.ftl
- *    At                   2020-09-16 16:04:42 BST
+ *    At                   2020-10-08 13:45:16 BST
  *----------------------------------------------------------------------------------------------------
  */
 
 package com.symphony.oss.canon2.model;
 
-import java.util.HashSet;
-import java.util.Set;
-
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.annotation.concurrent.Immutable;
 
 import com.google.common.collect.ImmutableSet;
 import com.symphony.oss.canon.json.model.JsonDomNode;
 import com.symphony.oss.canon.json.model.JsonObject;
+import com.symphony.oss.canon2.runtime.java.IObjectEntityInitialiser;
+import com.symphony.oss.canon2.runtime.java.JsonObjectEntityInitialiser;
 import com.symphony.oss.canon2.runtime.java.ModelRegistry;
 import com.symphony.oss.canon2.runtime.java.ObjectEntity;
 import com.symphony.oss.commons.type.provider.IStringProvider;
 
 /**
- * Implementation for Object  ReferenceObject canon
- * Object com.symphony.oss.canon2.generator.java.JavaOpenApiTemplateModel@4df50bcc
- * Generated from JavaObjectSchemaTemplateModel [fields_=[JavaFieldTemplateModel $ref $ref]] at {entity.context.path}
+ * Implementation for Object ReferenceObject
+ * Generated from ReferenceObject at {entity.context.path}
  */
 @Immutable
 public abstract class ReferenceObjectEntity extends ObjectEntity
@@ -58,96 +57,81 @@ public abstract class ReferenceObjectEntity extends ObjectEntity
   public static final Integer TYPE_MINOR_VERSION = 0;
   /** Factory instance */
   public static final Factory FACTORY = new Factory();
-  
+
   private final ImmutableSet<String>        unknownKeys_;
   // field JavaFieldTemplateModel $ref $ref field.typeSchema.name=$ref
   private final String                     _$ref_;
 
   /**
-   * Constructor from builder.
-   * 
-   * @param builder A mutable builder containing all values.
+   * Constructor.
+   *
+   * @param initialiser Initialiser, may be JSON serialisation, builder or another instance.
    */
-  public ReferenceObjectEntity(AbstractBuilder<?,?> builder)
+  public ReferenceObjectEntity(Initialiser initialiser)
   {
-    super(builder);
-    
-    _$ref_ = builder.get$ref();
-    if(_$ref_ == null)
-      throw new IllegalArgumentException("$ref is required.");
-  
-    unknownKeys_ = ImmutableSet.of();
-  }
-   
-  /**
-   * Constructor from serialised form.
-   * 
-   * @param jsonObject An immutable JSON object containing the serialized form of the object.
-   * @param modelRegistry A model registry to use to deserialize any nested objects.
-   */
-  public ReferenceObjectEntity(JsonObject jsonObject, ModelRegistry modelRegistry)
-  {
-    super(jsonObject);
-  
-    Set<String> keySet = new HashSet<>(super.getCanonUnknownKeys());
-    
-    if(keySet.remove("$ref"))
+    super(initialiser);
+
+    if(initialiser instanceof JsonObjectEntityInitialiser)
     {
-      JsonDomNode  node = jsonObject.get("$ref");
-//HERE0 node
-      if(node instanceof IStringProvider)
+      JsonObjectEntityInitialiser jsonInitialiser = (JsonObjectEntityInitialiser)initialiser;
+
+      JsonDomNode  node;
+
+      node = jsonInitialiser.get("$ref");
+      if(node != null)
       {
-        _$ref_ = ((IStringProvider)node).asString();
+        if(node instanceof IStringProvider)
+        {
+          _$ref_ = ((IStringProvider)node).asString();
+        }
+        else 
+        {
+          throw new IllegalArgumentException("$ref must be an instance of IStringProvider not " + node.getClass().getName());
+        }
       }
-      else 
+      else
       {
-        throw new IllegalArgumentException("$ref must be an instance of IStringProvider not " + node.getClass().getName());
+        throw new IllegalArgumentException("$ref is required.");
       }
+      unknownKeys_ = jsonInitialiser.getCanonUnknownKeys();
     }
     else
     {
-      throw new IllegalArgumentException("$ref is required.");
-    }
+      IInstanceOrBuilder builder =  initialiser.getInstanceOrBuilder();
 
-    unknownKeys_ = ImmutableSet.copyOf(keySet);
-  }
-   
-  /**
-   * Copy constructor.
-   * 
-   * @param other Another instance from which all attributes are to be copied.
-   */
-  public ReferenceObjectEntity(ReferenceObject other)
-  {
-    super(other);
-    
-    _$ref_ = other.get$ref();
-
-    unknownKeys_ = other.getCanonUnknownKeys();
-  }
+      if(builder == null)
+      {
+        throw new IllegalArgumentException("Initializer is not an JsonObjectEntityInitialiser but getInstanceOrBuilder() returns null");
+      }
+      _$ref_ = builder.get$ref();
+      if(_$ref_ == null)
+        throw new IllegalArgumentException("$ref is required.");
   
+      unknownKeys_ = builder.getCanonUnknownKeys();
+    }
+  }
   @Override
   public ImmutableSet<String> getCanonUnknownKeys()
   {
     return unknownKeys_;
   }
-  
+
   /**
    * Return the value of the $ref attribute.
    *
    * @return the value of the $ref attribute.
    */
-  public String get$ref()
+  public @Nonnull String get$ref()
   {
     return _$ref_;
-  }    
+  }
 
   @Override
   public boolean equals(Object obj)
   {
     if(obj instanceof ReferenceObjectEntity)
       return toString().equals(((ReferenceObjectEntity)obj).toString());
-    
+
     return false;
   }
 
@@ -157,57 +141,204 @@ public abstract class ReferenceObjectEntity extends ObjectEntity
     return toString().hashCode();
   }
 
-  
+
   /**
    * Factory class for ReferenceObject.
    */
-  public static class Factory extends ObjectEntity.Factory<ReferenceObjectEntity>
+  public static class Factory extends ObjectEntity.Factory<ReferenceObject>
   {
     @Override
     public String getCanonType()
     {
       return TYPE_ID;
     }
-    
+
     /**
      * Return the type version (_version JSON attribute) for entities created by this factory.
-     * 
+     *
      * @return The type version for entities created by this factory.
      */
     public String getCanonVersion()
     {
       return TYPE_VERSION;
     }
-    
+
     /**
      * Return the major type version for entities created by this factory.
-     * 
+     *
      * @return The major type version for entities created by this factory.
      */
     public @Nullable Integer getCanonMajorVersion()
     {
       return TYPE_MAJOR_VERSION;
     }
-    
+
     /**
      * Return the minjor type version for entities created by this factory.
-     * 
+     *
      * @return The minor type version for entities created by this factory.
      */
     public @Nullable Integer getCanonMinorVersion()
     {
       return TYPE_MINOR_VERSION;
     }
-    
+
     @Override
     public ReferenceObject newInstance(JsonObject jsonObject, ModelRegistry modelRegistry)
     {
-      return new ReferenceObject(jsonObject, modelRegistry);
+      return new ReferenceObject(new JsonInitialiser(jsonObject, modelRegistry));
     }
   }
- 
+
+
+
+  /**
+   * Initialiser for ReferenceObject
+   */
   
-   
+  public interface Initialiser extends IObjectEntityInitialiser
+  {
+    IInstanceOrBuilder getInstanceOrBuilder();
+  }
+
+  public static class JsonInitialiser extends JsonObjectEntityInitialiser implements Initialiser
+  {
+    public JsonInitialiser(JsonObject jsonObject, ModelRegistry modelRegistry)
+    {
+      super(jsonObject, modelRegistry);
+    }
+
+    @Override
+    public IInstanceOrBuilder getInstanceOrBuilder()
+    {
+      return null;
+    }
+  }
+
+  /**
+   * Instance or Builder for Object ReferenceObject
+   */
+  public interface IInstanceOrBuilder extends IObjectEntityInitialiser
+  {
+    
+    /**
+     * Return the value of the $ref attribute.
+     *
+     * @return the value of the $ref attribute.
+     */
+    @Nonnull String get$ref();
+  }
+
+
+  /**
+   * Abstract builder for ReferenceObject. If there are sub-classes of this type then their builders sub-class this builder.
+   *
+   * @param <T> The concrete type of the builder, used for fluent methods.
+   * @param <B> The concrete type of the built object.
+   */
+  public static abstract class AbstractBuilder<T extends AbstractBuilder<T,B>, B extends ReferenceObjectEntity>
+    extends ObjectEntity.AbstractBuilder<T,B>
+    implements IInstanceOrBuilder, Initialiser
+  {
+    protected String                     _$ref_;
+
+    protected AbstractBuilder(Class<T> type)
+    {
+      super(type);
+    }
+
+    @Override
+    public IInstanceOrBuilder getInstanceOrBuilder()
+    {
+      return this;
+    }
+
+    protected AbstractBuilder(Class<T> type, B initial)
+    {
+      super(type, initial);
+
+      _$ref_ = initial.get$ref();
+    }
+
+    @Override
+    public T withValues(JsonObject jsonObject, ModelRegistry modelRegistry)
+    {
+      if(jsonObject.containsKey("$ref"))
+      {
+        JsonDomNode  node = jsonObject.get("$ref");
+        if(node instanceof IStringProvider)
+        {
+          _$ref_ = ((IStringProvider)node).asString();
+        }
+        else if(!modelRegistry.getParserValidation().isIgnoreInvalidAttributes())
+        {
+          throw new IllegalArgumentException("$ref must be an instance of IStringProvider not " + node.getClass().getName());
+        }
+      }
+      return super.withValues(jsonObject, modelRegistry);
+    }
+
+    /* void populateAllFields(List<Object> result)
+    {
+      result.add(_$ref_);
+    }*/
+
+    /**
+     * Return the value of the $ref attribute.
+     *
+     * @return the value of the $ref attribute.
+     */
+    @Override
+    public @Nonnull String get$ref()
+    {
+      if(_$ref_ == null)
+        throw new IllegalStateException("Unexpected null value encountered");
+      return _$ref_;
+    }
+
+    /**
+     * Set the value of the $ref attribute.
+     *
+     * @param value The value to be set.
+     *
+     * @return This (fluent method).
+     */
+     // base type String
+     // base name $ref
+    public T with$ref(String value)
+    {
+        if(value == null)
+          throw new IllegalArgumentException("$ref is required.");
+  
+      _$ref_ = value;
+      return self();
+    }
+// field.typeSchema.schemaType STRING
+
+    @Override
+    public JsonObject getJsonObject()
+    {
+      JsonObject.Builder builder = new JsonObject.Builder();
+
+      builder.addIfNotNull(JSON_TYPE, ReferenceObjectEntity.TYPE_ID);
+      builder.addIfNotNull(JSON_VERSION, ReferenceObjectEntity.TYPE_VERSION);
+
+      populateJson(builder);
+
+      return builder.build();
+    }
+
+    @Override
+    public void populateJson(JsonObject.Builder builder)
+    {
+      super.populateJson(builder);
+
+      if(get$ref() != null)
+      {
+          builder.addIfNotNull("$ref", get$ref());
+      }
+    }
+
   /**
    * Builder for ReferenceObject
    */
@@ -223,7 +354,7 @@ public abstract class ReferenceObjectEntity extends ObjectEntity
 
     /**
      * Constructor initialised from another object instance.
-     * 
+     *
      * @param initial An instance of the built type from which values are to be initialised.
      */
     public Builder(ReferenceObject initial)
@@ -237,119 +368,20 @@ public abstract class ReferenceObjectEntity extends ObjectEntity
       return new ReferenceObject(this);
     }
   }
-  
-  
-  /**
-   * Abstract builder for ReferenceObject. If there are sub-classes of this type then their builders sub-class this builder.
-   *
-   * @param <T> The concrete type of the builder, used for fluent methods.
-   * @param <B> The concrete type of the built object.
-   */
-  public static abstract class AbstractBuilder<T extends AbstractBuilder<T,B>, B extends ReferenceObjectEntity>
-    extends ObjectEntity.AbstractBuilder<T,B>
-  {
-    protected String                     _$ref_;
-  
-    protected AbstractBuilder(Class<T> type)
-    {
-      super(type);
-    }
-    
-    protected AbstractBuilder(Class<T> type, B initial)
-    {
-      super(type, initial);
-      
-      _$ref_ = initial.get$ref();
-    }
-    
-    @Override
-    public T withValues(JsonObject jsonObject, ModelRegistry modelRegistry)
-    {
-      if(jsonObject.containsKey("$ref"))
-      {
-        JsonDomNode  node = jsonObject.get("$ref");
-//HERE0 node
-        if(node instanceof IStringProvider)
-        {
-          _$ref_ = ((IStringProvider)node).asString();
-        }
-        else if(!modelRegistry.getParserValidation().isIgnoreInvalidAttributes())
-        {
-          throw new IllegalArgumentException("$ref must be an instance of IStringProvider not " + node.getClass().getName());
-        }
-      }
-      return super.withValues(jsonObject, modelRegistry);
-    }
-    
-    /* void populateAllFields(List<Object> result)
-    {
-      result.add(_$ref_);
-    }*/
 
-    /**
-     * Return the value of the $ref attribute.
-     *
-     * @return the value of the $ref attribute.
-     */
-    public String get$ref()
-    {
-      return _$ref_;
-    }
-
-    /**
-     * Set the value of the $ref attribute.
-     *
-     * @param value The value to be set. 
-     *
-     * @return This (fluent method).
-     */
-     // base type String
-     // base name $ref
-    public T with$ref(String value)
-    {
-        if(value == null)
-          throw new IllegalArgumentException("$ref is required.");
-  
-      _$ref_ = value;
-      return self();
-    }
-    
-    @Override 
-    public JsonObject getJsonObject()
-    {
-      JsonObject.Builder builder = new JsonObject.Builder();
-      
-      builder.addIfNotNull(JSON_TYPE, ReferenceObjectEntity.TYPE_ID);
-      builder.addIfNotNull(JSON_VERSION, ReferenceObjectEntity.TYPE_VERSION);
-
-      populateJson(builder);
-  
-      return builder.build();
-    }
-    
-    @Override
-    public void populateJson(JsonObject.Builder builder)
-    {
-      super.populateJson(builder);
-  
-      if(get$ref() != null)
-      {
-          builder.addIfNotNull("$ref", get$ref());
-      }
-    }
 
     @Override
     public String getCanonType()
     {
       return TYPE_ID;
     }
-    
+
     @Override
     public String getCanonVersion()
     {
       return TYPE_VERSION;
     }
-    
+
     @Override
     public @Nullable Integer getCanonMajorVersion()
     {
@@ -362,7 +394,7 @@ public abstract class ReferenceObjectEntity extends ObjectEntity
       return TYPE_MINOR_VERSION;
     }
   }
-  
+
   // entity.name ReferenceObject
   // entity.class class com.symphony.oss.canon2.generator.java.JavaObjectSchemaTemplateModel
 }

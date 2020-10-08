@@ -21,7 +21,7 @@
  *    Generator groupId    org.symphonyoss.s2.canon
  *              artifactId canon2-generator-java
  *    Template name        proforma/Object/_.java.ftl
- *    At                   2020-09-16 16:04:42 BST
+ *    At                   2020-10-06 07:12:27 BST
  *----------------------------------------------------------------------------------------------------
  */
 
@@ -29,53 +29,56 @@ package com.symphony.oss.canon2.model;
 
 import javax.annotation.concurrent.Immutable;
 
-import com.symphony.oss.canon.json.model.JsonObject;
 import com.symphony.oss.canon2.core.CanonModelContext;
 import com.symphony.oss.canon2.core.GenerationException;
 import com.symphony.oss.canon2.core.ResolvedComponentsObject;
 import com.symphony.oss.canon2.core.ResolvedOpenApiObject;
 import com.symphony.oss.canon2.core.SourceContext;
 import com.symphony.oss.canon2.runtime.java.Entity;
-import com.symphony.oss.canon2.runtime.java.ModelRegistry;
 
 
 /**
  * Facade for Object  ComponentsObject canon
- * Object com.symphony.oss.canon2.generator.java.JavaOpenApiTemplateModel@4df50bcc
- * Generated from JavaObjectSchemaTemplateModel [fields_=[JavaFieldTemplateModel SchemasObject schemas]] at {entity.context.path}
+ * Object ComponentsObject
+ * Generated from ComponentsObject
  */
 @Immutable
 public class ComponentsObject extends ComponentsObjectEntity
 {
   /**
-   * Constructor from builder.
+   * Constructor.
    * 
-   * @param builder A mutable builder containing all values.
+   * @param initialiser Initialiser, may be JSON serialisation, builder or another instance.
    */
-  public ComponentsObject(AbstractBuilder<?,?> builder)
+  protected ComponentsObject(Initialiser initialiser)
   {
-    super(builder);
+    super(initialiser);
+  }
+  
+
+  public interface IInstanceOrBuilder extends ComponentsObjectEntity.IInstanceOrBuilder
+  {
   }
   
   /**
-   * Constructor from serialised form.
-   * 
-   * @param jsonObject An immutable JSON object containing the serialized form of the object.
-   * @param modelRegistry A model registry to use to deserialize any nested objects.
+   * Abstract builder for ComponentsObject. If there are sub-classes of this type then their builders sub-class this builder.
+   *
+   * @param <B> The concrete type of the builder, used for fluent methods.
+   * @param <T> The concrete type of the built object.
    */
-  public ComponentsObject(JsonObject jsonObject, ModelRegistry modelRegistry)
+  public static abstract class AbstractBuilder<T extends AbstractBuilder<T,B>, B extends ComponentsObject>
+    extends ComponentsObjectEntity.AbstractBuilder<T,B>
+    implements IInstanceOrBuilder
   {
-    super(jsonObject, modelRegistry);
-  }
-   
-  /**
-   * Copy constructor.
-   * 
-   * @param other Another instance from which all attributes are to be copied.
-   */
-  public ComponentsObject(ComponentsObject other)
-  {
-    super(other);
+    protected AbstractBuilder(Class<T> type)
+    {
+      super(type);
+    }
+    
+    protected AbstractBuilder(Class<T> type, B initial)
+    {
+      super(type, initial);
+    }
   }
   
   public Entity get(String[] parts, int index)
@@ -87,25 +90,6 @@ public class ComponentsObject extends ComponentsObjectEntity
     }
     
     throw new IllegalArgumentException("No path element " + parts[index]);
-  }
-  
-  /**
-   * Abstract builder for ComponentsObject. If there are sub-classes of this type then their builders sub-class this builder.
-   *
-   * @param <B> The concrete type of the builder, used for fluent methods.
-   * @param <T> The concrete type of the built object.
-   */
-  public static abstract class AbstractBuilder<T extends AbstractBuilder<T,B>, B extends ComponentsObject> extends ComponentsObjectEntity.AbstractBuilder<T,B>
-  {
-    protected AbstractBuilder(Class<T> type)
-    {
-      super(type);
-    }
-    
-    protected AbstractBuilder(Class<T> type, B initial)
-    {
-      super(type, initial);
-    }
   }
 
   public ResolvedComponentsObject.SingletonBuilder link(ResolvedOpenApiObject.SingletonBuilder openApiObjectBuilder, CanonModelContext modelContext, SourceContext sourceContext, String uri) throws GenerationException

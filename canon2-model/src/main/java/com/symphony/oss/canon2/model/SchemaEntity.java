@@ -21,7 +21,7 @@
  *    Generator groupId    org.symphonyoss.s2.canon
  *              artifactId canon2-generator-java
  *    Template name        template/Object/_Entity.java.ftl
- *    At                   2020-09-17 15:23:47 BST
+ *    At                   2020-10-08 13:45:16 BST
  *----------------------------------------------------------------------------------------------------
  */
 
@@ -30,18 +30,17 @@ package com.symphony.oss.canon2.model;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.HashSet;
-import java.util.LinkedList;
-import java.util.List;
 import java.util.Set;
 
 import javax.annotation.Nullable;
 import javax.annotation.concurrent.Immutable;
 
-import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 import com.symphony.oss.canon.json.model.JsonArray;
 import com.symphony.oss.canon.json.model.JsonDomNode;
 import com.symphony.oss.canon.json.model.JsonObject;
+import com.symphony.oss.canon2.runtime.java.IObjectEntityInitialiser;
+import com.symphony.oss.canon2.runtime.java.JsonObjectEntityInitialiser;
 import com.symphony.oss.canon2.runtime.java.ModelRegistry;
 import com.symphony.oss.canon2.runtime.java.ObjectEntity;
 import com.symphony.oss.commons.type.provider.IBigDecimalProvider;
@@ -50,9 +49,8 @@ import com.symphony.oss.commons.type.provider.IBooleanProvider;
 import com.symphony.oss.commons.type.provider.IStringProvider;
 
 /**
- * Implementation for Object  Schema canon
- * Object com.symphony.oss.canon2.generator.java.JavaOpenApiTemplateModel@86be70a
- * Generated from JavaObjectSchemaTemplateModel [fields_=[JavaFieldTemplateModel MaxItems maxItems, JavaFieldTemplateModel Format format, JavaFieldTemplateModel CanonCardinality xCanonCardinality, JavaFieldTemplateModel XCanonIdentifier xCanonIdentifier, JavaFieldTemplateModel Type type, JavaFieldTemplateModel XCanonFacade xCanonFacade, JavaFieldTemplateModel Enum enum, JavaFieldTemplateModel Required required, JavaFieldTemplateModel MinItems minItems, JavaFieldTemplateModel CanonAttributes xCanonAttributes, JavaFieldTemplateModel Maximum maximum, JavaFieldTemplateModel Minimum minimum, JavaFieldTemplateModel PropertiesObject properties, JavaFieldTemplateModel ReferenceObject xCanonExtends]] at {entity.context.path}
+ * Implementation for Object Schema
+ * Generated from Schema at {entity.context.path}
  */
 @Immutable
 public abstract class SchemaEntity extends ObjectEntity
@@ -67,10 +65,12 @@ public abstract class SchemaEntity extends ObjectEntity
   public static final Integer TYPE_MINOR_VERSION = 0;
   /** Factory instance */
   public static final Factory FACTORY = new Factory();
-  
+
   private final ImmutableSet<String>        unknownKeys_;
   // field JavaFieldTemplateModel MaxItems maxItems field.typeSchema.name=maxItems
   private final BigInteger                 _maxItems_;
+  // field JavaFieldTemplateModel XCanonBuilderFacade xCanonBuilderFacade field.typeSchema.name=x-canon-builderFacade
+  private final Boolean                    _xCanonBuilderFacade_;
   // field JavaFieldTemplateModel Format format field.typeSchema.name=format
   private final String                     _format_;
   // field JavaFieldTemplateModel CanonCardinality xCanonCardinality field.typeSchema.name=CanonCardinality
@@ -82,9 +82,9 @@ public abstract class SchemaEntity extends ObjectEntity
   // field JavaFieldTemplateModel XCanonFacade xCanonFacade field.typeSchema.name=x-canon-facade
   private final Boolean                    _xCanonFacade_;
   // field JavaFieldTemplateModel Enum enum field.typeSchema.name=enum
-  private final List<String>               _enum_;
+  private final Set<String>                _enum_;
   // field JavaFieldTemplateModel Required required field.typeSchema.name=required
-  private final List<String>               _required_;
+  private final Set<String>                _required_;
   // field JavaFieldTemplateModel MinItems minItems field.typeSchema.name=minItems
   private final BigInteger                 _minItems_;
   // field JavaFieldTemplateModel CanonAttributes xCanonAttributes field.typeSchema.name=CanonAttributes
@@ -99,494 +99,492 @@ public abstract class SchemaEntity extends ObjectEntity
   private final ReferenceObject            _xCanonExtends_;
 
   /**
-   * Constructor from builder.
-   * 
-   * @param builder A mutable builder containing all values.
+   * Constructor.
+   *
+   * @param initialiser Initialiser, may be JSON serialisation, builder or another instance.
    */
-  public SchemaEntity(AbstractBuilder<?,?> builder)
+  public SchemaEntity(Initialiser initialiser)
   {
-    super(builder);
-    
-    _maxItems_ = builder.getMaxItems();
-    _format_ = builder.getFormat();
-    _xCanonCardinality_ = builder.getXCanonCardinality();
-    _xCanonIdentifier_ = builder.getXCanonIdentifier();
-    _type_ = builder.getType();
-    _xCanonFacade_ = builder.getXCanonFacade();
-    _enum_ = ImmutableList.copyOf(builder.getEnum());
-    _required_ = ImmutableList.copyOf(builder.getRequired());
-    _minItems_ = builder.getMinItems();
-    _xCanonAttributes_ = builder.getXCanonAttributes();
-    _maximum_ = builder.getMaximum();
-    _minimum_ = builder.getMinimum();
-    _properties_ = builder.getProperties();
-    _xCanonExtends_ = builder.getXCanonExtends();
-    unknownKeys_ = ImmutableSet.of();
-  }
-   
-  /**
-   * Constructor from serialised form.
-   * 
-   * @param jsonObject An immutable JSON object containing the serialized form of the object.
-   * @param modelRegistry A model registry to use to deserialize any nested objects.
-   */
-  public SchemaEntity(JsonObject jsonObject, ModelRegistry modelRegistry)
-  {
-    super(jsonObject);
-  
-    Set<String> keySet = new HashSet<>(super.getCanonUnknownKeys());
-    
-    if(keySet.remove("maxItems"))
+    super(initialiser);
+
+    if(initialiser instanceof JsonObjectEntityInitialiser)
     {
-      JsonDomNode  node = jsonObject.get("maxItems");
-//HERE0 node
-      if(node instanceof IBigIntegerProvider)
+      JsonObjectEntityInitialiser jsonInitialiser = (JsonObjectEntityInitialiser)initialiser;
+
+      JsonDomNode  node;
+
+      node = jsonInitialiser.get("maxItems");
+      if(node != null)
       {
-        _maxItems_ = ((IBigIntegerProvider)node).asBigInteger();
-      }
-      else 
-      {
-        throw new IllegalArgumentException("maxItems must be an instance of IBigIntegerProvider not " + node.getClass().getName());
-      }
-    }
-    else
-    {
-      _maxItems_ = null;
-    }
-    if(keySet.remove("format"))
-    {
-      JsonDomNode  node = jsonObject.get("format");
-//HERE0 node
-      if(node instanceof IStringProvider)
-      {
-        _format_ = ((IStringProvider)node).asString();
-      }
-      else 
-      {
-        throw new IllegalArgumentException("format must be an instance of IStringProvider not " + node.getClass().getName());
-      }
-    }
-    else
-    {
-      _format_ = null;
-    }
-    if(keySet.remove("x-canon-cardinality"))
-    {
-      JsonDomNode  node = jsonObject.get("x-canon-cardinality");
-//HERE0 node
-      if(node instanceof IStringProvider)
-      {
-        _xCanonCardinality_ = CanonCardinality.valueOf(((IStringProvider)node).asString());
-      }
-      else 
-      {
-        throw new IllegalArgumentException("x-canon-cardinality must be an instance of IStringProvider not " + node.getClass().getName());
-      }
-    }
-    else
-    {
-      _xCanonCardinality_ = null;
-    }
-    if(keySet.remove("x-canon-identifier"))
-    {
-      JsonDomNode  node = jsonObject.get("x-canon-identifier");
-//HERE0 node
-      if(node instanceof IStringProvider)
-      {
-        _xCanonIdentifier_ = ((IStringProvider)node).asString();
-      }
-      else 
-      {
-        throw new IllegalArgumentException("x-canon-identifier must be an instance of IStringProvider not " + node.getClass().getName());
-      }
-    }
-    else
-    {
-      _xCanonIdentifier_ = null;
-    }
-    if(keySet.remove("type"))
-    {
-      JsonDomNode  node = jsonObject.get("type");
-//HERE0 node
-      if(node instanceof IStringProvider)
-      {
-        _type_ = ((IStringProvider)node).asString();
-      }
-      else 
-      {
-        throw new IllegalArgumentException("type must be an instance of IStringProvider not " + node.getClass().getName());
-      }
-    }
-    else
-    {
-      _type_ = null;
-    }
-    if(keySet.remove("x-canon-facade"))
-    {
-      JsonDomNode  node = jsonObject.get("x-canon-facade");
-//HERE0 node
-      if(node instanceof IBooleanProvider)
-      {
-        _xCanonFacade_ = ((IBooleanProvider)node).asBoolean();
-      }
-      else 
-      {
-        throw new IllegalArgumentException("x-canon-facade must be an instance of IBooleanProvider not " + node.getClass().getName());
-      }
-    }
-    else
-    {
-      _xCanonFacade_ = null;
-    }
-    if(keySet.remove("enum"))
-    {
-      JsonDomNode  node = jsonObject.get("enum");
-//HERE0 node
-      if(node instanceof JsonArray)
-      {
-      List<String> itemList = new LinkedList<>();
-      for(JsonDomNode item : (JsonArray)node)
-      {
-        String itemValue = null;
-//HERE0 item
-        if(item instanceof IStringProvider)
+        if(node instanceof IBigIntegerProvider)
         {
-          itemValue = ((IStringProvider)item).asString();
+          _maxItems_ = ((IBigIntegerProvider)node).asBigInteger();
         }
         else 
         {
-          throw new IllegalArgumentException("enum items must be an instance of IStringProvider not " + item.getClass().getName());
+          throw new IllegalArgumentException("maxItems must be an instance of IBigIntegerProvider not " + node.getClass().getName());
         }
-        itemList.add(itemValue);
       }
-      _enum_ = ImmutableList.copyOf(itemList);
+      else
+      {
+        _maxItems_ = null;
       }
-      else 
+
+      node = jsonInitialiser.get("x-canon-builderFacade");
+      if(node != null)
       {
-        throw new IllegalArgumentException("enum must be a JsonArray node not " + node.getClass().getName());
-      }
-    }
-    else
-    {
-      _enum_ = null;
-    }
-    if(keySet.remove("required"))
-    {
-      JsonDomNode  node = jsonObject.get("required");
-//HERE0 node
-      if(node instanceof JsonArray)
-      {
-      List<String> itemList = new LinkedList<>();
-      for(JsonDomNode item : (JsonArray)node)
-      {
-        String itemValue = null;
-//HERE0 item
-        if(item instanceof IStringProvider)
+        if(node instanceof IBooleanProvider)
         {
-          itemValue = ((IStringProvider)item).asString();
+          _xCanonBuilderFacade_ = ((IBooleanProvider)node).asBoolean();
         }
         else 
         {
-          throw new IllegalArgumentException("required items must be an instance of IStringProvider not " + item.getClass().getName());
+          throw new IllegalArgumentException("x-canon-builderFacade must be an instance of IBooleanProvider not " + node.getClass().getName());
         }
-        itemList.add(itemValue);
       }
-      _required_ = ImmutableList.copyOf(itemList);
-      }
-      else 
+      else
       {
-        throw new IllegalArgumentException("required must be a JsonArray node not " + node.getClass().getName());
+        _xCanonBuilderFacade_ = null;
       }
-    }
-    else
-    {
-      _required_ = null;
-    }
-    if(keySet.remove("minItems"))
-    {
-      JsonDomNode  node = jsonObject.get("minItems");
-//HERE0 node
-      if(node instanceof IBigIntegerProvider)
-      {
-        _minItems_ = ((IBigIntegerProvider)node).asBigInteger();
-      }
-      else 
-      {
-        throw new IllegalArgumentException("minItems must be an instance of IBigIntegerProvider not " + node.getClass().getName());
-      }
-    }
-    else
-    {
-      _minItems_ = null;
-    }
-    if(keySet.remove("x-canon-attributes"))
-    {
-      JsonDomNode  node = jsonObject.get("x-canon-attributes");
-//HERE0 node
-      if(node instanceof JsonObject)
-      {
-        _xCanonAttributes_ = modelRegistry.newInstance((JsonObject)node, CanonAttributes.TYPE_ID, CanonAttributes.class);
-      }
-      else 
-      {
-        throw new IllegalArgumentException("x-canon-attributes must be an Object node not " + node.getClass().getName());
-      }
-    }
-    else
-    {
-      _xCanonAttributes_ = null;
-    }
-    if(keySet.remove("maximum"))
-    {
-      JsonDomNode  node = jsonObject.get("maximum");
-//HERE0 node
-      if(node instanceof IBigDecimalProvider)
-      {
-        _maximum_ = ((IBigDecimalProvider)node).asBigDecimal();
-      }
-      else 
-      {
-        throw new IllegalArgumentException("maximum must be an instance of IBigDecimalProvider not " + node.getClass().getName());
-      }
-    }
-    else
-    {
-      _maximum_ = null;
-    }
-    if(keySet.remove("minimum"))
-    {
-      JsonDomNode  node = jsonObject.get("minimum");
-//HERE0 node
-      if(node instanceof IBigDecimalProvider)
-      {
-        _minimum_ = ((IBigDecimalProvider)node).asBigDecimal();
-      }
-      else 
-      {
-        throw new IllegalArgumentException("minimum must be an instance of IBigDecimalProvider not " + node.getClass().getName());
-      }
-    }
-    else
-    {
-      _minimum_ = null;
-    }
-    if(keySet.remove("properties"))
-    {
-      JsonDomNode  node = jsonObject.get("properties");
-//HERE0 node
-      if(node instanceof JsonObject)
-      {
-        _properties_ = modelRegistry.newInstance((JsonObject)node, PropertiesObject.TYPE_ID, PropertiesObject.class);
-      }
-      else 
-      {
-        throw new IllegalArgumentException("properties must be an Object node not " + node.getClass().getName());
-      }
-    }
-    else
-    {
-      _properties_ = null;
-    }
-    if(keySet.remove("x-canon-extends"))
-    {
-      JsonDomNode  node = jsonObject.get("x-canon-extends");
-//HERE0 node
-      if(node instanceof JsonObject)
-      {
-        _xCanonExtends_ = modelRegistry.newInstance((JsonObject)node, ReferenceObject.TYPE_ID, ReferenceObject.class);
-      }
-      else 
-      {
-        throw new IllegalArgumentException("x-canon-extends must be an Object node not " + node.getClass().getName());
-      }
-    }
-    else
-    {
-      _xCanonExtends_ = null;
-    }
 
-    unknownKeys_ = ImmutableSet.copyOf(keySet);
-  }
-   
-  /**
-   * Copy constructor.
-   * 
-   * @param other Another instance from which all attributes are to be copied.
-   */
-  public SchemaEntity(Schema other)
-  {
-    super(other);
-    
-    _maxItems_ = other.getMaxItems();
-    _format_ = other.getFormat();
-    _xCanonCardinality_ = other.getXCanonCardinality();
-    _xCanonIdentifier_ = other.getXCanonIdentifier();
-    _type_ = other.getType();
-    _xCanonFacade_ = other.getXCanonFacade();
-    _enum_ = other.getEnum();
-    _required_ = other.getRequired();
-    _minItems_ = other.getMinItems();
-    _xCanonAttributes_ = other.getXCanonAttributes();
-    _maximum_ = other.getMaximum();
-    _minimum_ = other.getMinimum();
-    _properties_ = other.getProperties();
-    _xCanonExtends_ = other.getXCanonExtends();
+      node = jsonInitialiser.get("format");
+      if(node != null)
+      {
+        if(node instanceof IStringProvider)
+        {
+          _format_ = ((IStringProvider)node).asString();
+        }
+        else 
+        {
+          throw new IllegalArgumentException("format must be an instance of IStringProvider not " + node.getClass().getName());
+        }
+      }
+      else
+      {
+        _format_ = null;
+      }
 
-    unknownKeys_ = other.getCanonUnknownKeys();
+      node = jsonInitialiser.get("x-canon-cardinality");
+      if(node != null)
+      {
+        if(node instanceof IStringProvider)
+        {
+          _xCanonCardinality_ = CanonCardinality.valueOf(((IStringProvider)node).asString());
+        }
+        else 
+        {
+          throw new IllegalArgumentException("x-canon-cardinality must be an instance of IStringProvider not " + node.getClass().getName());
+        }
+      }
+      else
+      {
+        _xCanonCardinality_ = null;
+      }
+
+      node = jsonInitialiser.get("x-canon-identifier");
+      if(node != null)
+      {
+        if(node instanceof IStringProvider)
+        {
+          _xCanonIdentifier_ = ((IStringProvider)node).asString();
+        }
+        else 
+        {
+          throw new IllegalArgumentException("x-canon-identifier must be an instance of IStringProvider not " + node.getClass().getName());
+        }
+      }
+      else
+      {
+        _xCanonIdentifier_ = null;
+      }
+
+      node = jsonInitialiser.get("type");
+      if(node != null)
+      {
+        if(node instanceof IStringProvider)
+        {
+          _type_ = ((IStringProvider)node).asString();
+        }
+        else 
+        {
+          throw new IllegalArgumentException("type must be an instance of IStringProvider not " + node.getClass().getName());
+        }
+      }
+      else
+      {
+        _type_ = null;
+      }
+
+      node = jsonInitialiser.get("x-canon-facade");
+      if(node != null)
+      {
+        if(node instanceof IBooleanProvider)
+        {
+          _xCanonFacade_ = ((IBooleanProvider)node).asBoolean();
+        }
+        else 
+        {
+          throw new IllegalArgumentException("x-canon-facade must be an instance of IBooleanProvider not " + node.getClass().getName());
+        }
+      }
+      else
+      {
+        _xCanonFacade_ = null;
+      }
+
+      node = jsonInitialiser.get("enum");
+      if(node != null)
+      {
+        if(node instanceof JsonArray)
+        {
+          Set<String> itemSet0 = new HashSet<>();
+          for(JsonDomNode item0 : (JsonArray)node)
+          {
+            String itemValue0 = null;
+            if(item0 instanceof IStringProvider)
+            {
+              itemValue0 = ((IStringProvider)item0).asString();
+            }
+            else 
+            {
+              throw new IllegalArgumentException("enum items must be an instance of IStringProvider not " + item0.getClass().getName());
+            }
+            itemSet0.add(itemValue0);
+          }
+          _enum_ = ImmutableSet.copyOf(itemSet0);
+        }
+        else 
+        {
+          throw new IllegalArgumentException("enum must be a JsonArray node not " + node.getClass().getName());
+        }
+      }
+      else
+      {
+        _enum_ = null;
+      }
+
+      node = jsonInitialiser.get("required");
+      if(node != null)
+      {
+        if(node instanceof JsonArray)
+        {
+          Set<String> itemSet0 = new HashSet<>();
+          for(JsonDomNode item0 : (JsonArray)node)
+          {
+            String itemValue0 = null;
+            if(item0 instanceof IStringProvider)
+            {
+              itemValue0 = ((IStringProvider)item0).asString();
+            }
+            else 
+            {
+              throw new IllegalArgumentException("required items must be an instance of IStringProvider not " + item0.getClass().getName());
+            }
+            itemSet0.add(itemValue0);
+          }
+          _required_ = ImmutableSet.copyOf(itemSet0);
+        }
+        else 
+        {
+          throw new IllegalArgumentException("required must be a JsonArray node not " + node.getClass().getName());
+        }
+      }
+      else
+      {
+        _required_ = null;
+      }
+
+      node = jsonInitialiser.get("minItems");
+      if(node != null)
+      {
+        if(node instanceof IBigIntegerProvider)
+        {
+          _minItems_ = ((IBigIntegerProvider)node).asBigInteger();
+        }
+        else 
+        {
+          throw new IllegalArgumentException("minItems must be an instance of IBigIntegerProvider not " + node.getClass().getName());
+        }
+      }
+      else
+      {
+        _minItems_ = null;
+      }
+
+      node = jsonInitialiser.get("x-canon-attributes");
+      if(node != null)
+      {
+        if(node instanceof JsonObject)
+        {
+          _xCanonAttributes_ = jsonInitialiser.getModelRegistry().newInstance((JsonObject)node, CanonAttributes.TYPE_ID, CanonAttributes.class);
+        }
+        else 
+        {
+          throw new IllegalArgumentException("x-canon-attributes must be an Object node not " + node.getClass().getName());
+        }
+      }
+      else
+      {
+        _xCanonAttributes_ = null;
+      }
+
+      node = jsonInitialiser.get("maximum");
+      if(node != null)
+      {
+        if(node instanceof IBigDecimalProvider)
+        {
+          _maximum_ = ((IBigDecimalProvider)node).asBigDecimal();
+        }
+        else 
+        {
+          throw new IllegalArgumentException("maximum must be an instance of IBigDecimalProvider not " + node.getClass().getName());
+        }
+      }
+      else
+      {
+        _maximum_ = null;
+      }
+
+      node = jsonInitialiser.get("minimum");
+      if(node != null)
+      {
+        if(node instanceof IBigDecimalProvider)
+        {
+          _minimum_ = ((IBigDecimalProvider)node).asBigDecimal();
+        }
+        else 
+        {
+          throw new IllegalArgumentException("minimum must be an instance of IBigDecimalProvider not " + node.getClass().getName());
+        }
+      }
+      else
+      {
+        _minimum_ = null;
+      }
+
+      node = jsonInitialiser.get("properties");
+      if(node != null)
+      {
+        if(node instanceof JsonObject)
+        {
+          _properties_ = jsonInitialiser.getModelRegistry().newInstance((JsonObject)node, PropertiesObject.TYPE_ID, PropertiesObject.class);
+        }
+        else 
+        {
+          throw new IllegalArgumentException("properties must be an Object node not " + node.getClass().getName());
+        }
+      }
+      else
+      {
+        _properties_ = null;
+      }
+
+      node = jsonInitialiser.get("x-canon-extends");
+      if(node != null)
+      {
+        if(node instanceof JsonObject)
+        {
+          _xCanonExtends_ = jsonInitialiser.getModelRegistry().newInstance((JsonObject)node, ReferenceObject.TYPE_ID, ReferenceObject.class);
+        }
+        else 
+        {
+          throw new IllegalArgumentException("x-canon-extends must be an Object node not " + node.getClass().getName());
+        }
+      }
+      else
+      {
+        _xCanonExtends_ = null;
+      }
+      unknownKeys_ = jsonInitialiser.getCanonUnknownKeys();
+    }
+    else
+    {
+      IInstanceOrBuilder builder =  initialiser.getInstanceOrBuilder();
+
+      if(builder == null)
+      {
+        throw new IllegalArgumentException("Initializer is not an JsonObjectEntityInitialiser but getInstanceOrBuilder() returns null");
+      }
+      _maxItems_ = builder.getMaxItems();
+      _xCanonBuilderFacade_ = builder.getXCanonBuilderFacade();
+      _format_ = builder.getFormat();
+      _xCanonCardinality_ = builder.getXCanonCardinality();
+      _xCanonIdentifier_ = builder.getXCanonIdentifier();
+      _type_ = builder.getType();
+      _xCanonFacade_ = builder.getXCanonFacade();
+      _enum_ = ImmutableSet.copyOf(builder.getEnum());
+      _required_ = ImmutableSet.copyOf(builder.getRequired());
+      _minItems_ = builder.getMinItems();
+      _xCanonAttributes_ = builder.getXCanonAttributes();
+      _maximum_ = builder.getMaximum();
+      _minimum_ = builder.getMinimum();
+      _properties_ = builder.getProperties();
+      _xCanonExtends_ = builder.getXCanonExtends();
+      unknownKeys_ = builder.getCanonUnknownKeys();
+    }
   }
-  
   @Override
   public ImmutableSet<String> getCanonUnknownKeys()
   {
     return unknownKeys_;
   }
-  
+
   /**
    * Return the value of the maxItems attribute.
    *
    * @return the value of the maxItems attribute.
    */
-  public BigInteger getMaxItems()
+  public @Nullable BigInteger getMaxItems()
   {
     return _maxItems_;
-  }    
-  
+  }
+
+  /**
+   * Return the value of the x-canon-builderFacade attribute.
+   *
+   * @return the value of the x-canon-builderFacade attribute.
+   */
+  public @Nullable Boolean getXCanonBuilderFacade()
+  {
+    return _xCanonBuilderFacade_;
+  }
+
   /**
    * Return the value of the format attribute.
    *
    * @return the value of the format attribute.
    */
-  public String getFormat()
+  public @Nullable String getFormat()
   {
     return _format_;
-  }    
-  
+  }
+
   /**
    * Return the value of the x-canon-cardinality attribute.
    *
    * @return the value of the x-canon-cardinality attribute.
    */
-  public CanonCardinality getXCanonCardinality()
+  public @Nullable CanonCardinality getXCanonCardinality()
   {
     return _xCanonCardinality_;
-  }    
-  
+  }
+
   /**
    * Return the value of the x-canon-identifier attribute.
    *
    * @return the value of the x-canon-identifier attribute.
    */
-  public String getXCanonIdentifier()
+  public @Nullable String getXCanonIdentifier()
   {
     return _xCanonIdentifier_;
-  }    
-  
+  }
+
   /**
    * Return the value of the type attribute.
    *
    * @return the value of the type attribute.
    */
-  public String getType()
+  public @Nullable String getType()
   {
     return _type_;
-  }    
-  
+  }
+
   /**
    * Return the value of the x-canon-facade attribute.
    *
    * @return the value of the x-canon-facade attribute.
    */
-  public Boolean getXCanonFacade()
+  public @Nullable Boolean getXCanonFacade()
   {
     return _xCanonFacade_;
-  }    
-  
+  }
+
   /**
    * Return the value of the enum attribute.
    *
    * @return the value of the enum attribute.
    */
-  public List<String> getEnum()
+  public @Nullable Set<String> getEnum()
   {
     return _enum_;
-  }    
-  
+  }
+
   /**
    * Return the value of the required attribute.
    *
    * @return the value of the required attribute.
    */
-  public List<String> getRequired()
+  public @Nullable Set<String> getRequired()
   {
     return _required_;
-  }    
-  
+  }
+
   /**
    * Return the value of the minItems attribute.
    *
    * @return the value of the minItems attribute.
    */
-  public BigInteger getMinItems()
+  public @Nullable BigInteger getMinItems()
   {
     return _minItems_;
-  }    
-  
+  }
+
   /**
    * Return the value of the x-canon-attributes attribute.
    *
    * @return the value of the x-canon-attributes attribute.
    */
-  public CanonAttributes getXCanonAttributes()
+  public @Nullable CanonAttributes getXCanonAttributes()
   {
     return _xCanonAttributes_;
-  }    
-  
+  }
+
   /**
    * Return the value of the maximum attribute.
    *
    * @return the value of the maximum attribute.
    */
-  public BigDecimal getMaximum()
+  public @Nullable BigDecimal getMaximum()
   {
     return _maximum_;
-  }    
-  
+  }
+
   /**
    * Return the value of the minimum attribute.
    *
    * @return the value of the minimum attribute.
    */
-  public BigDecimal getMinimum()
+  public @Nullable BigDecimal getMinimum()
   {
     return _minimum_;
-  }    
-  
+  }
+
   /**
    * Return the value of the properties attribute.
    *
    * @return the value of the properties attribute.
    */
-  public PropertiesObject getProperties()
+  public @Nullable PropertiesObject getProperties()
   {
     return _properties_;
-  }    
-  
+  }
+
   /**
    * Return the value of the x-canon-extends attribute.
    *
    * @return the value of the x-canon-extends attribute.
    */
-  public ReferenceObject getXCanonExtends()
+  public @Nullable ReferenceObject getXCanonExtends()
   {
     return _xCanonExtends_;
-  }    
+  }
 
   @Override
   public boolean equals(Object obj)
   {
     if(obj instanceof SchemaEntity)
       return toString().equals(((SchemaEntity)obj).toString());
-    
+
     return false;
   }
 
@@ -596,88 +594,193 @@ public abstract class SchemaEntity extends ObjectEntity
     return toString().hashCode();
   }
 
-  
+
   /**
    * Factory class for Schema.
    */
-  public static class Factory extends ObjectEntity.Factory<SchemaEntity>
+  public static class Factory extends ObjectEntity.Factory<Schema>
   {
     @Override
     public String getCanonType()
     {
       return TYPE_ID;
     }
-    
+
     /**
      * Return the type version (_version JSON attribute) for entities created by this factory.
-     * 
+     *
      * @return The type version for entities created by this factory.
      */
     public String getCanonVersion()
     {
       return TYPE_VERSION;
     }
-    
+
     /**
      * Return the major type version for entities created by this factory.
-     * 
+     *
      * @return The major type version for entities created by this factory.
      */
     public @Nullable Integer getCanonMajorVersion()
     {
       return TYPE_MAJOR_VERSION;
     }
-    
+
     /**
      * Return the minjor type version for entities created by this factory.
-     * 
+     *
      * @return The minor type version for entities created by this factory.
      */
     public @Nullable Integer getCanonMinorVersion()
     {
       return TYPE_MINOR_VERSION;
     }
-    
+
     @Override
     public Schema newInstance(JsonObject jsonObject, ModelRegistry modelRegistry)
     {
-      return new Schema(jsonObject, modelRegistry);
+      return new Schema(new JsonInitialiser(jsonObject, modelRegistry));
     }
   }
- 
-  
-   
-  /**
-   * Builder for Schema
-   */
-  public static class Builder extends Schema.AbstractBuilder<Builder, Schema>
-  {
-    /**
-     * Constructor.
-     */
-    public Builder()
-    {
-      super(Builder.class);
-    }
 
-    /**
-     * Constructor initialised from another object instance.
-     * 
-     * @param initial An instance of the built type from which values are to be initialised.
-     */
-    public Builder(Schema initial)
+
+
+  /**
+   * Initialiser for Schema
+   */
+  
+  public interface Initialiser extends IObjectEntityInitialiser
+  {
+    IInstanceOrBuilder getInstanceOrBuilder();
+  }
+
+  public static class JsonInitialiser extends JsonObjectEntityInitialiser implements Initialiser
+  {
+    public JsonInitialiser(JsonObject jsonObject, ModelRegistry modelRegistry)
     {
-      super(Builder.class, initial);
+      super(jsonObject, modelRegistry);
     }
 
     @Override
-    protected Schema construct()
+    public IInstanceOrBuilder getInstanceOrBuilder()
     {
-      return new Schema(this);
+      return null;
     }
   }
-  
-  
+
+  /**
+   * Instance or Builder for Object Schema
+   */
+  public interface IInstanceOrBuilder extends IObjectEntityInitialiser
+  {
+    
+    /**
+     * Return the value of the maxItems attribute.
+     *
+     * @return the value of the maxItems attribute.
+     */
+    @Nullable BigInteger getMaxItems();
+    
+    /**
+     * Return the value of the x-canon-builderFacade attribute.
+     *
+     * @return the value of the x-canon-builderFacade attribute.
+     */
+    @Nullable Boolean getXCanonBuilderFacade();
+    
+    /**
+     * Return the value of the format attribute.
+     *
+     * @return the value of the format attribute.
+     */
+    @Nullable String getFormat();
+    
+    /**
+     * Return the value of the x-canon-cardinality attribute.
+     *
+     * @return the value of the x-canon-cardinality attribute.
+     */
+    @Nullable CanonCardinality getXCanonCardinality();
+    
+    /**
+     * Return the value of the x-canon-identifier attribute.
+     *
+     * @return the value of the x-canon-identifier attribute.
+     */
+    @Nullable String getXCanonIdentifier();
+    
+    /**
+     * Return the value of the type attribute.
+     *
+     * @return the value of the type attribute.
+     */
+    @Nullable String getType();
+    
+    /**
+     * Return the value of the x-canon-facade attribute.
+     *
+     * @return the value of the x-canon-facade attribute.
+     */
+    @Nullable Boolean getXCanonFacade();
+    
+    /**
+     * Return the value of the enum attribute.
+     *
+     * @return the value of the enum attribute.
+     */
+    @Nullable Set<String> getEnum();
+    
+    /**
+     * Return the value of the required attribute.
+     *
+     * @return the value of the required attribute.
+     */
+    @Nullable Set<String> getRequired();
+    
+    /**
+     * Return the value of the minItems attribute.
+     *
+     * @return the value of the minItems attribute.
+     */
+    @Nullable BigInteger getMinItems();
+    
+    /**
+     * Return the value of the x-canon-attributes attribute.
+     *
+     * @return the value of the x-canon-attributes attribute.
+     */
+    @Nullable CanonAttributes getXCanonAttributes();
+    
+    /**
+     * Return the value of the maximum attribute.
+     *
+     * @return the value of the maximum attribute.
+     */
+    @Nullable BigDecimal getMaximum();
+    
+    /**
+     * Return the value of the minimum attribute.
+     *
+     * @return the value of the minimum attribute.
+     */
+    @Nullable BigDecimal getMinimum();
+    
+    /**
+     * Return the value of the properties attribute.
+     *
+     * @return the value of the properties attribute.
+     */
+    @Nullable PropertiesObject getProperties();
+    
+    /**
+     * Return the value of the x-canon-extends attribute.
+     *
+     * @return the value of the x-canon-extends attribute.
+     */
+    @Nullable ReferenceObject getXCanonExtends();
+  }
+
+
   /**
    * Abstract builder for Schema. If there are sub-classes of this type then their builders sub-class this builder.
    *
@@ -686,39 +789,48 @@ public abstract class SchemaEntity extends ObjectEntity
    */
   public static abstract class AbstractBuilder<T extends AbstractBuilder<T,B>, B extends SchemaEntity>
     extends ObjectEntity.AbstractBuilder<T,B>
+    implements IInstanceOrBuilder, Initialiser
   {
     protected BigInteger                 _maxItems_;
+    protected Boolean                    _xCanonBuilderFacade_;
     protected String                     _format_;
     protected CanonCardinality           _xCanonCardinality_;
     protected String                     _xCanonIdentifier_;
     protected String                     _type_;
     protected Boolean                    _xCanonFacade_;
-    protected List<String>               _enum_ = new LinkedList<String>();
-    protected List<String>               _required_ = new LinkedList<String>();
+    protected Set<String>                _enum_ = new HashSet<String>();
+    protected Set<String>                _required_ = new HashSet<String>();
     protected BigInteger                 _minItems_;
     protected CanonAttributes            _xCanonAttributes_;
     protected BigDecimal                 _maximum_;
     protected BigDecimal                 _minimum_;
     protected PropertiesObject           _properties_;
     protected ReferenceObject            _xCanonExtends_;
-  
+
     protected AbstractBuilder(Class<T> type)
     {
       super(type);
     }
-    
+
+    @Override
+    public IInstanceOrBuilder getInstanceOrBuilder()
+    {
+      return this;
+    }
+
     protected AbstractBuilder(Class<T> type, B initial)
     {
       super(type, initial);
-      
+
       _maxItems_ = initial.getMaxItems();
+      _xCanonBuilderFacade_ = initial.getXCanonBuilderFacade();
       _format_ = initial.getFormat();
       _xCanonCardinality_ = initial.getXCanonCardinality();
       _xCanonIdentifier_ = initial.getXCanonIdentifier();
       _type_ = initial.getType();
       _xCanonFacade_ = initial.getXCanonFacade();
-      _enum_ = ImmutableList.copyOf(initial.getEnum());
-      _required_ = ImmutableList.copyOf(initial.getRequired());
+      _enum_ = ImmutableSet.copyOf(initial.getEnum());
+      _required_ = ImmutableSet.copyOf(initial.getRequired());
       _minItems_ = initial.getMinItems();
       _xCanonAttributes_ = initial.getXCanonAttributes();
       _maximum_ = initial.getMaximum();
@@ -726,14 +838,13 @@ public abstract class SchemaEntity extends ObjectEntity
       _properties_ = initial.getProperties();
       _xCanonExtends_ = initial.getXCanonExtends();
     }
-    
+
     @Override
     public T withValues(JsonObject jsonObject, ModelRegistry modelRegistry)
     {
       if(jsonObject.containsKey("maxItems"))
       {
         JsonDomNode  node = jsonObject.get("maxItems");
-//HERE0 node
         if(node instanceof IBigIntegerProvider)
         {
           _maxItems_ = ((IBigIntegerProvider)node).asBigInteger();
@@ -743,10 +854,21 @@ public abstract class SchemaEntity extends ObjectEntity
           throw new IllegalArgumentException("maxItems must be an instance of IBigIntegerProvider not " + node.getClass().getName());
         }
       }
+      if(jsonObject.containsKey("x-canon-builderFacade"))
+      {
+        JsonDomNode  node = jsonObject.get("x-canon-builderFacade");
+        if(node instanceof IBooleanProvider)
+        {
+          _xCanonBuilderFacade_ = ((IBooleanProvider)node).asBoolean();
+        }
+        else if(!modelRegistry.getParserValidation().isIgnoreInvalidAttributes())
+        {
+          throw new IllegalArgumentException("x-canon-builderFacade must be an instance of IBooleanProvider not " + node.getClass().getName());
+        }
+      }
       if(jsonObject.containsKey("format"))
       {
         JsonDomNode  node = jsonObject.get("format");
-//HERE0 node
         if(node instanceof IStringProvider)
         {
           _format_ = ((IStringProvider)node).asString();
@@ -756,10 +878,9 @@ public abstract class SchemaEntity extends ObjectEntity
           throw new IllegalArgumentException("format must be an instance of IStringProvider not " + node.getClass().getName());
         }
       }
-      if(jsonObject.containsKey("xCanonCardinality"))
+      if(jsonObject.containsKey("x-canon-cardinality"))
       {
-        JsonDomNode  node = jsonObject.get("xCanonCardinality");
-//HERE0 node
+        JsonDomNode  node = jsonObject.get("x-canon-cardinality");
         if(node instanceof IStringProvider)
         {
           _xCanonCardinality_ = CanonCardinality.valueOf(((IStringProvider)node).asString());
@@ -769,10 +890,9 @@ public abstract class SchemaEntity extends ObjectEntity
           throw new IllegalArgumentException("x-canon-cardinality must be an instance of IStringProvider not " + node.getClass().getName());
         }
       }
-      if(jsonObject.containsKey("xCanonIdentifier"))
+      if(jsonObject.containsKey("x-canon-identifier"))
       {
-        JsonDomNode  node = jsonObject.get("xCanonIdentifier");
-//HERE0 node
+        JsonDomNode  node = jsonObject.get("x-canon-identifier");
         if(node instanceof IStringProvider)
         {
           _xCanonIdentifier_ = ((IStringProvider)node).asString();
@@ -785,7 +905,6 @@ public abstract class SchemaEntity extends ObjectEntity
       if(jsonObject.containsKey("type"))
       {
         JsonDomNode  node = jsonObject.get("type");
-//HERE0 node
         if(node instanceof IStringProvider)
         {
           _type_ = ((IStringProvider)node).asString();
@@ -795,10 +914,9 @@ public abstract class SchemaEntity extends ObjectEntity
           throw new IllegalArgumentException("type must be an instance of IStringProvider not " + node.getClass().getName());
         }
       }
-      if(jsonObject.containsKey("xCanonFacade"))
+      if(jsonObject.containsKey("x-canon-facade"))
       {
-        JsonDomNode  node = jsonObject.get("xCanonFacade");
-//HERE0 node
+        JsonDomNode  node = jsonObject.get("x-canon-facade");
         if(node instanceof IBooleanProvider)
         {
           _xCanonFacade_ = ((IBooleanProvider)node).asBoolean();
@@ -811,25 +929,23 @@ public abstract class SchemaEntity extends ObjectEntity
       if(jsonObject.containsKey("enum"))
       {
         JsonDomNode  node = jsonObject.get("enum");
-//HERE0 node
         if(node instanceof JsonArray)
         {
-        List<String> itemList = new LinkedList<>();
-        for(JsonDomNode item : (JsonArray)node)
-        {
-          String itemValue = null;
-//HERE0 item
-          if(item instanceof IStringProvider)
+          Set<String> itemSet0 = new HashSet<>();
+          for(JsonDomNode item0 : (JsonArray)node)
           {
-            itemValue = ((IStringProvider)item).asString();
+            String itemValue0 = null;
+            if(item0 instanceof IStringProvider)
+            {
+              itemValue0 = ((IStringProvider)item0).asString();
+            }
+            else if(!modelRegistry.getParserValidation().isIgnoreInvalidAttributes())
+            {
+              throw new IllegalArgumentException("enum items must be an instance of IStringProvider not " + item0.getClass().getName());
+            }
+            itemSet0.add(itemValue0);
           }
-          else if(!modelRegistry.getParserValidation().isIgnoreInvalidAttributes())
-          {
-            throw new IllegalArgumentException("enum items must be an instance of IStringProvider not " + item.getClass().getName());
-          }
-          itemList.add(itemValue);
-        }
-        _enum_ = ImmutableList.copyOf(itemList);
+          _enum_ = ImmutableSet.copyOf(itemSet0);
         }
         else if(!modelRegistry.getParserValidation().isIgnoreInvalidAttributes())
         {
@@ -839,25 +955,23 @@ public abstract class SchemaEntity extends ObjectEntity
       if(jsonObject.containsKey("required"))
       {
         JsonDomNode  node = jsonObject.get("required");
-//HERE0 node
         if(node instanceof JsonArray)
         {
-        List<String> itemList = new LinkedList<>();
-        for(JsonDomNode item : (JsonArray)node)
-        {
-          String itemValue = null;
-//HERE0 item
-          if(item instanceof IStringProvider)
+          Set<String> itemSet0 = new HashSet<>();
+          for(JsonDomNode item0 : (JsonArray)node)
           {
-            itemValue = ((IStringProvider)item).asString();
+            String itemValue0 = null;
+            if(item0 instanceof IStringProvider)
+            {
+              itemValue0 = ((IStringProvider)item0).asString();
+            }
+            else if(!modelRegistry.getParserValidation().isIgnoreInvalidAttributes())
+            {
+              throw new IllegalArgumentException("required items must be an instance of IStringProvider not " + item0.getClass().getName());
+            }
+            itemSet0.add(itemValue0);
           }
-          else if(!modelRegistry.getParserValidation().isIgnoreInvalidAttributes())
-          {
-            throw new IllegalArgumentException("required items must be an instance of IStringProvider not " + item.getClass().getName());
-          }
-          itemList.add(itemValue);
-        }
-        _required_ = ImmutableList.copyOf(itemList);
+          _required_ = ImmutableSet.copyOf(itemSet0);
         }
         else if(!modelRegistry.getParserValidation().isIgnoreInvalidAttributes())
         {
@@ -867,7 +981,6 @@ public abstract class SchemaEntity extends ObjectEntity
       if(jsonObject.containsKey("minItems"))
       {
         JsonDomNode  node = jsonObject.get("minItems");
-//HERE0 node
         if(node instanceof IBigIntegerProvider)
         {
           _minItems_ = ((IBigIntegerProvider)node).asBigInteger();
@@ -877,10 +990,9 @@ public abstract class SchemaEntity extends ObjectEntity
           throw new IllegalArgumentException("minItems must be an instance of IBigIntegerProvider not " + node.getClass().getName());
         }
       }
-      if(jsonObject.containsKey("xCanonAttributes"))
+      if(jsonObject.containsKey("x-canon-attributes"))
       {
-        JsonDomNode  node = jsonObject.get("xCanonAttributes");
-//HERE0 node
+        JsonDomNode  node = jsonObject.get("x-canon-attributes");
         if(node instanceof JsonObject)
         {
           _xCanonAttributes_ = modelRegistry.newInstance((JsonObject)node, CanonAttributes.TYPE_ID, CanonAttributes.class);
@@ -893,7 +1005,6 @@ public abstract class SchemaEntity extends ObjectEntity
       if(jsonObject.containsKey("maximum"))
       {
         JsonDomNode  node = jsonObject.get("maximum");
-//HERE0 node
         if(node instanceof IBigDecimalProvider)
         {
           _maximum_ = ((IBigDecimalProvider)node).asBigDecimal();
@@ -906,7 +1017,6 @@ public abstract class SchemaEntity extends ObjectEntity
       if(jsonObject.containsKey("minimum"))
       {
         JsonDomNode  node = jsonObject.get("minimum");
-//HERE0 node
         if(node instanceof IBigDecimalProvider)
         {
           _minimum_ = ((IBigDecimalProvider)node).asBigDecimal();
@@ -919,7 +1029,6 @@ public abstract class SchemaEntity extends ObjectEntity
       if(jsonObject.containsKey("properties"))
       {
         JsonDomNode  node = jsonObject.get("properties");
-//HERE0 node
         if(node instanceof JsonObject)
         {
           _properties_ = modelRegistry.newInstance((JsonObject)node, PropertiesObject.TYPE_ID, PropertiesObject.class);
@@ -929,10 +1038,9 @@ public abstract class SchemaEntity extends ObjectEntity
           throw new IllegalArgumentException("properties must be an Object node not " + node.getClass().getName());
         }
       }
-      if(jsonObject.containsKey("xCanonExtends"))
+      if(jsonObject.containsKey("x-canon-extends"))
       {
-        JsonDomNode  node = jsonObject.get("xCanonExtends");
-//HERE0 node
+        JsonDomNode  node = jsonObject.get("x-canon-extends");
         if(node instanceof JsonObject)
         {
           _xCanonExtends_ = modelRegistry.newInstance((JsonObject)node, ReferenceObject.TYPE_ID, ReferenceObject.class);
@@ -944,10 +1052,11 @@ public abstract class SchemaEntity extends ObjectEntity
       }
       return super.withValues(jsonObject, modelRegistry);
     }
-    
+
     /* void populateAllFields(List<Object> result)
     {
       result.add(_maxItems_);
+      result.add(_xCanonBuilderFacade_);
       result.add(_format_);
       result.add(_xCanonCardinality_);
       result.add(_xCanonIdentifier_);
@@ -968,7 +1077,8 @@ public abstract class SchemaEntity extends ObjectEntity
      *
      * @return the value of the maxItems attribute.
      */
-    public BigInteger getMaxItems()
+    @Override
+    public @Nullable BigInteger getMaxItems()
     {
       return _maxItems_;
     }
@@ -976,7 +1086,7 @@ public abstract class SchemaEntity extends ObjectEntity
     /**
      * Set the value of the maxItems attribute.
      *
-     * @param value The value to be set. 
+     * @param value The value to be set.
      *
      * @return This (fluent method).
      */
@@ -987,13 +1097,42 @@ public abstract class SchemaEntity extends ObjectEntity
       _maxItems_ = value;
       return self();
     }
-    
+// field.typeSchema.schemaType INTEGER
+
+    /**
+     * Return the value of the x-canon-builderFacade attribute.
+     *
+     * @return the value of the x-canon-builderFacade attribute.
+     */
+    @Override
+    public @Nullable Boolean getXCanonBuilderFacade()
+    {
+      return _xCanonBuilderFacade_;
+    }
+
+    /**
+     * Set the value of the x-canon-builderFacade attribute.
+     *
+     * @param value The value to be set.
+     *
+     * @return This (fluent method).
+     */
+     // base type Boolean
+     // base name x-canon-builderFacade
+    public T withXCanonBuilderFacade(Boolean value)
+    {
+      _xCanonBuilderFacade_ = value;
+      return self();
+    }
+// field.typeSchema.schemaType BOOLEAN
+
     /**
      * Return the value of the format attribute.
      *
      * @return the value of the format attribute.
      */
-    public String getFormat()
+    @Override
+    public @Nullable String getFormat()
     {
       return _format_;
     }
@@ -1001,7 +1140,7 @@ public abstract class SchemaEntity extends ObjectEntity
     /**
      * Set the value of the format attribute.
      *
-     * @param value The value to be set. 
+     * @param value The value to be set.
      *
      * @return This (fluent method).
      */
@@ -1012,13 +1151,15 @@ public abstract class SchemaEntity extends ObjectEntity
       _format_ = value;
       return self();
     }
-    
+// field.typeSchema.schemaType STRING
+
     /**
      * Return the value of the x-canon-cardinality attribute.
      *
      * @return the value of the x-canon-cardinality attribute.
      */
-    public CanonCardinality getXCanonCardinality()
+    @Override
+    public @Nullable CanonCardinality getXCanonCardinality()
     {
       return _xCanonCardinality_;
     }
@@ -1026,7 +1167,7 @@ public abstract class SchemaEntity extends ObjectEntity
     /**
      * Set the value of the x-canon-cardinality attribute.
      *
-     * @param value The value to be set. 
+     * @param value The value to be set.
      *
      * @return This (fluent method).
      */
@@ -1037,13 +1178,15 @@ public abstract class SchemaEntity extends ObjectEntity
       _xCanonCardinality_ = value;
       return self();
     }
-    
+// field.typeSchema.schemaType STRING
+
     /**
      * Return the value of the x-canon-identifier attribute.
      *
      * @return the value of the x-canon-identifier attribute.
      */
-    public String getXCanonIdentifier()
+    @Override
+    public @Nullable String getXCanonIdentifier()
     {
       return _xCanonIdentifier_;
     }
@@ -1051,7 +1194,7 @@ public abstract class SchemaEntity extends ObjectEntity
     /**
      * Set the value of the x-canon-identifier attribute.
      *
-     * @param value The value to be set. 
+     * @param value The value to be set.
      *
      * @return This (fluent method).
      */
@@ -1062,13 +1205,15 @@ public abstract class SchemaEntity extends ObjectEntity
       _xCanonIdentifier_ = value;
       return self();
     }
-    
+// field.typeSchema.schemaType STRING
+
     /**
      * Return the value of the type attribute.
      *
      * @return the value of the type attribute.
      */
-    public String getType()
+    @Override
+    public @Nullable String getType()
     {
       return _type_;
     }
@@ -1076,7 +1221,7 @@ public abstract class SchemaEntity extends ObjectEntity
     /**
      * Set the value of the type attribute.
      *
-     * @param value The value to be set. 
+     * @param value The value to be set.
      *
      * @return This (fluent method).
      */
@@ -1087,13 +1232,15 @@ public abstract class SchemaEntity extends ObjectEntity
       _type_ = value;
       return self();
     }
-    
+// field.typeSchema.schemaType STRING
+
     /**
      * Return the value of the x-canon-facade attribute.
      *
      * @return the value of the x-canon-facade attribute.
      */
-    public Boolean getXCanonFacade()
+    @Override
+    public @Nullable Boolean getXCanonFacade()
     {
       return _xCanonFacade_;
     }
@@ -1101,7 +1248,7 @@ public abstract class SchemaEntity extends ObjectEntity
     /**
      * Set the value of the x-canon-facade attribute.
      *
-     * @param value The value to be set. 
+     * @param value The value to be set.
      *
      * @return This (fluent method).
      */
@@ -1112,13 +1259,15 @@ public abstract class SchemaEntity extends ObjectEntity
       _xCanonFacade_ = value;
       return self();
     }
-    
+// field.typeSchema.schemaType BOOLEAN
+
     /**
      * Return the value of the enum attribute.
      *
      * @return the value of the enum attribute.
      */
-    public List<String> getEnum()
+    @Override
+    public @Nullable Set<String> getEnum()
     {
       return _enum_;
     }
@@ -1126,24 +1275,29 @@ public abstract class SchemaEntity extends ObjectEntity
     /**
      * Set the value of the enum attribute.
      *
-     * @param value The value to be set. 
+     * @param value The value to be set.
      *
      * @return This (fluent method).
      */
-     // base type List<String>
+     // base type Set<String>
      // base name enum
-    public T withEnum(List<String> value)
+    public T withEnum(Set<String> value)
     {
-      _enum_ = ImmutableList.copyOf(value);
+      _enum_ = ImmutableSet.copyOf(value);
       return self();
     }
-    
+// field.typeSchema.schemaType ARRAY
+// field.typeSchema.elementType.class class com.symphony.oss.canon2.generator.java.JavaPrimitiveSchemaTemplateModel
+// field.typeSchema.elementType.name items
+// field.typeSchema.elementType.isGenerated N
+
     /**
      * Return the value of the required attribute.
      *
      * @return the value of the required attribute.
      */
-    public List<String> getRequired()
+    @Override
+    public @Nullable Set<String> getRequired()
     {
       return _required_;
     }
@@ -1151,24 +1305,29 @@ public abstract class SchemaEntity extends ObjectEntity
     /**
      * Set the value of the required attribute.
      *
-     * @param value The value to be set. 
+     * @param value The value to be set.
      *
      * @return This (fluent method).
      */
-     // base type List<String>
+     // base type Set<String>
      // base name required
-    public T withRequired(List<String> value)
+    public T withRequired(Set<String> value)
     {
-      _required_ = ImmutableList.copyOf(value);
+      _required_ = ImmutableSet.copyOf(value);
       return self();
     }
-    
+// field.typeSchema.schemaType ARRAY
+// field.typeSchema.elementType.class class com.symphony.oss.canon2.generator.java.JavaPrimitiveSchemaTemplateModel
+// field.typeSchema.elementType.name items
+// field.typeSchema.elementType.isGenerated N
+
     /**
      * Return the value of the minItems attribute.
      *
      * @return the value of the minItems attribute.
      */
-    public BigInteger getMinItems()
+    @Override
+    public @Nullable BigInteger getMinItems()
     {
       return _minItems_;
     }
@@ -1176,7 +1335,7 @@ public abstract class SchemaEntity extends ObjectEntity
     /**
      * Set the value of the minItems attribute.
      *
-     * @param value The value to be set. 
+     * @param value The value to be set.
      *
      * @return This (fluent method).
      */
@@ -1187,13 +1346,15 @@ public abstract class SchemaEntity extends ObjectEntity
       _minItems_ = value;
       return self();
     }
-    
+// field.typeSchema.schemaType INTEGER
+
     /**
      * Return the value of the x-canon-attributes attribute.
      *
      * @return the value of the x-canon-attributes attribute.
      */
-    public CanonAttributes getXCanonAttributes()
+    @Override
+    public @Nullable CanonAttributes getXCanonAttributes()
     {
       return _xCanonAttributes_;
     }
@@ -1201,7 +1362,7 @@ public abstract class SchemaEntity extends ObjectEntity
     /**
      * Set the value of the x-canon-attributes attribute.
      *
-     * @param value The value to be set. 
+     * @param value The value to be set.
      *
      * @return This (fluent method).
      */
@@ -1212,13 +1373,15 @@ public abstract class SchemaEntity extends ObjectEntity
       _xCanonAttributes_ = value;
       return self();
     }
-    
+// field.typeSchema.schemaType OBJECT
+
     /**
      * Return the value of the maximum attribute.
      *
      * @return the value of the maximum attribute.
      */
-    public BigDecimal getMaximum()
+    @Override
+    public @Nullable BigDecimal getMaximum()
     {
       return _maximum_;
     }
@@ -1226,7 +1389,7 @@ public abstract class SchemaEntity extends ObjectEntity
     /**
      * Set the value of the maximum attribute.
      *
-     * @param value The value to be set. 
+     * @param value The value to be set.
      *
      * @return This (fluent method).
      */
@@ -1237,13 +1400,15 @@ public abstract class SchemaEntity extends ObjectEntity
       _maximum_ = value;
       return self();
     }
-    
+// field.typeSchema.schemaType NUMBER
+
     /**
      * Return the value of the minimum attribute.
      *
      * @return the value of the minimum attribute.
      */
-    public BigDecimal getMinimum()
+    @Override
+    public @Nullable BigDecimal getMinimum()
     {
       return _minimum_;
     }
@@ -1251,7 +1416,7 @@ public abstract class SchemaEntity extends ObjectEntity
     /**
      * Set the value of the minimum attribute.
      *
-     * @param value The value to be set. 
+     * @param value The value to be set.
      *
      * @return This (fluent method).
      */
@@ -1262,13 +1427,15 @@ public abstract class SchemaEntity extends ObjectEntity
       _minimum_ = value;
       return self();
     }
-    
+// field.typeSchema.schemaType NUMBER
+
     /**
      * Return the value of the properties attribute.
      *
      * @return the value of the properties attribute.
      */
-    public PropertiesObject getProperties()
+    @Override
+    public @Nullable PropertiesObject getProperties()
     {
       return _properties_;
     }
@@ -1276,7 +1443,7 @@ public abstract class SchemaEntity extends ObjectEntity
     /**
      * Set the value of the properties attribute.
      *
-     * @param value The value to be set. 
+     * @param value The value to be set.
      *
      * @return This (fluent method).
      */
@@ -1287,13 +1454,15 @@ public abstract class SchemaEntity extends ObjectEntity
       _properties_ = value;
       return self();
     }
-    
+// field.typeSchema.schemaType OBJECT
+
     /**
      * Return the value of the x-canon-extends attribute.
      *
      * @return the value of the x-canon-extends attribute.
      */
-    public ReferenceObject getXCanonExtends()
+    @Override
+    public @Nullable ReferenceObject getXCanonExtends()
     {
       return _xCanonExtends_;
     }
@@ -1301,7 +1470,7 @@ public abstract class SchemaEntity extends ObjectEntity
     /**
      * Set the value of the x-canon-extends attribute.
      *
-     * @param value The value to be set. 
+     * @param value The value to be set.
      *
      * @return This (fluent method).
      */
@@ -1312,55 +1481,61 @@ public abstract class SchemaEntity extends ObjectEntity
       _xCanonExtends_ = value;
       return self();
     }
-    
-    @Override 
+// field.typeSchema.schemaType OBJECT
+
+    @Override
     public JsonObject getJsonObject()
     {
       JsonObject.Builder builder = new JsonObject.Builder();
-      
+
       builder.addIfNotNull(JSON_TYPE, SchemaEntity.TYPE_ID);
       builder.addIfNotNull(JSON_VERSION, SchemaEntity.TYPE_VERSION);
 
       populateJson(builder);
-  
+
       return builder.build();
     }
-    
+
     @Override
     public void populateJson(JsonObject.Builder builder)
     {
       super.populateJson(builder);
-  
+
       if(getMaxItems() != null)
       {
           builder.addIfNotNull("maxItems", getMaxItems());
       }
-  
+
+      if(getXCanonBuilderFacade() != null)
+      {
+          builder.addIfNotNull("x-canon-builderFacade", getXCanonBuilderFacade());
+      }
+
       if(getFormat() != null)
       {
           builder.addIfNotNull("format", getFormat());
       }
-  
+
       if(getXCanonCardinality() != null)
       {
           builder.addIfNotNull("x-canon-cardinality", getXCanonCardinality().getValue());
       }
-  
+
       if(getXCanonIdentifier() != null)
       {
           builder.addIfNotNull("x-canon-identifier", getXCanonIdentifier());
       }
-  
+
       if(getType() != null)
       {
           builder.addIfNotNull("type", getType());
       }
-  
+
       if(getXCanonFacade() != null)
       {
           builder.addIfNotNull("x-canon-facade", getXCanonFacade());
       }
-  
+
       if(getEnum() != null)
       {
           JsonArray.Builder arrayBuilder = new JsonArray.Builder();
@@ -1370,7 +1545,7 @@ public abstract class SchemaEntity extends ObjectEntity
           }
           builder.with("enum", arrayBuilder.build());
       }
-  
+
       if(getRequired() != null)
       {
           JsonArray.Builder arrayBuilder = new JsonArray.Builder();
@@ -1380,50 +1555,81 @@ public abstract class SchemaEntity extends ObjectEntity
           }
           builder.with("required", arrayBuilder.build());
       }
-  
+
       if(getMinItems() != null)
       {
           builder.addIfNotNull("minItems", getMinItems());
       }
-  
+
       if(getXCanonAttributes() != null)
       {
           builder.addIfNotNull("x-canon-attributes", getXCanonAttributes().getJsonObject());
       }
-  
+
       if(getMaximum() != null)
       {
           builder.addIfNotNull("maximum", getMaximum());
       }
-  
+
       if(getMinimum() != null)
       {
           builder.addIfNotNull("minimum", getMinimum());
       }
-  
+
       if(getProperties() != null)
       {
           builder.addIfNotNull("properties", getProperties().getJsonObject());
       }
-  
+
       if(getXCanonExtends() != null)
       {
           builder.addIfNotNull("x-canon-extends", getXCanonExtends().getJsonObject());
       }
     }
 
+  /**
+   * Builder for Schema
+   */
+  public static class Builder extends Schema.AbstractBuilder<Builder, Schema>
+  {
+    /**
+     * Constructor.
+     */
+    public Builder()
+    {
+      super(Builder.class);
+    }
+
+    /**
+     * Constructor initialised from another object instance.
+     *
+     * @param initial An instance of the built type from which values are to be initialised.
+     */
+    public Builder(Schema initial)
+    {
+      super(Builder.class, initial);
+    }
+
+    @Override
+    protected Schema construct()
+    {
+      return new Schema(this);
+    }
+  }
+
+
     @Override
     public String getCanonType()
     {
       return TYPE_ID;
     }
-    
+
     @Override
     public String getCanonVersion()
     {
       return TYPE_VERSION;
     }
-    
+
     @Override
     public @Nullable Integer getCanonMajorVersion()
     {
@@ -1436,7 +1642,7 @@ public abstract class SchemaEntity extends ObjectEntity
       return TYPE_MINOR_VERSION;
     }
   }
-  
+
   // entity.name Schema
   // entity.class class com.symphony.oss.canon2.generator.java.JavaObjectSchemaTemplateModel
 }

@@ -21,29 +21,28 @@
  *    Generator groupId    org.symphonyoss.s2.canon
  *              artifactId canon2-generator-java
  *    Template name        template/Object/_Entity.java.ftl
- *    At                   2020-09-16 16:04:42 BST
+ *    At                   2020-10-08 13:45:16 BST
  *----------------------------------------------------------------------------------------------------
  */
 
 package com.symphony.oss.canon2.model;
 
-import java.util.HashSet;
-import java.util.Set;
-
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.annotation.concurrent.Immutable;
 
 import com.google.common.collect.ImmutableSet;
 import com.symphony.oss.canon.json.model.JsonDomNode;
 import com.symphony.oss.canon.json.model.JsonObject;
+import com.symphony.oss.canon2.runtime.java.IObjectEntityInitialiser;
+import com.symphony.oss.canon2.runtime.java.JsonObjectEntityInitialiser;
 import com.symphony.oss.canon2.runtime.java.ModelRegistry;
 import com.symphony.oss.canon2.runtime.java.ObjectEntity;
 import com.symphony.oss.commons.type.provider.IStringProvider;
 
 /**
- * Implementation for Object  OpenApiObject canon
- * Object com.symphony.oss.canon2.generator.java.JavaOpenApiTemplateModel@4df50bcc
- * Generated from JavaObjectSchemaTemplateModel [fields_=[JavaFieldTemplateModel ComponentsObject components, JavaFieldTemplateModel CanonGeneratorConfig xCanonGenerators, JavaFieldTemplateModel Openapi openapi, JavaFieldTemplateModel PathsObject paths, JavaFieldTemplateModel XCanonId xCanonId, JavaFieldTemplateModel SemanticVersion xCanonVersion, JavaFieldTemplateModel XCanonIdentifier xCanonIdentifier, JavaFieldTemplateModel Canon canon, JavaFieldTemplateModel InfoObject info]] at {entity.context.path}
+ * Implementation for Object OpenApiObject
+ * Generated from OpenApiObject at {entity.context.path}
  */
 @Immutable
 public abstract class OpenApiObjectEntity extends ObjectEntity
@@ -58,7 +57,7 @@ public abstract class OpenApiObjectEntity extends ObjectEntity
   public static final Integer TYPE_MINOR_VERSION = 0;
   /** Factory instance */
   public static final Factory FACTORY = new Factory();
-  
+
   private final ImmutableSet<String>        unknownKeys_;
   // field JavaFieldTemplateModel ComponentsObject components field.typeSchema.name=ComponentsObject
   private final ComponentsObject           _components_;
@@ -80,322 +79,299 @@ public abstract class OpenApiObjectEntity extends ObjectEntity
   private final InfoObject                 _info_;
 
   /**
-   * Constructor from builder.
-   * 
-   * @param builder A mutable builder containing all values.
+   * Constructor.
+   *
+   * @param initialiser Initialiser, may be JSON serialisation, builder or another instance.
    */
-  public OpenApiObjectEntity(AbstractBuilder<?,?> builder)
+  public OpenApiObjectEntity(Initialiser initialiser)
   {
-    super(builder);
-    
-    _components_ = builder.getComponents();
-    _xCanonGenerators_ = builder.getXCanonGenerators();
-    _openapi_ = builder.getOpenapi();
-    _paths_ = builder.getPaths();
-    _xCanonId_ = builder.getXCanonId();
-    _xCanonVersion_ = builder.getXCanonVersion();
-    _xCanonIdentifier_ = builder.getXCanonIdentifier();
-    _canon_ = builder.getCanon();
-    _info_ = builder.getInfo();
-    if(_info_ == null)
-      throw new IllegalArgumentException("info is required.");
-  
-    unknownKeys_ = ImmutableSet.of();
-  }
-   
-  /**
-   * Constructor from serialised form.
-   * 
-   * @param jsonObject An immutable JSON object containing the serialized form of the object.
-   * @param modelRegistry A model registry to use to deserialize any nested objects.
-   */
-  public OpenApiObjectEntity(JsonObject jsonObject, ModelRegistry modelRegistry)
-  {
-    super(jsonObject);
-  
-    Set<String> keySet = new HashSet<>(super.getCanonUnknownKeys());
-    
-    if(keySet.remove("components"))
-    {
-      JsonDomNode  node = jsonObject.get("components");
-//HERE0 node
-      if(node instanceof JsonObject)
-      {
-        _components_ = modelRegistry.newInstance((JsonObject)node, ComponentsObject.TYPE_ID, ComponentsObject.class);
-      }
-      else 
-      {
-        throw new IllegalArgumentException("components must be an Object node not " + node.getClass().getName());
-      }
-    }
-    else
-    {
-      _components_ = null;
-    }
-    if(keySet.remove("x-canon-generators"))
-    {
-      JsonDomNode  node = jsonObject.get("x-canon-generators");
-//HERE0 node
-      if(node instanceof JsonObject)
-      {
-        _xCanonGenerators_ = modelRegistry.newInstance((JsonObject)node, CanonGeneratorConfig.TYPE_ID, CanonGeneratorConfig.class);
-      }
-      else 
-      {
-        throw new IllegalArgumentException("x-canon-generators must be an Object node not " + node.getClass().getName());
-      }
-    }
-    else
-    {
-      _xCanonGenerators_ = null;
-    }
-    if(keySet.remove("openapi"))
-    {
-      JsonDomNode  node = jsonObject.get("openapi");
-//HERE0 node
-      if(node instanceof IStringProvider)
-      {
-        _openapi_ = ((IStringProvider)node).asString();
-      }
-      else 
-      {
-        throw new IllegalArgumentException("openapi must be an instance of IStringProvider not " + node.getClass().getName());
-      }
-    }
-    else
-    {
-      _openapi_ = null;
-    }
-    if(keySet.remove("paths"))
-    {
-      JsonDomNode  node = jsonObject.get("paths");
-//HERE0 node
-      if(node instanceof JsonObject)
-      {
-        _paths_ = modelRegistry.newInstance((JsonObject)node, PathsObject.TYPE_ID, PathsObject.class);
-      }
-      else 
-      {
-        throw new IllegalArgumentException("paths must be an Object node not " + node.getClass().getName());
-      }
-    }
-    else
-    {
-      _paths_ = null;
-    }
-    if(keySet.remove("x-canon-id"))
-    {
-      JsonDomNode  node = jsonObject.get("x-canon-id");
-//HERE0 node
-      if(node instanceof IStringProvider)
-      {
-        _xCanonId_ = ((IStringProvider)node).asString();
-      }
-      else 
-      {
-        throw new IllegalArgumentException("x-canon-id must be an instance of IStringProvider not " + node.getClass().getName());
-      }
-    }
-    else
-    {
-      _xCanonId_ = null;
-    }
-    if(keySet.remove("x-canon-version"))
-    {
-      JsonDomNode  node = jsonObject.get("x-canon-version");
-//HERE0 node
-      if(node instanceof IStringProvider)
-      {
-        _xCanonVersion_ = new SemanticVersion(((IStringProvider)node).asString());
-      }
-      else 
-      {
-        throw new IllegalArgumentException("x-canon-version must be an instance of IStringProvider not " + node.getClass().getName());
-      }
-    }
-    else
-    {
-      _xCanonVersion_ = null;
-    }
-    if(keySet.remove("x-canon-identifier"))
-    {
-      JsonDomNode  node = jsonObject.get("x-canon-identifier");
-//HERE0 node
-      if(node instanceof IStringProvider)
-      {
-        _xCanonIdentifier_ = ((IStringProvider)node).asString();
-      }
-      else 
-      {
-        throw new IllegalArgumentException("x-canon-identifier must be an instance of IStringProvider not " + node.getClass().getName());
-      }
-    }
-    else
-    {
-      _xCanonIdentifier_ = null;
-    }
-    if(keySet.remove("canon"))
-    {
-      JsonDomNode  node = jsonObject.get("canon");
-//HERE0 node
-      if(node instanceof IStringProvider)
-      {
-        _canon_ = ((IStringProvider)node).asString();
-      }
-      else 
-      {
-        throw new IllegalArgumentException("canon must be an instance of IStringProvider not " + node.getClass().getName());
-      }
-    }
-    else
-    {
-      _canon_ = null;
-    }
-    if(keySet.remove("info"))
-    {
-      JsonDomNode  node = jsonObject.get("info");
-//HERE0 node
-      if(node instanceof JsonObject)
-      {
-        _info_ = modelRegistry.newInstance((JsonObject)node, InfoObject.TYPE_ID, InfoObject.class);
-      }
-      else 
-      {
-        throw new IllegalArgumentException("info must be an Object node not " + node.getClass().getName());
-      }
-    }
-    else
-    {
-      throw new IllegalArgumentException("info is required.");
-    }
+    super(initialiser);
 
-    unknownKeys_ = ImmutableSet.copyOf(keySet);
-  }
-   
-  /**
-   * Copy constructor.
-   * 
-   * @param other Another instance from which all attributes are to be copied.
-   */
-  public OpenApiObjectEntity(OpenApiObject other)
-  {
-    super(other);
-    
-    _components_ = other.getComponents();
-    _xCanonGenerators_ = other.getXCanonGenerators();
-    _openapi_ = other.getOpenapi();
-    _paths_ = other.getPaths();
-    _xCanonId_ = other.getXCanonId();
-    _xCanonVersion_ = other.getXCanonVersion();
-    _xCanonIdentifier_ = other.getXCanonIdentifier();
-    _canon_ = other.getCanon();
-    _info_ = other.getInfo();
+    if(initialiser instanceof JsonObjectEntityInitialiser)
+    {
+      JsonObjectEntityInitialiser jsonInitialiser = (JsonObjectEntityInitialiser)initialiser;
 
-    unknownKeys_ = other.getCanonUnknownKeys();
-  }
+      JsonDomNode  node;
+
+      node = jsonInitialiser.get("components");
+      if(node != null)
+      {
+        if(node instanceof JsonObject)
+        {
+          _components_ = jsonInitialiser.getModelRegistry().newInstance((JsonObject)node, ComponentsObject.TYPE_ID, ComponentsObject.class);
+        }
+        else 
+        {
+          throw new IllegalArgumentException("components must be an Object node not " + node.getClass().getName());
+        }
+      }
+      else
+      {
+        _components_ = null;
+      }
+
+      node = jsonInitialiser.get("x-canon-generators");
+      if(node != null)
+      {
+        if(node instanceof JsonObject)
+        {
+          _xCanonGenerators_ = jsonInitialiser.getModelRegistry().newInstance((JsonObject)node, CanonGeneratorConfig.TYPE_ID, CanonGeneratorConfig.class);
+        }
+        else 
+        {
+          throw new IllegalArgumentException("x-canon-generators must be an Object node not " + node.getClass().getName());
+        }
+      }
+      else
+      {
+        _xCanonGenerators_ = null;
+      }
+
+      node = jsonInitialiser.get("openapi");
+      if(node != null)
+      {
+        if(node instanceof IStringProvider)
+        {
+          _openapi_ = ((IStringProvider)node).asString();
+        }
+        else 
+        {
+          throw new IllegalArgumentException("openapi must be an instance of IStringProvider not " + node.getClass().getName());
+        }
+      }
+      else
+      {
+        _openapi_ = null;
+      }
+
+      node = jsonInitialiser.get("paths");
+      if(node != null)
+      {
+        if(node instanceof JsonObject)
+        {
+          _paths_ = jsonInitialiser.getModelRegistry().newInstance((JsonObject)node, PathsObject.TYPE_ID, PathsObject.class);
+        }
+        else 
+        {
+          throw new IllegalArgumentException("paths must be an Object node not " + node.getClass().getName());
+        }
+      }
+      else
+      {
+        _paths_ = null;
+      }
+
+      node = jsonInitialiser.get("x-canon-id");
+      if(node != null)
+      {
+        if(node instanceof IStringProvider)
+        {
+          _xCanonId_ = ((IStringProvider)node).asString();
+        }
+        else 
+        {
+          throw new IllegalArgumentException("x-canon-id must be an instance of IStringProvider not " + node.getClass().getName());
+        }
+      }
+      else
+      {
+        _xCanonId_ = null;
+      }
+
+      node = jsonInitialiser.get("x-canon-version");
+      if(node != null)
+      {
+        if(node instanceof IStringProvider)
+        {
+          _xCanonVersion_ = new SemanticVersion(((IStringProvider)node).asString());
+        }
+        else 
+        {
+          throw new IllegalArgumentException("x-canon-version must be an instance of IStringProvider not " + node.getClass().getName());
+        }
+      }
+      else
+      {
+        _xCanonVersion_ = null;
+      }
+
+      node = jsonInitialiser.get("x-canon-identifier");
+      if(node != null)
+      {
+        if(node instanceof IStringProvider)
+        {
+          _xCanonIdentifier_ = ((IStringProvider)node).asString();
+        }
+        else 
+        {
+          throw new IllegalArgumentException("x-canon-identifier must be an instance of IStringProvider not " + node.getClass().getName());
+        }
+      }
+      else
+      {
+        _xCanonIdentifier_ = null;
+      }
+
+      node = jsonInitialiser.get("canon");
+      if(node != null)
+      {
+        if(node instanceof IStringProvider)
+        {
+          _canon_ = ((IStringProvider)node).asString();
+        }
+        else 
+        {
+          throw new IllegalArgumentException("canon must be an instance of IStringProvider not " + node.getClass().getName());
+        }
+      }
+      else
+      {
+        _canon_ = null;
+      }
+
+      node = jsonInitialiser.get("info");
+      if(node != null)
+      {
+        if(node instanceof JsonObject)
+        {
+          _info_ = jsonInitialiser.getModelRegistry().newInstance((JsonObject)node, InfoObject.TYPE_ID, InfoObject.class);
+        }
+        else 
+        {
+          throw new IllegalArgumentException("info must be an Object node not " + node.getClass().getName());
+        }
+      }
+      else
+      {
+        throw new IllegalArgumentException("info is required.");
+      }
+      unknownKeys_ = jsonInitialiser.getCanonUnknownKeys();
+    }
+    else
+    {
+      IInstanceOrBuilder builder =  initialiser.getInstanceOrBuilder();
+
+      if(builder == null)
+      {
+        throw new IllegalArgumentException("Initializer is not an JsonObjectEntityInitialiser but getInstanceOrBuilder() returns null");
+      }
+      _components_ = builder.getComponents();
+      _xCanonGenerators_ = builder.getXCanonGenerators();
+      _openapi_ = builder.getOpenapi();
+      _paths_ = builder.getPaths();
+      _xCanonId_ = builder.getXCanonId();
+      _xCanonVersion_ = builder.getXCanonVersion();
+      _xCanonIdentifier_ = builder.getXCanonIdentifier();
+      _canon_ = builder.getCanon();
+      _info_ = builder.getInfo();
+      if(_info_ == null)
+        throw new IllegalArgumentException("info is required.");
   
+      unknownKeys_ = builder.getCanonUnknownKeys();
+    }
+  }
   @Override
   public ImmutableSet<String> getCanonUnknownKeys()
   {
     return unknownKeys_;
   }
-  
+
   /**
    * Return the value of the components attribute.
    *
    * @return the value of the components attribute.
    */
-  public ComponentsObject getComponents()
+  public @Nullable ComponentsObject getComponents()
   {
     return _components_;
-  }    
-  
+  }
+
   /**
    * Return the value of the x-canon-generators attribute.
    *
    * @return the value of the x-canon-generators attribute.
    */
-  public CanonGeneratorConfig getXCanonGenerators()
+  public @Nullable CanonGeneratorConfig getXCanonGenerators()
   {
     return _xCanonGenerators_;
-  }    
-  
+  }
+
   /**
    * Return the value of the openapi attribute.
    *
    * @return the value of the openapi attribute.
    */
-  public String getOpenapi()
+  public @Nullable String getOpenapi()
   {
     return _openapi_;
-  }    
-  
+  }
+
   /**
    * Return the value of the paths attribute.
    *
    * @return the value of the paths attribute.
    */
-  public PathsObject getPaths()
+  public @Nullable PathsObject getPaths()
   {
     return _paths_;
-  }    
-  
+  }
+
   /**
    * Return the value of the x-canon-id attribute.
    *
    * @return the value of the x-canon-id attribute.
    */
-  public String getXCanonId()
+  public @Nullable String getXCanonId()
   {
     return _xCanonId_;
-  }    
-  
+  }
+
   /**
    * Return the value of the x-canon-version attribute.
    *
    * @return the value of the x-canon-version attribute.
    */
-  public SemanticVersion getXCanonVersion()
+  public @Nullable SemanticVersion getXCanonVersion()
   {
     return _xCanonVersion_;
-  }    
-  
+  }
+
   /**
    * Return the value of the x-canon-identifier attribute.
    *
    * @return the value of the x-canon-identifier attribute.
    */
-  public String getXCanonIdentifier()
+  public @Nullable String getXCanonIdentifier()
   {
     return _xCanonIdentifier_;
-  }    
-  
+  }
+
   /**
    * Return the value of the canon attribute.
    *
    * @return the value of the canon attribute.
    */
-  public String getCanon()
+  public @Nullable String getCanon()
   {
     return _canon_;
-  }    
-  
+  }
+
   /**
    * Return the value of the info attribute.
    *
    * @return the value of the info attribute.
    */
-  public InfoObject getInfo()
+  public @Nonnull InfoObject getInfo()
   {
     return _info_;
-  }    
+  }
 
   @Override
   public boolean equals(Object obj)
   {
     if(obj instanceof OpenApiObjectEntity)
       return toString().equals(((OpenApiObjectEntity)obj).toString());
-    
+
     return false;
   }
 
@@ -405,88 +381,151 @@ public abstract class OpenApiObjectEntity extends ObjectEntity
     return toString().hashCode();
   }
 
-  
+
   /**
    * Factory class for OpenApiObject.
    */
-  public static class Factory extends ObjectEntity.Factory<OpenApiObjectEntity>
+  public static class Factory extends ObjectEntity.Factory<OpenApiObject>
   {
     @Override
     public String getCanonType()
     {
       return TYPE_ID;
     }
-    
+
     /**
      * Return the type version (_version JSON attribute) for entities created by this factory.
-     * 
+     *
      * @return The type version for entities created by this factory.
      */
     public String getCanonVersion()
     {
       return TYPE_VERSION;
     }
-    
+
     /**
      * Return the major type version for entities created by this factory.
-     * 
+     *
      * @return The major type version for entities created by this factory.
      */
     public @Nullable Integer getCanonMajorVersion()
     {
       return TYPE_MAJOR_VERSION;
     }
-    
+
     /**
      * Return the minjor type version for entities created by this factory.
-     * 
+     *
      * @return The minor type version for entities created by this factory.
      */
     public @Nullable Integer getCanonMinorVersion()
     {
       return TYPE_MINOR_VERSION;
     }
-    
+
     @Override
     public OpenApiObject newInstance(JsonObject jsonObject, ModelRegistry modelRegistry)
     {
-      return new OpenApiObject(jsonObject, modelRegistry);
+      return new OpenApiObject(new JsonInitialiser(jsonObject, modelRegistry));
     }
   }
- 
-  
-   
-  /**
-   * Builder for OpenApiObject
-   */
-  public static class Builder extends OpenApiObject.AbstractBuilder<Builder, OpenApiObject>
-  {
-    /**
-     * Constructor.
-     */
-    public Builder()
-    {
-      super(Builder.class);
-    }
 
-    /**
-     * Constructor initialised from another object instance.
-     * 
-     * @param initial An instance of the built type from which values are to be initialised.
-     */
-    public Builder(OpenApiObject initial)
+
+
+  /**
+   * Initialiser for OpenApiObject
+   */
+  
+  public interface Initialiser extends IObjectEntityInitialiser
+  {
+    IInstanceOrBuilder getInstanceOrBuilder();
+  }
+
+  public static class JsonInitialiser extends JsonObjectEntityInitialiser implements Initialiser
+  {
+    public JsonInitialiser(JsonObject jsonObject, ModelRegistry modelRegistry)
     {
-      super(Builder.class, initial);
+      super(jsonObject, modelRegistry);
     }
 
     @Override
-    protected OpenApiObject construct()
+    public IInstanceOrBuilder getInstanceOrBuilder()
     {
-      return new OpenApiObject(this);
+      return null;
     }
   }
-  
-  
+
+  /**
+   * Instance or Builder for Object OpenApiObject
+   */
+  public interface IInstanceOrBuilder extends IObjectEntityInitialiser
+  {
+    
+    /**
+     * Return the value of the components attribute.
+     *
+     * @return the value of the components attribute.
+     */
+    @Nullable ComponentsObject getComponents();
+    
+    /**
+     * Return the value of the x-canon-generators attribute.
+     *
+     * @return the value of the x-canon-generators attribute.
+     */
+    @Nullable CanonGeneratorConfig getXCanonGenerators();
+    
+    /**
+     * Return the value of the openapi attribute.
+     *
+     * @return the value of the openapi attribute.
+     */
+    @Nullable String getOpenapi();
+    
+    /**
+     * Return the value of the paths attribute.
+     *
+     * @return the value of the paths attribute.
+     */
+    @Nullable PathsObject getPaths();
+    
+    /**
+     * Return the value of the x-canon-id attribute.
+     *
+     * @return the value of the x-canon-id attribute.
+     */
+    @Nullable String getXCanonId();
+    
+    /**
+     * Return the value of the x-canon-version attribute.
+     *
+     * @return the value of the x-canon-version attribute.
+     */
+    @Nullable SemanticVersion getXCanonVersion();
+    
+    /**
+     * Return the value of the x-canon-identifier attribute.
+     *
+     * @return the value of the x-canon-identifier attribute.
+     */
+    @Nullable String getXCanonIdentifier();
+    
+    /**
+     * Return the value of the canon attribute.
+     *
+     * @return the value of the canon attribute.
+     */
+    @Nullable String getCanon();
+    
+    /**
+     * Return the value of the info attribute.
+     *
+     * @return the value of the info attribute.
+     */
+    @Nonnull InfoObject getInfo();
+  }
+
+
   /**
    * Abstract builder for OpenApiObject. If there are sub-classes of this type then their builders sub-class this builder.
    *
@@ -495,6 +534,7 @@ public abstract class OpenApiObjectEntity extends ObjectEntity
    */
   public static abstract class AbstractBuilder<T extends AbstractBuilder<T,B>, B extends OpenApiObjectEntity>
     extends ObjectEntity.AbstractBuilder<T,B>
+    implements IInstanceOrBuilder, Initialiser
   {
     protected ComponentsObject           _components_;
     protected CanonGeneratorConfig       _xCanonGenerators_;
@@ -505,16 +545,22 @@ public abstract class OpenApiObjectEntity extends ObjectEntity
     protected String                     _xCanonIdentifier_;
     protected String                     _canon_;
     protected InfoObject                 _info_;
-  
+
     protected AbstractBuilder(Class<T> type)
     {
       super(type);
     }
-    
+
+    @Override
+    public IInstanceOrBuilder getInstanceOrBuilder()
+    {
+      return this;
+    }
+
     protected AbstractBuilder(Class<T> type, B initial)
     {
       super(type, initial);
-      
+
       _components_ = initial.getComponents();
       _xCanonGenerators_ = initial.getXCanonGenerators();
       _openapi_ = initial.getOpenapi();
@@ -525,14 +571,13 @@ public abstract class OpenApiObjectEntity extends ObjectEntity
       _canon_ = initial.getCanon();
       _info_ = initial.getInfo();
     }
-    
+
     @Override
     public T withValues(JsonObject jsonObject, ModelRegistry modelRegistry)
     {
       if(jsonObject.containsKey("components"))
       {
         JsonDomNode  node = jsonObject.get("components");
-//HERE0 node
         if(node instanceof JsonObject)
         {
           _components_ = modelRegistry.newInstance((JsonObject)node, ComponentsObject.TYPE_ID, ComponentsObject.class);
@@ -542,10 +587,9 @@ public abstract class OpenApiObjectEntity extends ObjectEntity
           throw new IllegalArgumentException("components must be an Object node not " + node.getClass().getName());
         }
       }
-      if(jsonObject.containsKey("xCanonGenerators"))
+      if(jsonObject.containsKey("x-canon-generators"))
       {
-        JsonDomNode  node = jsonObject.get("xCanonGenerators");
-//HERE0 node
+        JsonDomNode  node = jsonObject.get("x-canon-generators");
         if(node instanceof JsonObject)
         {
           _xCanonGenerators_ = modelRegistry.newInstance((JsonObject)node, CanonGeneratorConfig.TYPE_ID, CanonGeneratorConfig.class);
@@ -558,7 +602,6 @@ public abstract class OpenApiObjectEntity extends ObjectEntity
       if(jsonObject.containsKey("openapi"))
       {
         JsonDomNode  node = jsonObject.get("openapi");
-//HERE0 node
         if(node instanceof IStringProvider)
         {
           _openapi_ = ((IStringProvider)node).asString();
@@ -571,7 +614,6 @@ public abstract class OpenApiObjectEntity extends ObjectEntity
       if(jsonObject.containsKey("paths"))
       {
         JsonDomNode  node = jsonObject.get("paths");
-//HERE0 node
         if(node instanceof JsonObject)
         {
           _paths_ = modelRegistry.newInstance((JsonObject)node, PathsObject.TYPE_ID, PathsObject.class);
@@ -581,10 +623,9 @@ public abstract class OpenApiObjectEntity extends ObjectEntity
           throw new IllegalArgumentException("paths must be an Object node not " + node.getClass().getName());
         }
       }
-      if(jsonObject.containsKey("xCanonId"))
+      if(jsonObject.containsKey("x-canon-id"))
       {
-        JsonDomNode  node = jsonObject.get("xCanonId");
-//HERE0 node
+        JsonDomNode  node = jsonObject.get("x-canon-id");
         if(node instanceof IStringProvider)
         {
           _xCanonId_ = ((IStringProvider)node).asString();
@@ -594,10 +635,9 @@ public abstract class OpenApiObjectEntity extends ObjectEntity
           throw new IllegalArgumentException("x-canon-id must be an instance of IStringProvider not " + node.getClass().getName());
         }
       }
-      if(jsonObject.containsKey("xCanonVersion"))
+      if(jsonObject.containsKey("x-canon-version"))
       {
-        JsonDomNode  node = jsonObject.get("xCanonVersion");
-//HERE0 node
+        JsonDomNode  node = jsonObject.get("x-canon-version");
         if(node instanceof IStringProvider)
         {
           _xCanonVersion_ = new SemanticVersion(((IStringProvider)node).asString());
@@ -607,10 +647,9 @@ public abstract class OpenApiObjectEntity extends ObjectEntity
           throw new IllegalArgumentException("x-canon-version must be an instance of IStringProvider not " + node.getClass().getName());
         }
       }
-      if(jsonObject.containsKey("xCanonIdentifier"))
+      if(jsonObject.containsKey("x-canon-identifier"))
       {
-        JsonDomNode  node = jsonObject.get("xCanonIdentifier");
-//HERE0 node
+        JsonDomNode  node = jsonObject.get("x-canon-identifier");
         if(node instanceof IStringProvider)
         {
           _xCanonIdentifier_ = ((IStringProvider)node).asString();
@@ -623,7 +662,6 @@ public abstract class OpenApiObjectEntity extends ObjectEntity
       if(jsonObject.containsKey("canon"))
       {
         JsonDomNode  node = jsonObject.get("canon");
-//HERE0 node
         if(node instanceof IStringProvider)
         {
           _canon_ = ((IStringProvider)node).asString();
@@ -636,7 +674,6 @@ public abstract class OpenApiObjectEntity extends ObjectEntity
       if(jsonObject.containsKey("info"))
       {
         JsonDomNode  node = jsonObject.get("info");
-//HERE0 node
         if(node instanceof JsonObject)
         {
           _info_ = modelRegistry.newInstance((JsonObject)node, InfoObject.TYPE_ID, InfoObject.class);
@@ -648,7 +685,7 @@ public abstract class OpenApiObjectEntity extends ObjectEntity
       }
       return super.withValues(jsonObject, modelRegistry);
     }
-    
+
     /* void populateAllFields(List<Object> result)
     {
       result.add(_components_);
@@ -667,7 +704,8 @@ public abstract class OpenApiObjectEntity extends ObjectEntity
      *
      * @return the value of the components attribute.
      */
-    public ComponentsObject getComponents()
+    @Override
+    public @Nullable ComponentsObject getComponents()
     {
       return _components_;
     }
@@ -675,7 +713,7 @@ public abstract class OpenApiObjectEntity extends ObjectEntity
     /**
      * Set the value of the components attribute.
      *
-     * @param value The value to be set. 
+     * @param value The value to be set.
      *
      * @return This (fluent method).
      */
@@ -686,13 +724,15 @@ public abstract class OpenApiObjectEntity extends ObjectEntity
       _components_ = value;
       return self();
     }
-    
+// field.typeSchema.schemaType OBJECT
+
     /**
      * Return the value of the x-canon-generators attribute.
      *
      * @return the value of the x-canon-generators attribute.
      */
-    public CanonGeneratorConfig getXCanonGenerators()
+    @Override
+    public @Nullable CanonGeneratorConfig getXCanonGenerators()
     {
       return _xCanonGenerators_;
     }
@@ -700,7 +740,7 @@ public abstract class OpenApiObjectEntity extends ObjectEntity
     /**
      * Set the value of the x-canon-generators attribute.
      *
-     * @param value The value to be set. 
+     * @param value The value to be set.
      *
      * @return This (fluent method).
      */
@@ -711,13 +751,15 @@ public abstract class OpenApiObjectEntity extends ObjectEntity
       _xCanonGenerators_ = value;
       return self();
     }
-    
+// field.typeSchema.schemaType OBJECT
+
     /**
      * Return the value of the openapi attribute.
      *
      * @return the value of the openapi attribute.
      */
-    public String getOpenapi()
+    @Override
+    public @Nullable String getOpenapi()
     {
       return _openapi_;
     }
@@ -725,7 +767,7 @@ public abstract class OpenApiObjectEntity extends ObjectEntity
     /**
      * Set the value of the openapi attribute.
      *
-     * @param value The value to be set. 
+     * @param value The value to be set.
      *
      * @return This (fluent method).
      */
@@ -736,13 +778,15 @@ public abstract class OpenApiObjectEntity extends ObjectEntity
       _openapi_ = value;
       return self();
     }
-    
+// field.typeSchema.schemaType STRING
+
     /**
      * Return the value of the paths attribute.
      *
      * @return the value of the paths attribute.
      */
-    public PathsObject getPaths()
+    @Override
+    public @Nullable PathsObject getPaths()
     {
       return _paths_;
     }
@@ -750,7 +794,7 @@ public abstract class OpenApiObjectEntity extends ObjectEntity
     /**
      * Set the value of the paths attribute.
      *
-     * @param value The value to be set. 
+     * @param value The value to be set.
      *
      * @return This (fluent method).
      */
@@ -761,13 +805,15 @@ public abstract class OpenApiObjectEntity extends ObjectEntity
       _paths_ = value;
       return self();
     }
-    
+// field.typeSchema.schemaType OBJECT
+
     /**
      * Return the value of the x-canon-id attribute.
      *
      * @return the value of the x-canon-id attribute.
      */
-    public String getXCanonId()
+    @Override
+    public @Nullable String getXCanonId()
     {
       return _xCanonId_;
     }
@@ -775,7 +821,7 @@ public abstract class OpenApiObjectEntity extends ObjectEntity
     /**
      * Set the value of the x-canon-id attribute.
      *
-     * @param value The value to be set. 
+     * @param value The value to be set.
      *
      * @return This (fluent method).
      */
@@ -786,13 +832,15 @@ public abstract class OpenApiObjectEntity extends ObjectEntity
       _xCanonId_ = value;
       return self();
     }
-    
+// field.typeSchema.schemaType STRING
+
     /**
      * Return the value of the x-canon-version attribute.
      *
      * @return the value of the x-canon-version attribute.
      */
-    public SemanticVersion getXCanonVersion()
+    @Override
+    public @Nullable SemanticVersion getXCanonVersion()
     {
       return _xCanonVersion_;
     }
@@ -800,7 +848,7 @@ public abstract class OpenApiObjectEntity extends ObjectEntity
     /**
      * Set the value of the x-canon-version attribute.
      *
-     * @param value The value to be set. 
+     * @param value The value to be set.
      *
      * @return This (fluent method).
      */
@@ -811,27 +859,15 @@ public abstract class OpenApiObjectEntity extends ObjectEntity
       _xCanonVersion_ = value;
       return self();
     }
-    
-    /**
-     * Set the value of the x-canon-version attribute.
-     *
-     * @param value The value to be set. 
-     *
-     * @return This (fluent method).
-     */
-     //typedef
-    public T withXCanonVersion(String value)
-    {
-      _xCanonVersion_ = new SemanticVersion(value);
-      return self();
-    }
-    
+// field.typeSchema.schemaType STRING
+
     /**
      * Return the value of the x-canon-identifier attribute.
      *
      * @return the value of the x-canon-identifier attribute.
      */
-    public String getXCanonIdentifier()
+    @Override
+    public @Nullable String getXCanonIdentifier()
     {
       return _xCanonIdentifier_;
     }
@@ -839,7 +875,7 @@ public abstract class OpenApiObjectEntity extends ObjectEntity
     /**
      * Set the value of the x-canon-identifier attribute.
      *
-     * @param value The value to be set. 
+     * @param value The value to be set.
      *
      * @return This (fluent method).
      */
@@ -850,13 +886,15 @@ public abstract class OpenApiObjectEntity extends ObjectEntity
       _xCanonIdentifier_ = value;
       return self();
     }
-    
+// field.typeSchema.schemaType STRING
+
     /**
      * Return the value of the canon attribute.
      *
      * @return the value of the canon attribute.
      */
-    public String getCanon()
+    @Override
+    public @Nullable String getCanon()
     {
       return _canon_;
     }
@@ -864,7 +902,7 @@ public abstract class OpenApiObjectEntity extends ObjectEntity
     /**
      * Set the value of the canon attribute.
      *
-     * @param value The value to be set. 
+     * @param value The value to be set.
      *
      * @return This (fluent method).
      */
@@ -875,21 +913,25 @@ public abstract class OpenApiObjectEntity extends ObjectEntity
       _canon_ = value;
       return self();
     }
-    
+// field.typeSchema.schemaType STRING
+
     /**
      * Return the value of the info attribute.
      *
      * @return the value of the info attribute.
      */
-    public InfoObject getInfo()
+    @Override
+    public @Nonnull InfoObject getInfo()
     {
+      if(_info_ == null)
+        throw new IllegalStateException("Unexpected null value encountered");
       return _info_;
     }
 
     /**
      * Set the value of the info attribute.
      *
-     * @param value The value to be set. 
+     * @param value The value to be set.
      *
      * @return This (fluent method).
      */
@@ -903,83 +945,115 @@ public abstract class OpenApiObjectEntity extends ObjectEntity
       _info_ = value;
       return self();
     }
-    
-    @Override 
+// field.typeSchema.schemaType OBJECT
+
+    @Override
     public JsonObject getJsonObject()
     {
       JsonObject.Builder builder = new JsonObject.Builder();
-      
+
       builder.addIfNotNull(JSON_TYPE, OpenApiObjectEntity.TYPE_ID);
       builder.addIfNotNull(JSON_VERSION, OpenApiObjectEntity.TYPE_VERSION);
 
       populateJson(builder);
-  
+
       return builder.build();
     }
-    
+
     @Override
     public void populateJson(JsonObject.Builder builder)
     {
       super.populateJson(builder);
-  
+
       if(getComponents() != null)
       {
           builder.addIfNotNull("components", getComponents().getJsonObject());
       }
-  
+
       if(getXCanonGenerators() != null)
       {
           builder.addIfNotNull("x-canon-generators", getXCanonGenerators().getJsonObject());
       }
-  
+
       if(getOpenapi() != null)
       {
           builder.addIfNotNull("openapi", getOpenapi());
       }
-  
+
       if(getPaths() != null)
       {
           builder.addIfNotNull("paths", getPaths().getJsonObject());
       }
-  
+
       if(getXCanonId() != null)
       {
           builder.addIfNotNull("x-canon-id", getXCanonId());
       }
-  
+
       if(getXCanonVersion() != null)
       {
           builder.addIfNotNull("x-canon-version", getXCanonVersion().getValue());
       }
-  
+
       if(getXCanonIdentifier() != null)
       {
           builder.addIfNotNull("x-canon-identifier", getXCanonIdentifier());
       }
-  
+
       if(getCanon() != null)
       {
           builder.addIfNotNull("canon", getCanon());
       }
-  
+
       if(getInfo() != null)
       {
           builder.addIfNotNull("info", getInfo().getJsonObject());
       }
     }
 
+  /**
+   * Builder for OpenApiObject
+   */
+  public static class Builder extends OpenApiObject.AbstractBuilder<Builder, OpenApiObject>
+  {
+    /**
+     * Constructor.
+     */
+    public Builder()
+    {
+      super(Builder.class);
+    }
+
+    /**
+     * Constructor initialised from another object instance.
+     *
+     * @param initial An instance of the built type from which values are to be initialised.
+     */
+    public Builder(OpenApiObject initial)
+    {
+      super(Builder.class, initial);
+    }
+
+    @Override
+    protected OpenApiObject construct()
+    {
+      return new OpenApiObject(this);
+    }
+  }
+
+
     @Override
     public String getCanonType()
     {
       return TYPE_ID;
     }
-    
+
     @Override
     public String getCanonVersion()
     {
       return TYPE_VERSION;
     }
-    
+
     @Override
     public @Nullable Integer getCanonMajorVersion()
     {
@@ -992,7 +1066,7 @@ public abstract class OpenApiObjectEntity extends ObjectEntity
       return TYPE_MINOR_VERSION;
     }
   }
-  
+
   // entity.name OpenApiObject
   // entity.class class com.symphony.oss.canon2.generator.java.JavaObjectSchemaTemplateModel
 }

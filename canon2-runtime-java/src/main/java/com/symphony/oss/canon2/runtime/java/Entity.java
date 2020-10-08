@@ -124,7 +124,9 @@ public class Entity
    * @param <T> Concrete type of the builder.
    * @param <B> Concrete type of the built class.
    */
-  public static abstract class AbstractBuilder<T extends AbstractBuilder<T,B>, B extends Entity> extends BaseAbstractBuilder<T,B>
+  public static abstract class AbstractBuilder<T extends AbstractBuilder<T,B>, B extends Entity>
+    extends BaseAbstractBuilder<T,B>
+    implements IEntityInitialiser
   {
     /**
      * Constructor.
@@ -135,8 +137,6 @@ public class Entity
     {
       super(type);
     }
-
-    protected abstract JsonDomNode getJsonDomNode();
   }
   
   /**

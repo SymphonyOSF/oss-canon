@@ -1,5 +1,5 @@
 /**
- * GENERATED CODE - DO NOT EDIT OR CHECK IN TO SOURCE CODE CONTROL
+ * Proforma implementation:
  *
  * Copyright 2020 Symphony Communication Services, LLC.
  *
@@ -21,7 +21,7 @@
  *    Generator groupId    org.symphonyoss.s2.canon
  *              artifactId canon2-generator-java
  *    Template name        proforma/Object/_.java.ftl
- *    At                   2020-09-16 16:04:42 BST
+ *    At                   2020-10-08 13:02:45 BST
  *----------------------------------------------------------------------------------------------------
  */
 
@@ -46,13 +46,12 @@ import com.symphony.oss.canon2.core.ResolvedSchema;
 import com.symphony.oss.canon2.core.SourceContext;
 import com.symphony.oss.canon2.core.ResolvedSchema.SingletonBuilder;
 import com.symphony.oss.canon2.runtime.java.Entity;
-import com.symphony.oss.canon2.runtime.java.ModelRegistry;
 
 
 /**
  * Facade for Object  Schema canon
- * Object com.symphony.oss.canon2.generator.java.JavaOpenApiTemplateModel@4df50bcc
- * Generated from JavaObjectSchemaTemplateModel [fields_=[JavaFieldTemplateModel MaxItems maxItems, JavaFieldTemplateModel Format format, JavaFieldTemplateModel CanonCardinality xCanonCardinality, JavaFieldTemplateModel XCanonIdentifier xCanonIdentifier, JavaFieldTemplateModel Type type, JavaFieldTemplateModel XCanonFacade xCanonFacade, JavaFieldTemplateModel Enum enum, JavaFieldTemplateModel Required required, JavaFieldTemplateModel MinItems minItems, JavaFieldTemplateModel CanonAttributes xCanonAttributes, JavaFieldTemplateModel Maximum maximum, JavaFieldTemplateModel Minimum minimum, JavaFieldTemplateModel PropertiesObject properties]] at {entity.context.path}
+ * Object Schema
+ * Generated from Schema
  */
 @Immutable
 public class Schema extends SchemaEntity implements INamedModelEntity
@@ -60,67 +59,56 @@ public class Schema extends SchemaEntity implements INamedModelEntity
   //private final ImmutableMap<String, ISchema> fields_;
   private final Schema          itemsSchema_;
   private final ReferenceObject itemsReference_;
-
-  /**
-   * Constructor from builder.
-   * 
-   * @param builder A mutable builder containing all values.
-   */
-  public Schema(AbstractBuilder<?,?> builder)
-  {
-    super(builder);
-    
-    Entity items = initItems(null);
-
-    itemsSchema_    = items instanceof Schema ? (Schema)items : null;
-    itemsReference_ = items instanceof ReferenceObject ? (ReferenceObject)items : null;
-  }
   
   /**
-   * Constructor from serialised form.
+   * Constructor.
    * 
-   * @param jsonObject An immutable JSON object containing the serialized form of the object.
-   * @param modelRegistry A model registry to use to deserialize any nested objects.
+   * @param initialiser Initialiser, may be JSON serialisation, builder or another instance.
    */
-  public Schema(JsonObject jsonObject, ModelRegistry modelRegistry)
+  protected Schema(Initialiser initialiser)
   {
-    super(jsonObject, modelRegistry);
-    
-    Entity items = initItems(modelRegistry);
+    super(initialiser);
 
-    itemsSchema_    = items instanceof Schema ? (Schema)items : null;
-    itemsReference_ = items instanceof ReferenceObject ? (ReferenceObject)items : null;
-  }
-   
-  /**
-   * Copy constructor.
-   * 
-   * @param other Another instance from which all attributes are to be copied.
-   */
-  public Schema(Schema other)
-  {
-    super(other);
-    
-    itemsSchema_ = other.getItemsSchema();
-    itemsReference_ = other.getItemsReference();
-  }
-  
-  private Entity initItems(ModelRegistry modelRegistry)
-  {
+    Entity      items = null; 
     JsonDomNode itemsNode = getJsonObject().get("items");
     
     if(itemsNode instanceof JsonObject)
     {
-      JsonObject items = (JsonObject)itemsNode;
+      JsonObject itemsObject = (JsonObject)itemsNode;
       
-      if(items.get("$ref") == null)
-        return new Schema(items, modelRegistry);
+      if(itemsObject.get("$ref") == null)
+        items = Schema.FACTORY.newInstance(itemsObject /*, modelRegistry */);
       else
-        return new ReferenceObject(items, modelRegistry);
+        items = ReferenceObject.FACTORY.newInstance(itemsObject /*, modelRegistry */);
     }
-    else
+    
+    itemsSchema_    = items instanceof Schema ? (Schema)items : null;
+    itemsReference_ = items instanceof ReferenceObject ? (ReferenceObject)items : null;
+  }
+  
+
+  public interface IInstanceOrBuilder extends SchemaEntity.IInstanceOrBuilder
+  {
+  }
+  
+  /**
+   * Abstract builder for Schema. If there are sub-classes of this type then their builders sub-class this builder.
+   *
+   * @param <B> The concrete type of the builder, used for fluent methods.
+   * @param <T> The concrete type of the built object.
+   */
+  public static abstract class AbstractBuilder<T extends AbstractBuilder<T,B>, B extends Schema>
+    extends SchemaEntity.AbstractBuilder<T,B>
+    implements IInstanceOrBuilder
+  {
+    protected AbstractBuilder(Class<T> type)
     {
-      return null;
+      super(type);
+    }
+    
+    protected AbstractBuilder(Class<T> type, B initial)
+    {
+      super(type, initial);
     }
   }
   
@@ -373,25 +361,6 @@ public class Schema extends SchemaEntity implements INamedModelEntity
     catch(MalformedURLException e)
     {
       throw new GenerationException(e);
-    }
-  }
-  
-  /**
-   * Abstract builder for Schema. If there are sub-classes of this type then their builders sub-class this builder.
-   *
-   * @param <B> The concrete type of the builder, used for fluent methods.
-   * @param <T> The concrete type of the built object.
-   */
-  public static abstract class AbstractBuilder<T extends AbstractBuilder<T,B>, B extends Schema> extends SchemaEntity.AbstractBuilder<T,B>
-  {
-    protected AbstractBuilder(Class<T> type)
-    {
-      super(type);
-    }
-    
-    protected AbstractBuilder(Class<T> type, B initial)
-    {
-      super(type, initial);
     }
   }
 

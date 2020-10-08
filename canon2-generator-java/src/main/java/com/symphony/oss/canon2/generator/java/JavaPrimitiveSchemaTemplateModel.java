@@ -78,7 +78,7 @@ JavaSchemaTemplateModel>
     String getValuePrefix = "";
     String getValueSuffix = "";
     
-    List<String> enumList = resolvedSchema.getSchema().getEnum();
+    Set<String> enumList = resolvedSchema.getSchema().getEnum();
     
     if(enumList==null || enumList.isEmpty())
     {

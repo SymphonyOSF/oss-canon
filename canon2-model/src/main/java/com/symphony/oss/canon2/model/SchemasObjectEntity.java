@@ -21,27 +21,25 @@
  *    Generator groupId    org.symphonyoss.s2.canon
  *              artifactId canon2-generator-java
  *    Template name        template/Object/_Entity.java.ftl
- *    At                   2020-09-16 16:04:42 BST
+ *    At                   2020-10-08 13:45:16 BST
  *----------------------------------------------------------------------------------------------------
  */
 
 package com.symphony.oss.canon2.model;
-
-import java.util.HashSet;
-import java.util.Set;
 
 import javax.annotation.Nullable;
 import javax.annotation.concurrent.Immutable;
 
 import com.google.common.collect.ImmutableSet;
 import com.symphony.oss.canon.json.model.JsonObject;
+import com.symphony.oss.canon2.runtime.java.IObjectEntityInitialiser;
+import com.symphony.oss.canon2.runtime.java.JsonObjectEntityInitialiser;
 import com.symphony.oss.canon2.runtime.java.ModelRegistry;
 import com.symphony.oss.canon2.runtime.java.ObjectEntity;
 
 /**
- * Implementation for Object  SchemasObject canon
- * Object com.symphony.oss.canon2.generator.java.JavaOpenApiTemplateModel@4df50bcc
- * Generated from JavaObjectSchemaTemplateModel [fields_=[]] at {entity.context.path}
+ * Implementation for Object SchemasObject
+ * Generated from SchemasObject at {entity.context.path}
  */
 @Immutable
 public abstract class SchemasObjectEntity extends ObjectEntity
@@ -56,50 +54,35 @@ public abstract class SchemasObjectEntity extends ObjectEntity
   public static final Integer TYPE_MINOR_VERSION = 0;
   /** Factory instance */
   public static final Factory FACTORY = new Factory();
-  
+
   private final ImmutableSet<String>        unknownKeys_;
 
   /**
-   * Constructor from builder.
-   * 
-   * @param builder A mutable builder containing all values.
+   * Constructor.
+   *
+   * @param initialiser Initialiser, may be JSON serialisation, builder or another instance.
    */
-  public SchemasObjectEntity(AbstractBuilder<?,?> builder)
+  public SchemasObjectEntity(Initialiser initialiser)
   {
-    super(builder);
-    
-    unknownKeys_ = ImmutableSet.of();
-  }
-   
-  /**
-   * Constructor from serialised form.
-   * 
-   * @param jsonObject An immutable JSON object containing the serialized form of the object.
-   * @param modelRegistry A model registry to use to deserialize any nested objects.
-   */
-  public SchemasObjectEntity(JsonObject jsonObject, ModelRegistry modelRegistry)
-  {
-    super(jsonObject);
-  
-    Set<String> keySet = new HashSet<>(super.getCanonUnknownKeys());
-    
+    super(initialiser);
 
-    unknownKeys_ = ImmutableSet.copyOf(keySet);
-  }
-   
-  /**
-   * Copy constructor.
-   * 
-   * @param other Another instance from which all attributes are to be copied.
-   */
-  public SchemasObjectEntity(SchemasObject other)
-  {
-    super(other);
-    
+    if(initialiser instanceof JsonObjectEntityInitialiser)
+    {
+      JsonObjectEntityInitialiser jsonInitialiser = (JsonObjectEntityInitialiser)initialiser;
 
-    unknownKeys_ = other.getCanonUnknownKeys();
+      unknownKeys_ = jsonInitialiser.getCanonUnknownKeys();
+    }
+    else
+    {
+      IInstanceOrBuilder builder =  initialiser.getInstanceOrBuilder();
+
+      if(builder == null)
+      {
+        throw new IllegalArgumentException("Initializer is not an JsonObjectEntityInitialiser but getInstanceOrBuilder() returns null");
+      }
+      unknownKeys_ = builder.getCanonUnknownKeys();
+    }
   }
-  
   @Override
   public ImmutableSet<String> getCanonUnknownKeys()
   {
@@ -111,7 +94,7 @@ public abstract class SchemasObjectEntity extends ObjectEntity
   {
     if(obj instanceof SchemasObjectEntity)
       return toString().equals(((SchemasObjectEntity)obj).toString());
-    
+
     return false;
   }
 
@@ -121,57 +104,145 @@ public abstract class SchemasObjectEntity extends ObjectEntity
     return toString().hashCode();
   }
 
-  
+
   /**
    * Factory class for SchemasObject.
    */
-  public static class Factory extends ObjectEntity.Factory<SchemasObjectEntity>
+  public static class Factory extends ObjectEntity.Factory<SchemasObject>
   {
     @Override
     public String getCanonType()
     {
       return TYPE_ID;
     }
-    
+
     /**
      * Return the type version (_version JSON attribute) for entities created by this factory.
-     * 
+     *
      * @return The type version for entities created by this factory.
      */
     public String getCanonVersion()
     {
       return TYPE_VERSION;
     }
-    
+
     /**
      * Return the major type version for entities created by this factory.
-     * 
+     *
      * @return The major type version for entities created by this factory.
      */
     public @Nullable Integer getCanonMajorVersion()
     {
       return TYPE_MAJOR_VERSION;
     }
-    
+
     /**
      * Return the minjor type version for entities created by this factory.
-     * 
+     *
      * @return The minor type version for entities created by this factory.
      */
     public @Nullable Integer getCanonMinorVersion()
     {
       return TYPE_MINOR_VERSION;
     }
-    
+
     @Override
     public SchemasObject newInstance(JsonObject jsonObject, ModelRegistry modelRegistry)
     {
-      return new SchemasObject(jsonObject, modelRegistry);
+      return new SchemasObject(new JsonInitialiser(jsonObject, modelRegistry));
     }
   }
- 
+
+
+
+  /**
+   * Initialiser for SchemasObject
+   */
   
-   
+  public interface Initialiser extends IObjectEntityInitialiser
+  {
+    IInstanceOrBuilder getInstanceOrBuilder();
+  }
+
+  public static class JsonInitialiser extends JsonObjectEntityInitialiser implements Initialiser
+  {
+    public JsonInitialiser(JsonObject jsonObject, ModelRegistry modelRegistry)
+    {
+      super(jsonObject, modelRegistry);
+    }
+
+    @Override
+    public IInstanceOrBuilder getInstanceOrBuilder()
+    {
+      return null;
+    }
+  }
+
+  /**
+   * Instance or Builder for Object SchemasObject
+   */
+  public interface IInstanceOrBuilder extends IObjectEntityInitialiser
+  {
+  }
+
+
+  /**
+   * Abstract builder for SchemasObject. If there are sub-classes of this type then their builders sub-class this builder.
+   *
+   * @param <T> The concrete type of the builder, used for fluent methods.
+   * @param <B> The concrete type of the built object.
+   */
+  public static abstract class AbstractBuilder<T extends AbstractBuilder<T,B>, B extends SchemasObjectEntity>
+    extends ObjectEntity.AbstractBuilder<T,B>
+    implements IInstanceOrBuilder, Initialiser
+  {
+
+    protected AbstractBuilder(Class<T> type)
+    {
+      super(type);
+    }
+
+    @Override
+    public IInstanceOrBuilder getInstanceOrBuilder()
+    {
+      return this;
+    }
+
+    protected AbstractBuilder(Class<T> type, B initial)
+    {
+      super(type, initial);
+
+    }
+
+    @Override
+    public T withValues(JsonObject jsonObject, ModelRegistry modelRegistry)
+    {
+      return super.withValues(jsonObject, modelRegistry);
+    }
+
+    /* void populateAllFields(List<Object> result)
+    {
+    }*/
+
+    @Override
+    public JsonObject getJsonObject()
+    {
+      JsonObject.Builder builder = new JsonObject.Builder();
+
+      builder.addIfNotNull(JSON_TYPE, SchemasObjectEntity.TYPE_ID);
+      builder.addIfNotNull(JSON_VERSION, SchemasObjectEntity.TYPE_VERSION);
+
+      populateJson(builder);
+
+      return builder.build();
+    }
+
+    @Override
+    public void populateJson(JsonObject.Builder builder)
+    {
+      super.populateJson(builder);
+    }
+
   /**
    * Builder for SchemasObject
    */
@@ -187,7 +258,7 @@ public abstract class SchemasObjectEntity extends ObjectEntity
 
     /**
      * Constructor initialised from another object instance.
-     * 
+     *
      * @param initial An instance of the built type from which values are to be initialised.
      */
     public Builder(SchemasObject initial)
@@ -201,70 +272,20 @@ public abstract class SchemasObjectEntity extends ObjectEntity
       return new SchemasObject(this);
     }
   }
-  
-  
-  /**
-   * Abstract builder for SchemasObject. If there are sub-classes of this type then their builders sub-class this builder.
-   *
-   * @param <T> The concrete type of the builder, used for fluent methods.
-   * @param <B> The concrete type of the built object.
-   */
-  public static abstract class AbstractBuilder<T extends AbstractBuilder<T,B>, B extends SchemasObjectEntity>
-    extends ObjectEntity.AbstractBuilder<T,B>
-  {
-  
-    protected AbstractBuilder(Class<T> type)
-    {
-      super(type);
-    }
-    
-    protected AbstractBuilder(Class<T> type, B initial)
-    {
-      super(type, initial);
-      
-    }
-    
-    @Override
-    public T withValues(JsonObject jsonObject, ModelRegistry modelRegistry)
-    {
-      return super.withValues(jsonObject, modelRegistry);
-    }
-    
-    /* void populateAllFields(List<Object> result)
-    {
-    }*/
 
-    @Override 
-    public JsonObject getJsonObject()
-    {
-      JsonObject.Builder builder = new JsonObject.Builder();
-      
-      builder.addIfNotNull(JSON_TYPE, SchemasObjectEntity.TYPE_ID);
-      builder.addIfNotNull(JSON_VERSION, SchemasObjectEntity.TYPE_VERSION);
-
-      populateJson(builder);
-  
-      return builder.build();
-    }
-    
-    @Override
-    public void populateJson(JsonObject.Builder builder)
-    {
-      super.populateJson(builder);
-    }
 
     @Override
     public String getCanonType()
     {
       return TYPE_ID;
     }
-    
+
     @Override
     public String getCanonVersion()
     {
       return TYPE_VERSION;
     }
-    
+
     @Override
     public @Nullable Integer getCanonMajorVersion()
     {
@@ -277,7 +298,7 @@ public abstract class SchemasObjectEntity extends ObjectEntity
       return TYPE_MINOR_VERSION;
     }
   }
-  
+
   // entity.name SchemasObject
   // entity.class class com.symphony.oss.canon2.generator.java.JavaObjectSchemaTemplateModel
 }

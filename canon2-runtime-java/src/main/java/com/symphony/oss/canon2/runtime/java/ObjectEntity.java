@@ -217,6 +217,8 @@ public class ObjectEntity extends Entity
     extends Entity.AbstractBuilder<T,B>
     implements IObjectEntityInitialiser
   {
+    private ModelRegistry modelRegistry_ = ModelRegistry.DEFAULT;
+
     /**
      * Constructor.
      * 
@@ -285,6 +287,12 @@ public class ObjectEntity extends Entity
 
 //    @Override
 //    public abstract JsonObject getJsonObject();
+
+    @Override
+    public ModelRegistry getModelRegistry()
+    {
+      return modelRegistry_;
+    }
 
     /**
      * Populate the given JsonObject.Builder with all attributes.

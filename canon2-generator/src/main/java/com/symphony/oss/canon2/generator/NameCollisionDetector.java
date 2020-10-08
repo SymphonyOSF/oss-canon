@@ -18,7 +18,6 @@
 
 package com.symphony.oss.canon2.generator;
 
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
@@ -29,8 +28,6 @@ import java.util.Set;
 
 import com.symphony.oss.canon2.core.ResolvedSchema;
 import com.symphony.oss.canon2.core.SourceContext;
-import com.symphony.oss.canon2.model.IModelContext;
-import com.symphony.oss.canon2.model.SchemaInfo;
 
 class NameCollisionDetector
 {
