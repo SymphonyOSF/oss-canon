@@ -60,9 +60,9 @@ import org.apache.maven.project.MavenProject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.symphony.oss.canon2.core.GenerationException;
 import com.symphony.oss.canon2.generator.CanonGenerationContext;
 import com.symphony.oss.canon2.generator.ICanonGenerator;
-import com.symphony.oss.canon2.model.GenerationException;
 
 @Mojo( name = "generate-sources", defaultPhase = LifecyclePhase.GENERATE_SOURCES )
 public class GenerateMojo extends AbstractMojo
@@ -115,6 +115,12 @@ public class GenerateMojo extends AbstractMojo
   private boolean dumpDataModel;
   
   private File                 canonDir;
+
+  @Parameter( property = "copyright" )
+  private String copyright;
+
+  @Parameter( property = "license" )
+  private String license;
   
   @Override
   public void execute() throws MojoExecutionException, MojoFailureException
@@ -125,12 +131,15 @@ public class GenerateMojo extends AbstractMojo
     }
     
     canonDir          = new File(canonRoot, "canon");
-    
-    log_.info( "Generating sources--------------------------------------------------------------------------");
-    log_.info( "targetDir            = " + targetDir);
-    log_.info( "proformaTargetDir    = " + proformaTargetDir);
-    log_.info( "proformaCopyDir      = " + proformaCopyDir);
-    
+
+     
+    log_.info("Generating sources--------------------------------------------------------------------------");
+    log_.info("targetDir            = " + targetDir);
+    log_.info("proformaTargetDir    = " + proformaTargetDir);
+    log_.info("proformaCopyDir      = " + proformaCopyDir);
+    log_.info("copyright            = " + copyright);
+    log_.info("license              = " + license);
+   
     for(File srcDir : srcDirs)
     {
       log_.info( "srcDir             = " + srcDir);
@@ -180,7 +189,9 @@ public class GenerateMojo extends AbstractMojo
       CanonGenerationContext.Builder builder = new CanonGenerationContext.Builder()
           .withTargetDir(targetDir)
           .withProformaDir(proformaTargetDir)
-          .withCopyDir(proformaCopyDir);
+          .withCopyDir(proformaCopyDir)
+          .withCopyright(copyright)
+          .withLicense(license);
       
       Enumeration<?> en = uriMapping.propertyNames();
       while(en.hasMoreElements())

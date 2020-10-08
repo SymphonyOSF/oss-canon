@@ -20,8 +20,8 @@ package com.symphony.oss.canon2.generator;
 
 import java.util.Collection;
 
-import com.symphony.oss.canon2.model.GenerationException;
-import com.symphony.oss.canon2.model.ResolvedOpenApiObject;
+import com.symphony.oss.canon2.core.GenerationException;
+import com.symphony.oss.canon2.core.ResolvedOpenApiObject;
 
 /**
  * The template model for the overall OpenApi model.

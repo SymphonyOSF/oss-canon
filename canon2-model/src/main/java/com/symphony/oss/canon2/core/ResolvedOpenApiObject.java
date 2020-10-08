@@ -16,7 +16,9 @@
  * limitations under the License.
  */
 
-package com.symphony.oss.canon2.model;
+package com.symphony.oss.canon2.core;
+
+import com.symphony.oss.canon2.model.OpenApiObject;
 
 public class ResolvedOpenApiObject implements IResolvedEntity
 {
@@ -75,7 +77,6 @@ public class ResolvedOpenApiObject implements IResolvedEntity
       getComponents().validate(modelContext);
   }
 
-  @Override
   public ResolvedOpenApiObject getResolvedOpenApiObject()
   {
     return this;

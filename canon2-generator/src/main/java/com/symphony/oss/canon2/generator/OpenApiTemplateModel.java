@@ -24,11 +24,11 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
-import com.symphony.oss.canon2.model.GenerationException;
+import com.symphony.oss.canon2.core.GenerationException;
+import com.symphony.oss.canon2.core.ResolvedOpenApiObject;
+import com.symphony.oss.canon2.core.SourceContext;
 import com.symphony.oss.canon2.model.OpenApiObject;
-import com.symphony.oss.canon2.model.ResolvedOpenApiObject;
 import com.symphony.oss.canon2.model.SemanticVersion;
-import com.symphony.oss.canon2.model.SourceContext;
 
 /**
  * Template model object for the OpenApi top-level model.

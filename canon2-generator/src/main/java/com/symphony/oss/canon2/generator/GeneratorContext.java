@@ -26,11 +26,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.symphony.oss.canon.json.model.JsonObject;
+import com.symphony.oss.canon2.core.GenerationException;
+import com.symphony.oss.canon2.core.ResolvedSchema;
+import com.symphony.oss.canon2.core.SourceContext;
 import com.symphony.oss.canon2.model.CanonCardinality;
-import com.symphony.oss.canon2.model.GenerationException;
-import com.symphony.oss.canon2.model.ResolvedSchema;
 import com.symphony.oss.canon2.model.Schema;
-import com.symphony.oss.canon2.model.SourceContext;
 import com.symphony.oss.commons.fault.CodingFault;
 
 /**
@@ -341,5 +341,6 @@ F extends IFieldTemplateModel<T,M,S>>
     public void populateTemplateModel(Map<String, Object> map)
     {
       generator_.populateTemplateModel(sourceContext_, map);
+      generationContext_.populateTemplateModel(map);
     }
 }

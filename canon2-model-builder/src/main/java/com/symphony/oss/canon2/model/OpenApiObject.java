@@ -1,5 +1,5 @@
 /**
- * GENERATED CODE - DO NOT EDIT OR CHECK IN TO SOURCE CODE CONTROL
+ * Proforma implementation:
  *
  * Copyright 2020 Symphony Communication Services, LLC.
  *
@@ -21,7 +21,7 @@
  *    Generator groupId    org.symphonyoss.s2.canon
  *              artifactId canon2-generator-java
  *    Template name        proforma/Object/_.java.ftl
- *    At                   2020-09-16 16:04:42 BST
+ *    At                   2020-10-08 13:02:45 BST
  *----------------------------------------------------------------------------------------------------
  */
 
@@ -30,59 +30,57 @@ package com.symphony.oss.canon2.model;
 import javax.annotation.Nullable;
 import javax.annotation.concurrent.Immutable;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.google.common.collect.ImmutableMap;
-import com.symphony.oss.canon.json.model.JsonObject;
 import com.symphony.oss.canon2.core.CanonModelContext;
 import com.symphony.oss.canon2.core.GenerationException;
 import com.symphony.oss.canon2.core.INamedModelEntity;
 import com.symphony.oss.canon2.core.ResolvedOpenApiObject;
 import com.symphony.oss.canon2.core.SourceContext;
 import com.symphony.oss.canon2.runtime.java.Entity;
-import com.symphony.oss.canon2.runtime.java.ModelRegistry;
 
 
 /**
  * Facade for Object  OpenApiObject canon
- * Object com.symphony.oss.canon2.generator.java.JavaOpenApiTemplateModel@4df50bcc
- * Generated from JavaObjectSchemaTemplateModel [fields_=[JavaFieldTemplateModel ComponentsObject components, JavaFieldTemplateModel CanonGeneratorConfig xCanonGenerators, JavaFieldTemplateModel Openapi openapi, JavaFieldTemplateModel PathsObject paths, JavaFieldTemplateModel XCanonId xCanonId, JavaFieldTemplateModel SemanticVersion xCanonVersion, JavaFieldTemplateModel XCanonIdentifier xCanonIdentifier, JavaFieldTemplateModel Canon canon, JavaFieldTemplateModel InfoObject info]] at {entity.context.path}
+ * Object OpenApiObject
+ * Generated from OpenApiObject
  */
 @Immutable
 public class OpenApiObject extends OpenApiObjectEntity implements INamedModelEntity
 {
-  private static Logger log_ = LoggerFactory.getLogger(OpenApiObject.class);
-  
   /**
-   * Constructor from builder.
+   * Constructor.
    * 
-   * @param builder A mutable builder containing all values.
+   * @param initialiser Initialiser, may be JSON serialisation, builder or another instance.
    */
-  public OpenApiObject(AbstractBuilder<?,?> builder)
+  protected OpenApiObject(Initialiser initialiser)
   {
-    super(builder);
+    super(initialiser);
+  }
+  
+
+  public interface IInstanceOrBuilder extends OpenApiObjectEntity.IInstanceOrBuilder
+  {
   }
   
   /**
-   * Constructor from serialised form.
-   * 
-   * @param jsonObject An immutable JSON object containing the serialized form of the object.
-   * @param modelRegistry A model registry to use to deserialize any nested objects.
+   * Abstract builder for OpenApiObject. If there are sub-classes of this type then their builders sub-class this builder.
+   *
+   * @param <B> The concrete type of the builder, used for fluent methods.
+   * @param <T> The concrete type of the built object.
    */
-  public OpenApiObject(JsonObject jsonObject, ModelRegistry modelRegistry)
+  public static abstract class AbstractBuilder<T extends AbstractBuilder<T,B>, B extends OpenApiObject>
+    extends OpenApiObjectEntity.AbstractBuilder<T,B>
+    implements IInstanceOrBuilder
   {
-    super(jsonObject, modelRegistry);
-  }
-   
-  /**
-   * Copy constructor.
-   * 
-   * @param other Another instance from which all attributes are to be copied.
-   */
-  public OpenApiObject(OpenApiObject other)
-  {
-    super(other);
+    protected AbstractBuilder(Class<T> type)
+    {
+      super(type);
+    }
+    
+    protected AbstractBuilder(Class<T> type, B initial)
+    {
+      super(type, initial);
+    }
   }
   
   @Override
@@ -114,8 +112,6 @@ public class OpenApiObject extends OpenApiObjectEntity implements INamedModelEnt
 
   public void fetchReferences(CanonModelContext generationContext, SourceContext sourceContext) throws GenerationException
   {
-    log_.info("fetchReferences");
-    
     SchemasObject schemas = getComponents().getSchemas();
     
     for(Schema schema : schemas.getSchemas().values())
@@ -126,8 +122,6 @@ public class OpenApiObject extends OpenApiObjectEntity implements INamedModelEnt
 
   public void link(ResolvedOpenApiObject.SingletonBuilder builder, CanonModelContext modelContext, SourceContext sourceContext, String uri) throws GenerationException
   {
-    log_.info("link model");
-    
     if(getComponents() != null)
     {
       builder.withComponents(getComponents().link(builder, modelContext, sourceContext, uri + "/components"));
@@ -168,26 +162,6 @@ public class OpenApiObject extends OpenApiObjectEntity implements INamedModelEnt
 //    //return builder.build();
 //  }
 
-
-  
-  /**
-   * Abstract builder for OpenApiObject. If there are sub-classes of this type then their builders sub-class this builder.
-   *
-   * @param <B> The concrete type of the builder, used for fluent methods.
-   * @param <T> The concrete type of the built object.
-   */
-  public static abstract class AbstractBuilder<T extends AbstractBuilder<T,B>, B extends OpenApiObject> extends OpenApiObjectEntity.AbstractBuilder<T,B>
-  {
-    protected AbstractBuilder(Class<T> type)
-    {
-      super(type);
-    }
-    
-    protected AbstractBuilder(Class<T> type, B initial)
-    {
-      super(type, initial);
-    }
-  }
 
   public ImmutableMap<String, Schema> getSchemas()
   {

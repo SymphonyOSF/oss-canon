@@ -16,30 +16,22 @@
  * limitations under the License.
  */
 
-package com.symphony.oss.canon2.model;
+package com.symphony.oss.canon2.runtime.java;
 
-import java.net.URL;
+import com.symphony.oss.canon.json.model.JsonDomNode;
 
-import com.symphony.oss.canon2.core.GenerationException;
-import com.symphony.oss.canon2.runtime.java.ModelRegistry;
-
-@Deprecated
-public interface ICanonContext
+/**
+ * An initialiser for a canon generated entity.
+ * 
+ * @author Bruce Skingle
+ */
+public interface IEntityInitialiser
 {
-
-  void addReferencedModel(URL url) throws GenerationException;
-
-  ModelRegistry getModelRegistry();
-
-  IModelContext getReferencedModel(URL url);
-
   /**
-   * Resolve the given schema.
+   * Return a JSON serialised form for the entity to be initialised.
    * 
-   * @param info A SchemaInfo
+   * @return a JSON serialised form for the entity to be initialised.
    */
-  void resolve(SchemaInfo info);
-
-  SchemaInfo getSchemaInfo(String absoluteUri);
-
+  JsonDomNode getJsonDomNode();
+  
 }

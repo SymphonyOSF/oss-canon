@@ -73,18 +73,7 @@ public class ModelRegistry
     return parserValidation_;
   }
 
-  /**
-   * Return a new entity instance parsed from the given JSON object.
-   * 
-   * @param jsonObject        A JSON object containing the serialized form of an entity.
-   * 
-   * @return The deserialized entity.
-   * 
-   * @throws NullPointerException if the value is null.
-   * @throws IllegalStateException if the value is otherwise invalid.
-   * This may be the case if the schema defines limits on the magnitude of the value, or if a facade
-   * has been written for the type.
-   */
+  @Deprecated
   public Entity newInstance(JsonObject jsonObject)
   {
     String typeId;
@@ -166,6 +155,106 @@ public class ModelRegistry
       throw new IllegalStateException("Expected instance of " + type + " but found a " + typeId);
     }
   }
+  
+  
+  
+  
+  
+  
+  
+  
+
+//  /**
+//   * Return a new entity instance parsed from the given JSON object.
+//   * 
+//   * @param jsonObject        A JSON object containing the serialized form of an entity.
+//   * 
+//   * @return The deserialized entity.
+//   * 
+//   * @throws NullPointerException if the value is null.
+//   * @throws IllegalStateException if the value is otherwise invalid.
+//   * This may be the case if the schema defines limits on the magnitude of the value, or if a facade
+//   * has been written for the type.
+//   */
+//  public Entity NEWnewInstance(JsonObject jsonObject)
+//  {
+//    IJsonObjectEntityInitialiser initialiser = new JsonObjectEntityInitialiser(jsonObject, DEFAULT);
+//    
+//    if(initialiser.getCanonType() == null)
+//    {
+//      return new Entity(initialiser);
+//    }
+//    
+//    Factory<?> factory = factoryMap_.get(initialiser.getCanonType());
+//    
+//    if(factory == null)
+//      return new Entity(initialiser);
+//    
+//    return factory.newInstance(initialiser);
+//  }
+//
+//  /**
+//   * Return a new entity instance of the given type, parsed from the given input.
+//   * 
+//   * The returned entity will be an instance of the given type, but may be a sub-class. The defaultTypeId is only used
+//   * in cases where there is no type information in the serialised JSON. This enables canon generated client stubs
+//   * to be used with non-canon server implementations. 
+//   * 
+//   * @param jsonObject A JSON object containing the serialized form of an entity.
+//   * @param defaultTypeId The type ID of the expected type.
+//   * @param type The expected type of the entity.
+//   * 
+//   * @return The deserialized entity.
+//   * 
+//   * @throws NullPointerException if the value is null.
+//   * @throws IllegalStateException if the value is not of the expected type or is otherwise invalid.
+//   * This may be the case if the schema defines limits on the magnitude of the value, or if a facade
+//   * has been written for the type.
+//   */
+//  public <E extends Entity> E NEWnewInstance(JsonObject jsonObject, String defaultTypeId, Class<E> type)
+//  {
+//    IJsonObjectEntityInitialiser initialiser = new JsonObjectEntityInitialiser(jsonObject, DEFAULT);
+//    
+//    String typeId = initialiser.getCanonType();
+//    
+//    if(typeId == null)
+//    {
+//      if(defaultTypeId == null)
+//      {
+//        throw new IllegalStateException("No default typeId given and no typeId found in JSON");
+//      }
+//      else
+//      {
+//        typeId = defaultTypeId;
+//      }
+//    }
+//    
+//    Factory<?> factory = factoryMap_.get(typeId);
+//    
+//    if(factory == null)
+//    {
+//      if(defaultTypeId != null)
+//      {
+//        factory = factoryMap_.get(defaultTypeId);
+//      }
+//      
+//      if(factory == null)
+//      {
+//        throw new IllegalStateException("Unknown type \"" + typeId + "\"");
+//      }
+//    }
+//    
+//    Entity result = factory.newInstance(initialiser);
+//    
+//    if(type.isInstance(result))
+//    {
+//      return type.cast(result);
+//    }
+//    else
+//    {
+//      throw new IllegalStateException("Expected instance of " + type + " but found a " + typeId);
+//    }
+//  }
   
   /**
    * Return a new entity instance of the given type, parsed from the given input.

@@ -23,14 +23,15 @@ import java.util.ArrayList;
 import java.util.Deque;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.google.common.collect.ImmutableList;
-import com.symphony.oss.canon2.model.CanonModelContext;
-import com.symphony.oss.canon2.model.GenerationException;
-import com.symphony.oss.canon2.model.SourceContext;
+import com.symphony.oss.canon2.core.CanonModelContext;
+import com.symphony.oss.canon2.core.GenerationException;
+import com.symphony.oss.canon2.core.SourceContext;
 
 /**
  * Concrete implementation of CanonModelContext for a processing run of the canon code generator.
@@ -48,8 +49,10 @@ public class CanonGenerationContext extends CanonModelContext
   private final File                           targetDir_;
   private final File                           proformaDir_;
   private final File                           copyDir_;
-  private final ImmutableList<ICanonGenerator<?,?,?,?,?,?,?>> generators_;
   private final boolean                        templateDebug_;
+  private final String                         license_;
+  private final String                         copyright_;
+  private final ImmutableList<ICanonGenerator<?,?,?,?,?,?,?>> generators_;
   
   private CanonGenerationContext(AbstractBuilder<?,?> builder)
   {
@@ -57,20 +60,24 @@ public class CanonGenerationContext extends CanonModelContext
     
     log_.info("CanonGeneratorContext created");
     
-    targetDir_ = builder.targetDir_;
-    proformaDir_ = builder.proformaDir_;
-    copyDir_ = builder.copyDir_;
-    generators_ = ImmutableList.copyOf(builder.generators_);
-    templateDebug_ = builder.templateDebug_;
+    targetDir_      = builder.targetDir_;
+    proformaDir_    = builder.proformaDir_;
+    copyDir_        = builder.copyDir_;
+    generators_     = ImmutableList.copyOf(builder.generators_);
+    templateDebug_  = builder.templateDebug_;
+    license_        = builder.license_;
+    copyright_      = builder.copyright_;
   }
   
   public static abstract class AbstractBuilder<T extends AbstractBuilder<T,B>, B extends CanonGenerationContext> extends CanonModelContext.AbstractBuilder<T,B>
   {
-    private File                  targetDir_;
-    private File                  proformaDir_;
-    private File                  copyDir_;
-    private List<ICanonGenerator<?,?,?,?,?,?,?>> generators_ = new LinkedList<>();
-    private boolean templateDebug_;
+    private File                                  targetDir_;
+    private File                                  proformaDir_;
+    private File                                  copyDir_;
+    private boolean                               templateDebug_;
+    private String                                license_;
+    private String                                copyright_;
+    private List<ICanonGenerator<?,?,?,?,?,?,?>>  generators_ = new LinkedList<>();
     
     public AbstractBuilder(Class<T> type)
     {
@@ -136,6 +143,30 @@ public class CanonGenerationContext extends CanonModelContext
     public T withTemplateDebug(boolean templateDebug)
     {
       templateDebug_ = templateDebug;
+      
+      return self();
+    }
+
+    public T withLicense(String license)
+    {
+      if(license == null)
+      {
+        license_ =  null;
+      }
+      else
+      {
+        if(license.startsWith("* "))
+          license = " " + license;
+        
+        license_ = license.replaceAll("\\\\n", "\n");
+        
+      }
+      return self();
+    }
+
+    public T withCopyright(String copyright)
+    {
+      copyright_ = copyright;
       
       return self();
     }
@@ -210,7 +241,6 @@ public class CanonGenerationContext extends CanonModelContext
     return copyDir_;
   }
 
-
   @Override
   protected void process(Deque<SourceContext> processQueue) throws GenerationException
   {
@@ -234,6 +264,13 @@ public class CanonGenerationContext extends CanonModelContext
     {
       templateProcessor.generate();
     }
+  }
+
+
+  public void populateTemplateModel(Map<String, Object> map)
+  {
+    map.put("copyright",  copyright_);
+    map.put("license",  license_);
   }
   
 //  private <

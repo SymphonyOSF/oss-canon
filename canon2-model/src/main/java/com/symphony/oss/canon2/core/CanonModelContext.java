@@ -21,7 +21,7 @@
  * under the License.
  */
 
-package com.symphony.oss.canon2.model;
+package com.symphony.oss.canon2.core;
 
 import java.io.File;
 import java.io.IOException;
@@ -36,6 +36,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.google.common.collect.ImmutableMap;
+import com.symphony.oss.canon2.model.CanonModel;
+import com.symphony.oss.canon2.model.OpenApiObject;
+import com.symphony.oss.canon2.model.Schema;
 import com.symphony.oss.canon2.runtime.java.ModelRegistry;
 import com.symphony.oss.commons.fluent.BaseAbstractBuilder;
 

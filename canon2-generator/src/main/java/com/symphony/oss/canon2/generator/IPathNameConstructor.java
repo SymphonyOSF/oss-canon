@@ -23,7 +23,7 @@
 
 package com.symphony.oss.canon2.generator;
 
-import com.symphony.oss.canon2.model.GenerationException;
+import com.symphony.oss.canon2.core.GenerationException;
 
 @FunctionalInterface
 public interface IPathNameConstructor<T extends ITemplateModel<?,?,?>>

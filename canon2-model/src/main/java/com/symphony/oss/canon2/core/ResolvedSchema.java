@@ -16,11 +16,13 @@
  * limitations under the License.
  */
 
-package com.symphony.oss.canon2.model;
+package com.symphony.oss.canon2.core;
 
 import java.util.Map;
 
 import javax.annotation.Nonnull;
+
+import com.symphony.oss.canon2.model.Schema;
 
 public class ResolvedSchema implements IResolvedEntity
 {

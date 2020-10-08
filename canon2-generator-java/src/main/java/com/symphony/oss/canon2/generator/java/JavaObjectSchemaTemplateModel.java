@@ -22,9 +22,9 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.symphony.oss.canon2.core.GenerationException;
+import com.symphony.oss.canon2.core.ResolvedSchema;
 import com.symphony.oss.canon2.generator.IObjectSchemaTemplateModel;
-import com.symphony.oss.canon2.model.GenerationException;
-import com.symphony.oss.canon2.model.ResolvedSchema;
 
 public class JavaObjectSchemaTemplateModel extends JavaSchemaTemplateModel
 implements IObjectSchemaTemplateModel<

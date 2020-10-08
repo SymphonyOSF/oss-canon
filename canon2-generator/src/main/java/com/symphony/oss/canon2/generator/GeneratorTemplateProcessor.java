@@ -22,8 +22,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.google.common.io.Files;
-import com.symphony.oss.canon2.model.GenerationException;
-import com.symphony.oss.canon2.model.SourceContext;
+import com.symphony.oss.canon2.core.GenerationException;
+import com.symphony.oss.canon2.core.SourceContext;
 
 import freemarker.template.Configuration;
 import freemarker.template.Template;
@@ -155,7 +155,7 @@ F extends IFieldTemplateModel<T,M,S>>
   //      TemplateModel model = new TemplateModel(modelContext, templateName,
   //          entity);
         
-        generate(newTemplateModel(templateContext.generatorContext_, templateName, entity), templateType, template, targetFileName, templateContext.generatorContext_.getGenerationContext());
+        generate(newTemplateModel(templateContext.generatorContext_, templateName, templateType, entity), templateType, template, targetFileName, templateContext.generatorContext_.getGenerationContext());
   
       } catch (IOException e)
       {
@@ -165,13 +165,14 @@ F extends IFieldTemplateModel<T,M,S>>
     }
   }
   
-  Map<String, Object> newTemplateModel(GeneratorContext<T,M,S,O,A,P,F> modelContext, String templateName, ITemplateModel<T,M,S> entity)
+  Map<String, Object> newTemplateModel(GeneratorContext<T,M,S,O,A,P,F> modelContext, String templateName, TemplateType templateType, ITemplateModel<T,M,S> entity)
   {
     Map<String, Object> map = new HashMap<>();
     
     modelContext.populateTemplateModel(map);
     
     map.put("templateName",  templateName);
+    map.put("templateType",  templateType);
     map.put("model",  entity.getModel());
     map.put("entity",  entity);
     

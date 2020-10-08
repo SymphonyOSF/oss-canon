@@ -16,30 +16,33 @@
  * limitations under the License.
  */
 
-package com.symphony.oss.canon2.model;
+package com.symphony.oss.canon2.runtime.java;
 
-import java.net.URL;
+import com.symphony.oss.canon.json.model.JsonDomNode;
 
-import com.symphony.oss.canon2.core.GenerationException;
-import com.symphony.oss.canon2.runtime.java.ModelRegistry;
-
-@Deprecated
-public interface ICanonContext
-{
-
-  void addReferencedModel(URL url) throws GenerationException;
-
+/**
+ * An initialiser for a canon generated object.
+ * 
+ * @author Bruce Skingle
+ */
+public interface IJsonObjectEntityInitialiser
+extends IObjectEntityInitialiser
+{ 
+  /**
+   * Return a ModelRegistry for deserialization.
+   * 
+   * @return a ModelRegistry for deserialization.
+   */
   ModelRegistry getModelRegistry();
 
-  IModelContext getReferencedModel(URL url);
-
   /**
-   * Resolve the given schema.
+   * Return the attribute wit the given name.
    * 
-   * @param info A SchemaInfo
+   * This removes the attribute from the list of unknown keys.
+   * 
+   * @param attribute The name of the required attribute.
+   * 
+   * @return the attribute wit the given name.
    */
-  void resolve(SchemaInfo info);
-
-  SchemaInfo getSchemaInfo(String absoluteUri);
-
+  JsonDomNode get(String attribute);
 }

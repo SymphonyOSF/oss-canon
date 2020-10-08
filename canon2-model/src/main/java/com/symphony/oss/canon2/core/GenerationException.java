@@ -21,7 +21,7 @@
  * under the License.
  */
 
-package com.symphony.oss.canon2.model;
+package com.symphony.oss.canon2.core;
 
 /**
  * An exception encountered while generating.

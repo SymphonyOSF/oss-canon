@@ -27,10 +27,10 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
+import com.symphony.oss.canon2.core.ResolvedSchema;
+import com.symphony.oss.canon2.core.SourceContext;
 import com.symphony.oss.canon2.model.IModelContext;
-import com.symphony.oss.canon2.model.ResolvedSchema;
 import com.symphony.oss.canon2.model.SchemaInfo;
-import com.symphony.oss.canon2.model.SourceContext;
 
 class NameCollisionDetector
 {

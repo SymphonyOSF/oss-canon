@@ -412,7 +412,7 @@
       "FundamentalObject": {
         "type": "object",
         "x-canon-facade": true,
-        "builderFacade": true,
+        "x-canon-builderFacade": true,
         "required": [
           "instant"
         ],

@@ -16,30 +16,9 @@
  * limitations under the License.
  */
 
-package com.symphony.oss.canon2.model;
+package com.symphony.oss.canon2.runtime.java;
 
-import java.net.URL;
-
-import com.symphony.oss.canon2.core.GenerationException;
-import com.symphony.oss.canon2.runtime.java.ModelRegistry;
-
-@Deprecated
-public interface ICanonContext
+public interface IBuilderInitializer<T>
 {
-
-  void addReferencedModel(URL url) throws GenerationException;
-
-  ModelRegistry getModelRegistry();
-
-  IModelContext getReferencedModel(URL url);
-
-  /**
-   * Resolve the given schema.
-   * 
-   * @param info A SchemaInfo
-   */
-  void resolve(SchemaInfo info);
-
-  SchemaInfo getSchemaInfo(String absoluteUri);
-
+  T getBuilder();
 }

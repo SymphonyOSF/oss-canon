@@ -10,7 +10,7 @@
     <stringAttribute key="org.eclipse.jdt.launching.CLASSPATH_PROVIDER" value="org.eclipse.m2e.launchconfig.classpathProvider"/>
     <stringAttribute key="org.eclipse.jdt.launching.MAIN_TYPE" value="com.symphony.oss.canon.launch.Canon2Launch"/>
     <stringAttribute key="org.eclipse.jdt.launching.MODULE_NAME" value="canon-launch"/>
-    <stringAttribute key="org.eclipse.jdt.launching.PROGRAM_ARGUMENTS" value="-v -g com.symphony.oss.canon2.generator.java.JavaGenerator:${project_loc:canon2-generator-java}/src/main/resources/canon -o ${project_loc:canon2-test} ${project_loc:canon2-test}/src/main/canon/type-check.json"/>
+    <stringAttribute key="org.eclipse.jdt.launching.PROGRAM_ARGUMENTS" value="-v -c &quot;Example Copyright Holder&quot; -l &quot; * Example License\n * Note the asterisk\n * formatting&quot; -g com.symphony.oss.canon2.generator.java.JavaGenerator:${project_loc:canon2-generator-java}/src/main/resources/canon -o ${project_loc:canon2-test} ${project_loc:canon2-test}/src/main/canon/type-check.json"/>
     <stringAttribute key="org.eclipse.jdt.launching.PROJECT_ATTR" value="canon-launch"/>
     <stringAttribute key="org.eclipse.jdt.launching.SOURCE_PATH_PROVIDER" value="org.eclipse.m2e.launchconfig.sourcepathProvider"/>
 </launchConfiguration>

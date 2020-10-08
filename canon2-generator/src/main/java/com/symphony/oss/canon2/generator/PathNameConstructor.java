@@ -29,7 +29,7 @@ import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.symphony.oss.canon2.model.GenerationException;
+import com.symphony.oss.canon2.core.GenerationException;
 
 
 public class PathNameConstructor<T extends ITemplateModel<?,?,?>> implements IPathNameConstructor<T>

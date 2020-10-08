@@ -32,7 +32,7 @@ import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.symphony.oss.canon2.model.GenerationException;
+import com.symphony.oss.canon2.core.GenerationException;
 
 public class Canon2
 {
@@ -101,7 +101,8 @@ public class Canon2
   private List<String>          errors_               = new ArrayList<>();
   private Map<String, String>   uriMap_               = new HashMap<>();
   private List<ICanonGenerator> generators_           = new ArrayList<>();
-   
+  private String                copyright_;
+  private String                license_;
 
 //  /**
 //   * Launcher.
@@ -138,6 +139,22 @@ public class Canon2
               error("--generator requires className:directoryName name to follow.");
             break;
 
+          case "copyright":
+            i++;
+            if (i < argv.length)
+              copyright_ = argv[i];
+            else
+              error("--copyright requires a copyright holder to follow.");
+            break;
+
+          case "license":
+            i++;
+            if (i < argv.length)
+              license_ = argv[i];
+            else
+              error("--license requires a license to follow.");
+            break;
+          
           case "sourceDir":
             i++;
             if (i < argv.length)
@@ -180,6 +197,22 @@ public class Canon2
               loadGenerator(argv[i]);
             else
               error("-g requires className:directoryName name to follow.");
+            break;
+
+          case "c":
+            i++;
+            if (i < argv.length)
+              copyright_ = argv[i];
+            else
+              error("-c requires a copyright holder to follow.");
+            break;
+
+          case "l":
+            i++;
+            if (i < argv.length)
+              license_ = argv[i];
+            else
+              error("-c requires a license to follow.");
             break;
 
           case "s":
@@ -356,6 +389,8 @@ public class Canon2
         .withTargetDir(outputDir_ + "/target/generated-sources")
         .withProformaDir(outputDir_ + "/target/proforma-sources")
         .withCopyDir(outputDir_ + "/target/proforma-copy")
+        .withCopyright(copyright_)
+        .withLicense(license_)
         .withUriMappings(uriMap_)
         ;
     

@@ -25,14 +25,14 @@ import java.util.Set;
 import javax.annotation.Nullable;
 
 import com.symphony.oss.canon.json.model.JsonObject;
+import com.symphony.oss.canon2.core.GenerationException;
+import com.symphony.oss.canon2.core.INamedModelEntity;
+import com.symphony.oss.canon2.core.ResolvedOpenApiObject;
+import com.symphony.oss.canon2.core.ResolvedSchema;
+import com.symphony.oss.canon2.core.SourceContext;
 import com.symphony.oss.canon2.model.CanonCardinality;
 import com.symphony.oss.canon2.model.CanonGeneratorConfig;
-import com.symphony.oss.canon2.model.GenerationException;
-import com.symphony.oss.canon2.model.INamedModelEntity;
 import com.symphony.oss.canon2.model.OpenApiObject;
-import com.symphony.oss.canon2.model.ResolvedOpenApiObject;
-import com.symphony.oss.canon2.model.ResolvedSchema;
-import com.symphony.oss.canon2.model.SourceContext;
 
 import freemarker.cache.TemplateLoader;
 import freemarker.template.Configuration;

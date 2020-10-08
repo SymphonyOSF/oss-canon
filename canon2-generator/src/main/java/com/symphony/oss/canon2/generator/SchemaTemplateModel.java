@@ -20,7 +20,7 @@ package com.symphony.oss.canon2.generator;
 
 import java.util.Map.Entry;
 
-import com.symphony.oss.canon2.model.ResolvedSchema;
+import com.symphony.oss.canon2.core.ResolvedSchema;
 import com.symphony.oss.canon2.model.SchemaType;
 
 /**

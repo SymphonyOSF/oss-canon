@@ -16,7 +16,7 @@
  * limitations under the License.
  */
 
-package com.symphony.oss.canon2.model;
+package com.symphony.oss.canon2.core;
 
 import java.util.HashMap;
 import java.util.Map;

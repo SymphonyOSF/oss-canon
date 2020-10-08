@@ -24,6 +24,7 @@
 package com.symphony.oss.canon2.runtime.java;
 
 import java.util.HashSet;
+import java.util.Objects;
 import java.util.Set;
 
 import javax.annotation.Nonnull;
@@ -48,10 +49,30 @@ public class ObjectEntity extends Entity
   private final ImmutableSet<String> unknownKeys_;
   
   /**
-   * Constructor from Builder.
+   * Constructor.
    * 
-   * @param builder The builder.
+   * @param initialiser Initialiser, may be JSON serialisation, builder or another instance.
    */
+  public ObjectEntity(IObjectEntityInitialiser initialiser)
+  {
+    super(initialiser);
+    
+    Objects.requireNonNull(initialiser.getJsonObject());
+    
+    jsonObject_   = initialiser.getJsonObject();
+    type_         = initialiser.getCanonType();
+    majorVersion_ = initialiser.getCanonMajorVersion();
+    minorVersion_ = initialiser.getCanonMinorVersion();
+    unknownKeys_  = initialiser.getCanonUnknownKeys();
+  }
+  
+  
+  
+  
+  
+  
+  
+  @Deprecated
   public ObjectEntity(AbstractBuilder<?,?> builder)
   {
     super(builder);
@@ -63,11 +84,7 @@ public class ObjectEntity extends Entity
     unknownKeys_  = ImmutableSet.of();
   }
   
-  /**
-   * Copy constructor.
-   * 
-   * @param other Another instance from which all attributes are to be copied.
-   */
+  @Deprecated
   public ObjectEntity(ObjectEntity other)
   {
     super(other);
@@ -79,11 +96,7 @@ public class ObjectEntity extends Entity
     unknownKeys_  = other.unknownKeys_;
   }
   
-  /**
-   * Constructor from serialized form.
-   * 
-   * @param jsonObject A parse tree of the serialized form.
-   */
+  @Deprecated
   public ObjectEntity(JsonObject jsonObject)
   {
     super(jsonObject);
@@ -123,6 +136,15 @@ public class ObjectEntity extends Entity
     
     unknownKeys_ = ImmutableSet.copyOf(keySet);
   }
+  
+  
+  
+  
+  
+  
+  
+  
+  
   
   /**
    * Return the JSON object from which this entity was created.
@@ -191,7 +213,9 @@ public class ObjectEntity extends Entity
    * @param <T> Concrete type of the builder.
    * @param <B> Concrete type of the built class.
    */
-  public static abstract class AbstractBuilder<T extends AbstractBuilder<T,B>, B extends Entity> extends Entity.AbstractBuilder<T,B>
+  public static abstract class AbstractBuilder<T extends AbstractBuilder<T,B>, B extends Entity>
+    extends Entity.AbstractBuilder<T,B>
+    implements IObjectEntityInitialiser
   {
     /**
      * Constructor.
@@ -214,11 +238,19 @@ public class ObjectEntity extends Entity
       super(type);
     }
     
+    // TODO: perhaps if withValues has been set this should return a non-empty set, if there were unknown keys in the object given.
+    @Override
+    public ImmutableSet<String> getCanonUnknownKeys()
+    {
+      return ImmutableSet.of();
+    }
+
     /**
      * Return the type id (_type JSON attribute) for entities created by this builder.
      * 
      * @return The type id for entities created by this builder.
      */
+    @Override
     public abstract String     getCanonType();
     
     /**
@@ -226,6 +258,7 @@ public class ObjectEntity extends Entity
      * 
      * @return The type version for this entity.
      */
+    
     public abstract String getCanonVersion();
     
     /**
@@ -233,6 +266,7 @@ public class ObjectEntity extends Entity
      * 
      * @return The major type version for entities created by this builder.
      */
+    @Override
     public abstract Integer    getCanonMajorVersion();
     
     /**
@@ -240,15 +274,17 @@ public class ObjectEntity extends Entity
      * 
      * @return The minor type version for entities created by this builder.
      */
+    @Override
     public abstract Integer    getCanonMinorVersion();
 
     @Override
-    protected JsonDomNode getJsonDomNode()
+    public JsonDomNode getJsonDomNode()
     {
       return getJsonObject();
     }
 
-    protected abstract JsonObject getJsonObject();
+//    @Override
+//    public abstract JsonObject getJsonObject();
 
     /**
      * Populate the given JsonObject.Builder with all attributes.

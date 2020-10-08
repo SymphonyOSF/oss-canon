@@ -1,5 +1,5 @@
 /**
- * GENERATED CODE - DO NOT EDIT OR CHECK IN TO SOURCE CODE CONTROL
+ * Proforma implementation:
  *
  * Copyright 2020 Symphony Communication Services, LLC.
  *
@@ -21,7 +21,7 @@
  *    Generator groupId    org.symphonyoss.s2.canon
  *              artifactId canon2-generator-java
  *    Template name        proforma/Object/_.java.ftl
- *    At                   2020-09-16 16:04:42 BST
+ *    At                   2020-10-08 13:02:45 BST
  *----------------------------------------------------------------------------------------------------
  */
 
@@ -34,20 +34,18 @@ import java.util.Map.Entry;
 import javax.annotation.concurrent.Immutable;
 
 import com.google.common.collect.ImmutableMap;
-import com.symphony.oss.canon.json.model.JsonObject;
 import com.symphony.oss.canon2.core.CanonModelContext;
 import com.symphony.oss.canon2.core.GenerationException;
 import com.symphony.oss.canon2.core.ResolvedOpenApiObject;
 import com.symphony.oss.canon2.core.ResolvedPropertiesObject;
 import com.symphony.oss.canon2.core.SourceContext;
 import com.symphony.oss.canon2.runtime.java.Entity;
-import com.symphony.oss.canon2.runtime.java.ModelRegistry;
 
 
 /**
  * Facade for Object  SchemasObject canon
- * Object com.symphony.oss.canon2.generator.java.JavaOpenApiTemplateModel@4df50bcc
- * Generated from JavaObjectSchemaTemplateModel [fields_=[]] at {entity.context.path}
+ * Object SchemasObject
+ * Generated from SchemasObject
  */
 @Immutable
 public class SchemasObject extends SchemasObjectEntity
@@ -55,50 +53,51 @@ public class SchemasObject extends SchemasObjectEntity
   private final ImmutableMap<String, Schema> schemas_;
   
   /**
-   * Constructor from builder.
+   * Constructor.
    * 
-   * @param builder A mutable builder containing all values.
+   * @param initialiser Initialiser, may be JSON serialisation, builder or another instance.
    */
-  public SchemasObject(AbstractBuilder<?,?> builder)
+  protected SchemasObject(Initialiser initialiser)
   {
-    super(builder);
-    schemas_ = initSchemas(null);
-  }
-  
-  /**
-   * Constructor from serialised form.
-   * 
-   * @param jsonObject An immutable JSON object containing the serialized form of the object.
-   * @param modelRegistry A model registry to use to deserialize any nested objects.
-   */
-  public SchemasObject(JsonObject jsonObject, ModelRegistry modelRegistry)
-  {
-    super(jsonObject, modelRegistry);
-    schemas_ = initSchemas(modelRegistry);
-  }
-   
-  /**
-   * Copy constructor.
-   * 
-   * @param other Another instance from which all attributes are to be copied.
-   */
-  public SchemasObject(SchemasObject other)
-  {
-    super(other);
-    schemas_ = other.schemas_;
-  }
-  
-  private ImmutableMap<String, Schema> initSchemas(ModelRegistry modelRegistry)
-  {
+    super(initialiser);
+    
     Map<String, Schema> schemas = new HashMap<>();
     
     for(String name : getCanonUnknownKeys())
     {
-      schemas.put(name, new Schema(getJsonObject().getObject(name), modelRegistry));
+      schemas.put(name, Schema.FACTORY.newInstance(getJsonObject().getObject(name) /*, modelRegistry */));
     }
     
-    return ImmutableMap.copyOf(schemas);
+    schemas_ = ImmutableMap.copyOf(schemas);
   }
+  
+
+  public interface IInstanceOrBuilder extends SchemasObjectEntity.IInstanceOrBuilder
+  {
+  }
+  
+  /**
+   * Abstract builder for SchemasObject. If there are sub-classes of this type then their builders sub-class this builder.
+   *
+   * @param <B> The concrete type of the builder, used for fluent methods.
+   * @param <T> The concrete type of the built object.
+   */
+  public static abstract class AbstractBuilder<T extends AbstractBuilder<T,B>, B extends SchemasObject>
+    extends SchemasObjectEntity.AbstractBuilder<T,B>
+    implements IInstanceOrBuilder
+  {
+    protected AbstractBuilder(Class<T> type)
+    {
+      super(type);
+    }
+    
+    protected AbstractBuilder(Class<T> type, B initial)
+    {
+      super(type, initial);
+    }
+  }
+
+
 
   public ImmutableMap<String, Schema> getSchemas()
   {
@@ -113,25 +112,6 @@ public class SchemasObject extends SchemasObjectEntity
       throw new IllegalArgumentException("No path element " + parts[index]);
     else
       return schema;
-  }
-  
-  /**
-   * Abstract builder for SchemasObject. If there are sub-classes of this type then their builders sub-class this builder.
-   *
-   * @param <B> The concrete type of the builder, used for fluent methods.
-   * @param <T> The concrete type of the built object.
-   */
-  public static abstract class AbstractBuilder<T extends AbstractBuilder<T,B>, B extends SchemasObject> extends SchemasObjectEntity.AbstractBuilder<T,B>
-  {
-    protected AbstractBuilder(Class<T> type)
-    {
-      super(type);
-    }
-    
-    protected AbstractBuilder(Class<T> type, B initial)
-    {
-      super(type, initial);
-    }
   }
 
   public ResolvedPropertiesObject.SingletonBuilder link(ResolvedOpenApiObject.SingletonBuilder openApiObjectBuilder, CanonModelContext modelContext, SourceContext sourceContext, String uri) throws GenerationException

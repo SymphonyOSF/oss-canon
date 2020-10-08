@@ -21,9 +21,9 @@ package com.symphony.oss.canon2.generator.java;
 import java.util.Set;
 import java.util.TreeSet;
 
+import com.symphony.oss.canon2.core.ResolvedOpenApiObject;
+import com.symphony.oss.canon2.core.SourceContext;
 import com.symphony.oss.canon2.generator.OpenApiTemplateModel;
-import com.symphony.oss.canon2.model.ResolvedOpenApiObject;
-import com.symphony.oss.canon2.model.SourceContext;
 
 public class JavaOpenApiTemplateModel extends OpenApiTemplateModel<
 IJavaTemplateModel,

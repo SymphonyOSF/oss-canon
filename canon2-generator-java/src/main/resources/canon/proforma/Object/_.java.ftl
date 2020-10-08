@@ -6,9 +6,6 @@ package ${genPackage};
 
 import javax.annotation.concurrent.Immutable;
 
-import com.symphony.oss.canon.json.model.JsonObject;
-import com.symphony.oss.canon2.runtime.java.ModelRegistry;
-
 
 /**
  * Facade for Object  ${entity.name} ${model.name}
@@ -28,6 +25,17 @@ import com.symphony.oss.canon2.runtime.java.ModelRegistry;
 @Immutable
 public class ${entity.type} extends ${entity.type}Entity
 {
+  /**
+   * Constructor.
+   * 
+   * @param initialiser Initialiser, may be JSON serialisation, builder or another instance.
+   */
+  protected ${entity.type}(Initialiser initialiser)
+  {
+    super(initialiser);
+  }
+  
+  <#-- 
   /**
    * Constructor from builder.
    * 
@@ -57,6 +65,10 @@ public class ${entity.type} extends ${entity.type}Entity
   public ${entity.type}(${entity.type} other)
   {
     super(other);
+  } -->
+
+  public interface IInstanceOrBuilder extends ${entity.type}Entity.IInstanceOrBuilder
+  {
   }
   
   /**
@@ -65,7 +77,9 @@ public class ${entity.type} extends ${entity.type}Entity
    * @param <B> The concrete type of the builder, used for fluent methods.
    * @param <T> The concrete type of the built object.
    */
-  public static abstract class AbstractBuilder<T extends AbstractBuilder<T,B>, B extends ${entity.type}> extends ${entity.type}Entity.AbstractBuilder<T,B>
+  public static abstract class AbstractBuilder<T extends AbstractBuilder<T,B>, B extends ${entity.type}>
+    extends ${entity.type}Entity.AbstractBuilder<T,B>
+    implements IInstanceOrBuilder
   {
     protected AbstractBuilder(Class<T> type)
     {

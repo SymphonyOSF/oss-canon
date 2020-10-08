@@ -8,9 +8,9 @@ package com.symphony.oss.canon2.generator.java;
 
 import java.math.BigInteger;
 
+import com.symphony.oss.canon2.core.ResolvedSchema;
 import com.symphony.oss.canon2.generator.IArraySchemaTemplateModel;
 import com.symphony.oss.canon2.model.CanonCardinality;
-import com.symphony.oss.canon2.model.ResolvedSchema;
 import com.symphony.oss.canon2.model.SchemaType;
 import com.symphony.oss.commons.fault.CodingFault;
 

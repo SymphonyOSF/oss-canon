@@ -157,6 +157,9 @@
           "x-canon-facade": {
             "type": "boolean"
           },
+          "x-canon-builderFacade": {
+            "type": "boolean"
+          },
           "required": {
             "type": "array",
             "x-canon-cardinality": "SET",

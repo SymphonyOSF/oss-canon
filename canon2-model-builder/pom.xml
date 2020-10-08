@@ -83,7 +83,7 @@
             </goals>
             <configuration>
               <srcDirs>src/main/resources/canon</srcDirs>
-              <!-- <proformaCopyDir>target/proforma-copy</proformaCopyDir> -->
+              <proformaCopyDir>src/main</proformaCopyDir>
               
               <generatorArtifacts>
                 <generatorArtifact>
@@ -110,7 +110,6 @@
             <configuration>
               <sources>
                 <source>target/generated-sources/java</source>
-                <source>target/proforma-sources/java</source>
               </sources>
             </configuration>
           </execution>

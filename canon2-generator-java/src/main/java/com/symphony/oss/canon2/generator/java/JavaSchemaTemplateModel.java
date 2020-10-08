@@ -26,8 +26,8 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
 
+import com.symphony.oss.canon2.core.ResolvedSchema;
 import com.symphony.oss.canon2.generator.SchemaTemplateModel;
-import com.symphony.oss.canon2.model.ResolvedSchema;
 
 public abstract class JavaSchemaTemplateModel
 extends SchemaTemplateModel<

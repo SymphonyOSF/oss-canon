@@ -69,17 +69,18 @@ UNEXPECTED SCHEMA TYPE ${schema.schemaType} in generateCreateJsonDomNodeFromFiel
  # @param name          The name of the attribute for error messages.
  # @param var           The name of a variable to which the extracted value will be assigned 
  # @param ifValidation  If set then an if statement which guards validation checks
+ # @param modelRegistry an expression to return a ModelRegistry.
  #----------------------------------------------------------------------------------------------------->
-<#macro generateCreateFieldFromJsonDomNode indent node schema name var ifValidation>
-<@generateCreateFieldFromJsonDomNodePrivate indent 0 node schema name var ifValidation/>
+<#macro generateCreateFieldFromJsonDomNode indent node schema name var ifValidation modelRegistry>
+<@generateCreateFieldFromJsonDomNodePrivate indent 0 node schema name var ifValidation modelRegistry/>
 </#macro>
 
-<#macro generateCreateFieldFromJsonDomNodePrivate indent cnt node schema name var ifValidation>
+<#macro generateCreateFieldFromJsonDomNodePrivate indent cnt node schema name var ifValidation modelRegistry>
   <#switch schema.schemaType>
     <#case "OBJECT">
 ${indent}if(${node} instanceof JsonObject)
 ${indent}{
-${indent}  ${var} = modelRegistry.newInstance((JsonObject)${node}, ${schema.camelCapitalizedName}.TYPE_ID, ${schema.type}.class);
+${indent}  ${var} = ${modelRegistry}.newInstance((JsonObject)${node}, ${schema.camelCapitalizedName}.TYPE_ID, ${schema.type}.class);
 ${indent}}
 ${indent}else ${ifValidation}
 ${indent}{
@@ -95,7 +96,7 @@ ${indent}  ${schema.type} itemList${cnt} = new LinkedList<>();
 ${indent}  for(JsonDomNode item${cnt} : (JsonArray)${node})
 ${indent}  {
 ${indent}    ${schema.elementType.type} itemValue${cnt} = null;
-        <@generateCreateFieldFromJsonDomNodePrivate "${indent}    " cnt+1 "item${cnt}" schema.elementType "${name} items" "itemValue${cnt}" ifValidation/>
+        <@generateCreateFieldFromJsonDomNodePrivate "${indent}    " cnt+1 "item${cnt}" schema.elementType "${name} items" "itemValue${cnt}" ifValidation modelRegistry/>
 ${indent}    itemList${cnt}.add(itemValue${cnt});
 ${indent}  }
 ${indent}  ${var} = ImmutableList.copyOf(itemList${cnt});
@@ -104,7 +105,7 @@ ${indent}  Set<${schema.elementType.type}> itemSet${cnt} = new HashSet<>();
 ${indent}  for(JsonDomNode item${cnt} : (JsonArray)${node})
 ${indent}  {
 ${indent}    ${schema.elementType.type} itemValue${cnt} = null;
-        <@generateCreateFieldFromJsonDomNode "${indent}    " "item${cnt}" schema.elementType "${name} items" "itemValue${cnt}" ifValidation/>
+        <@generateCreateFieldFromJsonDomNode "${indent}    " "item${cnt}" schema.elementType "${name} items" "itemValue${cnt}" ifValidation modelRegistry/>
 ${indent}    itemSet${cnt}.add(itemValue${cnt});
 ${indent}  }
 ${indent}  ${var} = ImmutableSet.copyOf(itemSet${cnt});

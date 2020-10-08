@@ -48,36 +48,45 @@ public class Entity
   private final @Nonnull JsonDomNode jsonDomNode_;
   
   /**
-   * Constructor from Builder.
+   * Constructor.
    * 
-   * @param builder The builder.
+   * @param initialiser Initialiser, may be JSON serialisation, builder or another instance.
    */
-  public Entity(@Nonnull AbstractBuilder<?,?> builder)
+  public Entity(IEntityInitialiser initialiser)
   {
-    jsonDomNode_ = builder.getJsonDomNode();
+    Objects.requireNonNull(initialiser.getJsonDomNode());
+    
+    jsonDomNode_ = initialiser.getJsonDomNode();
   }
   
-  /**
-   * Copy constructor.
-   * 
-   * @param other Another instance from which all attributes are to be copied.
-   */
+  
+  
+  
+  
+//  @Deprecated
+//  public Entity(@Nonnull AbstractBuilder<?,?> builder)
+//  {
+//    jsonDomNode_ = builder.getJsonDomNode();
+//  }
+  
+  @Deprecated
   public Entity(Entity other)
   {
     jsonDomNode_ = other.jsonDomNode_;
   }
   
-  /**
-   * Constructor from JSON.
-   * 
-   * @param jsonDomNode Serialized form.
-   */
+  @Deprecated
   public Entity(@Nonnull JsonDomNode jsonDomNode)
   {
     Objects.requireNonNull(jsonDomNode);
     
     jsonDomNode_ = jsonDomNode;
   }
+  
+  
+  
+  
+  
 
   /**
    * Return the serialized form of this object.

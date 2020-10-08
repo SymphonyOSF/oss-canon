@@ -18,7 +18,7 @@
 
 package com.symphony.oss.canon2.generator;
 
-import com.symphony.oss.canon2.model.IResolvedEntity;
+import com.symphony.oss.canon2.core.IResolvedEntity;
 
 /**
  * Template model object for an object field.

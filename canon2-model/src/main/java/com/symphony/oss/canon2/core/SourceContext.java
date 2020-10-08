@@ -21,7 +21,7 @@
  * under the License.
  */
 
-package com.symphony.oss.canon2.model;
+package com.symphony.oss.canon2.core;
 
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -38,6 +38,8 @@ import java.util.Map.Entry;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.symphony.oss.canon2.core.ResolvedOpenApiObject.SingletonBuilder;
+import com.symphony.oss.canon2.model.OpenApiObject;
 import com.symphony.oss.canon2.runtime.java.ModelRegistry;
 
 /**

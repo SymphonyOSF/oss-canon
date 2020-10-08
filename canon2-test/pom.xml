@@ -113,6 +113,8 @@
             </goals>
             <configuration>
               <proformaCopyDir>target/proforma-copy</proformaCopyDir>
+              <copyright>Copyright Set in pom</copyright>
+              <license> * License set\n * in pom.xml with\n * formatting.</license>
               
               <generatorArtifacts>
                 <generatorArtifact>

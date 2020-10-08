@@ -1,6 +1,14 @@
 /**
+<#switch templateType>
+  <#case "TEMPLATE">
  * GENERATED CODE - DO NOT EDIT OR CHECK IN TO SOURCE CODE CONTROL
  *
+  <#break>
+  <#case "PROFORMA">
+ * Proforma implementation:
+ *
+  <#break>
+</#switch>
  * Copyright ${year} Symphony Communication Services, LLC.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -15,6 +23,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *
+<#if templateType== "PROFORMA" && copyright??>
+ * Additional material:
+ *
+ * Copyright ${year} ${copyright}
+ *
+  <#if license??>
+${license}
+  </#if>
+</#if>
  *----------------------------------------------------------------------------------------------------
  * Generated from
  *    Input source         ${inputSourceFileName}
