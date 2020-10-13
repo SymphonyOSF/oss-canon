@@ -5,8 +5,8 @@
   "javax.annotation.Nonnull",
   "java.util.Objects",
   "com.symphony.oss.canon2.runtime.java.TypeDef",
-  "com.symphony.oss.commons.type.provider.IValueProvider",
-  "com.symphony.oss.commons.type.provider.${entity.jsonNodeType}"
+    "com.symphony.oss.canon.json.model.JsonDomNode",
+    "${entity.fullyQualifiedJsonNodeType}"
   ]>
 
 package ${genPackage};
@@ -29,7 +29,7 @@ ${import}
  * Generated from ${entity} at {entity.context.path}
  */
 @Immutable
-public ${classModifier}class ${className} extends TypeDef implements ${entity.jsonNodeType}, Comparable<${className}>
+public ${classModifier}class ${className} extends TypeDef implements Comparable<${className}>
 {
   @Deprecated
   private static Builder theBuilder = new Builder();
@@ -52,7 +52,7 @@ public ${classModifier}class ${className} extends TypeDef implements ${entity.js
    *
    * @param value the value of the required instance.
    */
-  ${className}(@Nonnull IValueProvider node)
+  ${className}(@Nonnull JsonDomNode node)
   {
     Objects.requireNonNull(node);
 
@@ -89,7 +89,11 @@ public ${classModifier}class ${className} extends TypeDef implements ${entity.js
     return value_.hashCode();
   }
   
-  @Override
+  /**
+   * Return the value as a ${entity.javaType}.
+   * 
+   * @return the value as a ${entity.javaType}.
+   */
   public @Nonnull ${entity.javaType} as${entity.javaType}()
   {
     return value_;

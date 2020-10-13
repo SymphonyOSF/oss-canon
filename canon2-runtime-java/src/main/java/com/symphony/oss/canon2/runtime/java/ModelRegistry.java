@@ -73,7 +73,18 @@ public class ModelRegistry
     return parserValidation_;
   }
 
-  @Deprecated
+  /**
+   * Return a new entity instance parsed from the given JSON object.
+   * 
+   * @param jsonObject        A JSON object containing the serialized form of an entity.
+   * 
+   * @return The deserialized entity.
+   * 
+   * @throws NullPointerException if the value is null.
+   * @throws IllegalStateException if the value is otherwise invalid.
+   * This may be the case if the schema defines limits on the magnitude of the value, or if a facade
+   * has been written for the type.
+   */
   public Entity newInstance(JsonObject jsonObject)
   {
     String typeId;
@@ -276,7 +287,7 @@ public class ModelRegistry
    */
   public <E extends Entity> E parseOne(Reader reader, String defaultTypeId, Class<E> type)
   {
-    return newInstance(parseOneJsonObject(reader), defaultTypeId, type);
+    return newInstance(JsonParser.parseObject(reader), defaultTypeId, type);
   }
 
   /**
@@ -321,34 +332,6 @@ public class ModelRegistry
     else
     {
       throw new IllegalStateException("Expected a JSON array but read a " + dom.getClass().getName());
-    }
-  }
-  
-  /**
-   * Parse a single JSON object from the given Reader.
-   * 
-   * This method does not do a partial read, it is expected that the contents of the Reader
-   * are a single object.
-   * 
-   * @param reader  The source of a JSON object.
-   * @return  The parsed object.
-   * 
-   * @throws IllegalStateException If the input cannot be parsed or does not contain a single object.
-   */
-  public static JsonObject parseOneJsonObject(Reader reader)
-  {
-    JsonDom dom = new JsonParser.Builder()
-        .withInput(reader)
-        .build()
-        .parse();
-    
-    if(dom instanceof JsonObjectDom)
-    {
-      return ((JsonObjectDom)dom).getObject();
-    }
-    else
-    {
-      throw new IllegalStateException("Expected a JSON Object but read a " + dom.getClass().getName());
     }
   }
   
@@ -442,7 +425,7 @@ public class ModelRegistry
    */
   public Entity parseOne(Reader reader)
   {
-    return newInstance(parseOneJsonObject(reader));
+    return newInstance(JsonParser.parseObject(reader));
   }
 
   /**

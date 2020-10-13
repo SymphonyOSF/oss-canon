@@ -55,32 +55,6 @@ public class ComponentsObject extends ComponentsObjectEntity
     super(initialiser);
   }
   
-
-  public interface IInstanceOrBuilder extends ComponentsObjectEntity.IInstanceOrBuilder
-  {
-  }
-  
-  /**
-   * Abstract builder for ComponentsObject. If there are sub-classes of this type then their builders sub-class this builder.
-   *
-   * @param <B> The concrete type of the builder, used for fluent methods.
-   * @param <T> The concrete type of the built object.
-   */
-  public static abstract class AbstractBuilder<T extends AbstractBuilder<T,B>, B extends ComponentsObject>
-    extends ComponentsObjectEntity.AbstractBuilder<T,B>
-    implements IInstanceOrBuilder
-  {
-    protected AbstractBuilder(Class<T> type)
-    {
-      super(type);
-    }
-    
-    protected AbstractBuilder(Class<T> type, B initial)
-    {
-      super(type, initial);
-    }
-  }
-  
   public Entity get(String[] parts, int index)
   {
     switch(parts[index])

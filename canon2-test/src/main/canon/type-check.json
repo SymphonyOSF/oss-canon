@@ -284,6 +284,18 @@
               },
               "value": {
                 "type": "integer"
+              },
+              "nestedObjectField": {
+                "type": "object",
+                "required": ["name"],
+                "properties": {
+                  "name": {
+                    "type": "string"
+                  },
+                  "value": {
+                    "type": "integer"
+                  }
+                }
               }
             }
           },

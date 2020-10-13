@@ -117,32 +117,6 @@ public class ReferenceObject extends ReferenceObjectEntity
       throw new IllegalStateException("Invalid base URI \"%s\"" + text, e);
     }
   }
-  
-
-  public interface IInstanceOrBuilder extends ReferenceObjectEntity.IInstanceOrBuilder
-  {
-  }
-  
-  /**
-   * Abstract builder for ReferenceObject. If there are sub-classes of this type then their builders sub-class this builder.
-   *
-   * @param <B> The concrete type of the builder, used for fluent methods.
-   * @param <T> The concrete type of the built object.
-   */
-  public static abstract class AbstractBuilder<T extends AbstractBuilder<T,B>, B extends ReferenceObject>
-    extends ReferenceObjectEntity.AbstractBuilder<T,B>
-    implements IInstanceOrBuilder
-  {
-    protected AbstractBuilder(Class<T> type)
-    {
-      super(type);
-    }
-    
-    protected AbstractBuilder(Class<T> type, B initial)
-    {
-      super(type, initial);
-    }
-  }
 
   public UriParts getUriParts()
   {

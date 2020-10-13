@@ -36,6 +36,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.google.common.collect.ImmutableMap;
+import com.symphony.oss.canon2.core.ResolvedSchema.SingletonBuilder;
 import com.symphony.oss.canon2.model.CanonModel;
 import com.symphony.oss.canon2.model.OpenApiObject;
 import com.symphony.oss.canon2.model.Schema;
@@ -129,7 +130,7 @@ public abstract class CanonModelContext
 
 
   public synchronized ResolvedSchema.SingletonBuilder link(ResolvedOpenApiObject.SingletonBuilder openApiObjectBuilder, SourceContext sourceContext,
-      String name, String uri, Schema schema, boolean generated) throws GenerationException
+      String name, String uri, Schema schema, boolean generated, SingletonBuilder resolvedContainerBuilder) throws GenerationException
   {
     ResolvedSchema.SingletonBuilder builder = schemaMap_.get(uri);
     
@@ -139,6 +140,7 @@ public abstract class CanonModelContext
           .withName(name)
           .withUri(uri)
           .withGenerated(generated)
+          .withResolvedContainer(resolvedContainerBuilder)
           .withResolvedOpenApiObject(openApiObjectBuilder)
           ;
       

@@ -24,6 +24,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.io.StringReader;
+import java.math.BigDecimal;
 import java.nio.charset.StandardCharsets;
 
 import com.symphony.oss.canon.json.model.JsonDomNode;
@@ -31,6 +32,7 @@ import com.symphony.oss.canon.json.model.JsonDouble;
 import com.symphony.oss.canon.json.model.JsonFloat;
 import com.symphony.oss.canon.json.model.JsonInteger;
 import com.symphony.oss.canon.json.model.JsonLong;
+import com.symphony.oss.canon.json.model.JsonParsedNumber;
 import com.symphony.oss.commons.fault.CodingFault;
 import com.symphony.oss.commons.fluent.BaseAbstractBuilder;
 
@@ -413,6 +415,9 @@ public class Parser implements IParserContext
   
   JsonDomNode getNumber(IParserContext context) throws SyntaxErrorException
   {
+    if(col_ >= lineBuffer_.length())
+      return getInteger(context);
+    
     while(lineBuffer_.charAt(col_) >='0' && lineBuffer_.charAt(col_) <= '9')
     {
       col_++;
@@ -472,59 +477,78 @@ public class Parser implements IParserContext
     return getInteger(context);
   }
 
-  JsonDomNode getFloat(IParserContext context) throws SyntaxErrorException
+  JsonDomNode getFloat(IParserContext context)
   {
-    try
-    {
-      double doubleValue = Double.parseDouble(lineBuffer_.substring(context.getCol() - 1, col_));
-      float floatValue = Float.parseFloat(lineBuffer_.substring(context.getCol() - 1, col_));
-      
-      if(String.valueOf(doubleValue).equals(String.valueOf(floatValue)))
-      {
-        return new JsonFloat.Builder()
-            .withContext(context)
-            .withValue(floatValue)
-            .build();
-      }
-      else
-      {
-        return new JsonDouble.Builder()
-            .withContext(context)
-            .withValue(doubleValue)
-            .build();
-      }
-    }
-    catch(NumberFormatException e)
-    {
-      throw new SyntaxErrorException("Invalid integer value", context);
-    }
+    //return getFloat(context, lineBuffer_.substring(context.getCol() - 1, col_));
+    
+    return new JsonParsedNumber.Builder()
+        .withContext(context)
+        .withValue(lineBuffer_.substring(context.getCol() - 1, col_))
+        .build();
   }
 
-  JsonDomNode getInteger(IParserContext context) throws SyntaxErrorException
+//  JsonDomNode getFloat(IParserContext context, String input) throws SyntaxErrorException
+//  {
+//    try
+//    {
+////      BigDecimal bigDecimalValue = new BigDecimal(input);
+//      
+////      bigDecimalValue.doubleValue(input);
+//      
+//      double doubleValue = Double.parseDouble(input);
+//      float floatValue = Float.parseFloat(input);
+//      
+//      if(String.valueOf(doubleValue).equals(String.valueOf(floatValue)))
+//      {
+//        return new JsonFloat.Builder()
+//            .withContext(context)
+//            .withValue(floatValue)
+//            .build();
+//      }
+//      else
+//      {
+//        return new JsonDouble.Builder()
+//            .withContext(context)
+//            .withValue(doubleValue)
+//            .build();
+//      }
+//    }
+//    catch(NumberFormatException e)
+//    {
+//      throw new SyntaxErrorException("Invalid integer value", context);
+//    }
+//  }
+
+  JsonDomNode getInteger(IParserContext context)
   {
-    try
-    {
-      Long longValue = Long.parseLong(lineBuffer_.substring(context.getCol() - 1, col_));
-      
-      if(longValue.intValue() == longValue)
-      {
-        return new JsonInteger.Builder()
-            .withContext(context)
-            .withValue(longValue.intValue())
-            .build();
-      }
-      else
-      {
-        return new JsonLong.Builder()
-            .withContext(context)
-            .withValue(longValue)
-            .build();
-      }
-    }
-    catch(NumberFormatException e)
-    {
-      throw new SyntaxErrorException("Invalid integer value", context);
-    }
+    return new JsonParsedNumber.Builder()
+        .withContext(context)
+        .withValue(lineBuffer_.substring(context.getCol() - 1, col_))
+        .build();
+    
+//    try
+//    {
+//      Long longValue = Long.parseLong(lineBuffer_.substring(context.getCol() - 1, col_));
+//      
+//      if(longValue.intValue() == longValue)
+//      {
+//        return new JsonInteger.Builder()
+//            .withContext(context)
+//            .withValue(longValue.intValue())
+//            .build();
+//      }
+//      else
+//      {
+//        return new JsonLong.Builder()
+//            .withContext(context)
+//            .withValue(longValue)
+//            .build();
+//      }
+//    }
+//    catch(NumberFormatException e)
+//    {
+//      throw new SyntaxErrorException("Invalid integer value", context);
+//    }
   }
 
   /**

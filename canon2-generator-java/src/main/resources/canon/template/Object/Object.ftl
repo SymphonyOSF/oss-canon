@@ -5,8 +5,7 @@
 </#if>
 <#include "/copyrightHeader.ftl"/>
 <#include "/macros.ftl"/>
-<#list entity.imports as import>
-</#list>
+<#include "InstanceOrBuilder.ftl">
 <#assign imports = entity.imports + [
   "javax.annotation.concurrent.Immutable",
   "javax.annotation.Nullable",
@@ -15,11 +14,13 @@
   "com.symphony.oss.canon2.runtime.java.ObjectEntity",
   "com.symphony.oss.canon2.runtime.java.IObjectEntityInitialiser",
   "com.symphony.oss.canon2.runtime.java.JsonObjectEntityInitialiser",
-  "com.symphony.oss.canon.json.model.JsonObject"
+  "com.symphony.oss.canon.json.model.JsonObject",
+  "com.symphony.oss.commons.fault.FaultAccumulator"
   ]>
 <#macro importType schema>
   <#assign imports = imports + [
     "com.symphony.oss.canon.json.model.JsonDomNode",
+    "com.symphony.oss.canon.json.model.JsonNull",
     "${schema.fullyQualifiedJsonNodeType}"
   ]>
   <#if schema.externalType??>
@@ -70,7 +71,11 @@ package ${genPackage};
 <#list entity.sortImports(imports) as import>
 ${import}
 </#list>
-<#macro generateObject indent entity className superClassName classModifier>
+<#macro generateObject indent entity className superClassName classModifier nested>
+<#if nested>
+<@generateInstanceOrBuilder "${indent}" entity/>
+
+</#if>
 ${indent}/**
 ${indent} * Implementation for Object ${entity}
 <#if entity.summary??>
@@ -101,7 +106,6 @@ ${indent}  public static final Factory FACTORY = new Factory();
 
 ${indent}  private final ${"ImmutableSet<String>"?right_pad(25)}   unknownKeys_;
 <#list entity.fields as field>
-${indent}  // field ${field} field.typeSchema.name=${field.typeSchema.name}
 ${indent}  private final ${field.type?right_pad(25)}  _${field.camelName}_;
 </#list>
 
@@ -123,11 +127,7 @@ ${indent}      JsonDomNode  node;
   <#list entity.fields as field>
 
 ${indent}      node = jsonInitialiser.get("${field.quotedName}");
-${indent}      if(node != null)
-${indent}      {
-    <@generateCreateFieldFromJsonDomNode "${indent}        " "node" field.typeSchema field.quotedName "_${field.camelName}_" "" "jsonInitialiser.getModelRegistry()"/>
-${indent}      }
-${indent}      else
+${indent}      if(node == null || node instanceof JsonNull)
 ${indent}      {
     <#if field.required>
 ${indent}        throw new IllegalArgumentException("${field.name} is required.");
@@ -135,13 +135,17 @@ ${indent}        throw new IllegalArgumentException("${field.name} is required."
 ${indent}        _${field.camelName}_ = null;
     </#if>
 ${indent}      }
+${indent}      else
+${indent}      {
+    <@generateCreateFieldFromJsonDomNode "${indent}        " "node" field.typeSchema field.quotedName "_${field.camelName}_" "" "jsonInitialiser.getModelRegistry()"/>
+${indent}      }
   </#list>
 </#if>
 ${indent}      unknownKeys_ = jsonInitialiser.getCanonUnknownKeys();
 ${indent}    }
 ${indent}    else
 ${indent}    {
-${indent}      IInstanceOrBuilder builder =  initialiser.getInstanceOrBuilder();
+${indent}      I${entity.camelCapitalizedName}InstanceOrBuilder builder =  initialiser.getInstanceOrBuilder();
 
 ${indent}      if(builder == null)
 ${indent}      {
@@ -154,62 +158,6 @@ ${indent}      _${field.camelName}_ = ${field.typeSchema.copyPrefix}builder.get$
 ${indent}      unknownKeys_ = builder.getCanonUnknownKeys();
 ${indent}    }
 ${indent}  }
-<#-- 
-// OBSOLETE START
-
-
-${indent}  /**
-${indent}   * Constructor from serialised form.
-${indent}   *
-${indent}   * @param jsonObject An immutable JSON object containing the serialized form of the object.
-${indent}   * @param modelRegistry A model registry to use to deserialize any nested objects.
-${indent}   */
-${indent}  public ${className}(JsonObject jsonObject, ModelRegistry modelRegistry)
-${indent}  {
-${indent}    super(jsonObject);
-
-${indent}    Set<String> keySet = new HashSet<>(super.getCanonUnknownKeys());
-
-<#list entity.fields as field>
-${indent}    if(keySet.remove("${field.quotedName}"))
-${indent}    {
-${indent}      JsonDomNode  node = jsonObject.get("${field.quotedName}");
-  <@generateCreateFieldFromJsonDomNode "      " "node" field.typeSchema field.quotedName "_${field.camelName}_" ""/>
-${indent}    }
-${indent}    else
-${indent}    {
-  <#if field.required>
-${indent}      throw new IllegalArgumentException("${field.name} is required.");
-  <#else>
-${indent}      _${field.camelName}_ = null;
-  </#if>
-${indent}    }
-</#list>
-
-${indent}    unknownKeys_ = ImmutableSet.copyOf(keySet);
-${indent}  }
-
-${indent}  /**
-${indent}   * Copy constructor.
-${indent}   *
-${indent}   * @param other Another instance from which all attributes are to be copied.
-${indent}   */
-${indent}  public ${className}(${entity.type} other)
-${indent}  {
-${indent}    super(other);
-
-<#list entity.fields as field>
-${indent}    _${field.camelName}_ = other.get${field.camelCapitalizedName}();
-</#list>
-
-${indent}    unknownKeys_ = other.getCanonUnknownKeys();
-${indent}  }
-
-// OBSOLETE END
-
-
-
- -->
 ${indent}  @Override
 ${indent}  public ImmutableSet<String> getCanonUnknownKeys()
 ${indent}  {
@@ -299,119 +247,44 @@ ${indent}    public ${entity.type} newInstance(JsonObject jsonObject, ModelRegis
 ${indent}    {
 ${indent}      return new ${entity.type}(new JsonInitialiser(jsonObject, modelRegistry));
 ${indent}    }
-<#-------------
-<#if entity.superSchema??>
-<#else>
-${indent}    // We can't extend a parameterized super type here because the further sub-classing by users does not work
-
-${indent}    /**
-${indent}     * Return a list of new entity instances created from the given JSON array.
-${indent}     *
-${indent}     * @param jsonArray An array of the JSON serialized form of the required entity.
-${indent}     *
-${indent}     * @return A list of instances of the entity represented by the given serialized form.
-${indent}     *
-${indent}     * @throws IllegalArgumentException If the given JSON is not valid.
-${indent}     */
-${indent}    public List<I${entity.type}> newMutableList(JsonArray<?> jsonArray)
-${indent}    {
-${indent}      List<I${entity.type}> list = new LinkedList<>();
-
-${indent}      for(JsonDomNode node : jsonArray)
-${indent}      {
-${indent}        if(node instanceof JsonObject)
-${indent}          list.add(newInstance((ImmutableJsonObject) node));
-${indent}        else
-${indent}          throw new IllegalArgumentException("Expected an array of JSON objectcs, but encountered a " + node.getClass().getName());
-${indent}      }
-
-${indent}      return list;
-${indent}    }
-
-${indent}    /**
-${indent}     * Return a set of new entity instances created from the given JSON array.
-${indent}     *
-${indent}     * @param jsonArray An array of the JSON serialized form of the required entity.
-${indent}     *
-${indent}     * @return A set of instances of the entity represented by the given serialized form.
-${indent}     *
-${indent}     * @throws IllegalArgumentException If the given JSON is not valid.
-${indent}     */
-${indent}    public Set<I${entity.type}> newMutableSet(JsonArray<?> jsonArray)
-${indent}    {
-${indent}      Set<I${entity.type}> list = new HashSet<>();
-
-${indent}      for(JsonDomNode node : jsonArray)
-${indent}      {
-${indent}        if(node instanceof JsonObject)
-${indent}        {
-${indent}          list.add(newInstance((ImmutableJsonObject) node.immutify()));
-${indent}        }
-${indent}        else
-${indent}        {
-${indent}          throw new IllegalArgumentException("Expected an array of JSON objectcs, but encountered a " + node.getClass().getName());
-${indent}        }
-${indent}      }
-
-${indent}      return list;
-${indent}    }
-
-${indent}    /**
-${indent}     * Return a list of new entity instances created from the given JSON array.
-${indent}     *
-${indent}     * @param jsonArray An array of the JSON serialized form of the required entity.
-${indent}     *
-${indent}     * @return A list of instances of the entity represented by the given serialized form.
-${indent}     *
-${indent}     * @throws IllegalArgumentException If the given JSON is not valid.
-${indent}     */
-${indent}    public ImmutableList<E> newImmutableList(JsonArray<?> jsonArray)
-${indent}    {
-${indent}      return ImmutableList.copyOf(newMutableList(jsonArray));
-${indent}    }
-
-${indent}    /**
-${indent}     * Return a set of new entity instances created from the given JSON array.
-${indent}     *
-${indent}     * @param jsonArray An array of the JSON serialized form of the required entity.
-${indent}     *
-${indent}     * @return A set of instances of the entity represented by the given serialized form.
-${indent}     *
-${indent}     * @throws IllegalArgumentException If the given JSON is not valid.
-${indent}     */
-${indent}    public ImmutableSet<E> newImmutableSet(JsonArray<?> jsonArray)
-${indent}    {
-${indent}      return ImmutableSet.copyOf(newMutableSet(jsonArray));
-${indent}    }
-</#if>
-${indent}---->
 ${indent}  }
-
 
 <#------------------------------------------------------------------------------------------------------------------------------
 
  Initialiser
 
 ------------------------------------------------------------------------------------------------------------------------------->
-
 ${indent}  /**
-${indent}   * Initialiser for ${entity.type}
+${indent}   * Abstract Initialiser for ${entity.type}
 ${indent}   */
-${indent}  
 ${indent}  public interface Initialiser extends IObjectEntityInitialiser
 ${indent}  {
-${indent}    IInstanceOrBuilder getInstanceOrBuilder();
+${indent}    /**
+${indent}     * Return an instance or builder containing the values for a new instance.
+${indent}     * 
+${indent}     * @return an instance or builder containing the values for a new instance.
+${indent}     */
+${indent}    I${entity.camelCapitalizedName}InstanceOrBuilder getInstanceOrBuilder();
 ${indent}  }
 
+${indent}  /**
+${indent}   * JSON Initialiser for ${entity.type}
+${indent}   */
 ${indent}  public static class JsonInitialiser extends JsonObjectEntityInitialiser implements Initialiser
 ${indent}  {
+${indent}      /**
+${indent}       * Constructor.
+${indent}       * 
+${indent}       * @param jsonObject      A JSON Object.
+${indent}       * @param modelRegistry   A parser context for deserialisation.
+${indent}       */
 ${indent}    public JsonInitialiser(JsonObject jsonObject, ModelRegistry modelRegistry)
 ${indent}    {
 ${indent}      super(jsonObject, modelRegistry);
 ${indent}    }
 
 ${indent}    @Override
-${indent}    public IInstanceOrBuilder getInstanceOrBuilder()
+${indent}    public I${entity.camelCapitalizedName}InstanceOrBuilder getInstanceOrBuilder()
 ${indent}    {
 ${indent}      return null;
 ${indent}    }
@@ -419,35 +292,9 @@ ${indent}  }
 
 <#------------------------------------------------------------------------------------------------------------------------------
 
- Instance or Builder
-
-------------------------------------------------------------------------------------------------------------------------------->
-${indent}  /**
-${indent}   * Instance or Builder for Object ${entity}
-${indent}   */
-${indent}  public interface IInstanceOrBuilder extends IObjectEntityInitialiser
-${indent}  {
-<#list entity.fields as field>
-${indent}    
-${indent}    /**
-${indent}     * Return the value of the ${field.name} attribute.
-${indent}     *
-  <#if field.typeSchema.description??>
-${indent}     * ${field.typeSchema.description}
-${indent}     *
-  </#if>
-${indent}     * @return the value of the ${field.name} attribute.
-${indent}     */
-${indent}    @${field.nullable} ${field.type} get${field.camelCapitalizedName}();
-</#list>
-${indent}  }
-
-<#------------------------------------------------------------------------------------------------------------------------------
-
  AbstractBuilder
 
 ------------------------------------------------------------------------------------------------------------------------------->
-
 ${indent}  /**
 ${indent}   * Abstract builder for ${entity.type}. If there are sub-classes of this type then their builders sub-class this builder.
 ${indent}   *
@@ -456,7 +303,7 @@ ${indent}   * @param <B> The concrete type of the built object.
 ${indent}   */
 ${indent}  public static abstract class AbstractBuilder<T extends AbstractBuilder<T,B>, B extends ${className}>
 ${indent}    extends ${superClassName}.AbstractBuilder<T,B>
-${indent}    implements IInstanceOrBuilder, Initialiser
+${indent}    implements I${entity.camelCapitalizedName}InstanceOrBuilder, Initialiser
 ${indent}  {
   <#list entity.fields as field>
 ${indent}    protected ${field.type?right_pad(25)}  _${field.camelName}_${field.typeSchema.builderTypeNew};
@@ -468,7 +315,7 @@ ${indent}      super(type);
 ${indent}    }
 
 ${indent}    @Override
-${indent}    public IInstanceOrBuilder getInstanceOrBuilder()
+${indent}    public I${entity.camelCapitalizedName}InstanceOrBuilder getInstanceOrBuilder()
 ${indent}    {
 ${indent}      return this;
 ${indent}    }
@@ -614,6 +461,42 @@ ${indent}      {
 ${indent}      }
   </#list>
 ${indent}    }
+
+${indent}    @Override
+${indent}    public void validate(FaultAccumulator faultAccumulator)
+${indent}    {
+${indent}      super.validate(faultAccumulator);
+  <#list entity.fields as field>
+    <#if field.required>
+${indent}      faultAccumulator.checkNotNull(_${field.camelName}_, "${field.name}");
+    </#if>
+  </#list>
+${indent}    }
+
+${indent}    @Override
+${indent}    public String getCanonType()
+${indent}    {
+${indent}      return TYPE_ID;
+${indent}    }
+
+${indent}    @Override
+${indent}    public String getCanonVersion()
+${indent}    {
+${indent}      return TYPE_VERSION;
+${indent}    }
+
+${indent}    @Override
+${indent}    public @Nullable Integer getCanonMajorVersion()
+${indent}    {
+${indent}      return TYPE_MAJOR_VERSION;
+${indent}    }
+
+${indent}    @Override
+${indent}    public @Nullable Integer getCanonMinorVersion()
+${indent}    {
+${indent}      return TYPE_MINOR_VERSION;
+${indent}    }
+${indent}  }
 <#------------------------------------------------------------------------------------------------------------------------------
 
  Builder
@@ -654,41 +537,17 @@ ${indent}  }
  Methods
 
 ------------------------------------------------------------------------------------------------------------------------------->
-
-
-${indent}    @Override
-${indent}    public String getCanonType()
-${indent}    {
-${indent}      return TYPE_ID;
-${indent}    }
-
-${indent}    @Override
-${indent}    public String getCanonVersion()
-${indent}    {
-${indent}      return TYPE_VERSION;
-${indent}    }
-
-${indent}    @Override
-${indent}    public @Nullable Integer getCanonMajorVersion()
-${indent}    {
-${indent}      return TYPE_MAJOR_VERSION;
-${indent}    }
-
-${indent}    @Override
-${indent}    public @Nullable Integer getCanonMinorVersion()
-${indent}    {
-${indent}      return TYPE_MINOR_VERSION;
-${indent}    }
-${indent}  }
-
-${indent}  // entity.name ${entity.name}
-${indent}  // entity.class ${entity.class}
   <#list entity.innerClasses as innerClass>
-${indent}    // Inner Class ${innerClass.name}
-    <@generateObject "  ${indent}" innerClass innerClass.camelCapitalizedName superClassName "static ${classModifier}"/>
+    
+    <#if nested>
+      <#assign modifier = classModifier/>
+    <#else>
+      <#assign modifier = "static ${classModifier}"/>
+    </#if>
+    <@generateObject "  ${indent}" innerClass innerClass.camelCapitalizedName superClassName modifier true/>
   </#list>
 ${indent}}
 </#macro>
-<@generateObject "" entity className superClassName classModifier/>
+<@generateObject "" entity className superClassName classModifier false/>
 
 <#include "/footer.ftl">

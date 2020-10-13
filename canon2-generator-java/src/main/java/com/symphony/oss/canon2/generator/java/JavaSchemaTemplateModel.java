@@ -54,6 +54,7 @@ implements IJavaTemplateModel
   private String import_;
 
   private final boolean generateFacade_;
+  private final boolean generateBuilderFacade_;
   
   JavaSchemaTemplateModel(String name, ResolvedSchema resolvedSchema, String identifier, String packageName, JavaOpenApiTemplateModel model,
       String... templates)
@@ -79,6 +80,7 @@ implements IJavaTemplateModel
 //    }
     
     generateFacade_ = resolvedSchema.getSchema().getXCanonFacade() == null ? false : resolvedSchema.getSchema().getXCanonFacade();
+    generateBuilderFacade_ = resolvedSchema.getSchema().getXCanonBuilderFacade() == null ? false : resolvedSchema.getSchema().getXCanonBuilderFacade();
 }
   
   void setAndAddImport(String packageName, String camelCapitalizedName)
@@ -165,6 +167,11 @@ implements IJavaTemplateModel
   public boolean getGenerateFacade()
   {
     return generateFacade_;
+  }
+
+  public boolean getGenerateBuilderFacade()
+  {
+    return generateBuilderFacade_;
   }
 
   @Override

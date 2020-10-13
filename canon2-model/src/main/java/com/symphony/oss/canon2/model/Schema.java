@@ -77,41 +77,16 @@ public class Schema extends SchemaEntity implements INamedModelEntity
       JsonObject itemsObject = (JsonObject)itemsNode;
       
       if(itemsObject.get("$ref") == null)
-        items = Schema.FACTORY.newInstance(itemsObject /*, modelRegistry */);
+        items = Schema.FACTORY.newInstance(itemsObject, initialiser.getModelRegistry());
       else
-        items = ReferenceObject.FACTORY.newInstance(itemsObject /*, modelRegistry */);
+        items = ReferenceObject.FACTORY.newInstance(itemsObject, initialiser.getModelRegistry());
     }
     
     itemsSchema_    = items instanceof Schema ? (Schema)items : null;
     itemsReference_ = items instanceof ReferenceObject ? (ReferenceObject)items : null;
   }
   
-
-  public interface IInstanceOrBuilder extends SchemaEntity.IInstanceOrBuilder
-  {
-  }
-  
-  /**
-   * Abstract builder for Schema. If there are sub-classes of this type then their builders sub-class this builder.
-   *
-   * @param <B> The concrete type of the builder, used for fluent methods.
-   * @param <T> The concrete type of the built object.
-   */
-  public static abstract class AbstractBuilder<T extends AbstractBuilder<T,B>, B extends Schema>
-    extends SchemaEntity.AbstractBuilder<T,B>
-    implements IInstanceOrBuilder
-  {
-    protected AbstractBuilder(Class<T> type)
-    {
-      super(type);
-    }
-    
-    protected AbstractBuilder(Class<T> type, B initial)
-    {
-      super(type, initial);
-    }
-  }
-  
+  @Override
   public @Nullable String getXCanonIdentifier(String language)
   {
     return getJsonObject().getString("x-canon-" + language + "-identifier", null);
@@ -140,7 +115,7 @@ public class Schema extends SchemaEntity implements INamedModelEntity
         {
           Schema schema = (Schema)entry.getValue();
           
-          ResolvedSchema.SingletonBuilder resolvedProperty = modelContext.link(openApiObjectBuilder, sourceContext, entry.getKey(), uri + "/" + entry.getKey(), schema, isGenerated(schema.getType()));
+          ResolvedSchema.SingletonBuilder resolvedProperty = modelContext.link(openApiObjectBuilder, sourceContext, entry.getKey(), uri + "/" + entry.getKey(), schema, isGenerated(schema.getType()), builder);
           resolvedPropertiesBuilder.with(entry.getKey(), resolvedProperty);
           
           switch(schema.getType())
@@ -171,7 +146,7 @@ public class Schema extends SchemaEntity implements INamedModelEntity
     if(itemsSchema_ != null)
     { 
       builder.withResolvedItems(
-          modelContext.link(openApiObjectBuilder, sourceContext, "items BRUCE 001", uri + "/items", itemsSchema_, isGenerated(itemsSchema_.getType()))
+          modelContext.link(openApiObjectBuilder, sourceContext, "items BRUCE 001", uri + "/items", itemsSchema_, isGenerated(itemsSchema_.getType()), builder)
           //itemsSchema_.link(modelContext, sourceContext, uri + "/items", true)
           );
     }
@@ -250,7 +225,6 @@ public class Schema extends SchemaEntity implements INamedModelEntity
     Schema schema;
     String uri;
     
-    URI x = ref.getBaseUri();
     if(ref.getBaseUri() == null)
     {
       try
@@ -280,7 +254,7 @@ public class Schema extends SchemaEntity implements INamedModelEntity
       }
     }
     
-    return modelContext.link(openApiObjectBuilder, sourceContext, ref.getName(), uri, schema, generated);
+    return modelContext.link(openApiObjectBuilder, sourceContext, ref.getName(), uri, schema, generated, null);
   }
 
 //  @Override

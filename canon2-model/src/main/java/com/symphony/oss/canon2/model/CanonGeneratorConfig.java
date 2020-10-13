@@ -21,7 +21,7 @@
  *    Generator groupId    org.symphonyoss.s2.canon
  *              artifactId canon2-generator-java
  *    Template name        template/Object/_.java.ftl
- *    At                   2020-10-08 13:45:16 BST
+ *    At                   2020-10-13 12:56:55 BST
  *----------------------------------------------------------------------------------------------------
  */
 
@@ -36,6 +36,7 @@ import com.symphony.oss.canon2.runtime.java.IObjectEntityInitialiser;
 import com.symphony.oss.canon2.runtime.java.JsonObjectEntityInitialiser;
 import com.symphony.oss.canon2.runtime.java.ModelRegistry;
 import com.symphony.oss.canon2.runtime.java.ObjectEntity;
+import com.symphony.oss.commons.fault.FaultAccumulator;
 
 /**
  * Implementation for Object CanonGeneratorConfig
@@ -74,7 +75,7 @@ public class CanonGeneratorConfig extends ObjectEntity
     }
     else
     {
-      IInstanceOrBuilder builder =  initialiser.getInstanceOrBuilder();
+      ICanonGeneratorConfigInstanceOrBuilder builder =  initialiser.getInstanceOrBuilder();
 
       if(builder == null)
       {
@@ -153,15 +154,13 @@ public class CanonGeneratorConfig extends ObjectEntity
     }
   }
 
-
-
   /**
    * Initialiser for CanonGeneratorConfig
    */
   
   public interface Initialiser extends IObjectEntityInitialiser
   {
-    IInstanceOrBuilder getInstanceOrBuilder();
+    ICanonGeneratorConfigInstanceOrBuilder getInstanceOrBuilder();
   }
 
   public static class JsonInitialiser extends JsonObjectEntityInitialiser implements Initialiser
@@ -172,19 +171,11 @@ public class CanonGeneratorConfig extends ObjectEntity
     }
 
     @Override
-    public IInstanceOrBuilder getInstanceOrBuilder()
+    public ICanonGeneratorConfigInstanceOrBuilder getInstanceOrBuilder()
     {
       return null;
     }
   }
-
-  /**
-   * Instance or Builder for Object CanonGeneratorConfig
-   */
-  public interface IInstanceOrBuilder extends IObjectEntityInitialiser
-  {
-  }
-
 
   /**
    * Abstract builder for CanonGeneratorConfig. If there are sub-classes of this type then their builders sub-class this builder.
@@ -194,7 +185,7 @@ public class CanonGeneratorConfig extends ObjectEntity
    */
   public static abstract class AbstractBuilder<T extends AbstractBuilder<T,B>, B extends CanonGeneratorConfig>
     extends ObjectEntity.AbstractBuilder<T,B>
-    implements IInstanceOrBuilder, Initialiser
+    implements ICanonGeneratorConfigInstanceOrBuilder, Initialiser
   {
 
     protected AbstractBuilder(Class<T> type)
@@ -203,7 +194,7 @@ public class CanonGeneratorConfig extends ObjectEntity
     }
 
     @Override
-    public IInstanceOrBuilder getInstanceOrBuilder()
+    public ICanonGeneratorConfigInstanceOrBuilder getInstanceOrBuilder()
     {
       return this;
     }
@@ -243,6 +234,37 @@ public class CanonGeneratorConfig extends ObjectEntity
       super.populateJson(builder);
     }
 
+    @Override
+    public void validate(FaultAccumulator faultAccumulator)
+    {
+      super.validate(faultAccumulator);
+    }
+
+    @Override
+    public String getCanonType()
+    {
+      return TYPE_ID;
+    }
+
+    @Override
+    public String getCanonVersion()
+    {
+      return TYPE_VERSION;
+    }
+
+    @Override
+    public @Nullable Integer getCanonMajorVersion()
+    {
+      return TYPE_MAJOR_VERSION;
+    }
+
+    @Override
+    public @Nullable Integer getCanonMinorVersion()
+    {
+      return TYPE_MINOR_VERSION;
+    }
+  }
+
   /**
    * Builder for CanonGeneratorConfig
    */
@@ -272,35 +294,6 @@ public class CanonGeneratorConfig extends ObjectEntity
       return new CanonGeneratorConfig(this);
     }
   }
-
-
-    @Override
-    public String getCanonType()
-    {
-      return TYPE_ID;
-    }
-
-    @Override
-    public String getCanonVersion()
-    {
-      return TYPE_VERSION;
-    }
-
-    @Override
-    public @Nullable Integer getCanonMajorVersion()
-    {
-      return TYPE_MAJOR_VERSION;
-    }
-
-    @Override
-    public @Nullable Integer getCanonMinorVersion()
-    {
-      return TYPE_MINOR_VERSION;
-    }
-  }
-
-  // entity.name CanonGeneratorConfig
-  // entity.class class com.symphony.oss.canon2.generator.java.JavaObjectSchemaTemplateModel
 }
 
 /*----------------------------------------------------------------------------------------------------

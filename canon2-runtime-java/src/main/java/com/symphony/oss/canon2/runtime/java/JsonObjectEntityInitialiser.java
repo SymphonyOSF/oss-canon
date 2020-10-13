@@ -53,17 +53,19 @@ public abstract class JsonObjectEntityInitialiser implements IJsonObjectEntityIn
     keySet_ = new HashSet<>(jsonObject.getNames());
     
     if(keySet_.remove(Entity.JSON_TYPE))
-      type_ = jsonObject_.get(Entity.JSON_TYPE).toString();
+      type_ = jsonObject_.getString(Entity.JSON_TYPE, "UNKNONWN");
     else
       type_ = "UNKNONWN";
     
-    if(keySet_.remove(Entity.JSON_VERSION))
+    keySet_.remove(Entity.JSON_VERSION);
+    String versionStr = jsonObject_.getString(Entity.JSON_VERSION, null);
+    
+    if(versionStr != null)
     {
-      String versionStr = jsonObject_.get(Entity.JSON_VERSION).toString();
       int     i = versionStr.indexOf('.');
       
       if(i == -1)
-        throw new IllegalArgumentException("Version must be of the form Magor.Minor not \"" + versionStr + "\"");
+        throw new IllegalArgumentException("Version must be of the form Major.Minor not \"" + versionStr + "\"");
       
       try
       {
@@ -72,7 +74,7 @@ public abstract class JsonObjectEntityInitialiser implements IJsonObjectEntityIn
       }
       catch(NumberFormatException e)
       {
-        throw new IllegalArgumentException("Version must be of the form Magor.Minor not \"" + versionStr + "\"", e);
+        throw new IllegalArgumentException("Version must be of the form Major.Minor not \"" + versionStr + "\"", e);
       }
     }
     else

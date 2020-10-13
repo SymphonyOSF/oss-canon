@@ -2,8 +2,8 @@
 <#include "/macros.ftl"/>
 <#assign imports = entity.imports + [
   "javax.annotation.concurrent.Immutable",
-  "javax.annotation.Nonnull"
-  "com.symphony.oss.commons.type.provider.IValueProvider"
+  "javax.annotation.Nonnull",
+    "com.symphony.oss.canon.json.model.JsonDomNode"
   ]>
 
 package ${genPackage};
@@ -41,9 +41,9 @@ public class ${entity.type} extends ${entity.type}TypeDef
   /**
    * Constructor from a JSON value node.
    *
-   * @param value the value of the required instance.
+   * @param node the value of the required instance.
    */
-  ${entity.type}(@Nonnull IValueProvider node)
+  ${entity.type}(@Nonnull JsonDomNode node)
   {
     super(node);
   }

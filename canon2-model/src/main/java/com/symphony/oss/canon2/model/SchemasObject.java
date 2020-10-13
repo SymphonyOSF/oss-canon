@@ -70,34 +70,6 @@ public class SchemasObject extends SchemasObjectEntity
     
     schemas_ = ImmutableMap.copyOf(schemas);
   }
-  
-
-  public interface IInstanceOrBuilder extends SchemasObjectEntity.IInstanceOrBuilder
-  {
-  }
-  
-  /**
-   * Abstract builder for SchemasObject. If there are sub-classes of this type then their builders sub-class this builder.
-   *
-   * @param <B> The concrete type of the builder, used for fluent methods.
-   * @param <T> The concrete type of the built object.
-   */
-  public static abstract class AbstractBuilder<T extends AbstractBuilder<T,B>, B extends SchemasObject>
-    extends SchemasObjectEntity.AbstractBuilder<T,B>
-    implements IInstanceOrBuilder
-  {
-    protected AbstractBuilder(Class<T> type)
-    {
-      super(type);
-    }
-    
-    protected AbstractBuilder(Class<T> type, B initial)
-    {
-      super(type, initial);
-    }
-  }
-
-
 
   public ImmutableMap<String, Schema> getSchemas()
   {
@@ -121,7 +93,7 @@ public class SchemasObject extends SchemasObjectEntity
     for(Entry<String, Schema> entry : getSchemas().entrySet())
     {
       builder.with(entry.getKey(),
-          modelContext.link(openApiObjectBuilder, sourceContext, entry.getKey(), uri + "/" + entry.getKey(), entry.getValue(), true));
+          modelContext.link(openApiObjectBuilder, sourceContext, entry.getKey(), uri + "/" + entry.getKey(), entry.getValue(), true, null));
     }
     
     return builder;

@@ -49,12 +49,16 @@ JavaFieldTemplateModel
   private Map<String, JavaSchemaTemplateModel> innerClassMap_ = new HashMap<>();
   private boolean hasLimits_;
   private JavaSchemaTemplateModel superType_;
+  private final String type_;
   
   
   JavaObjectSchemaTemplateModel(String name, ResolvedSchema resolvedSchema, String identifier, String packageName, JavaOpenApiTemplateModel model,
       String... temaplates) throws GenerationException
   {
     super(name, resolvedSchema, identifier, packageName, model, temaplates);
+    
+    type_ = resolvedSchema.getResolvedContainer() == null ? getCamelCapitalizedName() :
+      capitalize(toCamelCase(resolvedSchema.getResolvedContainer().getName())) + "." + getCamelCapitalizedName();
   }
   
   @Override
@@ -145,7 +149,7 @@ JavaFieldTemplateModel
   @Override
   public String getType()
   {
-    return getCamelCapitalizedName();
+    return type_;
   }
 
   @Override

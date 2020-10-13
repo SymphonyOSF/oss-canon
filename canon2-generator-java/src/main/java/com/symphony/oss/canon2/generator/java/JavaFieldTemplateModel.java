@@ -29,11 +29,6 @@ implements IJavaTemplateModel
     
     imports_.addAll(typeSchema.getImports());
     nullable_ = required ? "Nonnull" : "Nullable";
-    
-    if(model != typeSchema.getModel())
-    {
-      System.err.println("EXTERNAL");
-    }
   }
 
   public String getNullable()

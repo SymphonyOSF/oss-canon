@@ -9,7 +9,6 @@ package com.symphony.oss.canon2.generator.java;
 import java.math.BigInteger;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -117,7 +116,19 @@ JavaSchemaTemplateModel>
     }
     
 //    imports_.add("com.symphony.oss.commons.type.provider.I" + javaType_ + "Provider");
-    jsonNodeType_ = "I" + javaType_ + "Provider";
+    switch(resolvedSchema.getSchema().getType())
+    {
+      case "string":
+        jsonNodeType_ = "JsonString";
+        break;
+        
+      case "boolean":
+        jsonNodeType_ = "JsonBoolean";
+        break;
+        
+      default:
+        jsonNodeType_ = "JsonParsedNumber";
+    }
     
     if(enumValues_.isEmpty())
     {
@@ -140,7 +151,7 @@ JavaSchemaTemplateModel>
     {
       type_ = resolvedSchema.isGenerated() ? getCamelCapitalizedName() : null;
       primitiveType_ = javaType_;
-      constructPrefix = type_ + ".valueOf(";
+      constructPrefix = type_ + ".deserialize(";
       getValueSuffix = ".getValue()";
       minimum_ = null;
       maximum_ = null;
@@ -233,7 +244,7 @@ JavaSchemaTemplateModel>
   @Override
   public String getFullyQualifiedJsonNodeType()
   {
-    return "com.symphony.oss.commons.type.provider." + jsonNodeType_;
+    return "com.symphony.oss.canon.json.model." + jsonNodeType_;
   }
 
   @Override

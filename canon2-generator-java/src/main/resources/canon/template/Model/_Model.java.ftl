@@ -22,11 +22,18 @@ public class ${model.camelCapitalizedName}Model
   /** Factories for every object in the model. */
   public static final ObjectEntity.Factory<?>[] FACTORIES = new ObjectEntity.Factory<?>[]
   {
+<#macro generateFactories indent object prefix>
+<#t>${separator}${indent}${prefix}${object.camelCapitalizedName}.FACTORY<#assign separator = ",\n"/><#list object.innerClasses as innerClass>
+    <@generateFactories indent innerClass "${prefix}${object.camelCapitalizedName}."/>
+  </#list>
+</#macro>
+<#assign separator = ""/>
 <#list model.schemas as object>
   <#if object.schemaType == "OBJECT">
-    ${object.camelCapitalizedName}.FACTORY<#sep>,</#sep>
+    <@generateFactories "    " object ""/>
   </#if>
 </#list>
+
   };
     
   private ${model.camelCapitalizedName}Model()

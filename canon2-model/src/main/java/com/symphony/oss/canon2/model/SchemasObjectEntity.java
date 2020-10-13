@@ -21,7 +21,7 @@
  *    Generator groupId    org.symphonyoss.s2.canon
  *              artifactId canon2-generator-java
  *    Template name        template/Object/_Entity.java.ftl
- *    At                   2020-10-08 13:45:16 BST
+ *    At                   2020-10-13 12:56:56 BST
  *----------------------------------------------------------------------------------------------------
  */
 
@@ -36,6 +36,7 @@ import com.symphony.oss.canon2.runtime.java.IObjectEntityInitialiser;
 import com.symphony.oss.canon2.runtime.java.JsonObjectEntityInitialiser;
 import com.symphony.oss.canon2.runtime.java.ModelRegistry;
 import com.symphony.oss.canon2.runtime.java.ObjectEntity;
+import com.symphony.oss.commons.fault.FaultAccumulator;
 
 /**
  * Implementation for Object SchemasObject
@@ -74,7 +75,7 @@ public abstract class SchemasObjectEntity extends ObjectEntity
     }
     else
     {
-      IInstanceOrBuilder builder =  initialiser.getInstanceOrBuilder();
+      ISchemasObjectInstanceOrBuilder builder =  initialiser.getInstanceOrBuilder();
 
       if(builder == null)
       {
@@ -153,15 +154,13 @@ public abstract class SchemasObjectEntity extends ObjectEntity
     }
   }
 
-
-
   /**
    * Initialiser for SchemasObject
    */
   
   public interface Initialiser extends IObjectEntityInitialiser
   {
-    IInstanceOrBuilder getInstanceOrBuilder();
+    ISchemasObjectInstanceOrBuilder getInstanceOrBuilder();
   }
 
   public static class JsonInitialiser extends JsonObjectEntityInitialiser implements Initialiser
@@ -172,19 +171,11 @@ public abstract class SchemasObjectEntity extends ObjectEntity
     }
 
     @Override
-    public IInstanceOrBuilder getInstanceOrBuilder()
+    public ISchemasObjectInstanceOrBuilder getInstanceOrBuilder()
     {
       return null;
     }
   }
-
-  /**
-   * Instance or Builder for Object SchemasObject
-   */
-  public interface IInstanceOrBuilder extends IObjectEntityInitialiser
-  {
-  }
-
 
   /**
    * Abstract builder for SchemasObject. If there are sub-classes of this type then their builders sub-class this builder.
@@ -194,7 +185,7 @@ public abstract class SchemasObjectEntity extends ObjectEntity
    */
   public static abstract class AbstractBuilder<T extends AbstractBuilder<T,B>, B extends SchemasObjectEntity>
     extends ObjectEntity.AbstractBuilder<T,B>
-    implements IInstanceOrBuilder, Initialiser
+    implements ISchemasObjectInstanceOrBuilder, Initialiser
   {
 
     protected AbstractBuilder(Class<T> type)
@@ -203,7 +194,7 @@ public abstract class SchemasObjectEntity extends ObjectEntity
     }
 
     @Override
-    public IInstanceOrBuilder getInstanceOrBuilder()
+    public ISchemasObjectInstanceOrBuilder getInstanceOrBuilder()
     {
       return this;
     }
@@ -243,6 +234,37 @@ public abstract class SchemasObjectEntity extends ObjectEntity
       super.populateJson(builder);
     }
 
+    @Override
+    public void validate(FaultAccumulator faultAccumulator)
+    {
+      super.validate(faultAccumulator);
+    }
+
+    @Override
+    public String getCanonType()
+    {
+      return TYPE_ID;
+    }
+
+    @Override
+    public String getCanonVersion()
+    {
+      return TYPE_VERSION;
+    }
+
+    @Override
+    public @Nullable Integer getCanonMajorVersion()
+    {
+      return TYPE_MAJOR_VERSION;
+    }
+
+    @Override
+    public @Nullable Integer getCanonMinorVersion()
+    {
+      return TYPE_MINOR_VERSION;
+    }
+  }
+
   /**
    * Builder for SchemasObject
    */
@@ -272,35 +294,6 @@ public abstract class SchemasObjectEntity extends ObjectEntity
       return new SchemasObject(this);
     }
   }
-
-
-    @Override
-    public String getCanonType()
-    {
-      return TYPE_ID;
-    }
-
-    @Override
-    public String getCanonVersion()
-    {
-      return TYPE_VERSION;
-    }
-
-    @Override
-    public @Nullable Integer getCanonMajorVersion()
-    {
-      return TYPE_MAJOR_VERSION;
-    }
-
-    @Override
-    public @Nullable Integer getCanonMinorVersion()
-    {
-      return TYPE_MINOR_VERSION;
-    }
-  }
-
-  // entity.name SchemasObject
-  // entity.class class com.symphony.oss.canon2.generator.java.JavaObjectSchemaTemplateModel
 }
 
 /*----------------------------------------------------------------------------------------------------

@@ -21,7 +21,7 @@
  *    Generator groupId    org.symphonyoss.s2.canon
  *              artifactId canon2-generator-java
  *    Template name        template/Object/_Entity.java.ftl
- *    At                   2020-10-08 13:45:16 BST
+ *    At                   2020-10-13 12:56:56 BST
  *----------------------------------------------------------------------------------------------------
  */
 
@@ -32,11 +32,13 @@ import javax.annotation.concurrent.Immutable;
 
 import com.google.common.collect.ImmutableSet;
 import com.symphony.oss.canon.json.model.JsonDomNode;
+import com.symphony.oss.canon.json.model.JsonNull;
 import com.symphony.oss.canon.json.model.JsonObject;
 import com.symphony.oss.canon2.runtime.java.IObjectEntityInitialiser;
 import com.symphony.oss.canon2.runtime.java.JsonObjectEntityInitialiser;
 import com.symphony.oss.canon2.runtime.java.ModelRegistry;
 import com.symphony.oss.canon2.runtime.java.ObjectEntity;
+import com.symphony.oss.commons.fault.FaultAccumulator;
 
 /**
  * Implementation for Object ComponentsObject
@@ -57,7 +59,6 @@ public abstract class ComponentsObjectEntity extends ObjectEntity
   public static final Factory FACTORY = new Factory();
 
   private final ImmutableSet<String>        unknownKeys_;
-  // field JavaFieldTemplateModel SchemasObject schemas field.typeSchema.name=SchemasObject
   private final SchemasObject              _schemas_;
 
   /**
@@ -76,7 +77,11 @@ public abstract class ComponentsObjectEntity extends ObjectEntity
       JsonDomNode  node;
 
       node = jsonInitialiser.get("schemas");
-      if(node != null)
+      if(node == null || node instanceof JsonNull)
+      {
+        _schemas_ = null;
+      }
+      else
       {
         if(node instanceof JsonObject)
         {
@@ -87,15 +92,11 @@ public abstract class ComponentsObjectEntity extends ObjectEntity
           throw new IllegalArgumentException("schemas must be an Object node not " + node.getClass().getName());
         }
       }
-      else
-      {
-        _schemas_ = null;
-      }
       unknownKeys_ = jsonInitialiser.getCanonUnknownKeys();
     }
     else
     {
-      IInstanceOrBuilder builder =  initialiser.getInstanceOrBuilder();
+      IComponentsObjectInstanceOrBuilder builder =  initialiser.getInstanceOrBuilder();
 
       if(builder == null)
       {
@@ -185,15 +186,13 @@ public abstract class ComponentsObjectEntity extends ObjectEntity
     }
   }
 
-
-
   /**
    * Initialiser for ComponentsObject
    */
   
   public interface Initialiser extends IObjectEntityInitialiser
   {
-    IInstanceOrBuilder getInstanceOrBuilder();
+    IComponentsObjectInstanceOrBuilder getInstanceOrBuilder();
   }
 
   public static class JsonInitialiser extends JsonObjectEntityInitialiser implements Initialiser
@@ -204,26 +203,11 @@ public abstract class ComponentsObjectEntity extends ObjectEntity
     }
 
     @Override
-    public IInstanceOrBuilder getInstanceOrBuilder()
+    public IComponentsObjectInstanceOrBuilder getInstanceOrBuilder()
     {
       return null;
     }
   }
-
-  /**
-   * Instance or Builder for Object ComponentsObject
-   */
-  public interface IInstanceOrBuilder extends IObjectEntityInitialiser
-  {
-    
-    /**
-     * Return the value of the schemas attribute.
-     *
-     * @return the value of the schemas attribute.
-     */
-    @Nullable SchemasObject getSchemas();
-  }
-
 
   /**
    * Abstract builder for ComponentsObject. If there are sub-classes of this type then their builders sub-class this builder.
@@ -233,7 +217,7 @@ public abstract class ComponentsObjectEntity extends ObjectEntity
    */
   public static abstract class AbstractBuilder<T extends AbstractBuilder<T,B>, B extends ComponentsObjectEntity>
     extends ObjectEntity.AbstractBuilder<T,B>
-    implements IInstanceOrBuilder, Initialiser
+    implements IComponentsObjectInstanceOrBuilder, Initialiser
   {
     protected SchemasObject              _schemas_;
 
@@ -243,7 +227,7 @@ public abstract class ComponentsObjectEntity extends ObjectEntity
     }
 
     @Override
-    public IInstanceOrBuilder getInstanceOrBuilder()
+    public IComponentsObjectInstanceOrBuilder getInstanceOrBuilder()
     {
       return this;
     }
@@ -329,6 +313,37 @@ public abstract class ComponentsObjectEntity extends ObjectEntity
       }
     }
 
+    @Override
+    public void validate(FaultAccumulator faultAccumulator)
+    {
+      super.validate(faultAccumulator);
+    }
+
+    @Override
+    public String getCanonType()
+    {
+      return TYPE_ID;
+    }
+
+    @Override
+    public String getCanonVersion()
+    {
+      return TYPE_VERSION;
+    }
+
+    @Override
+    public @Nullable Integer getCanonMajorVersion()
+    {
+      return TYPE_MAJOR_VERSION;
+    }
+
+    @Override
+    public @Nullable Integer getCanonMinorVersion()
+    {
+      return TYPE_MINOR_VERSION;
+    }
+  }
+
   /**
    * Builder for ComponentsObject
    */
@@ -358,35 +373,6 @@ public abstract class ComponentsObjectEntity extends ObjectEntity
       return new ComponentsObject(this);
     }
   }
-
-
-    @Override
-    public String getCanonType()
-    {
-      return TYPE_ID;
-    }
-
-    @Override
-    public String getCanonVersion()
-    {
-      return TYPE_VERSION;
-    }
-
-    @Override
-    public @Nullable Integer getCanonMajorVersion()
-    {
-      return TYPE_MAJOR_VERSION;
-    }
-
-    @Override
-    public @Nullable Integer getCanonMinorVersion()
-    {
-      return TYPE_MINOR_VERSION;
-    }
-  }
-
-  // entity.name ComponentsObject
-  // entity.class class com.symphony.oss.canon2.generator.java.JavaObjectSchemaTemplateModel
 }
 
 /*----------------------------------------------------------------------------------------------------

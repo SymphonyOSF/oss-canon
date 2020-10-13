@@ -47,5 +47,28 @@ public enum ${entity.type}
   {
     return value_;
   }
+  
+  /**
+   * Deserialize an enum constant value from a ${entity.javaType} value.
+   * 
+   * @param value The serialized form of an enum constant.
+   * 
+   * @return The enum constant value from the given ${entity.javaType} value.
+   * 
+   * @throws IllegalArgumentException If the given value is not a valid enum constant.
+   */
+  public static final ${entity.type} deserialize(${entity.javaType} value)
+  {
+    switch(value)
+    {
+<#list entity.enumValues as name>
+      case ${entity.enumMap[name]}:
+        return ${name};
+        
+</#list>
+      default:
+        throw new IllegalArgumentException("No enum constant \"" + value + "\" in ${entity.type}");
+    }
+  }
 }
 <#include "/footer.ftl">

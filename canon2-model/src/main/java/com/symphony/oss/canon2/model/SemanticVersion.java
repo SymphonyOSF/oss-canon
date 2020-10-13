@@ -21,7 +21,7 @@
  *    Generator groupId    org.symphonyoss.s2.canon
  *              artifactId canon2-generator-java
  *    Template name        template/TypeDef/_.java.ftl
- *    At                   2020-10-08 13:45:16 BST
+ *    At                   2020-10-13 12:56:55 BST
  *----------------------------------------------------------------------------------------------------
  */
 
@@ -32,16 +32,16 @@ import java.util.Objects;
 import javax.annotation.Nonnull;
 import javax.annotation.concurrent.Immutable;
 
+import com.symphony.oss.canon.json.model.JsonDomNode;
+import com.symphony.oss.canon.json.model.JsonString;
 import com.symphony.oss.canon2.runtime.java.TypeDef;
-import com.symphony.oss.commons.type.provider.IStringProvider;
-import com.symphony.oss.commons.type.provider.IValueProvider;
 
 /**
  * TypeDef implementation for canon.SemanticVersion
  * Generated from SemanticVersion at {entity.context.path}
  */
 @Immutable
-public class SemanticVersion extends TypeDef implements IStringProvider, Comparable<SemanticVersion>
+public class SemanticVersion extends TypeDef implements Comparable<SemanticVersion>
 {
   @Deprecated
   private static Builder theBuilder = new Builder();
@@ -63,17 +63,17 @@ public class SemanticVersion extends TypeDef implements IStringProvider, Compara
    *
    * @param value the value of the required instance.
    */
-  SemanticVersion(@Nonnull IValueProvider node)
+  SemanticVersion(@Nonnull JsonDomNode node)
   {
     Objects.requireNonNull(node);
 
-    if(node instanceof IStringProvider)
+    if(node instanceof JsonString)
     {
-      value_ = ((IStringProvider)node).asString();
+      value_ = ((JsonString)node).asString();
     }
     else
     {
-      throw new IllegalArgumentException("value must be an instance of IStringProvider not " + node.getClass().getName());
+      throw new IllegalArgumentException("value must be an instance of JsonString not " + node.getClass().getName());
     }
   }
   
@@ -99,7 +99,11 @@ public class SemanticVersion extends TypeDef implements IStringProvider, Compara
     return value_.hashCode();
   }
   
-  @Override
+  /**
+   * Return the value as a String.
+   * 
+   * @return the value as a String.
+   */
   public @Nonnull String asString()
   {
     return value_;

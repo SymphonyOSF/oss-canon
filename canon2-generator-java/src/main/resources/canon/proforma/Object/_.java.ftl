@@ -25,6 +25,26 @@ import javax.annotation.concurrent.Immutable;
 @Immutable
 public class ${entity.type} extends ${entity.type}Entity
 {
+<#if entity.generateBuilderFacade>
+//  /*
+//   *  This facade contains a rectangle which is persisted as two integer values, width and height.
+//   *  This example assumes that the model includes int attributes called width and height.
+//   */
+//  static class Rectangle
+//  {
+//    final int width_;
+//    final int height_;
+//    
+//    public Rectangle(int width, int height)
+//    {
+//      width_ = width;
+//      height_ = height;
+//    }
+//  }
+//  
+//  private final Rectangle  size_;
+
+</#if>
   /**
    * Constructor.
    * 
@@ -33,44 +53,14 @@ public class ${entity.type} extends ${entity.type}Entity
   protected ${entity.type}(Initialiser initialiser)
   {
     super(initialiser);
-  }
-  
-  <#-- 
-  /**
-   * Constructor from builder.
-   * 
-   * @param builder A mutable builder containing all values.
-   */
-  public ${entity.type}(AbstractBuilder<?,?> builder)
-  {
-    super(builder);
-  }
-  
-  /**
-   * Constructor from serialised form.
-   * 
-   * @param jsonObject An immutable JSON object containing the serialized form of the object.
-   * @param modelRegistry A model registry to use to deserialize any nested objects.
-   */
-  public ${entity.type}(JsonObject jsonObject, ModelRegistry modelRegistry)
-  {
-    super(jsonObject, modelRegistry);
-  }
-   
-  /**
-   * Copy constructor.
-   * 
-   * @param other Another instance from which all attributes are to be copied.
-   */
-  public ${entity.type}(${entity.type} other)
-  {
-    super(other);
-  } -->
+<#if entity.generateBuilderFacade>
 
-  public interface IInstanceOrBuilder extends ${entity.type}Entity.IInstanceOrBuilder
-  {
+//    // Create the Rectangle from the stored width and height values.
+//    size_ = new Rectangle(getWidth(), getHeight());
+</#if>
   }
-  
+
+<#if entity.generateBuilderFacade>
   /**
    * Abstract builder for ${entity.type}. If there are sub-classes of this type then their builders sub-class this builder.
    *
@@ -79,7 +69,7 @@ public class ${entity.type} extends ${entity.type}Entity
    */
   public static abstract class AbstractBuilder<T extends AbstractBuilder<T,B>, B extends ${entity.type}>
     extends ${entity.type}Entity.AbstractBuilder<T,B>
-    implements IInstanceOrBuilder
+    //implements I${entity.type}InstanceOrBuilder
   {
     protected AbstractBuilder(Class<T> type)
     {
@@ -90,7 +80,42 @@ public class ${entity.type} extends ${entity.type}Entity
     {
       super(type, initial);
     }
+<#if entity.generateBuilderFacade>
+    
+//    /**
+//     * Set the width and height using a single Rectangle.
+//     * 
+//     * For an optional attribute replace @Nonnull with @Nullable and remove the null guard.
+//     * 
+//     * @param size  the width and height using a single Rectangle.
+//     * 
+//     * @return this (fluent method).
+//     */
+//    public T withSize(@Nonnull Rectangle size)
+//    {
+//      if(size == null)
+//        throw new IllegalArgumentException("Value of size is required");
+//      
+//      setWidth(size.width_);
+//      setHeight(size.height_);
+//      
+//      return self();
+//    }
+</#if>
   }
+<#if entity.generateBuilderFacade>/**
+
+//  /**
+//   * Return the size of this object as a Rectangle.
+//   * 
+//   * @return the size of this object as a Rectangle.
+//   */
+//  public Rectangle getSize()
+//  {
+//    return size_;
+//  }
+</#if>
+</#if>
 }
 <#include "/footer.ftl">
 </#if>

@@ -36,16 +36,12 @@ import com.symphony.oss.canon.json.model.JsonArrayDom;
 import com.symphony.oss.canon.json.model.JsonBoolean;
 import com.symphony.oss.canon.json.model.JsonDom;
 import com.symphony.oss.canon.json.model.JsonDomNode;
-import com.symphony.oss.canon.json.model.JsonDouble;
-import com.symphony.oss.canon.json.model.JsonFloat;
-import com.symphony.oss.canon.json.model.JsonInteger;
 import com.symphony.oss.canon.json.model.JsonInvalidDom;
-import com.symphony.oss.canon.json.model.JsonLong;
 import com.symphony.oss.canon.json.model.JsonNull;
 import com.symphony.oss.canon.json.model.JsonObject;
 import com.symphony.oss.canon.json.model.JsonObjectDom;
+import com.symphony.oss.canon.json.model.JsonParsedNumber;
 import com.symphony.oss.canon.json.model.JsonString;
-import com.symphony.oss.commons.type.provider.IIntegerProvider;
 
 @SuppressWarnings("javadoc")
 public class TestJsonParser
@@ -166,8 +162,8 @@ public class TestJsonParser
     JsonObject object = objectDom.getObject();
     
     JsonDomNode valueElement = object.get("value");
-    assertTrue(valueElement instanceof JsonLong);
-    assertTrue(2147483647999L == ((JsonLong)valueElement).asLong());
+    assertTrue(valueElement instanceof JsonParsedNumber);
+    assertTrue(2147483647999L == ((JsonParsedNumber)valueElement).asLong());
   }  
   
   @Test
@@ -183,8 +179,8 @@ public class TestJsonParser
     JsonObject object = objectDom.getObject();
     
     JsonDomNode valueElement = object.get("value");
-    assertTrue(valueElement instanceof JsonLong);
-    assertTrue(-2147483647999L == ((JsonLong)valueElement).asLong());
+    assertTrue(valueElement instanceof JsonParsedNumber);
+    assertTrue(-2147483647999L == ((JsonParsedNumber)valueElement).asLong());
   }  
   
   @Test
@@ -200,8 +196,8 @@ public class TestJsonParser
     JsonObject object = objectDom.getObject();
     
     JsonDomNode valueElement = object.get("value");
-    assertTrue(valueElement instanceof JsonInteger);
-    assertTrue(6 == ((JsonInteger)valueElement).asInteger());
+    assertTrue(valueElement instanceof JsonParsedNumber);
+    assertTrue(6 == ((JsonParsedNumber)valueElement).asInteger());
   }  
   
   @Test
@@ -216,8 +212,8 @@ public class TestJsonParser
     JsonObject object = objectDom.getObject();
     
     JsonDomNode valueElement = object.get("value");
-    assertTrue(valueElement instanceof JsonInteger);
-    assertTrue(-6 == ((JsonInteger)valueElement).asInteger());
+    assertTrue(valueElement instanceof JsonParsedNumber);
+    assertTrue(-6 == ((JsonParsedNumber)valueElement).asInteger());
   }  
   
   @Test
@@ -226,7 +222,7 @@ public class TestJsonParser
     JsonObjectDom objectDom = testParseObject("{\"name\": \"avogadro\", \"value\": 6.02214086e23}", 
         "{\n" + 
         "  \"name\":\"avogadro\",\n" + 
-        "  \"value\":6.02214086E23\n" + 
+        "  \"value\":6.02214086e23\n" + 
         "}\n" + 
         "");
     
@@ -238,17 +234,17 @@ public class TestJsonParser
     test("avogadro", ((JsonString)nameElement).asString());
     
     JsonDomNode valueElement = object.get("value");
-    assertTrue(valueElement instanceof JsonDouble);
-    assertTrue(6.02214086e23 == ((JsonDouble)valueElement).asDouble());
+    assertTrue(valueElement instanceof JsonParsedNumber);
+    assertTrue(6.02214086e23 == ((JsonParsedNumber)valueElement).asDouble());
   }   
   
   @Test
   public void testParseBigDoubleObject2()
   {
-    JsonObjectDom objectDom = testParseObject("{\"name\": \"avogadro\", \"value\": 6.02214086E23}", 
+    JsonObjectDom objectDom = testParseObject("{\"name\": \"avogadro\", \"value\": 6.02214086e23}", 
         "{\n" + 
         "  \"name\":\"avogadro\",\n" + 
-        "  \"value\":6.02214086E23\n" + 
+        "  \"value\":6.02214086e23\n" + 
         "}\n" + 
         "");
     
@@ -260,8 +256,8 @@ public class TestJsonParser
     test("avogadro", ((JsonString)nameElement).asString());
     
     JsonDomNode valueElement = object.get("value");
-    assertTrue(valueElement instanceof JsonDouble);
-    assertTrue(6.02214086e23 == ((JsonDouble)valueElement).asDouble());
+    assertTrue(valueElement instanceof JsonParsedNumber);
+    assertTrue(6.02214086e23 == ((JsonParsedNumber)valueElement).asDouble());
   }  
   
   @Test
@@ -270,7 +266,7 @@ public class TestJsonParser
     JsonObjectDom objectDom = testParseObject("{\"name\": \"hydrogen\", \"value\": 1.6735575e-27}", 
         "{\n" + 
         "  \"name\":\"hydrogen\",\n" + 
-        "  \"value\":1.6735575E-27\n" + 
+        "  \"value\":1.6735575e-27\n" + 
         "}\n" + 
         "");
     
@@ -282,8 +278,8 @@ public class TestJsonParser
     test("hydrogen", ((JsonString)nameElement).asString());
     
     JsonDomNode valueElement = object.get("value");
-    assertTrue(valueElement instanceof JsonDouble);
-    assertTrue(1.6735575e-27 == ((JsonDouble)valueElement).asDouble());
+    assertTrue(valueElement instanceof JsonParsedNumber);
+    assertTrue(1.6735575e-27 == ((JsonParsedNumber)valueElement).asDouble());
   } 
   
   @Test
@@ -299,8 +295,8 @@ public class TestJsonParser
     JsonObject object = objectDom.getObject();
     
     JsonDomNode valueElement = object.get("value");
-    assertTrue(valueElement instanceof JsonFloat);
-    assertTrue(-3.14159F == ((JsonFloat)valueElement).asFloat());
+    assertTrue(valueElement instanceof JsonParsedNumber);
+    assertTrue(-3.14159F == ((JsonParsedNumber)valueElement).asFloat());
   }
   
   @Test
@@ -324,8 +320,8 @@ public class TestJsonParser
     JsonObject object = objectDom.getObject();
     
     JsonDomNode valueElement = object.get("value");
-    assertTrue(valueElement instanceof JsonFloat);
-    assertTrue(-3.14159F == ((JsonFloat)valueElement).asFloat());
+    assertTrue(valueElement instanceof JsonParsedNumber);
+    assertTrue(-3.14159F == ((JsonParsedNumber)valueElement).asFloat());
   }
   
   @Test
@@ -346,8 +342,8 @@ public class TestJsonParser
     test("pi", ((JsonString)nameElement).asString());
     
     JsonDomNode valueElement = object.get("value");
-    assertTrue(valueElement instanceof JsonDouble);
-    assertTrue(3.141590118408203 == ((JsonDouble)valueElement).asDouble());
+    assertTrue(valueElement instanceof JsonParsedNumber);
+    assertTrue(3.141590118408203 == ((JsonParsedNumber)valueElement).asDouble());
   }
   
   @Test
@@ -387,11 +383,11 @@ public class TestJsonParser
     
     for(JsonDomNode node : array)
     {
-      if(node instanceof IIntegerProvider)
+      if(node instanceof JsonParsedNumber)
       {
-        if(((IIntegerProvider)node).asInteger() != values[cnt])
+        if(((JsonParsedNumber)node).asInteger() != values[cnt])
         {
-          String message = "Expected " + values[cnt] + " but found " + ((IIntegerProvider)node).asInteger();
+          String message = "Expected " + values[cnt] + " but found " + ((JsonParsedNumber)node).asInteger();
           System.err.println(message);
           fail(message);
         }
@@ -451,11 +447,11 @@ public class TestJsonParser
     @Override
     public void accept(JsonDomNode node)
     {
-      if(node instanceof IIntegerProvider)
+      if(node instanceof JsonParsedNumber)
       {
-        if(((IIntegerProvider)node).asInteger() != values_[cnt_])
+        if(((JsonParsedNumber)node).asInteger() != values_[cnt_])
         {
-          String message = "Expected " + values_[cnt_] + " but found " + ((IIntegerProvider)node).asInteger();
+          String message = "Expected " + values_[cnt_] + " but found " + ((JsonParsedNumber)node).asInteger();
           System.err.println(message);
           fail(message);
         }
@@ -521,9 +517,9 @@ public class TestJsonParser
     test("pi", ((JsonString)nameElement).asString());
     
     JsonDomNode valueElement = object.get("value");
-    assertTrue(valueElement instanceof JsonFloat);
+    assertTrue(valueElement instanceof JsonParsedNumber);
     
-    assertTrue(3.14159F == ((JsonFloat)valueElement).asFloat());
+    assertTrue(3.14159F == ((JsonParsedNumber)valueElement).asFloat());
   }
 
   private JsonObjectDom testParseObject(String input, String output)
