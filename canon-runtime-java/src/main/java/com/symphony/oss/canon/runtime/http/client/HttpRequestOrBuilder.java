@@ -36,6 +36,7 @@ import com.symphony.oss.canon.runtime.exception.DeletedException;
 import com.symphony.oss.canon.runtime.exception.NotFoundException;
 import com.symphony.oss.canon.runtime.exception.PermissionDeniedException;
 import com.symphony.oss.canon.runtime.exception.ServerErrorException;
+import com.symphony.oss.canon.runtime.exception.TooManyRequestsException;
 import com.symphony.oss.commons.immutable.ImmutableByteArray;
 
 public class HttpRequestOrBuilder<MC extends HttpModelClient>
@@ -112,6 +113,9 @@ public class HttpRequestOrBuilder<MC extends HttpModelClient>
     
     if(statusCode >= 500)
       throw new ServerErrorException(statusCode, response);
+    
+    if(statusCode == 429)
+      throw new TooManyRequestsException(response);
     
     if(statusCode >= 400)
       throw new BadRequestException(response);
