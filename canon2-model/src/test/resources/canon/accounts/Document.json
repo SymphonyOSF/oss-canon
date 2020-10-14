@@ -1,0 +1,29 @@
+{
+  "type": "object",
+  "required": [
+    "documentType"
+  ],
+  "properties": {
+    "documentType": {
+      "$ref": "DocumentType.json"
+    },
+    "items": {
+      "description": "A list of line items.",
+      "type": "array",
+      "x-canon-cardinality": "LIST",
+      "minItems": 1,
+      "items": {
+        "$ref": "DocumentItem.json"
+      }
+    },
+    "goods": {
+      "type": "number"
+    },
+    "tax": {
+      "type": "number"
+    },
+    "total": {
+      "type": "number"
+    }
+  }
+}

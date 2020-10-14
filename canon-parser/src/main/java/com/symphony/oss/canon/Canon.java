@@ -109,7 +109,7 @@ public class Canon
     new Canon().run(argv);
   }
 
-  private void run(String[] argv) throws CanonException
+  protected void run(String[] argv) throws CanonException
   {
     int i = 0;
 

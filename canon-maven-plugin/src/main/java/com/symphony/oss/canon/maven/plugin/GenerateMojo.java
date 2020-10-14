@@ -98,7 +98,7 @@ public class GenerateMojo extends AbstractMojo
   protected ArtifactResolver artifactResolver;
 
   @Parameter(defaultValue = "${project.remoteArtifactRepositories}", required = true, readonly = true)
-  protected List<?> remoteRepositories;
+  protected List<ArtifactRepository> remoteRepositories;
 
   @Parameter(defaultValue = "${localRepository}", required = true, readonly = true)
   protected ArtifactRepository localRepository;

@@ -1,0 +1,22 @@
+{
+  "type": "object",
+  "required": [
+    "description",
+    "amount",
+    "price"
+  ],
+  "properties": {
+    "description": {
+      "type": "string"
+    },
+    "amount": {
+      "type": "number"
+    },
+    "price": {
+      "type": "number"
+    },
+    "total": {
+      "type": "number"
+    }
+  }
+}

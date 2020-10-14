@@ -1,0 +1,34 @@
+{
+  "canon": "0.0.1",
+  "info": {
+    "title": "External reference example",
+    "license": {
+      "name": "Apache2"
+    }
+  },
+  "x-canon-id": "com.symphony.oss.canon2.test.extref",
+  "x-canon-version": "1.0",
+  "x-canon-generators": {
+    "java": {
+      "genPackage":  "com.symphony.oss.canon2.test.extref"
+    }
+  },
+  "components": {
+    "schemas": { 
+      "UserName": {
+        "type": "string"
+      },  
+      "User": {
+        "type": "object",
+        "properties": {
+          "userName": {
+            "$ref": "#/components/schemas/UserName"
+          },
+          "userId": {
+            "$ref": "typedef.json#/components/schemas/UserId"
+          }
+        }
+      }
+    }
+  }
+}
