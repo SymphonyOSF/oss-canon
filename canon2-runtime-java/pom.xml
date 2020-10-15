@@ -20,7 +20,7 @@
   <parent>
     <groupId>com.symphony.oss.canon</groupId>
     <artifactId>oss-canon</artifactId>
-    <version>0.3.2-SNAPSHOT</version>
+    <version>0.3.3-SNAPSHOT</version>
   </parent>
   <artifactId>canon2-runtime-java</artifactId>
   
