@@ -60,6 +60,81 @@ public class Parser implements IParserContext
     in_ = builder.in_;
     canonicalize_ = builder.canonicalize_;
   }
+
+  /**
+   * Builder for this and sub-classes.
+   * 
+   * @author Bruce Skingle
+   *
+   * @param <T> The concrete type of the builder for fluent methods.
+   * @param <B> The concrete type of the built object.
+   */
+  public static abstract class AbstractBuilder<T extends AbstractBuilder<T,B>, B extends Parser> extends BaseAbstractBuilder<T, B>
+  {
+    BufferedReader    in_;
+    boolean           canonicalize_ = true;
+    
+    AbstractBuilder(Class<T> type)
+    {
+      super(type);
+    }
+    
+    /**
+     * Set the canonicalization mode for the parser.
+     * 
+     * @param canonicalize The canonicalization mode for the parser.
+     * 
+     * @return This (fluent method).
+     */
+    public T withCanonicalize(boolean canonicalize)
+    {
+      canonicalize_ = canonicalize;
+      
+      return self();
+    }
+    
+    /**
+     * Set the input for the parser.
+     * 
+     * @param in The input for the parser.
+     * 
+     * @return This (fluent method).
+     */
+    public T withInput(Reader in)
+    {
+      in_ = new BufferedReader(in);
+      
+      return self();
+    }
+    
+    /**
+     * Set the input for the parser.
+     * 
+     * @param in The input for the parser.
+     * 
+     * @return This (fluent method).
+     */
+    public T withInput(String in)
+    {
+      in_ = new BufferedReader(new StringReader(in));
+      
+      return self();
+    }
+    
+    /**
+     * Set the input for the parser.
+     * 
+     * @param in The input for the parser.
+     * 
+     * @return This (fluent method).
+     */
+    public T withInput(InputStream in)
+    {
+      in_ = new BufferedReader(new InputStreamReader(in, StandardCharsets.UTF_8));
+      
+      return self();
+    }
+  }
   
   @Override
   public String getInputSource()
@@ -79,6 +154,21 @@ public class Parser implements IParserContext
     return col_;
   }
   
+  boolean isAtEof() throws IOException
+  {
+    if(!atEof_ && (lineBuffer_ == null || col_ >= lineBuffer_.length()))
+    {
+      fillBuffer();
+      
+      if(lineBuffer_ == null)
+      {
+        atEof_ = true;
+      }
+    }
+    
+    return atEof_;
+  }
+
   /**
    * Return a snapshot of the current context in the input stream.
    * 
@@ -406,11 +496,6 @@ public class Parser implements IParserContext
     lineBuffer_ = in_.readLine();
     line_++;
     col_ = 0;
-    
-    if(lineBuffer_ == null)
-    {
-      System.err.println("AT EOF");
-    }
   }
   
   JsonDomNode getNumber(IParserContext context) throws SyntaxErrorException
@@ -549,80 +634,5 @@ public class Parser implements IParserContext
 //    {
 //      throw new SyntaxErrorException("Invalid integer value", context);
 //    }
-  }
-
-  /**
-   * Builder for this and sub-classes.
-   * 
-   * @author Bruce Skingle
-   *
-   * @param <T> The concrete type of the builder for fluent methods.
-   * @param <B> The concrete type of the built object.
-   */
-  public static abstract class AbstractBuilder<T extends AbstractBuilder<T,B>, B extends Parser> extends BaseAbstractBuilder<T, B>
-  {
-    BufferedReader    in_;
-    boolean           canonicalize_ = true;
-    
-    AbstractBuilder(Class<T> type)
-    {
-      super(type);
-    }
-    
-    /**
-     * Set the canonicalization mode for the parser.
-     * 
-     * @param canonicalize The canonicalization mode for the parser.
-     * 
-     * @return This (fluent method).
-     */
-    public T withCanonicalize(boolean canonicalize)
-    {
-      canonicalize_ = canonicalize;
-      
-      return self();
-    }
-    
-    /**
-     * Set the input for the parser.
-     * 
-     * @param in The input for the parser.
-     * 
-     * @return This (fluent method).
-     */
-    public T withInput(Reader in)
-    {
-      in_ = new BufferedReader(in);
-      
-      return self();
-    }
-    
-    /**
-     * Set the input for the parser.
-     * 
-     * @param in The input for the parser.
-     * 
-     * @return This (fluent method).
-     */
-    public T withInput(String in)
-    {
-      in_ = new BufferedReader(new StringReader(in));
-      
-      return self();
-    }
-    
-    /**
-     * Set the input for the parser.
-     * 
-     * @param in The input for the parser.
-     * 
-     * @return This (fluent method).
-     */
-    public T withInput(InputStream in)
-    {
-      in_ = new BufferedReader(new InputStreamReader(in, StandardCharsets.UTF_8));
-      
-      return self();
-    }
   }
 }

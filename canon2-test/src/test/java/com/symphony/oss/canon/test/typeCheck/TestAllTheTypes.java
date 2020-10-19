@@ -20,13 +20,11 @@ import static org.junit.Assert.assertEquals;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
-import java.time.Instant;
-import java.util.List;
 
 import org.junit.Test;
 
-import com.google.common.collect.ImmutableList;
 import com.symphony.oss.canon.json.JsonParser;
+import com.symphony.oss.canon.json.ParserResultException;
 import com.symphony.oss.canon.test.typeCheck.AllTheTypes.InlineObjectField;
 import com.symphony.oss.canon.test.typeCheck.AllTheTypes.InlineObjectField.NestedObjectField;
 import com.symphony.oss.canon2.runtime.java.ModelRegistry;
@@ -39,7 +37,7 @@ public class TestAllTheTypes
   ModelRegistry modelRegistry_ = new ModelRegistry.Builder().withFactories(TypeCheckModel.FACTORIES).build();
   
   @Test
-  public void testBuild()
+  public void testBuild() throws ParserResultException
   {
     String storedAllTheTypes = "{\n" + 
         "  \"_type\":\"com.symphony.oss.canon.test.typeCheck.AllTheTypes\",\n" + 

@@ -56,10 +56,10 @@ implements IJavaTemplateModel
   private final boolean generateFacade_;
   private final boolean generateBuilderFacade_;
   
-  JavaSchemaTemplateModel(String name, ResolvedSchema resolvedSchema, String identifier, String packageName, JavaOpenApiTemplateModel model,
+  JavaSchemaTemplateModel(ResolvedSchema resolvedSchema, String identifier, String packageName, JavaOpenApiTemplateModel model,
       String... templates)
   {
-    super(name, resolvedSchema, identifier, model, templates);
+    super(resolvedSchema, identifier, model, templates);
 
     if(isExternal() && resolvedSchema.isGenerated())
     {

@@ -33,12 +33,12 @@ import java.util.function.Consumer;
 
 import com.google.common.collect.ImmutableMap;
 import com.symphony.oss.canon.json.JsonParser;
+import com.symphony.oss.canon.json.ParserResultException;
 import com.symphony.oss.canon.json.model.JsonArray;
 import com.symphony.oss.canon.json.model.JsonArrayDom;
 import com.symphony.oss.canon.json.model.JsonDom;
 import com.symphony.oss.canon.json.model.JsonDomNode;
 import com.symphony.oss.canon.json.model.JsonObject;
-import com.symphony.oss.canon.json.model.JsonObjectDom;
 import com.symphony.oss.canon.json.model.JsonValue;
 import com.symphony.oss.canon2.runtime.java.Entity.Factory;
 
@@ -281,11 +281,13 @@ public class ModelRegistry
    * @return The deserialized entity.
    * 
    * @throws NullPointerException if the value is null.
+   * 
+   * @throws ParserResultException If the value cannot be parsed.
    * @throws IllegalStateException if the value is not of the expected type or is otherwise invalid.
    * This may be the case if the schema defines limits on the magnitude of the value, or if a facade
    * has been written for the type.
    */
-  public <E extends Entity> E parseOne(Reader reader, String defaultTypeId, Class<E> type)
+  public <E extends Entity> E parseOne(Reader reader, String defaultTypeId, Class<E> type) throws ParserResultException
   {
     return newInstance(JsonParser.parseObject(reader), defaultTypeId, type);
   }
@@ -418,12 +420,13 @@ public class ModelRegistry
    * 
    * @return The deserialized entity.
    * 
+   * @throws ParserResultException If the value cannot be parsed.
    * @throws NullPointerException if the value is null.
    * @throws IllegalStateException if the value is not of the expected type or is otherwise invalid.
    * This may be the case if the schema defines limits on the magnitude of the value, or if a facade
    * has been written for the type.
    */
-  public Entity parseOne(Reader reader)
+  public Entity parseOne(Reader reader) throws ParserResultException
   {
     return newInstance(JsonParser.parseObject(reader));
   }

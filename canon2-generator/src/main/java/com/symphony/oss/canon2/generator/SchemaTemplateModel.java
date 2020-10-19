@@ -39,9 +39,9 @@ S extends ISchemaTemplateModel<T,M,S>
 {
   private final SchemaType schemaType_;
   
-  public SchemaTemplateModel(String name, ResolvedSchema resolvedSchema, String identifier, M model, String... templates)
+  public SchemaTemplateModel(ResolvedSchema resolvedSchema, String identifier, M model, String... templates)
   {
-    super(name, resolvedSchema, identifier, model, templates);
+    super(resolvedSchema.getName(), resolvedSchema, identifier, model, templates);
     
     schemaType_ = SchemaType.valueOf(resolvedSchema.getSchema().getType().toUpperCase());
   }

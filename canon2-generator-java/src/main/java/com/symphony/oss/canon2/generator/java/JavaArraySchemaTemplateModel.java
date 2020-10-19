@@ -35,10 +35,10 @@ JavaSchemaTemplateModel>
   private final BigInteger        maxItems_;
   private String            typeNew_;
   
-  JavaArraySchemaTemplateModel(String name, ResolvedSchema resolvedSchema, String identifier, String packageName, CanonCardinality cardinality, JavaOpenApiTemplateModel model,
+  JavaArraySchemaTemplateModel(ResolvedSchema resolvedSchema, String identifier, String packageName, CanonCardinality cardinality, JavaOpenApiTemplateModel model,
       String ...templates)
   {
-    super(name, resolvedSchema, identifier, packageName, model, templates);
+    super(resolvedSchema, identifier, packageName, model, templates);
     
     cardinality_ = cardinality;
     

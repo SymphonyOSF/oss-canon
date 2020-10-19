@@ -52,10 +52,10 @@ JavaFieldTemplateModel
   private final String type_;
   
   
-  JavaObjectSchemaTemplateModel(String name, ResolvedSchema resolvedSchema, String identifier, String packageName, JavaOpenApiTemplateModel model,
+  JavaObjectSchemaTemplateModel(ResolvedSchema resolvedSchema, String identifier, String packageName, JavaOpenApiTemplateModel model,
       String... temaplates) throws GenerationException
   {
-    super(name, resolvedSchema, identifier, packageName, model, temaplates);
+    super(resolvedSchema, identifier, packageName, model, temaplates);
     
     type_ = resolvedSchema.getResolvedContainer() == null ? getCamelCapitalizedName() :
       capitalize(toCamelCase(resolvedSchema.getResolvedContainer().getName())) + "." + getCamelCapitalizedName();

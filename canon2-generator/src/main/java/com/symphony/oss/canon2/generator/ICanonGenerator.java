@@ -65,17 +65,17 @@ F extends IFieldTemplateModel<T,M,S>>
   
   M generateOpenApiObject(SourceContext modelContext, String name, ResolvedOpenApiObject resolvedOpenApiObject, String identifier) throws GenerationException;
 
-  A generateArraySchema(M model, String name, ResolvedSchema resolvedSchema, String identifier, boolean isReference, CanonCardinality cardinality) throws GenerationException;
+  A generateArraySchema(M model, ResolvedSchema resolvedSchema, String identifier, boolean isReference, CanonCardinality cardinality) throws GenerationException;
 
   IPathNameConstructor<T> createPathBuilder(SourceContext sourceContext);
 
   void populateTemplateModel(SourceContext sourceContext, Map<String, Object> map);
 
-  P generatePrimativeSchema(M model, String name, ResolvedSchema resolvedSchema, String identifier, boolean isReference) throws GenerationException;
+  P generatePrimativeSchema(M model, ResolvedSchema resolvedSchema, String identifier, boolean isReference) throws GenerationException;
   
   F generateField(M model, String name, ResolvedSchema resolvedSchema, String identifier, S typeSchema, boolean required);
 
-  O generateObjectSchema(M model, String name, ResolvedSchema resolvedSchema, String identifier, boolean isReference) throws GenerationException;
+  O generateObjectSchema(M model, ResolvedSchema resolvedSchema, String identifier, boolean isReference) throws GenerationException;
 
   default @Nullable JsonObject getConfig(SourceContext sourceContext)
   {

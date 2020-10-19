@@ -25,6 +25,7 @@ import org.junit.Test;
 
 import com.google.common.collect.ImmutableList;
 import com.symphony.oss.canon.json.JsonParser;
+import com.symphony.oss.canon.json.ParserResultException;
 import com.symphony.oss.canon2.runtime.java.ModelRegistry;
 
 
@@ -34,7 +35,7 @@ public class TestVersionedObject
   ModelRegistry modelRegistry_ = new ModelRegistry.Builder().withFactories(TypeCheckModel.FACTORIES).build();
   
   @Test
-  public void testBuild()
+  public void testBuild() throws ParserResultException
   {
     String storedVersionedObject = "{\n" + 
         "  \"_type\":\"com.symphony.oss.canon.test.typeCheck.VersionedObject\",\n" + 

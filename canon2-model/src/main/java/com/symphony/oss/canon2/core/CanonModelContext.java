@@ -36,6 +36,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.google.common.collect.ImmutableMap;
+import com.symphony.oss.canon.json.ParserException;
+import com.symphony.oss.canon.json.ParserResultException;
 import com.symphony.oss.canon2.core.ResolvedSchema.SingletonBuilder;
 import com.symphony.oss.canon2.model.CanonModel;
 import com.symphony.oss.canon2.model.OpenApiObject;
@@ -220,6 +222,14 @@ public abstract class CanonModelContext
       }
       catch(IllegalStateException e)
       {
+        throw new GenerationException("Failed to parse model", e);
+      }
+      catch (ParserResultException e)
+      {
+        for(ParserException parserException : e.getParserExceptions())
+        {
+          log_.error(parserException.toString());
+        }
         throw new GenerationException("Failed to parse model", e);
       }
       validateQueue_.add(sourceContext);

@@ -66,7 +66,24 @@ public class TestJsonParser
     }
   }
   
-
+  @Test
+  public void testPrematureEof()
+  {
+    JsonDom dom = parse("{\"name\": \"pi\",");
+    
+    assertTrue(dom.getErrors().size() == 1);
+    assertTrue(dom.getErrors().get(0) instanceof SyntaxErrorException);
+  }
+  
+  @Test
+  public void testExtraInput()
+  {
+    JsonDom dom = parse("{\"name\": \"pi\", \"value\": \"circle ratio\"}, \"another\": \"attribute\"}");
+    
+    assertTrue(dom.getErrors().size() == 1);
+    assertTrue(dom.getErrors().get(0) instanceof SyntaxErrorException);
+  }
+  
   @Test
   public void testObjectDuplicateAttribute()
   {

@@ -22,10 +22,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import com.symphony.oss.canon.json.model.JsonObject;
 import com.symphony.oss.canon2.core.GenerationException;
 import com.symphony.oss.canon2.core.ResolvedSchema;
 import com.symphony.oss.canon2.core.SourceContext;
@@ -55,12 +51,11 @@ A extends IArraySchemaTemplateModel<T,M,S>,
 P extends IPrimitiveSchemaTemplateModel<T,M,S>,
 F extends IFieldTemplateModel<T,M,S>>
 {
-  private static Logger log_ = LoggerFactory.getLogger(GeneratorContext.class);
+//  private static Logger log_ = LoggerFactory.getLogger(GeneratorContext.class);
 
   private final CanonGenerationContext generationContext_;
   private final ICanonGenerator<T,M,S,O,A,P,F>  generator_;
   private final SourceContext sourceContext_;
-  private final JsonObject generatorConfig_;
   private final IPathNameConstructor<T> pathBuilder_;
   private final Map<String, S> schemaModelMap_ = new HashMap<>();
   
@@ -69,7 +64,6 @@ F extends IFieldTemplateModel<T,M,S>>
     generationContext_ = generationContext;
     generator_ = generator;
     sourceContext_ = sourceContext;
-    generatorConfig_ = generator_.getConfig(sourceContext_);
     pathBuilder_ = generator_.createPathBuilder(sourceContext_);
   }
   
@@ -114,18 +108,12 @@ F extends IFieldTemplateModel<T,M,S>>
 //    return parentModel;
 //  }
 
-  //@SuppressWarnings("unchecked")
-  S generateSchema(Entry<String, ResolvedSchema> schemaEntry, M model,
-      boolean isReference) throws GenerationException
-  {
-    return generateSchema(schemaEntry.getKey(),  schemaEntry.getValue(), model, isReference);
-  }
 
   //@SuppressWarnings("unchecked")
-  S generateSchema(String name, ResolvedSchema resolvedSchema, M model,
+  S generateSchema(ResolvedSchema resolvedSchema, M model,
       boolean isReference) throws GenerationException
   {
-    System.err.println("generateSchema " + name + " " + resolvedSchema.getSchema());
+    System.err.println("generateSchema " + resolvedSchema.getName() + " " + resolvedSchema.getSchema());
     
     S existingSchema = schemaModelMap_.get(resolvedSchema.getUri());
     
@@ -133,20 +121,20 @@ F extends IFieldTemplateModel<T,M,S>>
       return existingSchema;
     
     Schema schema = resolvedSchema.getSchema();
-    String identifier = generator_.getIdentifierName(name, schema);
+    String identifier = generator_.getIdentifierName(resolvedSchema.getName(), schema);
     
     switch(schema.getType())
     {
       case "object":
       {
-        O entity = generator_.generateObjectSchema(model, name, resolvedSchema, identifier, isReference);
+        O entity = generator_.generateObjectSchema(model, resolvedSchema, identifier, isReference);
         schemaModelMap_.put(resolvedSchema.getUri(), entity.asSchemaTemplateModel());
         
 //        Map<String, F> fieldMap = new HashMap<>();
 //        Map<String, S> innerClassMap = new HashMap<>();
         if(schema.getXCanonExtends() != null)
         {
-          entity.setExtends(generateSchema("extends", resolvedSchema.getResolvedExtends(), model, true));
+          entity.setExtends(generateSchema(resolvedSchema.getResolvedExtends(), model, true));
         }
         
         if(!resolvedSchema.getResolvedProperties().isEmpty())
@@ -168,7 +156,7 @@ F extends IFieldTemplateModel<T,M,S>>
 //          String typeIdentifier = modelContext.getGenerator().getIdentifierName(entry.getValue().getName(), entry.getValue());
             ResolvedSchema resolvedPropertySchema = propertyEntry.getValue();
             
-            S typeSchema = generateSchema(resolvedPropertySchema.getName(), resolvedPropertySchema, model, true);
+            S typeSchema = generateSchema(resolvedPropertySchema, model, true);
             boolean required = schema.getRequired() != null && schema.getRequired().contains(propertyEntry.getKey());
           
             entity.addField(propertyEntry.getKey(),
@@ -178,7 +166,7 @@ F extends IFieldTemplateModel<T,M,S>>
           
           for(Entry<String, ResolvedSchema> innerClassEntry : resolvedSchema.getInnerClasses().getResolvedProperties().entrySet())
           {
-            S innerClass = generateSchema(innerClassEntry, model, false);
+            S innerClass = generateSchema(innerClassEntry.getValue(), model, false);
             entity.addInnerClass(innerClassEntry.getKey(), innerClass);
           }
           
@@ -230,11 +218,11 @@ F extends IFieldTemplateModel<T,M,S>>
           cardinality = CanonCardinality.LIST; 
         }
         
-        A arraySchema = generator_.generateArraySchema(model, name, resolvedSchema, identifier, isReference, cardinality);
+        A arraySchema = generator_.generateArraySchema(model, resolvedSchema, identifier, isReference, cardinality);
         
         schemaModelMap_.put(resolvedSchema.getUri(), arraySchema.asSchemaTemplateModel());
         
-        S itemsModel = generateSchema("items", resolvedSchema.getResolvedItems(), model, resolvedSchema.getSchema().getItemsSchema() == null);
+        S itemsModel = generateSchema(resolvedSchema.getResolvedItems(), model, resolvedSchema.getSchema().getItemsSchema() == null);
         
         arraySchema.setElementType(itemsModel);
         
@@ -244,7 +232,7 @@ F extends IFieldTemplateModel<T,M,S>>
       case "boolean":
       case "string":
       case "integer":
-        S primitiveSchema = generator_.generatePrimativeSchema(model, name, resolvedSchema, identifier, isReference).asSchemaTemplateModel();
+        S primitiveSchema = generator_.generatePrimativeSchema(model, resolvedSchema, identifier, isReference).asSchemaTemplateModel();
         schemaModelMap_.put(resolvedSchema.getUri(), primitiveSchema);
         
         return primitiveSchema;
@@ -307,9 +295,9 @@ F extends IFieldTemplateModel<T,M,S>>
       
       ncd.logCollisions(sourceContext_);
       
-      for(Entry<String, ResolvedSchema> schemaEntry : sourceContext_.getSchemas().entrySet())
+      for(ResolvedSchema resolvedSchema : sourceContext_.getSchemas().values())
       {
-        S model = generateSchema(schemaEntry, parentModel,
+        S model = generateSchema(resolvedSchema, parentModel,
             false);
         
         parentModel.addSchema(model);

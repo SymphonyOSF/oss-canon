@@ -94,10 +94,7 @@
       "SchemasObject": {
         "description": "An element to hold various schemas for the specification.",
         "type": "object",
-        "x-canon-facade": true,
-        "additionalProperties": {
-          "$ref": "#/components/schemas/Schema"
-        }
+        "x-canon-facade": true
       },
       
       "SchemaType": {
@@ -122,11 +119,44 @@
         ]
       },
       
+      "SimpleObject": {
+        "type": "object",
+        "required": ["name"],
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "value": {
+            "type": "integer"
+          }
+        }
+      },
       "Schema": {
         "description": "A data type definition.",
         "type": "object",
         "x-canon-facade": true,
         "properties": {
+          "objectListField": {
+            "type": "array",
+            "x-canon-cardinality": "LIST",
+            "items": {
+              "$ref": "#/components/schemas/SimpleObject"
+            }
+          },
+          "stringListField": {
+            "type": "array",
+            "x-canon-cardinality": "LIST",
+            "items": {
+              "type": "string"
+            }
+          },
+          "oneOf": {
+            "type": "array",
+            "x-canon-cardinality": "SET",
+            "items": {
+              "$ref": "#/components/schemas/SchemaOrRef"
+            }
+          },
           "type": {
             "type": "string"
           },
@@ -181,8 +211,17 @@
           "maxItems": {
               "type": "integer",
               "minimum": 0
+          },
+          "additionalProperties": {
+            "$ref": "#/components/schemas/Schema"
           }
         }
+      },
+      
+      "SchemaOrRef": {
+        "description": "A schema or a schema reference.",
+        "type": "object",
+        "x-canon-facade": true
       },
       
       "CanonAttributes": {
@@ -212,7 +251,7 @@
           "$ref": {
               "type": "string",
               "format": "uri"
-            }
+          }
         }
       }
     }

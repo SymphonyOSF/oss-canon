@@ -65,10 +65,10 @@ JavaSchemaTemplateModel>
   private final String                       externalType_;
   private final boolean isGenerated_;
 
-  JavaPrimitiveSchemaTemplateModel(String name, ResolvedSchema resolvedSchema, String identifier, String packageName, JavaOpenApiTemplateModel model,
+  JavaPrimitiveSchemaTemplateModel(ResolvedSchema resolvedSchema, String identifier, String packageName, JavaOpenApiTemplateModel model,
        String... templates) throws GenerationException
   { 
-    super(name, resolvedSchema, identifier, packageName, model, templates);
+    super(resolvedSchema, identifier, packageName, model, templates);
     
     javaType_ = initType(resolvedSchema.getSchema());
     isGenerated_ = resolvedSchema.isGenerated();

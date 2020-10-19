@@ -102,8 +102,10 @@ public class JsonParser extends Parser
    * @throws IllegalStateException If the input is invalid or does not contain a single object.
    * 
    * @return A JsonDom representing the given input.
+   * 
+   * @throws ParserResultException If there are errors in the input.
    */
-  public static JsonObject parseObject(String json)
+  public static JsonObject parseObject(String json) throws ParserResultException
   {
     return parseObject(new StringReader(json));
   }
@@ -119,10 +121,15 @@ public class JsonParser extends Parser
    * @throws IllegalStateException If the input is invalid or does not contain a single object.
    * 
    * @return A JsonDom representing the given input.
+   * 
+   * @throws ParserResultException If there are errors in the input.
    */
-  public static JsonObject parseObject(Reader json)
+  public static JsonObject parseObject(Reader json) throws ParserResultException
   {
     JsonDom dom = parseDom(json);
+    
+    if(dom.getErrors().size() != 0)
+      throw new ParserResultException(dom.getErrors());
     
     if(dom instanceof JsonObjectDom)
     {
@@ -160,6 +167,11 @@ public class JsonParser extends Parser
           processArray();
           break;
       }
+      
+      if(!isAtEof())
+      {
+        domBuilder_.withError(new SyntaxErrorException("Expected End of File", this));
+      }
     }
     catch(IOException e)
     {
@@ -169,6 +181,7 @@ public class JsonParser extends Parser
     {
       domBuilder_.withError(e);
     }
+    
     
     return domBuilder_.build();
   }

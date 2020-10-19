@@ -239,38 +239,38 @@ JavaFieldTemplateModel
 
   
   @Override
-  public JavaObjectSchemaTemplateModel generateObjectSchema(JavaOpenApiTemplateModel model, String name, ResolvedSchema resolvedSchema, String identifier, boolean isReference) throws GenerationException
+  public JavaObjectSchemaTemplateModel generateObjectSchema(JavaOpenApiTemplateModel model, ResolvedSchema resolvedSchema, String identifier, boolean isReference) throws GenerationException
   {
     if(isReference)
-      return new JavaObjectSchemaTemplateModel(name, resolvedSchema, identifier, getJavaGenerationPackage(resolvedSchema), model);
+      return new JavaObjectSchemaTemplateModel(resolvedSchema, identifier, getJavaGenerationPackage(resolvedSchema), model);
     else
-      return new JavaObjectSchemaTemplateModel(name, resolvedSchema, identifier, getJavaGenerationPackage(resolvedSchema), model, "Object");
+      return new JavaObjectSchemaTemplateModel(resolvedSchema, identifier, getJavaGenerationPackage(resolvedSchema), model, "Object");
   }
 
   @Override
-  public JavaArraySchemaTemplateModel generateArraySchema(JavaOpenApiTemplateModel model, String name, ResolvedSchema resolvedSchema, String identifier, boolean isReference, CanonCardinality cardinality) throws GenerationException
+  public JavaArraySchemaTemplateModel generateArraySchema(JavaOpenApiTemplateModel model, ResolvedSchema resolvedSchema, String identifier, boolean isReference, CanonCardinality cardinality) throws GenerationException
   {
     if(isReference)
-      return new JavaArraySchemaTemplateModel(name, resolvedSchema, identifier, getJavaGenerationPackage(resolvedSchema), cardinality, model);
+      return new JavaArraySchemaTemplateModel(resolvedSchema, identifier, getJavaGenerationPackage(resolvedSchema), cardinality, model);
     else
-      return new JavaArraySchemaTemplateModel(name, resolvedSchema, identifier, getJavaGenerationPackage(resolvedSchema), cardinality, model,  "Array");
+      return new JavaArraySchemaTemplateModel(resolvedSchema, identifier, getJavaGenerationPackage(resolvedSchema), cardinality, model,  "Array");
   }
 
   @Override
   public JavaPrimitiveSchemaTemplateModel generatePrimativeSchema(
-      JavaOpenApiTemplateModel model, String name, ResolvedSchema resolvedSchema, String identifier, boolean isReference) throws GenerationException
+      JavaOpenApiTemplateModel model, ResolvedSchema resolvedSchema, String identifier, boolean isReference) throws GenerationException
   {
     if(isReference || (!resolvedSchema.isGenerated() && !resolvedSchema.getSchema().isEnum()))
     {
-      return new JavaPrimitiveSchemaTemplateModel(name, resolvedSchema, identifier, getJavaGenerationPackage(resolvedSchema), model);
+      return new JavaPrimitiveSchemaTemplateModel(resolvedSchema, identifier, getJavaGenerationPackage(resolvedSchema), model);
     }
     else if(!resolvedSchema.getSchema().isEnum())
     {
-      return new JavaPrimitiveSchemaTemplateModel(name, resolvedSchema, identifier, getJavaGenerationPackage(resolvedSchema), model, "TypeDef");
+      return new JavaPrimitiveSchemaTemplateModel(resolvedSchema, identifier, getJavaGenerationPackage(resolvedSchema), model, "TypeDef");
     }
     else
     {
-      return new JavaPrimitiveSchemaTemplateModel(name, resolvedSchema, identifier, getJavaGenerationPackage(resolvedSchema), model, "Enum");
+      return new JavaPrimitiveSchemaTemplateModel(resolvedSchema, identifier, getJavaGenerationPackage(resolvedSchema), model, "Enum");
     }
   }
 

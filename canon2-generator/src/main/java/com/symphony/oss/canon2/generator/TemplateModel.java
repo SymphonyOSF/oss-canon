@@ -19,7 +19,6 @@
 package com.symphony.oss.canon2.generator;
 
 import com.symphony.oss.canon2.core.IResolvedEntity;
-import com.symphony.oss.canon2.core.ResolvedOpenApiObject;
 
 /**
  * Base implementation of ITemplateModel which provides a set of methods returning the entity name mapped
