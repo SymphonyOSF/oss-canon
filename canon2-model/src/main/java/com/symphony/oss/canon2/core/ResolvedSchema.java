@@ -32,26 +32,28 @@ public class ResolvedSchema implements IResolvedEntity
   private final Schema                                    schema_;
   private final boolean                                   generated_;
   private final ResolvedSchema.SingletonBuilder           resolvedContainerBuilder_;
+  private final ResolvedSchema.SingletonBuilder           resolvedAdditionalPropertiesBuilder_;
+  private final boolean                                   additionalPropertiesAllowed_;
   private final ResolvedSchema.SingletonBuilder           resolvedItemsBuilder_;
   private final ResolvedSchema.SingletonBuilder           resolvedExtendsBuilder_;
   private final ResolvedPropertiesObject.SingletonBuilder resolvedPropertiesBuilder_;
   private final ResolvedPropertiesObject.SingletonBuilder innerClassesBuilder_;
-//  private final ResolvedSubSchemas.SingletonBuilder       subSchemasBuilder_;
   private final ResolvedOpenApiObject.SingletonBuilder    openApiObjectBuilder_; 
   
   private ResolvedSchema(SingletonBuilder builder)
   {
-    name_                       = builder.name_;
-    uri_                        = builder.uri_;
-    schema_                     = builder.schema_;
-    generated_                  = builder.generated_;
-    resolvedContainerBuilder_   = builder.resolvedContainerBuilder_;
-    resolvedItemsBuilder_       = builder.resolvedItemsBuilder_;
-    resolvedExtendsBuilder_     = builder.resolvedExtendsBuilder_;
-    resolvedPropertiesBuilder_  = builder.resolvedPropertiesBuilder_;
-    innerClassesBuilder_        = builder.innerClassesBuilder_;
-//    subSchemasBuilder_          = builder.subSchemasBuilder_;
-    openApiObjectBuilder_       = builder.openApiObjectBuilder_;
+    name_                                = builder.name_;
+    uri_                                  = builder.uri_;
+    schema_                               = builder.schema_;
+    generated_                            = builder.generated_;
+    resolvedContainerBuilder_             = builder.resolvedContainerBuilder_;
+    resolvedAdditionalPropertiesBuilder_  = builder.resolvedAdditionalPropertiesBuilder_;
+    additionalPropertiesAllowed_          = builder.additionalPropertiesAllowed_;
+    resolvedItemsBuilder_                 = builder.resolvedItemsBuilder_;
+    resolvedExtendsBuilder_               = builder.resolvedExtendsBuilder_;
+    resolvedPropertiesBuilder_            = builder.resolvedPropertiesBuilder_;
+    innerClassesBuilder_                  = builder.innerClassesBuilder_;
+    openApiObjectBuilder_                 = builder.openApiObjectBuilder_;
   }
   
   public static class SingletonBuilder
@@ -61,6 +63,8 @@ public class ResolvedSchema implements IResolvedEntity
     Schema                                    schema_;
     boolean                                   generated_;
     ResolvedSchema.SingletonBuilder           resolvedContainerBuilder_;
+    ResolvedSchema.SingletonBuilder           resolvedAdditionalPropertiesBuilder_;
+    boolean                                   additionalPropertiesAllowed_;
     ResolvedSchema.SingletonBuilder           resolvedItemsBuilder_;
     ResolvedSchema.SingletonBuilder           resolvedExtendsBuilder_;
     ResolvedPropertiesObject.SingletonBuilder resolvedPropertiesBuilder_;
@@ -110,6 +114,27 @@ public class ResolvedSchema implements IResolvedEntity
         throw new IllegalStateException("SingletonBuilder has already been built");
       
       resolvedContainerBuilder_ = resolvedContainerBuilder;
+      
+      return this;
+    }
+    
+    public SingletonBuilder withResolvedAdditionalProperties(ResolvedSchema.SingletonBuilder resolvedAdditionalPropertiesBuilder)
+    {
+      if(built_ != null)
+        throw new IllegalStateException("SingletonBuilder has already been built");
+      
+      resolvedAdditionalPropertiesBuilder_ = resolvedAdditionalPropertiesBuilder;
+      additionalPropertiesAllowed_ = true;
+      
+      return this;
+    }
+    
+    public SingletonBuilder withAdditionalPropertiesAllowed(boolean additionalPropertiesAllowed)
+    {
+      if(built_ != null)
+        throw new IllegalStateException("SingletonBuilder has already been built");
+      
+      additionalPropertiesAllowed_ = additionalPropertiesAllowed;
       
       return this;
     }
@@ -221,6 +246,19 @@ public class ResolvedSchema implements IResolvedEntity
     return resolvedContainerBuilder_.build();
   }
 
+  public ResolvedSchema getResolvedAdditionalProperties()
+  {
+    if(resolvedAdditionalPropertiesBuilder_ == null)
+      return null;
+    
+    return resolvedAdditionalPropertiesBuilder_.build();
+  }
+
+  public boolean isAdditionalPropertiesAllowed()
+  {
+    return additionalPropertiesAllowed_;
+  }
+
   public ResolvedSchema getResolvedItems()
   {
     if(resolvedItemsBuilder_ == null)
@@ -272,6 +310,15 @@ public class ResolvedSchema implements IResolvedEntity
   
   public SchemaTemplateModelType getSchemaType()
   {
+    if(getSchema().getOneOf() != null)
+      return SchemaTemplateModelType.ONE_OF;
+    
+//    if(getSchema().getAnyOf() != null)
+//      return SchemaTemplateModelType.ANY_OF;
+//    
+//    if(getSchema().getAllOf() != null)
+//      return SchemaTemplateModelType.ALL_OF;
+    
     return SchemaTemplateModelType.valueOf(SchemaType.valueOf(getSchema().getType().toUpperCase()));
   }
 

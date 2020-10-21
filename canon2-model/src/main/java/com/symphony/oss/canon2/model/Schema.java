@@ -28,7 +28,6 @@
 package com.symphony.oss.canon2.model;
 
 import java.net.MalformedURLException;
-import java.net.URI;
 import java.net.URL;
 import java.util.Map.Entry;
 import java.util.Set;
@@ -45,7 +44,6 @@ import com.symphony.oss.canon2.core.INamedModelEntity;
 import com.symphony.oss.canon2.core.ResolvedOpenApiObject;
 import com.symphony.oss.canon2.core.ResolvedPropertiesObject;
 import com.symphony.oss.canon2.core.ResolvedSchema;
-import com.symphony.oss.canon2.core.ResolvedSubSchemas;
 import com.symphony.oss.canon2.core.SourceContext;
 import com.symphony.oss.canon2.runtime.java.Entity;
 
@@ -100,14 +98,35 @@ public class Schema extends SchemaEntity implements INamedModelEntity
   {
     ResolvedPropertiesObject.SingletonBuilder  resolvedPropertiesBuilder = new ResolvedPropertiesObject.SingletonBuilder();
     ResolvedPropertiesObject.SingletonBuilder  innerClassesBuilder       = new ResolvedPropertiesObject.SingletonBuilder();
-//    ResolvedSubSchemas.SingletonBuilder        subSchemasBuilder       = new ResolvedSubSchemas.SingletonBuilder();
     builder
         .withSchema(this)
         .withResolvedProperties(resolvedPropertiesBuilder)
         .withInnerClasses(innerClassesBuilder)
-//        .withSubSchemas(subSchemasBuilder)
         .withGenerated(generated)
         ;
+    
+    if(getAdditionalProperties() != null)
+    {
+      Object additionalProperies = getAdditionalProperties().canonGetValue();
+      
+      if(additionalProperies instanceof Boolean)
+      {
+        builder.withAdditionalPropertiesAllowed((boolean)additionalProperies);
+      }
+      else if(additionalProperies instanceof SchemaOrRef)
+      {
+        SchemaOrRef schemaOrRef = (SchemaOrRef) additionalProperies;
+        
+        String name = schemaOrRef.getRef() == null ? "$additionalProperties" : schemaOrRef.getRef().getName();
+        
+        ResolvedSchema.SingletonBuilder resolvedAdditionalProperties = schemaOrRef.link(openApiObjectBuilder, modelContext, sourceContext, name, uri, builder);
+        builder.withResolvedAdditionalProperties(resolvedAdditionalProperties);
+      }
+      else if(additionalProperies != null)
+      {
+        throw new GenerationException("Unexpected additional properties object of type " + additionalProperies.getClass());
+      }
+    }
     
     Set<SchemaOrRef> oneOf = getOneOf();
     
@@ -118,10 +137,10 @@ public class Schema extends SchemaEntity implements INamedModelEntity
       {
         String name = subSchema.getRef() == null ? "$" + i : subSchema.getRef().getName();
         
-        ResolvedSchema.SingletonBuilder resolvedSubSchema = subSchema.link(openApiObjectBuilder, modelContext, sourceContext, name, uri, subSchema, builder);
+        ResolvedSchema.SingletonBuilder resolvedSubSchema = subSchema.link(openApiObjectBuilder, modelContext, sourceContext, name, uri, builder);
         resolvedPropertiesBuilder.with(name, resolvedSubSchema);
         
-        if(subSchema.getSchema() != null)
+        if(resolvedSubSchema.build().getSchemaType().getIsObject())
           innerClassesBuilder.with(name, resolvedSubSchema);
         i++;
       }
@@ -164,6 +183,8 @@ public class Schema extends SchemaEntity implements INamedModelEntity
         }
       }
     }
+    
+   // if(getA)
 
     if(itemsSchema_ != null)
     { 

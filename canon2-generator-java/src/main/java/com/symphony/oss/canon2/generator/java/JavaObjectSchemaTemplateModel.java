@@ -51,12 +51,14 @@ JavaFieldTemplateModel
   private boolean hasLimits_;
   private JavaSchemaTemplateModel superType_;
   private final String type_;
+  private boolean additionalPropertiesAllowed_;
+  private JavaSchemaTemplateModel additionalProperties_;
   
   
   JavaObjectSchemaTemplateModel(ResolvedSchema resolvedSchema, String identifier, String packageName, JavaOpenApiTemplateModel model,
       String... temaplates) throws GenerationException
   {
-    super(resolvedSchema, SchemaTemplateModelType.OBJECT, identifier, packageName, model, temaplates);
+    super(resolvedSchema, resolvedSchema.getSchemaType(), identifier, packageName, model, temaplates);
     
     type_ = resolvedSchema.getResolvedContainer() == null ? getCamelCapitalizedName() :
       capitalize(toCamelCase(resolvedSchema.getResolvedContainer().getName())) + "." + getCamelCapitalizedName();
@@ -92,6 +94,19 @@ JavaFieldTemplateModel
   }
 
   @Override
+  public void setAdditionalProperties(JavaSchemaTemplateModel additionalProperties)
+  {
+    additionalProperties_ = additionalProperties;
+    additionalPropertiesAllowed_ = true;
+  }
+
+  @Override
+  public void setAdditionalPropertiesAllowed(boolean additionalPropertiesAllowed)
+  {
+    additionalPropertiesAllowed_ = additionalPropertiesAllowed;
+  }
+
+  @Override
   public String getJsonNodeType()
   {
     return "JsonObject";
@@ -103,6 +118,7 @@ JavaFieldTemplateModel
     return "com.symphony.oss.canon.json.model.JsonObject";
   }
 
+  @Override
   public Collection<JavaSchemaTemplateModel> getInnerClasses()
   {
     return innerClassMap_.values();
@@ -169,5 +185,15 @@ JavaFieldTemplateModel
   public boolean hasName(String name)
   {
     return fieldMap_.containsKey(name);
+  }
+
+  public boolean getAdditionalPropertiesAllowed()
+  {
+    return additionalPropertiesAllowed_;
+  }
+
+  public JavaSchemaTemplateModel getAdditionalProperties()
+  {
+    return additionalProperties_;
   }
 }

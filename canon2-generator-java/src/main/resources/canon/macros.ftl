@@ -10,6 +10,9 @@
 <#macro generateCreateJsonDomNodeFromField indent schema name source var>
   <#switch schema.schemaType>
     <#case "OBJECT">
+    <#case "ALL_OF">
+    <#case "ANY_OF">
+    <#case "ONE_OF">
 ${indent}${var}.addIfNotNull("${name}", ${source}.getJsonObject());
     <#break>
     <#case "ARRAY">
@@ -36,6 +39,9 @@ UNEXPECTED SCHEMA TYPE ${schema.schemaType} in generateCreateJsonDomNodeFromFiel
 <#macro generateCreateArrayJsonDomNode indent cnt schema source var>
   <#switch schema.schemaType>
     <#case "OBJECT">
+    <#case "ALL_OF">
+    <#case "ANY_OF">
+    <#case "ONE_OF">
 ${indent}${var}.with(${source}.getJsonObject());
     <#break>
     <#case "ARRAY">
@@ -78,6 +84,9 @@ UNEXPECTED SCHEMA TYPE ${schema.schemaType} in generateCreateJsonDomNodeFromFiel
 <#macro generateCreateFieldFromJsonDomNodePrivate indent cnt node schema name var ifValidation modelRegistry>
   <#switch schema.schemaType>
     <#case "OBJECT">
+    <#case "ALL_OF">
+    <#case "ANY_OF">
+    <#case "ONE_OF">
 ${indent}if(${node} instanceof JsonObject)
 ${indent}{
 ${indent}  ${var} = ${modelRegistry}.newInstance((JsonObject)${node}, ${schema.camelCapitalizedName}.TYPE_ID, ${schema.type}.class);

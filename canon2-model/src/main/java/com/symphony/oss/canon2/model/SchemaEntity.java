@@ -21,7 +21,7 @@
  *    Generator groupId    org.symphonyoss.s2.canon
  *              artifactId canon2-generator-java
  *    Template name        template/Object/_Entity.java.ftl
- *    At                   2020-10-21 11:57:10 BST
+ *    At                   2020-10-21 14:50:09 BST
  *----------------------------------------------------------------------------------------------------
  */
 
@@ -77,11 +77,12 @@ public abstract class SchemaEntity extends ObjectEntity
   private final Boolean                    _xCanonFacade_;
   private final Set<String>                _enum_;
   private final Set<String>                _required_;
+  private final DiscriminatorObject        _discriminator_;
   private final BigInteger                 _minItems_;
   private final Set<SchemaOrRef>           _oneOf_;
   private final CanonAttributes            _xCanonAttributes_;
   private final BigDecimal                 _maximum_;
-  private final Schema                     _additionalProperties_;
+  private final AdditionalProperties       _additionalProperties_;
   private final BigDecimal                 _minimum_;
   private final PropertiesObject           _properties_;
   private final ReferenceObject            _xCanonExtends_;
@@ -282,6 +283,23 @@ public abstract class SchemaEntity extends ObjectEntity
         }
       }
 
+      node = jsonInitialiser.get("discriminator");
+      if(node == null || node instanceof JsonNull)
+      {
+        _discriminator_ = null;
+      }
+      else
+      {
+        if(node instanceof JsonObject)
+        {
+          _discriminator_ = jsonInitialiser.getModelRegistry().newInstance((JsonObject)node, DiscriminatorObject.TYPE_ID, DiscriminatorObject.class);
+        }
+        else 
+        {
+          throw new IllegalArgumentException("discriminator must be an Object node not " + node.getClass().getName());
+        }
+      }
+
       node = jsonInitialiser.get("minItems");
       if(node == null || node instanceof JsonNull)
       {
@@ -373,7 +391,7 @@ public abstract class SchemaEntity extends ObjectEntity
       {
         if(node instanceof JsonObject)
         {
-          _additionalProperties_ = jsonInitialiser.getModelRegistry().newInstance((JsonObject)node, Schema.TYPE_ID, Schema.class);
+          _additionalProperties_ = jsonInitialiser.getModelRegistry().newInstance((JsonObject)node, AdditionalProperties.TYPE_ID, AdditionalProperties.class);
         }
         else 
         {
@@ -450,6 +468,7 @@ public abstract class SchemaEntity extends ObjectEntity
       _xCanonFacade_ = builder.getXCanonFacade();
       _enum_ = ImmutableSet.copyOf(builder.getEnum());
       _required_ = ImmutableSet.copyOf(builder.getRequired());
+      _discriminator_ = builder.getDiscriminator();
       _minItems_ = builder.getMinItems();
       _oneOf_ = ImmutableSet.copyOf(builder.getOneOf());
       _xCanonAttributes_ = builder.getXCanonAttributes();
@@ -460,196 +479,6 @@ public abstract class SchemaEntity extends ObjectEntity
       _xCanonExtends_ = builder.getXCanonExtends();
       unknownKeys_ = builder.getCanonUnknownKeys();
     }
-  }
-  @Override
-  public ImmutableSet<String> getCanonUnknownKeys()
-  {
-    return unknownKeys_;
-  }
-
-  /**
-   * Return the value of the maxItems attribute.
-   *
-   * @return the value of the maxItems attribute.
-   */
-  public @Nullable BigInteger getMaxItems()
-  {
-    return _maxItems_;
-  }
-
-  /**
-   * Return the value of the x-canon-builderFacade attribute.
-   *
-   * @return the value of the x-canon-builderFacade attribute.
-   */
-  public @Nullable Boolean getXCanonBuilderFacade()
-  {
-    return _xCanonBuilderFacade_;
-  }
-
-  /**
-   * Return the value of the format attribute.
-   *
-   * @return the value of the format attribute.
-   */
-  public @Nullable String getFormat()
-  {
-    return _format_;
-  }
-
-  /**
-   * Return the value of the x-canon-cardinality attribute.
-   *
-   * @return the value of the x-canon-cardinality attribute.
-   */
-  public @Nullable CanonCardinality getXCanonCardinality()
-  {
-    return _xCanonCardinality_;
-  }
-
-  /**
-   * Return the value of the x-canon-identifier attribute.
-   *
-   * @return the value of the x-canon-identifier attribute.
-   */
-  public @Nullable String getXCanonIdentifier()
-  {
-    return _xCanonIdentifier_;
-  }
-
-  /**
-   * Return the value of the type attribute.
-   *
-   * @return the value of the type attribute.
-   */
-  public @Nullable String getType()
-  {
-    return _type_;
-  }
-
-  /**
-   * Return the value of the x-canon-facade attribute.
-   *
-   * @return the value of the x-canon-facade attribute.
-   */
-  public @Nullable Boolean getXCanonFacade()
-  {
-    return _xCanonFacade_;
-  }
-
-  /**
-   * Return the value of the enum attribute.
-   *
-   * @return the value of the enum attribute.
-   */
-  public @Nullable Set<String> getEnum()
-  {
-    return _enum_;
-  }
-
-  /**
-   * Return the value of the required attribute.
-   *
-   * @return the value of the required attribute.
-   */
-  public @Nullable Set<String> getRequired()
-  {
-    return _required_;
-  }
-
-  /**
-   * Return the value of the minItems attribute.
-   *
-   * @return the value of the minItems attribute.
-   */
-  public @Nullable BigInteger getMinItems()
-  {
-    return _minItems_;
-  }
-
-  /**
-   * Return the value of the oneOf attribute.
-   *
-   * @return the value of the oneOf attribute.
-   */
-  public @Nullable Set<SchemaOrRef> getOneOf()
-  {
-    return _oneOf_;
-  }
-
-  /**
-   * Return the value of the x-canon-attributes attribute.
-   *
-   * @return the value of the x-canon-attributes attribute.
-   */
-  public @Nullable CanonAttributes getXCanonAttributes()
-  {
-    return _xCanonAttributes_;
-  }
-
-  /**
-   * Return the value of the maximum attribute.
-   *
-   * @return the value of the maximum attribute.
-   */
-  public @Nullable BigDecimal getMaximum()
-  {
-    return _maximum_;
-  }
-
-  /**
-   * Return the value of the additionalProperties attribute.
-   *
-   * @return the value of the additionalProperties attribute.
-   */
-  public @Nullable Schema getAdditionalProperties()
-  {
-    return _additionalProperties_;
-  }
-
-  /**
-   * Return the value of the minimum attribute.
-   *
-   * @return the value of the minimum attribute.
-   */
-  public @Nullable BigDecimal getMinimum()
-  {
-    return _minimum_;
-  }
-
-  /**
-   * Return the value of the properties attribute.
-   *
-   * @return the value of the properties attribute.
-   */
-  public @Nullable PropertiesObject getProperties()
-  {
-    return _properties_;
-  }
-
-  /**
-   * Return the value of the x-canon-extends attribute.
-   *
-   * @return the value of the x-canon-extends attribute.
-   */
-  public @Nullable ReferenceObject getXCanonExtends()
-  {
-    return _xCanonExtends_;
-  }
-
-  @Override
-  public boolean equals(Object obj)
-  {
-    if(obj instanceof SchemaEntity)
-      return toString().equals(((SchemaEntity)obj).toString());
-
-    return false;
-  }
-
-  @Override
-  public int hashCode()
-  {
-    return toString().hashCode();
   }
 
 
@@ -756,11 +585,12 @@ public abstract class SchemaEntity extends ObjectEntity
     protected Boolean                    _xCanonFacade_;
     protected Set<String>                _enum_ = new HashSet<String>();
     protected Set<String>                _required_ = new HashSet<String>();
+    protected DiscriminatorObject        _discriminator_;
     protected BigInteger                 _minItems_;
     protected Set<SchemaOrRef>           _oneOf_ = new HashSet<SchemaOrRef>();
     protected CanonAttributes            _xCanonAttributes_;
     protected BigDecimal                 _maximum_;
-    protected Schema                     _additionalProperties_;
+    protected AdditionalProperties       _additionalProperties_;
     protected BigDecimal                 _minimum_;
     protected PropertiesObject           _properties_;
     protected ReferenceObject            _xCanonExtends_;
@@ -789,6 +619,7 @@ public abstract class SchemaEntity extends ObjectEntity
       _xCanonFacade_ = initial.getXCanonFacade();
       _enum_ = ImmutableSet.copyOf(initial.getEnum());
       _required_ = ImmutableSet.copyOf(initial.getRequired());
+      _discriminator_ = initial.getDiscriminator();
       _minItems_ = initial.getMinItems();
       _oneOf_ = ImmutableSet.copyOf(initial.getOneOf());
       _xCanonAttributes_ = initial.getXCanonAttributes();
@@ -938,6 +769,18 @@ public abstract class SchemaEntity extends ObjectEntity
           throw new IllegalArgumentException("required must be a JsonArray node not " + node.getClass().getName());
         }
       }
+      if(jsonObject.containsKey("discriminator"))
+      {
+        JsonDomNode  node = jsonObject.get("discriminator");
+        if(node instanceof JsonObject)
+        {
+          _discriminator_ = modelRegistry.newInstance((JsonObject)node, DiscriminatorObject.TYPE_ID, DiscriminatorObject.class);
+        }
+        else if(!modelRegistry.getParserValidation().isIgnoreInvalidAttributes())
+        {
+          throw new IllegalArgumentException("discriminator must be an Object node not " + node.getClass().getName());
+        }
+      }
       if(jsonObject.containsKey("minItems"))
       {
         JsonDomNode  node = jsonObject.get("minItems");
@@ -1005,7 +848,7 @@ public abstract class SchemaEntity extends ObjectEntity
         JsonDomNode  node = jsonObject.get("additionalProperties");
         if(node instanceof JsonObject)
         {
-          _additionalProperties_ = modelRegistry.newInstance((JsonObject)node, Schema.TYPE_ID, Schema.class);
+          _additionalProperties_ = modelRegistry.newInstance((JsonObject)node, AdditionalProperties.TYPE_ID, AdditionalProperties.class);
         }
         else if(!modelRegistry.getParserValidation().isIgnoreInvalidAttributes())
         {
@@ -1062,6 +905,7 @@ public abstract class SchemaEntity extends ObjectEntity
       result.add(_xCanonFacade_);
       result.add(_enum_);
       result.add(_required_);
+      result.add(_discriminator_);
       result.add(_minItems_);
       result.add(_oneOf_);
       result.add(_xCanonAttributes_);
@@ -1289,6 +1133,30 @@ public abstract class SchemaEntity extends ObjectEntity
     }
 
     /**
+     * Return the value of the discriminator attribute.
+     *
+     * @return the value of the discriminator attribute.
+     */
+    @Override
+    public @Nullable DiscriminatorObject getDiscriminator()
+    {
+      return _discriminator_;
+    }
+
+    /**
+     * Set the value of the discriminator attribute.
+     *
+     * @param value The value to be set.
+     *
+     * @return This (fluent method).
+     */
+    public T withDiscriminator(DiscriminatorObject value)
+    {
+      _discriminator_ = value;
+      return self();
+    }
+
+    /**
      * Return the value of the minItems attribute.
      *
      * @return the value of the minItems attribute.
@@ -1390,7 +1258,7 @@ public abstract class SchemaEntity extends ObjectEntity
      * @return the value of the additionalProperties attribute.
      */
     @Override
-    public @Nullable Schema getAdditionalProperties()
+    public @Nullable AdditionalProperties getAdditionalProperties()
     {
       return _additionalProperties_;
     }
@@ -1402,7 +1270,7 @@ public abstract class SchemaEntity extends ObjectEntity
      *
      * @return This (fluent method).
      */
-    public T withAdditionalProperties(Schema value)
+    public T withAdditionalProperties(AdditionalProperties value)
     {
       _additionalProperties_ = value;
       return self();
@@ -1553,6 +1421,11 @@ public abstract class SchemaEntity extends ObjectEntity
           builder.with("required", arrayBuilder.build());
       }
 
+      if(getDiscriminator() != null)
+      {
+          builder.addIfNotNull("discriminator", getDiscriminator().getJsonObject());
+      }
+
       if(getMinItems() != null)
       {
           builder.addIfNotNull("minItems", getMinItems());
@@ -1659,6 +1532,208 @@ public abstract class SchemaEntity extends ObjectEntity
       return new Schema(this);
     }
   }
+
+  @Override
+  public ImmutableSet<String> getCanonUnknownKeys()
+  {
+    return unknownKeys_;
+  }
+
+  /**
+   * Return the value of the maxItems attribute.
+   *
+   * @return the value of the maxItems attribute.
+   */
+  public @Nullable BigInteger getMaxItems()
+  {
+    return _maxItems_;
+  }
+
+  /**
+   * Return the value of the x-canon-builderFacade attribute.
+   *
+   * @return the value of the x-canon-builderFacade attribute.
+   */
+  public @Nullable Boolean getXCanonBuilderFacade()
+  {
+    return _xCanonBuilderFacade_;
+  }
+
+  /**
+   * Return the value of the format attribute.
+   *
+   * @return the value of the format attribute.
+   */
+  public @Nullable String getFormat()
+  {
+    return _format_;
+  }
+
+  /**
+   * Return the value of the x-canon-cardinality attribute.
+   *
+   * @return the value of the x-canon-cardinality attribute.
+   */
+  public @Nullable CanonCardinality getXCanonCardinality()
+  {
+    return _xCanonCardinality_;
+  }
+
+  /**
+   * Return the value of the x-canon-identifier attribute.
+   *
+   * @return the value of the x-canon-identifier attribute.
+   */
+  public @Nullable String getXCanonIdentifier()
+  {
+    return _xCanonIdentifier_;
+  }
+
+  /**
+   * Return the value of the type attribute.
+   *
+   * @return the value of the type attribute.
+   */
+  public @Nullable String getType()
+  {
+    return _type_;
+  }
+
+  /**
+   * Return the value of the x-canon-facade attribute.
+   *
+   * @return the value of the x-canon-facade attribute.
+   */
+  public @Nullable Boolean getXCanonFacade()
+  {
+    return _xCanonFacade_;
+  }
+
+  /**
+   * Return the value of the enum attribute.
+   *
+   * @return the value of the enum attribute.
+   */
+  public @Nullable Set<String> getEnum()
+  {
+    return _enum_;
+  }
+
+  /**
+   * Return the value of the required attribute.
+   *
+   * @return the value of the required attribute.
+   */
+  public @Nullable Set<String> getRequired()
+  {
+    return _required_;
+  }
+
+  /**
+   * Return the value of the discriminator attribute.
+   *
+   * @return the value of the discriminator attribute.
+   */
+  public @Nullable DiscriminatorObject getDiscriminator()
+  {
+    return _discriminator_;
+  }
+
+  /**
+   * Return the value of the minItems attribute.
+   *
+   * @return the value of the minItems attribute.
+   */
+  public @Nullable BigInteger getMinItems()
+  {
+    return _minItems_;
+  }
+
+  /**
+   * Return the value of the oneOf attribute.
+   *
+   * @return the value of the oneOf attribute.
+   */
+  public @Nullable Set<SchemaOrRef> getOneOf()
+  {
+    return _oneOf_;
+  }
+
+  /**
+   * Return the value of the x-canon-attributes attribute.
+   *
+   * @return the value of the x-canon-attributes attribute.
+   */
+  public @Nullable CanonAttributes getXCanonAttributes()
+  {
+    return _xCanonAttributes_;
+  }
+
+  /**
+   * Return the value of the maximum attribute.
+   *
+   * @return the value of the maximum attribute.
+   */
+  public @Nullable BigDecimal getMaximum()
+  {
+    return _maximum_;
+  }
+
+  /**
+   * Return the value of the additionalProperties attribute.
+   *
+   * @return the value of the additionalProperties attribute.
+   */
+  public @Nullable AdditionalProperties getAdditionalProperties()
+  {
+    return _additionalProperties_;
+  }
+
+  /**
+   * Return the value of the minimum attribute.
+   *
+   * @return the value of the minimum attribute.
+   */
+  public @Nullable BigDecimal getMinimum()
+  {
+    return _minimum_;
+  }
+
+  /**
+   * Return the value of the properties attribute.
+   *
+   * @return the value of the properties attribute.
+   */
+  public @Nullable PropertiesObject getProperties()
+  {
+    return _properties_;
+  }
+
+  /**
+   * Return the value of the x-canon-extends attribute.
+   *
+   * @return the value of the x-canon-extends attribute.
+   */
+  public @Nullable ReferenceObject getXCanonExtends()
+  {
+    return _xCanonExtends_;
+  }
+
+  @Override
+  public boolean equals(Object obj)
+  {
+    if(obj instanceof SchemaEntity)
+      return toString().equals(((SchemaEntity)obj).toString());
+
+    return false;
+  }
+
+  @Override
+  public int hashCode()
+  {
+    return toString().hashCode();
+  }
+
 }
 
 /*----------------------------------------------------------------------------------------------------

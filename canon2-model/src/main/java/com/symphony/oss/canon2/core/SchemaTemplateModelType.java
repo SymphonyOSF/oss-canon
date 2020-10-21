@@ -18,30 +18,34 @@ import com.symphony.oss.commons.fault.CodingFault;
 public enum SchemaTemplateModelType
 {
   /** STRING */
-  STRING("string"),
+  STRING("string", false, false),
   /** NUMBER */
-  NUMBER("number"),
+  NUMBER("number", false, false),
   /** ARRAY */
-  ARRAY("array"),
+  ARRAY("array", false, false),
   /** OBJECT */
-  OBJECT("object"),
+  OBJECT("object", true, false),
   /** BOOLEAN */
-  BOOLEAN("boolean"),
+  BOOLEAN("boolean", false, false),
   /** INTEGER */
-  INTEGER("integer"),
+  INTEGER("integer", false, false),
   /** ONE_OF */
-  ONE_OF("oneOf"),
+  ONE_OF("oneOf", true, true),
   /** AALL_OF */
-  ALL_OF("allOf"),
+  ALL_OF("allOf", true, true),
   /** ANY_OF */
-  ANY_OF("anyOf")
+  ANY_OF("anyOf", true, true)
   ;
   
   private final String value_;
+  private final boolean composite_;
+  private final boolean object_;
   
-  private SchemaTemplateModelType(String value)
+  private SchemaTemplateModelType(String value, boolean composite, boolean object)
   {
     value_ = value;
+    composite_ = composite;
+    object_ = object;
   }
   
   /**
@@ -54,6 +58,26 @@ public enum SchemaTemplateModelType
     return value_;
   }
   
+  /**
+   * Return true if this is a composite type, allOf, anyOf, oneOf.
+   * 
+   * @return true if this is a composite type, allOf, anyOf, oneOf.
+   */
+  public boolean getIsComposite()
+  {
+    return composite_;
+  }
+
+  /**
+   * Return true if this schema type generates an object, i.e. is object or a composite type.
+   * 
+   * @return true if this schema type generates an object, i.e. is object or a composite type.
+   */
+  public boolean getIsObject()
+  {
+    return object_;
+  }
+
   /**
    * Return the equivalent value for the given SchemaType value.
    * 

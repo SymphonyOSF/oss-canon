@@ -27,13 +27,29 @@
 
 package com.symphony.oss.canon2.model;
 
+import javax.annotation.Nullable;
+
 import com.symphony.oss.canon2.runtime.java.IObjectEntityInitialiser;
 
 /**
- * Instance or Builder for Object PropertiesObject
+ * Instance or Builder for Object AdditionalProperties
  */
-public interface IPropertiesObjectInstanceOrBuilder extends IObjectEntityInitialiser
+public interface IAdditionalPropertiesInstanceOrBuilder extends IObjectEntityInitialiser
 {
+  
+  /**
+   * Return the value of the SchemaOrRef attribute.
+   *
+   * @return the value of the SchemaOrRef attribute.
+   */
+  @Nullable SchemaOrRef getSchemaOrRef();
+  
+  /**
+   * Return the value of the $1 attribute.
+   *
+   * @return the value of the $1 attribute.
+   */
+  @Nullable Boolean get$1();
 }
 /*----------------------------------------------------------------------------------------------------
  * End of template template/Object/I_InstanceOrBuilder.java.ftl

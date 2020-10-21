@@ -212,6 +212,17 @@ G extends IGroupSchemaTemplateModel<T,M,S>>
       }
     }
     
+    if(resolvedSchema.getResolvedAdditionalProperties() != null)
+    {
+      S additionalPropertiesSchema = generateSchema(resolvedSchema.getResolvedAdditionalProperties(), model, true);
+      
+      entity.setAdditionalProperties(additionalPropertiesSchema);
+    }
+    else if(resolvedSchema.isAdditionalPropertiesAllowed())
+    {
+      entity.setAdditionalPropertiesAllowed(true);
+    }
+    
     return entity.asSchemaTemplateModel();
   }
 

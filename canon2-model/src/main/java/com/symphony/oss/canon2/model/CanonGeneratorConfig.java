@@ -21,7 +21,7 @@
  *    Generator groupId    org.symphonyoss.s2.canon
  *              artifactId canon2-generator-java
  *    Template name        template/Object/_.java.ftl
- *    At                   2020-10-21 11:57:10 BST
+ *    At                   2020-10-21 14:50:09 BST
  *----------------------------------------------------------------------------------------------------
  */
 
@@ -83,26 +83,6 @@ public class CanonGeneratorConfig extends ObjectEntity
       }
       unknownKeys_ = builder.getCanonUnknownKeys();
     }
-  }
-  @Override
-  public ImmutableSet<String> getCanonUnknownKeys()
-  {
-    return unknownKeys_;
-  }
-
-  @Override
-  public boolean equals(Object obj)
-  {
-    if(obj instanceof CanonGeneratorConfig)
-      return toString().equals(((CanonGeneratorConfig)obj).toString());
-
-    return false;
-  }
-
-  @Override
-  public int hashCode()
-  {
-    return toString().hashCode();
   }
 
 
@@ -307,6 +287,28 @@ public class CanonGeneratorConfig extends ObjectEntity
       return new CanonGeneratorConfig(this);
     }
   }
+
+  @Override
+  public ImmutableSet<String> getCanonUnknownKeys()
+  {
+    return unknownKeys_;
+  }
+
+  @Override
+  public boolean equals(Object obj)
+  {
+    if(obj instanceof CanonGeneratorConfig)
+      return toString().equals(((CanonGeneratorConfig)obj).toString());
+
+    return false;
+  }
+
+  @Override
+  public int hashCode()
+  {
+    return toString().hashCode();
+  }
+
 }
 
 /*----------------------------------------------------------------------------------------------------

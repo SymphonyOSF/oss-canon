@@ -20,7 +20,7 @@
  *    Input source         canon.json
  *    Generator groupId    org.symphonyoss.s2.canon
  *              artifactId canon2-generator-java
- *    Template name        template/Object/_Entity.java.ftl
+ *    Template name        template/Object/_.java.ftl
  *    At                   2020-10-21 14:50:09 BST
  *----------------------------------------------------------------------------------------------------
  */
@@ -31,6 +31,7 @@ import javax.annotation.Nullable;
 import javax.annotation.concurrent.Immutable;
 
 import com.google.common.collect.ImmutableSet;
+import com.symphony.oss.canon.json.model.JsonBoolean;
 import com.symphony.oss.canon.json.model.JsonDomNode;
 import com.symphony.oss.canon.json.model.JsonNull;
 import com.symphony.oss.canon.json.model.JsonObject;
@@ -41,14 +42,14 @@ import com.symphony.oss.canon2.runtime.java.ObjectEntity;
 import com.symphony.oss.commons.fault.FaultAccumulator;
 
 /**
- * Implementation for Object ComponentsObject
- * Generated from ComponentsObject at {entity.context.path}
+ * Implementation for Object AdditionalProperties
+ * Generated from AdditionalProperties at {entity.context.path}
  */
 @Immutable
-public abstract class ComponentsObjectEntity extends ObjectEntity
+public class AdditionalProperties extends ObjectEntity
 {
   /** Type ID */
-  public static final String  TYPE_ID = "com.symphony.oss.canon2.model.ComponentsObject";
+  public static final String  TYPE_ID = "com.symphony.oss.canon2.model.AdditionalProperties";
   /** Type version */
   public static final String  TYPE_VERSION = "1.0";
   /** Type major version */
@@ -59,14 +60,15 @@ public abstract class ComponentsObjectEntity extends ObjectEntity
   public static final Factory FACTORY = new Factory();
 
   private final ImmutableSet<String>        unknownKeys_;
-  private final SchemasObject              _schemas_;
+  private final SchemaOrRef                _schemaOrRef_;
+  private final Boolean                    _$1_;
 
   /**
    * Constructor.
    *
    * @param initialiser Initialiser, may be JSON serialisation, builder or another instance.
    */
-  public ComponentsObjectEntity(Initialiser initialiser)
+  public AdditionalProperties(Initialiser initialiser)
   {
     super(initialiser);
 
@@ -74,44 +76,72 @@ public abstract class ComponentsObjectEntity extends ObjectEntity
     {
       JsonObjectEntityInitialiser jsonInitialiser = (JsonObjectEntityInitialiser)initialiser;
 
+//      if(node instanceof JsonBoolean)
+//      {
+//        _$1_ = ((JsonBoolean)node).asBoolean();
+//      }
+//      else 
+//      {
+//        _$1_ = null;
+//      }
+      _schemaOrRef_ = jsonInitialiser.getModelRegistry().newInstance(jsonInitialiser.getJsonObject(), SchemaOrRef.TYPE_ID, SchemaOrRef.class);
+      
       JsonDomNode  node;
 
-      node = jsonInitialiser.get("schemas");
+//      node = jsonInitialiser.get("SchemaOrRef");
+//      if(node == null || node instanceof JsonNull)
+//      {
+//        _schemaOrRef_ = null;
+//      }
+//      else
+//      {
+//        if(node instanceof JsonObject)
+//        {
+//          _schemaOrRef_ = jsonInitialiser.getModelRegistry().newInstance((JsonObject)node, SchemaOrRef.TYPE_ID, SchemaOrRef.class);
+//        }
+//        else 
+//        {
+//          throw new IllegalArgumentException("SchemaOrRef must be an Object node not " + node.getClass().getName());
+//        }
+//      }
+
+      node = jsonInitialiser.get("$1");
       if(node == null || node instanceof JsonNull)
       {
-        _schemas_ = null;
+        _$1_ = null;
       }
       else
       {
-        if(node instanceof JsonObject)
+        if(node instanceof JsonBoolean)
         {
-          _schemas_ = jsonInitialiser.getModelRegistry().newInstance((JsonObject)node, SchemasObject.TYPE_ID, SchemasObject.class);
+          _$1_ = ((JsonBoolean)node).asBoolean();
         }
         else 
         {
-          throw new IllegalArgumentException("schemas must be an Object node not " + node.getClass().getName());
+          throw new IllegalArgumentException("$1 must be an instance of JsonBoolean not " + node.getClass().getName());
         }
       }
       unknownKeys_ = jsonInitialiser.getCanonUnknownKeys();
     }
     else
     {
-      IComponentsObjectInstanceOrBuilder builder =  initialiser.getInstanceOrBuilder();
+      IAdditionalPropertiesInstanceOrBuilder builder =  initialiser.getInstanceOrBuilder();
 
       if(builder == null)
       {
         throw new IllegalArgumentException("Initializer is not an JsonObjectEntityInitialiser but getInstanceOrBuilder() returns null");
       }
-      _schemas_ = builder.getSchemas();
+      _schemaOrRef_ = builder.getSchemaOrRef();
+      _$1_ = builder.get$1();
       unknownKeys_ = builder.getCanonUnknownKeys();
     }
   }
 
 
   /**
-   * Factory class for ComponentsObject.
+   * Factory class for AdditionalProperties.
    */
-  public static class Factory extends ObjectEntity.Factory<ComponentsObject>
+  public static class Factory extends ObjectEntity.Factory<AdditionalProperties>
   {
     @Override
     public String getCanonType()
@@ -150,14 +180,14 @@ public abstract class ComponentsObjectEntity extends ObjectEntity
     }
 
     @Override
-    public ComponentsObject newInstance(JsonObject jsonObject, ModelRegistry modelRegistry)
+    public AdditionalProperties newInstance(JsonObject jsonObject, ModelRegistry modelRegistry)
     {
-      return new ComponentsObject(new JsonInitialiser(jsonObject, modelRegistry));
+      return new AdditionalProperties(new JsonInitialiser(jsonObject, modelRegistry));
     }
   }
 
   /**
-   * Abstract Initialiser for ComponentsObject
+   * Abstract Initialiser for AdditionalProperties
    */
   public interface Initialiser extends IObjectEntityInitialiser
   {
@@ -166,11 +196,11 @@ public abstract class ComponentsObjectEntity extends ObjectEntity
      * 
      * @return an instance or builder containing the values for a new instance.
      */
-    IComponentsObjectInstanceOrBuilder getInstanceOrBuilder();
+    IAdditionalPropertiesInstanceOrBuilder getInstanceOrBuilder();
   }
 
   /**
-   * JSON Initialiser for ComponentsObject
+   * JSON Initialiser for AdditionalProperties
    */
   public static class JsonInitialiser extends JsonObjectEntityInitialiser implements Initialiser
   {
@@ -186,23 +216,24 @@ public abstract class ComponentsObjectEntity extends ObjectEntity
     }
 
     @Override
-    public IComponentsObjectInstanceOrBuilder getInstanceOrBuilder()
+    public IAdditionalPropertiesInstanceOrBuilder getInstanceOrBuilder()
     {
       return null;
     }
   }
 
   /**
-   * Abstract builder for ComponentsObject. If there are sub-classes of this type then their builders sub-class this builder.
+   * Abstract builder for AdditionalProperties. If there are sub-classes of this type then their builders sub-class this builder.
    *
    * @param <T> The concrete type of the builder, used for fluent methods.
    * @param <B> The concrete type of the built object.
    */
-  public static abstract class AbstractBuilder<T extends AbstractBuilder<T,B>, B extends ComponentsObjectEntity>
+  public static abstract class AbstractBuilder<T extends AbstractBuilder<T,B>, B extends AdditionalProperties>
     extends ObjectEntity.AbstractBuilder<T,B>
-    implements IComponentsObjectInstanceOrBuilder, Initialiser
+    implements IAdditionalPropertiesInstanceOrBuilder, Initialiser
   {
-    protected SchemasObject              _schemas_;
+    protected SchemaOrRef                _schemaOrRef_;
+    protected Boolean                    _$1_;
 
     protected AbstractBuilder(Class<T> type)
     {
@@ -210,7 +241,7 @@ public abstract class ComponentsObjectEntity extends ObjectEntity
     }
 
     @Override
-    public IComponentsObjectInstanceOrBuilder getInstanceOrBuilder()
+    public IAdditionalPropertiesInstanceOrBuilder getInstanceOrBuilder()
     {
       return this;
     }
@@ -219,22 +250,35 @@ public abstract class ComponentsObjectEntity extends ObjectEntity
     {
       super(type, initial);
 
-      _schemas_ = initial.getSchemas();
+      _schemaOrRef_ = initial.getSchemaOrRef();
+      _$1_ = initial.get$1();
     }
 
     @Override
     public T withValues(JsonObject jsonObject, ModelRegistry modelRegistry)
     {
-      if(jsonObject.containsKey("schemas"))
+      if(jsonObject.containsKey("SchemaOrRef"))
       {
-        JsonDomNode  node = jsonObject.get("schemas");
+        JsonDomNode  node = jsonObject.get("SchemaOrRef");
         if(node instanceof JsonObject)
         {
-          _schemas_ = modelRegistry.newInstance((JsonObject)node, SchemasObject.TYPE_ID, SchemasObject.class);
+          _schemaOrRef_ = modelRegistry.newInstance((JsonObject)node, SchemaOrRef.TYPE_ID, SchemaOrRef.class);
         }
         else if(!modelRegistry.getParserValidation().isIgnoreInvalidAttributes())
         {
-          throw new IllegalArgumentException("schemas must be an Object node not " + node.getClass().getName());
+          throw new IllegalArgumentException("SchemaOrRef must be an Object node not " + node.getClass().getName());
+        }
+      }
+      if(jsonObject.containsKey("$1"))
+      {
+        JsonDomNode  node = jsonObject.get("$1");
+        if(node instanceof JsonBoolean)
+        {
+          _$1_ = ((JsonBoolean)node).asBoolean();
+        }
+        else if(!modelRegistry.getParserValidation().isIgnoreInvalidAttributes())
+        {
+          throw new IllegalArgumentException("$1 must be an instance of JsonBoolean not " + node.getClass().getName());
         }
       }
       return super.withValues(jsonObject, modelRegistry);
@@ -242,30 +286,55 @@ public abstract class ComponentsObjectEntity extends ObjectEntity
 
     /* void populateAllFields(List<Object> result)
     {
-      result.add(_schemas_);
+      result.add(_schemaOrRef_);
+      result.add(_$1_);
     }*/
 
     /**
-     * Return the value of the schemas attribute.
+     * Return the value of the SchemaOrRef attribute.
      *
-     * @return the value of the schemas attribute.
+     * @return the value of the SchemaOrRef attribute.
      */
     @Override
-    public @Nullable SchemasObject getSchemas()
+    public @Nullable SchemaOrRef getSchemaOrRef()
     {
-      return _schemas_;
+      return _schemaOrRef_;
     }
 
     /**
-     * Set the value of the schemas attribute.
+     * Set the value of the SchemaOrRef attribute.
      *
      * @param value The value to be set.
      *
      * @return This (fluent method).
      */
-    public T withSchemas(SchemasObject value)
+    public T withSchemaOrRef(SchemaOrRef value)
     {
-      _schemas_ = value;
+      _schemaOrRef_ = value;
+      return self();
+    }
+
+    /**
+     * Return the value of the $1 attribute.
+     *
+     * @return the value of the $1 attribute.
+     */
+    @Override
+    public @Nullable Boolean get$1()
+    {
+      return _$1_;
+    }
+
+    /**
+     * Set the value of the $1 attribute.
+     *
+     * @param value The value to be set.
+     *
+     * @return This (fluent method).
+     */
+    public T with$1(Boolean value)
+    {
+      _$1_ = value;
       return self();
     }
 
@@ -274,8 +343,8 @@ public abstract class ComponentsObjectEntity extends ObjectEntity
     {
       JsonObject.Builder builder = new JsonObject.Builder();
 
-      builder.addIfNotNull(JSON_TYPE, ComponentsObjectEntity.TYPE_ID);
-      builder.addIfNotNull(JSON_VERSION, ComponentsObjectEntity.TYPE_VERSION);
+      builder.addIfNotNull(JSON_TYPE, AdditionalProperties.TYPE_ID);
+      builder.addIfNotNull(JSON_VERSION, AdditionalProperties.TYPE_VERSION);
 
       populateJson(builder);
 
@@ -287,9 +356,14 @@ public abstract class ComponentsObjectEntity extends ObjectEntity
     {
       super.populateJson(builder);
 
-      if(getSchemas() != null)
+      if(getSchemaOrRef() != null)
       {
-          builder.addIfNotNull("schemas", getSchemas().getJsonObject());
+          builder.addIfNotNull("SchemaOrRef", getSchemaOrRef().getJsonObject());
+      }
+
+      if(get$1() != null)
+      {
+          builder.addIfNotNull("$1", get$1());
       }
     }
 
@@ -325,9 +399,9 @@ public abstract class ComponentsObjectEntity extends ObjectEntity
   }
 
   /**
-   * Builder for ComponentsObject
+   * Builder for AdditionalProperties
    */
-  public static class Builder extends ComponentsObject.AbstractBuilder<Builder, ComponentsObject>
+  public static class Builder extends AdditionalProperties.AbstractBuilder<Builder, AdditionalProperties>
   {
     /**
      * Constructor.
@@ -342,15 +416,15 @@ public abstract class ComponentsObjectEntity extends ObjectEntity
      *
      * @param initial An instance of the built type from which values are to be initialised.
      */
-    public Builder(ComponentsObject initial)
+    public Builder(AdditionalProperties initial)
     {
       super(Builder.class, initial);
     }
 
     @Override
-    protected ComponentsObject construct()
+    protected AdditionalProperties construct()
     {
-      return new ComponentsObject(this);
+      return new AdditionalProperties(this);
     }
   }
 
@@ -361,20 +435,30 @@ public abstract class ComponentsObjectEntity extends ObjectEntity
   }
 
   /**
-   * Return the value of the schemas attribute.
+   * Return the value of the SchemaOrRef attribute.
    *
-   * @return the value of the schemas attribute.
+   * @return the value of the SchemaOrRef attribute.
    */
-  public @Nullable SchemasObject getSchemas()
+  public @Nullable SchemaOrRef getSchemaOrRef()
   {
-    return _schemas_;
+    return _schemaOrRef_;
+  }
+
+  /**
+   * Return the value of the $1 attribute.
+   *
+   * @return the value of the $1 attribute.
+   */
+  public @Nullable Boolean get$1()
+  {
+    return _$1_;
   }
 
   @Override
   public boolean equals(Object obj)
   {
-    if(obj instanceof ComponentsObjectEntity)
-      return toString().equals(((ComponentsObjectEntity)obj).toString());
+    if(obj instanceof AdditionalProperties)
+      return toString().equals(((AdditionalProperties)obj).toString());
 
     return false;
   }
@@ -385,9 +469,25 @@ public abstract class ComponentsObjectEntity extends ObjectEntity
     return toString().hashCode();
   }
 
+
+  /**
+   * Return the value of this OneOf entity.
+   *
+   * @return the value of this OneOf entity.
+   */
+  public Object canonGetValue()
+  {
+    if(_schemaOrRef_ != null)
+      return _schemaOrRef_;
+
+    if(_$1_ != null)
+      return _$1_;
+
+    return null;
+  }
 }
 
 /*----------------------------------------------------------------------------------------------------
- * End of template template/Object/_Entity.java.ftl
+ * End of template template/Object/_.java.ftl
  * End of code generation
  *------------------------------------------------------------------------------------------------- */

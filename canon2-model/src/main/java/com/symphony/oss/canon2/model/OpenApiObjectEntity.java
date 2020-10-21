@@ -21,7 +21,7 @@
  *    Generator groupId    org.symphonyoss.s2.canon
  *              artifactId canon2-generator-java
  *    Template name        template/Object/_Entity.java.ftl
- *    At                   2020-10-21 11:57:10 BST
+ *    At                   2020-10-21 14:50:09 BST
  *----------------------------------------------------------------------------------------------------
  */
 
@@ -262,116 +262,6 @@ public abstract class OpenApiObjectEntity extends ObjectEntity
   
       unknownKeys_ = builder.getCanonUnknownKeys();
     }
-  }
-  @Override
-  public ImmutableSet<String> getCanonUnknownKeys()
-  {
-    return unknownKeys_;
-  }
-
-  /**
-   * Return the value of the components attribute.
-   *
-   * @return the value of the components attribute.
-   */
-  public @Nullable ComponentsObject getComponents()
-  {
-    return _components_;
-  }
-
-  /**
-   * Return the value of the x-canon-generators attribute.
-   *
-   * @return the value of the x-canon-generators attribute.
-   */
-  public @Nullable CanonGeneratorConfig getXCanonGenerators()
-  {
-    return _xCanonGenerators_;
-  }
-
-  /**
-   * Return the value of the openapi attribute.
-   *
-   * @return the value of the openapi attribute.
-   */
-  public @Nullable String getOpenapi()
-  {
-    return _openapi_;
-  }
-
-  /**
-   * Return the value of the paths attribute.
-   *
-   * @return the value of the paths attribute.
-   */
-  public @Nullable PathsObject getPaths()
-  {
-    return _paths_;
-  }
-
-  /**
-   * Return the value of the x-canon-id attribute.
-   *
-   * @return the value of the x-canon-id attribute.
-   */
-  public @Nullable String getXCanonId()
-  {
-    return _xCanonId_;
-  }
-
-  /**
-   * Return the value of the x-canon-version attribute.
-   *
-   * @return the value of the x-canon-version attribute.
-   */
-  public @Nullable SemanticVersion getXCanonVersion()
-  {
-    return _xCanonVersion_;
-  }
-
-  /**
-   * Return the value of the x-canon-identifier attribute.
-   *
-   * @return the value of the x-canon-identifier attribute.
-   */
-  public @Nullable String getXCanonIdentifier()
-  {
-    return _xCanonIdentifier_;
-  }
-
-  /**
-   * Return the value of the canon attribute.
-   *
-   * @return the value of the canon attribute.
-   */
-  public @Nullable String getCanon()
-  {
-    return _canon_;
-  }
-
-  /**
-   * Return the value of the info attribute.
-   *
-   * @return the value of the info attribute.
-   */
-  public @Nonnull InfoObject getInfo()
-  {
-    return _info_;
-  }
-
-  @Override
-  public boolean equals(Object obj)
-  {
-    if(obj instanceof OpenApiObjectEntity)
-      return toString().equals(((OpenApiObjectEntity)obj).toString());
-
-    return false;
-  }
-
-  @Override
-  public int hashCode()
-  {
-    return toString().hashCode();
   }
 
 
@@ -978,6 +868,118 @@ public abstract class OpenApiObjectEntity extends ObjectEntity
       return new OpenApiObject(this);
     }
   }
+
+  @Override
+  public ImmutableSet<String> getCanonUnknownKeys()
+  {
+    return unknownKeys_;
+  }
+
+  /**
+   * Return the value of the components attribute.
+   *
+   * @return the value of the components attribute.
+   */
+  public @Nullable ComponentsObject getComponents()
+  {
+    return _components_;
+  }
+
+  /**
+   * Return the value of the x-canon-generators attribute.
+   *
+   * @return the value of the x-canon-generators attribute.
+   */
+  public @Nullable CanonGeneratorConfig getXCanonGenerators()
+  {
+    return _xCanonGenerators_;
+  }
+
+  /**
+   * Return the value of the openapi attribute.
+   *
+   * @return the value of the openapi attribute.
+   */
+  public @Nullable String getOpenapi()
+  {
+    return _openapi_;
+  }
+
+  /**
+   * Return the value of the paths attribute.
+   *
+   * @return the value of the paths attribute.
+   */
+  public @Nullable PathsObject getPaths()
+  {
+    return _paths_;
+  }
+
+  /**
+   * Return the value of the x-canon-id attribute.
+   *
+   * @return the value of the x-canon-id attribute.
+   */
+  public @Nullable String getXCanonId()
+  {
+    return _xCanonId_;
+  }
+
+  /**
+   * Return the value of the x-canon-version attribute.
+   *
+   * @return the value of the x-canon-version attribute.
+   */
+  public @Nullable SemanticVersion getXCanonVersion()
+  {
+    return _xCanonVersion_;
+  }
+
+  /**
+   * Return the value of the x-canon-identifier attribute.
+   *
+   * @return the value of the x-canon-identifier attribute.
+   */
+  public @Nullable String getXCanonIdentifier()
+  {
+    return _xCanonIdentifier_;
+  }
+
+  /**
+   * Return the value of the canon attribute.
+   *
+   * @return the value of the canon attribute.
+   */
+  public @Nullable String getCanon()
+  {
+    return _canon_;
+  }
+
+  /**
+   * Return the value of the info attribute.
+   *
+   * @return the value of the info attribute.
+   */
+  public @Nonnull InfoObject getInfo()
+  {
+    return _info_;
+  }
+
+  @Override
+  public boolean equals(Object obj)
+  {
+    if(obj instanceof OpenApiObjectEntity)
+      return toString().equals(((OpenApiObjectEntity)obj).toString());
+
+    return false;
+  }
+
+  @Override
+  public int hashCode()
+  {
+    return toString().hashCode();
+  }
+
 }
 
 /*----------------------------------------------------------------------------------------------------

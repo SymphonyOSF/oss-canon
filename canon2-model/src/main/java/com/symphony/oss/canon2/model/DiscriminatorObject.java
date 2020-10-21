@@ -20,7 +20,7 @@
  *    Input source         canon.json
  *    Generator groupId    org.symphonyoss.s2.canon
  *              artifactId canon2-generator-java
- *    Template name        template/Object/_Entity.java.ftl
+ *    Template name        template/Object/_.java.ftl
  *    At                   2020-10-21 14:50:09 BST
  *----------------------------------------------------------------------------------------------------
  */
@@ -34,6 +34,7 @@ import com.google.common.collect.ImmutableSet;
 import com.symphony.oss.canon.json.model.JsonDomNode;
 import com.symphony.oss.canon.json.model.JsonNull;
 import com.symphony.oss.canon.json.model.JsonObject;
+import com.symphony.oss.canon.json.model.JsonString;
 import com.symphony.oss.canon2.runtime.java.IObjectEntityInitialiser;
 import com.symphony.oss.canon2.runtime.java.JsonObjectEntityInitialiser;
 import com.symphony.oss.canon2.runtime.java.ModelRegistry;
@@ -41,14 +42,14 @@ import com.symphony.oss.canon2.runtime.java.ObjectEntity;
 import com.symphony.oss.commons.fault.FaultAccumulator;
 
 /**
- * Implementation for Object ComponentsObject
- * Generated from ComponentsObject at {entity.context.path}
+ * Implementation for Object DiscriminatorObject
+ * Generated from DiscriminatorObject at {entity.context.path}
  */
 @Immutable
-public abstract class ComponentsObjectEntity extends ObjectEntity
+public class DiscriminatorObject extends ObjectEntity
 {
   /** Type ID */
-  public static final String  TYPE_ID = "com.symphony.oss.canon2.model.ComponentsObject";
+  public static final String  TYPE_ID = "com.symphony.oss.canon2.model.DiscriminatorObject";
   /** Type version */
   public static final String  TYPE_VERSION = "1.0";
   /** Type major version */
@@ -59,14 +60,14 @@ public abstract class ComponentsObjectEntity extends ObjectEntity
   public static final Factory FACTORY = new Factory();
 
   private final ImmutableSet<String>        unknownKeys_;
-  private final SchemasObject              _schemas_;
+  private final String                     _propertyName_;
 
   /**
    * Constructor.
    *
    * @param initialiser Initialiser, may be JSON serialisation, builder or another instance.
    */
-  public ComponentsObjectEntity(Initialiser initialiser)
+  public DiscriminatorObject(Initialiser initialiser)
   {
     super(initialiser);
 
@@ -76,42 +77,42 @@ public abstract class ComponentsObjectEntity extends ObjectEntity
 
       JsonDomNode  node;
 
-      node = jsonInitialiser.get("schemas");
+      node = jsonInitialiser.get("propertyName");
       if(node == null || node instanceof JsonNull)
       {
-        _schemas_ = null;
+        _propertyName_ = null;
       }
       else
       {
-        if(node instanceof JsonObject)
+        if(node instanceof JsonString)
         {
-          _schemas_ = jsonInitialiser.getModelRegistry().newInstance((JsonObject)node, SchemasObject.TYPE_ID, SchemasObject.class);
+          _propertyName_ = ((JsonString)node).asString();
         }
         else 
         {
-          throw new IllegalArgumentException("schemas must be an Object node not " + node.getClass().getName());
+          throw new IllegalArgumentException("propertyName must be an instance of JsonString not " + node.getClass().getName());
         }
       }
       unknownKeys_ = jsonInitialiser.getCanonUnknownKeys();
     }
     else
     {
-      IComponentsObjectInstanceOrBuilder builder =  initialiser.getInstanceOrBuilder();
+      IDiscriminatorObjectInstanceOrBuilder builder =  initialiser.getInstanceOrBuilder();
 
       if(builder == null)
       {
         throw new IllegalArgumentException("Initializer is not an JsonObjectEntityInitialiser but getInstanceOrBuilder() returns null");
       }
-      _schemas_ = builder.getSchemas();
+      _propertyName_ = builder.getPropertyName();
       unknownKeys_ = builder.getCanonUnknownKeys();
     }
   }
 
 
   /**
-   * Factory class for ComponentsObject.
+   * Factory class for DiscriminatorObject.
    */
-  public static class Factory extends ObjectEntity.Factory<ComponentsObject>
+  public static class Factory extends ObjectEntity.Factory<DiscriminatorObject>
   {
     @Override
     public String getCanonType()
@@ -150,14 +151,14 @@ public abstract class ComponentsObjectEntity extends ObjectEntity
     }
 
     @Override
-    public ComponentsObject newInstance(JsonObject jsonObject, ModelRegistry modelRegistry)
+    public DiscriminatorObject newInstance(JsonObject jsonObject, ModelRegistry modelRegistry)
     {
-      return new ComponentsObject(new JsonInitialiser(jsonObject, modelRegistry));
+      return new DiscriminatorObject(new JsonInitialiser(jsonObject, modelRegistry));
     }
   }
 
   /**
-   * Abstract Initialiser for ComponentsObject
+   * Abstract Initialiser for DiscriminatorObject
    */
   public interface Initialiser extends IObjectEntityInitialiser
   {
@@ -166,11 +167,11 @@ public abstract class ComponentsObjectEntity extends ObjectEntity
      * 
      * @return an instance or builder containing the values for a new instance.
      */
-    IComponentsObjectInstanceOrBuilder getInstanceOrBuilder();
+    IDiscriminatorObjectInstanceOrBuilder getInstanceOrBuilder();
   }
 
   /**
-   * JSON Initialiser for ComponentsObject
+   * JSON Initialiser for DiscriminatorObject
    */
   public static class JsonInitialiser extends JsonObjectEntityInitialiser implements Initialiser
   {
@@ -186,23 +187,23 @@ public abstract class ComponentsObjectEntity extends ObjectEntity
     }
 
     @Override
-    public IComponentsObjectInstanceOrBuilder getInstanceOrBuilder()
+    public IDiscriminatorObjectInstanceOrBuilder getInstanceOrBuilder()
     {
       return null;
     }
   }
 
   /**
-   * Abstract builder for ComponentsObject. If there are sub-classes of this type then their builders sub-class this builder.
+   * Abstract builder for DiscriminatorObject. If there are sub-classes of this type then their builders sub-class this builder.
    *
    * @param <T> The concrete type of the builder, used for fluent methods.
    * @param <B> The concrete type of the built object.
    */
-  public static abstract class AbstractBuilder<T extends AbstractBuilder<T,B>, B extends ComponentsObjectEntity>
+  public static abstract class AbstractBuilder<T extends AbstractBuilder<T,B>, B extends DiscriminatorObject>
     extends ObjectEntity.AbstractBuilder<T,B>
-    implements IComponentsObjectInstanceOrBuilder, Initialiser
+    implements IDiscriminatorObjectInstanceOrBuilder, Initialiser
   {
-    protected SchemasObject              _schemas_;
+    protected String                     _propertyName_;
 
     protected AbstractBuilder(Class<T> type)
     {
@@ -210,7 +211,7 @@ public abstract class ComponentsObjectEntity extends ObjectEntity
     }
 
     @Override
-    public IComponentsObjectInstanceOrBuilder getInstanceOrBuilder()
+    public IDiscriminatorObjectInstanceOrBuilder getInstanceOrBuilder()
     {
       return this;
     }
@@ -219,22 +220,22 @@ public abstract class ComponentsObjectEntity extends ObjectEntity
     {
       super(type, initial);
 
-      _schemas_ = initial.getSchemas();
+      _propertyName_ = initial.getPropertyName();
     }
 
     @Override
     public T withValues(JsonObject jsonObject, ModelRegistry modelRegistry)
     {
-      if(jsonObject.containsKey("schemas"))
+      if(jsonObject.containsKey("propertyName"))
       {
-        JsonDomNode  node = jsonObject.get("schemas");
-        if(node instanceof JsonObject)
+        JsonDomNode  node = jsonObject.get("propertyName");
+        if(node instanceof JsonString)
         {
-          _schemas_ = modelRegistry.newInstance((JsonObject)node, SchemasObject.TYPE_ID, SchemasObject.class);
+          _propertyName_ = ((JsonString)node).asString();
         }
         else if(!modelRegistry.getParserValidation().isIgnoreInvalidAttributes())
         {
-          throw new IllegalArgumentException("schemas must be an Object node not " + node.getClass().getName());
+          throw new IllegalArgumentException("propertyName must be an instance of JsonString not " + node.getClass().getName());
         }
       }
       return super.withValues(jsonObject, modelRegistry);
@@ -242,30 +243,30 @@ public abstract class ComponentsObjectEntity extends ObjectEntity
 
     /* void populateAllFields(List<Object> result)
     {
-      result.add(_schemas_);
+      result.add(_propertyName_);
     }*/
 
     /**
-     * Return the value of the schemas attribute.
+     * Return the value of the propertyName attribute.
      *
-     * @return the value of the schemas attribute.
+     * @return the value of the propertyName attribute.
      */
     @Override
-    public @Nullable SchemasObject getSchemas()
+    public @Nullable String getPropertyName()
     {
-      return _schemas_;
+      return _propertyName_;
     }
 
     /**
-     * Set the value of the schemas attribute.
+     * Set the value of the propertyName attribute.
      *
      * @param value The value to be set.
      *
      * @return This (fluent method).
      */
-    public T withSchemas(SchemasObject value)
+    public T withPropertyName(String value)
     {
-      _schemas_ = value;
+      _propertyName_ = value;
       return self();
     }
 
@@ -274,8 +275,8 @@ public abstract class ComponentsObjectEntity extends ObjectEntity
     {
       JsonObject.Builder builder = new JsonObject.Builder();
 
-      builder.addIfNotNull(JSON_TYPE, ComponentsObjectEntity.TYPE_ID);
-      builder.addIfNotNull(JSON_VERSION, ComponentsObjectEntity.TYPE_VERSION);
+      builder.addIfNotNull(JSON_TYPE, DiscriminatorObject.TYPE_ID);
+      builder.addIfNotNull(JSON_VERSION, DiscriminatorObject.TYPE_VERSION);
 
       populateJson(builder);
 
@@ -287,9 +288,9 @@ public abstract class ComponentsObjectEntity extends ObjectEntity
     {
       super.populateJson(builder);
 
-      if(getSchemas() != null)
+      if(getPropertyName() != null)
       {
-          builder.addIfNotNull("schemas", getSchemas().getJsonObject());
+          builder.addIfNotNull("propertyName", getPropertyName());
       }
     }
 
@@ -325,9 +326,9 @@ public abstract class ComponentsObjectEntity extends ObjectEntity
   }
 
   /**
-   * Builder for ComponentsObject
+   * Builder for DiscriminatorObject
    */
-  public static class Builder extends ComponentsObject.AbstractBuilder<Builder, ComponentsObject>
+  public static class Builder extends DiscriminatorObject.AbstractBuilder<Builder, DiscriminatorObject>
   {
     /**
      * Constructor.
@@ -342,15 +343,15 @@ public abstract class ComponentsObjectEntity extends ObjectEntity
      *
      * @param initial An instance of the built type from which values are to be initialised.
      */
-    public Builder(ComponentsObject initial)
+    public Builder(DiscriminatorObject initial)
     {
       super(Builder.class, initial);
     }
 
     @Override
-    protected ComponentsObject construct()
+    protected DiscriminatorObject construct()
     {
-      return new ComponentsObject(this);
+      return new DiscriminatorObject(this);
     }
   }
 
@@ -361,20 +362,20 @@ public abstract class ComponentsObjectEntity extends ObjectEntity
   }
 
   /**
-   * Return the value of the schemas attribute.
+   * Return the value of the propertyName attribute.
    *
-   * @return the value of the schemas attribute.
+   * @return the value of the propertyName attribute.
    */
-  public @Nullable SchemasObject getSchemas()
+  public @Nullable String getPropertyName()
   {
-    return _schemas_;
+    return _propertyName_;
   }
 
   @Override
   public boolean equals(Object obj)
   {
-    if(obj instanceof ComponentsObjectEntity)
-      return toString().equals(((ComponentsObjectEntity)obj).toString());
+    if(obj instanceof DiscriminatorObject)
+      return toString().equals(((DiscriminatorObject)obj).toString());
 
     return false;
   }
@@ -388,6 +389,6 @@ public abstract class ComponentsObjectEntity extends ObjectEntity
 }
 
 /*----------------------------------------------------------------------------------------------------
- * End of template template/Object/_Entity.java.ftl
+ * End of template template/Object/_.java.ftl
  * End of code generation
  *------------------------------------------------------------------------------------------------- */

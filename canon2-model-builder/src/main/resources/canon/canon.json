@@ -94,7 +94,10 @@
       "SchemasObject": {
         "description": "An element to hold various schemas for the specification.",
         "type": "object",
-        "x-canon-facade": true
+        "x-canon-facade": true,
+        "additionalProperties": {
+          "$ref": "#/components/schemas/Schema"
+        }
       },
       
       "SchemaType": {
@@ -117,6 +120,39 @@
           "SET",
           "LIST"
         ]
+      }, 
+      "AdditionalProperties": {
+        "oneOf": [
+          {
+            "type": "boolean"
+          },
+          {
+            "$ref": "#/components/schemas/SchemaOrRef"
+          }
+        ]
+      }, 
+      "DiscriminatorObject": {
+        "type": "object",
+        "x-canon-facade": false,
+        "properties": {
+          "propertyName": {
+            "type": "string"
+          }
+        },
+        "additionalProperties": {
+          "type": "string",
+          "format": "uri"
+        }
+      }, 
+      "TestDiscriminatorObject": {
+        "type": "object",
+        "x-canon-facade": false,
+        "properties": {
+          "propertyName": {
+            "type": "string"
+          }
+        },
+        "additionalProperties": true
       },
       "Schema": {
         "description": "A data type definition.",
@@ -142,8 +178,14 @@
           "maximum": {
             "type": "number"
           },
+          "discriminator": {
+            "$ref": "#/components/schemas/DiscriminatorObject"
+          },
           "properties": {
             "$ref": "#/components/schemas/PropertiesObject"
+          },
+          "additionalProperties": {
+            "$ref": "#/components/schemas/AdditionalProperties"
           },
           "x-canon-extends": {
             "$ref": "#/components/schemas/ReferenceObject"
@@ -184,9 +226,6 @@
           "maxItems": {
               "type": "integer",
               "minimum": 0
-          },
-          "additionalProperties": {
-            "$ref": "#/components/schemas/Schema"
           }
         }
       },

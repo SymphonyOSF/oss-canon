@@ -41,6 +41,8 @@ public interface IObjectSchemaTemplateModel<
   
   void addField(String name, F field);
   void addInnerClass(String name, S innerClass);
+  void setAdditionalProperties(S additionalProperties);
+  void setAdditionalPropertiesAllowed(boolean additionalPropertiesAllowed);
   
   /**
    * Return this object as an ISchemaTemplateModel.

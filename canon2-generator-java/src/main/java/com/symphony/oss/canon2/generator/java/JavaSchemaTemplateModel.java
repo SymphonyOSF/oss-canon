@@ -19,6 +19,7 @@
 package com.symphony.oss.canon2.generator.java;
 
 import java.math.BigInteger;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -26,6 +27,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
 
+import com.google.common.collect.ImmutableList;
 import com.symphony.oss.canon2.core.ResolvedSchema;
 import com.symphony.oss.canon2.core.SchemaTemplateModelType;
 import com.symphony.oss.canon2.generator.SchemaTemplateModel;
@@ -46,6 +48,9 @@ implements IJavaTemplateModel
 //        "com.symphony.oss.canon.json.model.JsonDomNode"
 //      };
   
+  private static final List<JavaSchemaTemplateModel> EMPTY_SCHEMAS = ImmutableList.of();
+  private static final List<JavaFieldTemplateModel>   EMPTY_FIELDS = ImmutableList.of();
+
   /** Set of imports any class implementing this schema needs */
   private Set<String> imports_ = new TreeSet<>();
   
@@ -234,5 +239,15 @@ implements IJavaTemplateModel
   public boolean getIsGenerated()
   {
     return true;
+  }
+
+  public Collection<JavaSchemaTemplateModel> getInnerClasses()
+  {
+    return EMPTY_SCHEMAS;
+  }
+  
+  public Collection<JavaFieldTemplateModel> getFields()
+  {
+    return EMPTY_FIELDS;
   }
 }

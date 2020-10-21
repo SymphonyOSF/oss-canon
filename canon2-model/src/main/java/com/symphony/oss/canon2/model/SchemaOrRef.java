@@ -89,8 +89,7 @@ public class SchemaOrRef extends SchemaOrRefEntity
   }
 
   public ResolvedSchema.SingletonBuilder link(ResolvedOpenApiObject.SingletonBuilder openApiObjectBuilder, CanonModelContext modelContext, SourceContext sourceContext,
-      String name, String parentUri, SchemaOrRef subSchema,
-      ResolvedSchema.SingletonBuilder builder) throws GenerationException
+      String name, String parentUri, ResolvedSchema.SingletonBuilder builder) throws GenerationException
   {
     if(schema_ != null)
     {

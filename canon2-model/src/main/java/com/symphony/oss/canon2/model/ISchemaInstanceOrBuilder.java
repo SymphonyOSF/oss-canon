@@ -21,7 +21,7 @@
  *    Generator groupId    org.symphonyoss.s2.canon
  *              artifactId canon2-generator-java
  *    Template name        template/Object/I_InstanceOrBuilder.java.ftl
- *    At                   2020-10-21 11:57:10 BST
+ *    At                   2020-10-21 14:50:09 BST
  *----------------------------------------------------------------------------------------------------
  */
 
@@ -105,6 +105,13 @@ public interface ISchemaInstanceOrBuilder extends IObjectEntityInitialiser
   @Nullable Set<String> getRequired();
   
   /**
+   * Return the value of the discriminator attribute.
+   *
+   * @return the value of the discriminator attribute.
+   */
+  @Nullable DiscriminatorObject getDiscriminator();
+  
+  /**
    * Return the value of the minItems attribute.
    *
    * @return the value of the minItems attribute.
@@ -137,7 +144,7 @@ public interface ISchemaInstanceOrBuilder extends IObjectEntityInitialiser
    *
    * @return the value of the additionalProperties attribute.
    */
-  @Nullable Schema getAdditionalProperties();
+  @Nullable AdditionalProperties getAdditionalProperties();
   
   /**
    * Return the value of the minimum attribute.

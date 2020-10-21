@@ -27,13 +27,22 @@
 
 package com.symphony.oss.canon2.model;
 
+import javax.annotation.Nullable;
+
 import com.symphony.oss.canon2.runtime.java.IObjectEntityInitialiser;
 
 /**
- * Instance or Builder for Object PropertiesObject
+ * Instance or Builder for Object DiscriminatorObject
  */
-public interface IPropertiesObjectInstanceOrBuilder extends IObjectEntityInitialiser
+public interface IDiscriminatorObjectInstanceOrBuilder extends IObjectEntityInitialiser
 {
+  
+  /**
+   * Return the value of the propertyName attribute.
+   *
+   * @return the value of the propertyName attribute.
+   */
+  @Nullable String getPropertyName();
 }
 /*----------------------------------------------------------------------------------------------------
  * End of template template/Object/I_InstanceOrBuilder.java.ftl

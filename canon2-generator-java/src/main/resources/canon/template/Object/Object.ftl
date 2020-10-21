@@ -67,6 +67,8 @@
     </#if>
   </#list>
   <#list entity.innerClasses as innerClass>
+  // innerClass ${innerClass.class}
+  // innerClass ${innerClass.name}
     <#list innerClass.fields as field>
       <#if field.typeSchema.schemaType == "OBJECT">
         <@importFields field.typeSchema/>
@@ -169,42 +171,6 @@ ${indent}      _${field.camelName}_ = ${field.typeSchema.copyPrefix}builder.get$
 </#list>
 ${indent}      unknownKeys_ = builder.getCanonUnknownKeys();
 ${indent}    }
-${indent}  }
-${indent}  @Override
-${indent}  public ImmutableSet<String> getCanonUnknownKeys()
-${indent}  {
-${indent}    return unknownKeys_;
-${indent}  }
-<#list entity.fields as field>
-
-${indent}  /**
-${indent}   * Return the value of the ${field.name} attribute.
-${indent}   *
-  <#if field.typeSchema.description??>
-${indent}   * ${field.typeSchema.description}
-${indent}   *
-  </#if>
-${indent}   * @return the value of the ${field.name} attribute.
-${indent}   */
-${indent}  public @${field.nullable} ${field.type} get${field.camelCapitalizedName}()
-${indent}  {
-${indent}    return _${field.camelName}_;
-${indent}  }
-</#list>
-
-${indent}  @Override
-${indent}  public boolean equals(Object obj)
-${indent}  {
-${indent}    if(obj instanceof ${className})
-${indent}      return toString().equals(((${className})obj).toString());
-
-${indent}    return false;
-${indent}  }
-
-${indent}  @Override
-${indent}  public int hashCode()
-${indent}  {
-${indent}    return toString().hashCode();
 ${indent}  }
 
 <#------------------------------------------------------------------------------------------------------------------------------
@@ -541,14 +507,76 @@ ${indent}  }
  Methods
 
 ------------------------------------------------------------------------------------------------------------------------------->
+
+${indent}  @Override
+${indent}  public ImmutableSet<String> getCanonUnknownKeys()
+${indent}  {
+${indent}    return unknownKeys_;
+${indent}  }
+<#list entity.fields as field>
+
+${indent}  /**
+${indent}   * Return the value of the ${field.name} attribute.
+${indent}   *
+  <#if field.typeSchema.description??>
+${indent}   * ${field.typeSchema.description}
+${indent}   *
+  </#if>
+${indent}   * @return the value of the ${field.name} attribute.
+${indent}   */
+${indent}  public @${field.nullable} ${field.type} get${field.camelCapitalizedName}()
+${indent}  {
+${indent}    return _${field.camelName}_;
+${indent}  }
+</#list>
+
+${indent}  @Override
+${indent}  public boolean equals(Object obj)
+${indent}  {
+${indent}    if(obj instanceof ${className})
+${indent}      return toString().equals(((${className})obj).toString());
+
+${indent}    return false;
+${indent}  }
+
+${indent}  @Override
+${indent}  public int hashCode()
+${indent}  {
+${indent}    return toString().hashCode();
+${indent}  }
+
+<#switch entity.schemaType>
+    <#case "ONE_OF">
+
+${indent}  /**
+${indent}   * Return the value of this OneOf entity.
+${indent}   *
+${indent}   * @return the value of this OneOf entity.
+${indent}   */
+${indent}  public Object canonGetValue()
+${indent}  {
+      <#list entity.fields as field>
+${indent}    if(_${field.camelName}_ != null)
+${indent}      return _${field.camelName}_;
+
+      </#list>
+${indent}    return null;
+${indent}  }
+      <#break>
+</#switch>
+// entity.additionalProperties??
+<#if entity.additionalProperties??>
+// entity.additionalProperties ${entity.additionalProperties.name}
+</#if>
   <#list entity.innerClasses as innerClass>
-    
-    <#if nested>
-      <#assign modifier = classModifier/>
-    <#else>
-      <#assign modifier = "static ${classModifier}"/>
+    <#if innerClass.schemaType.isObject>
+      <#if nested>
+        <#assign modifier = classModifier/>
+      <#else>
+        <#assign modifier = "static ${classModifier}"/>
+      </#if>
+      <@generateObject "  ${indent}" innerClass innerClass.camelCapitalizedName superClassName modifier true/>
     </#if>
-    <@generateObject "  ${indent}" innerClass innerClass.camelCapitalizedName superClassName modifier true/>
   </#list>
 ${indent}}
 </#macro>
