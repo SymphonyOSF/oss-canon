@@ -2,7 +2,6 @@
 <#include "/macros.ftl"/>
 <#assign imports = entity.imports + [
   "${entity.externalPackage}.${entity.externalType}",
-  "${entity.fullyQualifiedJsonNodeType}",
   "javax.annotation.concurrent.Immutable",
   "javax.annotation.Nonnull"
   ]>
@@ -13,6 +12,9 @@ package ${genPackage};
 ${import}
 </#list>
 
+/**
+ * Builder helper function for the external type ${entity.type}.
+ */
 @Immutable
 public class ${entity.type}Builder
 {

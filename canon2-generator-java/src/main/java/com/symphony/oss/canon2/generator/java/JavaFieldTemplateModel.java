@@ -59,6 +59,11 @@ implements IJavaTemplateModel
   {
     return getTypeSchema().getType();
   }
+  
+  public String getFullyQualifiedJsonNodeType()
+  {
+    return getTypeSchema().getFullyQualifiedJsonNodeType();
+  }
 
   @Override
   public String toString()

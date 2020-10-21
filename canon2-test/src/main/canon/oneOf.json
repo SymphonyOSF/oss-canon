@@ -1,0 +1,88 @@
+{
+  "canon": "0.0.1",
+  "info": {
+    "title": "OneOf example",
+    "license": {
+      "name": "Apache2"
+    }
+  },
+  "x-canon-id": "com.symphony.oss.canon2.test.oneOf",
+  "x-canon-version": "1.0",
+  "components": {
+    "schemas": {   
+      "Dog": {
+        "type": "object",
+        "properties": {
+          "bark": {
+            "type": "string"
+          }
+        }
+      },  
+      "Cat": {
+        "description": "A Cat.",
+        "type": "object",
+        "properties": {
+          "hunts": {
+            "type": "string"
+          }
+        }
+      },  
+      "Pet": {
+        "oneOf": [
+          {
+            "$ref": "#/components/schemas/Cat"
+          },
+          {
+            "$ref": "#/components/schemas/Dog"
+          }
+        ]
+      },   
+      "DiscriminatorPet": {
+        "oneOf": [
+          {
+            "$ref": "#/components/schemas/Cat"
+          },
+          {
+            "$ref": "#/components/schemas/Dog"
+          }
+        ],
+        "discriminator": {
+          "propertyName": "petType"
+        }
+      },   
+      "DiscriminatorMapPet": {
+        "oneOf": [
+          {
+            "$ref": "#/components/schemas/Cat"
+          },
+          {
+            "$ref": "#/components/schemas/Dog"
+          }
+        ],
+        "discriminator": {
+          "propertyName": "petType",
+          "mapping": {
+            "doggie": "#/components/schemas/Dog",
+            "moggie": "#/components/schemas/Cat"
+          }
+        }
+      },  
+      "InlinePet": {
+        "oneOf": [
+          {
+            "$ref": "#/components/schemas/Dog"
+          },
+          {
+            "description": "An inline Cat.",
+            "type": "object",
+            "properties": {
+              "hunts": {
+                "type": "string"
+              }
+            }
+          }
+        ]
+      }
+    }
+  }
+}

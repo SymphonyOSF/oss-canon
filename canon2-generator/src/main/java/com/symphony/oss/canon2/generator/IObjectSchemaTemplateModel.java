@@ -70,9 +70,9 @@ public interface IObjectSchemaTemplateModel<
     return result;
   }
 
-  @Override
-  default SchemaType getSchemaType()
-  {
-    return SchemaType.OBJECT;
-  }
+//  @Override
+//  default SchemaType getSchemaType()
+//  {
+//    return SchemaType.OBJECT;
+//  }
 }

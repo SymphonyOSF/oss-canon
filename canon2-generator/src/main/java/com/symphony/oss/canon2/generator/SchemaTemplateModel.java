@@ -18,10 +18,10 @@
 
 package com.symphony.oss.canon2.generator;
 
-import java.util.Map.Entry;
+import javax.annotation.Nullable;
 
 import com.symphony.oss.canon2.core.ResolvedSchema;
-import com.symphony.oss.canon2.model.SchemaType;
+import com.symphony.oss.canon2.core.SchemaTemplateModelType;
 
 /**
  * Base implementation of ISchemaTemplateModel.
@@ -37,16 +37,16 @@ S extends ISchemaTemplateModel<T,M,S>
   extends TemplateModel<T,M,S>
   implements ISchemaTemplateModel<T,M,S>
 {
-  private final SchemaType schemaType_;
-  
-  public SchemaTemplateModel(ResolvedSchema resolvedSchema, String identifier, M model, String... templates)
+  private final SchemaTemplateModelType schemaType_;
+    
+  public SchemaTemplateModel(ResolvedSchema resolvedSchema, @Nullable SchemaTemplateModelType schemaType, String identifier, M model, String... templates)
   {
     super(resolvedSchema.getName(), resolvedSchema, identifier, model, templates);
     
-    schemaType_ = SchemaType.valueOf(resolvedSchema.getSchema().getType().toUpperCase());
+    schemaType_ = schemaType;
   }
 
-  public SchemaType getSchemaType()
+  public final SchemaTemplateModelType getSchemaType()
   {
     return schemaType_;
   }

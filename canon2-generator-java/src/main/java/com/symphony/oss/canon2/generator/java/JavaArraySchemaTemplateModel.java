@@ -9,9 +9,9 @@ package com.symphony.oss.canon2.generator.java;
 import java.math.BigInteger;
 
 import com.symphony.oss.canon2.core.ResolvedSchema;
+import com.symphony.oss.canon2.core.SchemaTemplateModelType;
 import com.symphony.oss.canon2.generator.IArraySchemaTemplateModel;
 import com.symphony.oss.canon2.model.CanonCardinality;
-import com.symphony.oss.canon2.model.SchemaType;
 import com.symphony.oss.commons.fault.CodingFault;
 
 public class JavaArraySchemaTemplateModel extends JavaSchemaTemplateModel
@@ -38,7 +38,7 @@ JavaSchemaTemplateModel>
   JavaArraySchemaTemplateModel(ResolvedSchema resolvedSchema, String identifier, String packageName, CanonCardinality cardinality, JavaOpenApiTemplateModel model,
       String ...templates)
   {
-    super(resolvedSchema, identifier, packageName, model, templates);
+    super(resolvedSchema, SchemaTemplateModelType.ARRAY, identifier, packageName, model, templates);
     
     cardinality_ = cardinality;
     
@@ -116,12 +116,6 @@ JavaSchemaTemplateModel>
   public BigInteger getMaxItems()
   {
     return maxItems_;
-  }
-
-  @Override
-  public SchemaType getSchemaType()
-  {
-    return SchemaType.ARRAY;
   }
 
   @Override

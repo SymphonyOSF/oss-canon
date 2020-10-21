@@ -29,6 +29,7 @@ import com.symphony.oss.canon2.core.INamedModelEntity;
 import com.symphony.oss.canon2.core.IResolvedEntity;
 import com.symphony.oss.canon2.core.ResolvedOpenApiObject;
 import com.symphony.oss.canon2.core.ResolvedSchema;
+import com.symphony.oss.canon2.core.SchemaTemplateModelType;
 import com.symphony.oss.canon2.core.SourceContext;
 import com.symphony.oss.canon2.generator.CanonGenerator;
 import com.symphony.oss.canon2.generator.IPathNameConstructor;
@@ -42,7 +43,8 @@ JavaSchemaTemplateModel,
 JavaObjectSchemaTemplateModel,
 JavaArraySchemaTemplateModel,
 JavaPrimitiveSchemaTemplateModel,
-JavaFieldTemplateModel
+JavaFieldTemplateModel,
+JavaGroupSchemaTemplateModel
 >
 {
   private static Logger log_ = LoggerFactory.getLogger(JavaGenerator.class);
@@ -254,6 +256,16 @@ JavaFieldTemplateModel
       return new JavaArraySchemaTemplateModel(resolvedSchema, identifier, getJavaGenerationPackage(resolvedSchema), cardinality, model);
     else
       return new JavaArraySchemaTemplateModel(resolvedSchema, identifier, getJavaGenerationPackage(resolvedSchema), cardinality, model,  "Array");
+  }
+
+  @Override
+  public JavaGroupSchemaTemplateModel generateGroupSchema(JavaOpenApiTemplateModel model, ResolvedSchema resolvedSchema,
+      String identifier, boolean isReference, SchemaTemplateModelType schemaType)
+  {
+    if(isReference)
+      return new JavaGroupSchemaTemplateModel(resolvedSchema, identifier, getJavaGenerationPackage(resolvedSchema), schemaType, model);
+    else
+      return new JavaGroupSchemaTemplateModel(resolvedSchema, identifier, getJavaGenerationPackage(resolvedSchema), schemaType, model,  schemaType.getValue());
   }
 
   @Override

@@ -29,9 +29,13 @@ public class ${model.camelCapitalizedName}Model
 </#macro>
 <#assign separator = ""/>
 <#list model.schemas as object>
-  <#if object.schemaType == "OBJECT">
-    <@generateFactories "    " object ""/>
-  </#if>
+  <#switch object.schemaType>
+    <#case "OBJECT">
+    <#case "ALL_OF">
+    <#case "ONE_OF">
+    <#case "ANY_OF">
+      <@generateFactories "    " object ""/>
+  </#switch>
 </#list>
 
   };

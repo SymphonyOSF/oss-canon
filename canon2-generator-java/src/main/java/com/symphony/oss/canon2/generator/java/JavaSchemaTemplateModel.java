@@ -27,6 +27,7 @@ import java.util.Set;
 import java.util.TreeSet;
 
 import com.symphony.oss.canon2.core.ResolvedSchema;
+import com.symphony.oss.canon2.core.SchemaTemplateModelType;
 import com.symphony.oss.canon2.generator.SchemaTemplateModel;
 
 public abstract class JavaSchemaTemplateModel
@@ -56,10 +57,10 @@ implements IJavaTemplateModel
   private final boolean generateFacade_;
   private final boolean generateBuilderFacade_;
   
-  JavaSchemaTemplateModel(ResolvedSchema resolvedSchema, String identifier, String packageName, JavaOpenApiTemplateModel model,
+  JavaSchemaTemplateModel(ResolvedSchema resolvedSchema, SchemaTemplateModelType schemaType, String identifier, String packageName, JavaOpenApiTemplateModel model,
       String... templates)
   {
-    super(resolvedSchema, identifier, model, templates);
+    super(resolvedSchema, schemaType, identifier, model, templates);
 
     if(isExternal() && resolvedSchema.isGenerated())
     {

@@ -471,7 +471,7 @@ public class GenerateMojo extends AbstractMojo
                   {
   
                     log_.info("Class " + generatorClass + " IS an ICanonGenerator");
-                    generationContext.withGenerator(((ICanonGenerator<?,?,?,?,?,?,?>)generator).withTemplateDir(templateCopy));
+                    generationContext.withGenerator(((ICanonGenerator<?,?,?,?,?,?,?,?>)generator).withTemplateDir(templateCopy));
                   }
                   else
                   {

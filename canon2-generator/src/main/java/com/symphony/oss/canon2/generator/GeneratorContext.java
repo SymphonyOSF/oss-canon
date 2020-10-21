@@ -22,11 +22,14 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import com.symphony.oss.canon.json.SyntaxErrorException;
 import com.symphony.oss.canon2.core.GenerationException;
 import com.symphony.oss.canon2.core.ResolvedSchema;
+import com.symphony.oss.canon2.core.SchemaTemplateModelType;
 import com.symphony.oss.canon2.core.SourceContext;
 import com.symphony.oss.canon2.model.CanonCardinality;
 import com.symphony.oss.canon2.model.Schema;
+import com.symphony.oss.canon2.model.SchemaOrRef;
 import com.symphony.oss.commons.fault.CodingFault;
 
 /**
@@ -49,17 +52,18 @@ S extends ISchemaTemplateModel<T,M,S>,
 O extends IObjectSchemaTemplateModel<T,M,S,F>,
 A extends IArraySchemaTemplateModel<T,M,S>,
 P extends IPrimitiveSchemaTemplateModel<T,M,S>,
-F extends IFieldTemplateModel<T,M,S>>
+F extends IFieldTemplateModel<T,M,S>,
+G extends IGroupSchemaTemplateModel<T,M,S>>
 {
 //  private static Logger log_ = LoggerFactory.getLogger(GeneratorContext.class);
 
   private final CanonGenerationContext generationContext_;
-  private final ICanonGenerator<T,M,S,O,A,P,F>  generator_;
+  private final ICanonGenerator<T,M,S,O,A,P,F,G>  generator_;
   private final SourceContext sourceContext_;
   private final IPathNameConstructor<T> pathBuilder_;
   private final Map<String, S> schemaModelMap_ = new HashMap<>();
   
-  public GeneratorContext(CanonGenerationContext generationContext, ICanonGenerator<T,M,S,O,A,P,F> generator, SourceContext sourceContext)
+  public GeneratorContext(CanonGenerationContext generationContext, ICanonGenerator<T,M,S,O,A,P,F,G> generator, SourceContext sourceContext)
   {
     generationContext_ = generationContext;
     generator_ = generator;
@@ -67,7 +71,7 @@ F extends IFieldTemplateModel<T,M,S>>
     pathBuilder_ = generator_.createPathBuilder(sourceContext_);
   }
   
-  public ICanonGenerator<T,M,S,O,A,P,F> getGenerator()
+  public ICanonGenerator<T,M,S,O,A,P,F,G> getGenerator()
   {
     return generator_;
   }
@@ -86,30 +90,7 @@ F extends IFieldTemplateModel<T,M,S>>
   {
     return sourceContext_;
   }
-
-//  public M generateModel(SourceContext sourceContext_) throws GenerationException
-//  {
-//    String name = sourceContext_.getInputSourceName();
-//    String identifier = generator_.getIdentifierName(sourceContext_.getInputSourceName(), sourceContext_.getModel());
-//    
-//    M parentModel = generator_.generateOpenApiObject(sourceContext_, name, identifier);
-//    
-//    NameCollisionDetector ncd = new NameCollisionDetector(generator_, sourceContext_.getSchemas(), true);
-//    
-//    ncd.logCollisions(sourceContext_);
-//    
-//    for(Entry<String, ResolvedSchema> schemaEntry : sourceContext_.getSchemas().entrySet())
-//    {
-//      S model = generateSchema(schemaEntry, parentModel, false);
-//      
-//      parentModel.addSchema(model);
-//    }
-//    
-//    return parentModel;
-//  }
-
-
-  //@SuppressWarnings("unchecked")
+  
   S generateSchema(ResolvedSchema resolvedSchema, M model,
       boolean isReference) throws GenerationException
   {
@@ -123,212 +104,154 @@ F extends IFieldTemplateModel<T,M,S>>
     Schema schema = resolvedSchema.getSchema();
     String identifier = generator_.getIdentifierName(resolvedSchema.getName(), schema);
     
-    switch(schema.getType())
+    if(schema.getOneOf() != null)
     {
-      case "object":
-      {
-        O entity = generator_.generateObjectSchema(model, resolvedSchema, identifier, isReference);
-        schemaModelMap_.put(resolvedSchema.getUri(), entity.asSchemaTemplateModel());
-        
-//        Map<String, F> fieldMap = new HashMap<>();
-//        Map<String, S> innerClassMap = new HashMap<>();
-        if(schema.getXCanonExtends() != null)
-        {
-          entity.setExtends(generateSchema(resolvedSchema.getResolvedExtends(), model, true));
-        }
-        
-        if(!resolvedSchema.getResolvedProperties().isEmpty())
-        {
-          
-//        }
-//        PropertiesObject propertiesObject = resolvedSchema.getProperties();
-//        
-//        if(propertiesObject != null)
-//        {
-          NameCollisionDetector ncd = new NameCollisionDetector(generator_, resolvedSchema.getResolvedProperties(), false);
-//              .create(canonContext, getSourceContext().getUrl(), modelContext.getGenerator(), schemaInfo.getProperties(), false);
-          
-          ncd.logCollisions(sourceContext_);
-          
-          for(Entry<String, ResolvedSchema> propertyEntry : resolvedSchema.getResolvedProperties().entrySet())
-          {
-            String propertyIdentifier = generator_.getIdentifierName(propertyEntry.getKey(), propertyEntry.getValue().getSchema());
-//          String typeIdentifier = modelContext.getGenerator().getIdentifierName(entry.getValue().getName(), entry.getValue());
-            ResolvedSchema resolvedPropertySchema = propertyEntry.getValue();
-            
-            S typeSchema = generateSchema(resolvedPropertySchema, model, true);
-            boolean required = schema.getRequired() != null && schema.getRequired().contains(propertyEntry.getKey());
-          
-            entity.addField(propertyEntry.getKey(),
-                generator_.generateField(model, propertyEntry.getKey(), propertyEntry.getValue(), propertyIdentifier, typeSchema, required));
-            
-          }
-          
-          for(Entry<String, ResolvedSchema> innerClassEntry : resolvedSchema.getInnerClasses().getResolvedProperties().entrySet())
-          {
-            S innerClass = generateSchema(innerClassEntry.getValue(), model, false);
-            entity.addInnerClass(innerClassEntry.getKey(), innerClass);
-          }
-          
-//          for(Entry<String, Object> entry : propertiesObject.getProperties().entrySet())
-//          {
-//            Schema schema;
-//            String schemaName;
-//            
-//            if(entry.getValue() instanceof Schema)
-//            {
-//              schema = (Schema)entry.getValue();
-//              schemaName = entry.getKey();
-//            }
-//            else
-//            {
-//              ReferenceObject ref = (ReferenceObject)entry.getValue();
-//              
-//              String refName = ref.getFragment();
-//              int i = refName.lastIndexOf('/');
-//              
-//              if(i != -1)
-//                refName = refName.substring(i+1);
-//              
-//              SchemaInfo schemaInfo = canonContext.getSchemaInfo(ref.getAbsoluteUri(getSourceContext().getUrl()));
-//              schema = schemaInfo.getSchema();
-//              schemaName = schemaInfo.getName();
-//            }
-//            String propertyIdentifier = modelContext.getGenerator().getIdentifierName(entry.getKey(), schema);
-////            String typeIdentifier = modelContext.getGenerator().getIdentifierName(entry.getValue().getName(), entry.getValue());
-//            
-//             S typeSchema = generateSchema(canonContext, schema, model, schemaName,
-//                modelContext, true);
-//            boolean required = resolvedSchema.getRequired().contains(entry.getKey());
-//            
-//            entity.addField(modelContext.generateField(model, schema, entry.getKey(), propertyIdentifier, 
-//                typeSchema, required));
-//          }
-        }
-        
-        
-
-        return entity.asSchemaTemplateModel();
-      }
+      return generateObjectSchema(resolvedSchema, model,
+          isReference, schema, identifier);
       
-      case "array":
-        CanonCardinality cardinality = schema.getXCanonCardinality();
-        if(cardinality == null)
-        {
-          cardinality = CanonCardinality.LIST; 
-        }
+//      G oneOfSchema = generator_.generateGroupSchema(model, resolvedSchema, identifier, isReference, SchemaTemplateModelType.ONE_OF);
+//      
+//      schemaModelMap_.put(resolvedSchema.getUri(), oneOfSchema.asSchemaTemplateModel());
+//      
+//      for(Entry<String, ResolvedSchema> innerClassEntry : resolvedSchema.getInnerClasses().getResolvedProperties().entrySet())
+//      {
+//        S innerClass = generateSchema(innerClassEntry.getValue(), model, false);
+//        oneOfSchema.addInnerClass(innerClass);
+//      }
+//      
+//      for(ResolvedSchema subSchema : resolvedSchema.getResolvedSubSchemas().getSubSchemas())
+//      {
+//        S subSchemaModel = generateSchema(subSchema, model, true /* this needs to move into resolved schema */);
+//        
+//        oneOfSchema.addSubSchema(subSchemaModel);
+//      }
+//      
+//      return oneOfSchema.asSchemaTemplateModel();
+    }
+    else if(schema.getType() != null)
+    {
+      switch(schema.getType())
+      {
+        case "object":
+          return generateObjectSchema(resolvedSchema, model,
+              isReference, schema, identifier);
         
-        A arraySchema = generator_.generateArraySchema(model, resolvedSchema, identifier, isReference, cardinality);
         
-        schemaModelMap_.put(resolvedSchema.getUri(), arraySchema.asSchemaTemplateModel());
-        
-        S itemsModel = generateSchema(resolvedSchema.getResolvedItems(), model, resolvedSchema.getSchema().getItemsSchema() == null);
-        
-        arraySchema.setElementType(itemsModel);
-        
-        return arraySchema.asSchemaTemplateModel();
-        
-      case "number":
-      case "boolean":
-      case "string":
-      case "integer":
-        S primitiveSchema = generator_.generatePrimativeSchema(model, resolvedSchema, identifier, isReference).asSchemaTemplateModel();
-        schemaModelMap_.put(resolvedSchema.getUri(), primitiveSchema);
-        
-        return primitiveSchema;
-        
-      default:
-        throw new CodingFault("Unknown schema type " + schema.getType());
+        case "array":
+          CanonCardinality cardinality = schema.getXCanonCardinality();
+          if(cardinality == null)
+          {
+            cardinality = CanonCardinality.LIST; 
+          }
+          
+          A arraySchema = generator_.generateArraySchema(model, resolvedSchema, identifier, isReference, cardinality);
+          
+          schemaModelMap_.put(resolvedSchema.getUri(), arraySchema.asSchemaTemplateModel());
+          
+          S itemsModel = generateSchema(resolvedSchema.getResolvedItems(), model, resolvedSchema.getSchema().getItemsSchema() == null);
+          
+          arraySchema.setElementType(itemsModel);
+          
+          return arraySchema.asSchemaTemplateModel();
+          
+        case "number":
+        case "boolean":
+        case "string":
+        case "integer":
+          S primitiveSchema = generator_.generatePrimativeSchema(model, resolvedSchema, identifier, isReference).asSchemaTemplateModel();
+          schemaModelMap_.put(resolvedSchema.getUri(), primitiveSchema);
+          
+          return primitiveSchema;
+          
+        default:
+          throw new CodingFault("Unknown schema type " + schema.getType());
+      }
+    }
+    else
+    {
+      throw new GenerationException(new SyntaxErrorException("Invalid schema", resolvedSchema.getSchema().getJsonDomNode().getContext()));
     }
   }
-  
-//  private class GenerationHelper
-//  <
-//  T extends ITemplateModel<T,M,S>,
-//  M extends IOpenApiTemplateModel<T,M,S>,
-//  S extends ISchemaTemplateModel<T,M,S>,
-//  O extends IObjectSchemaTemplateModel<T,M,S,F>,
-//  A extends IArraySchemaTemplateModel<T,M,S>,
-//  P extends IPrimitiveSchemaTemplateModel<T,M,S>,
-//  F extends IFieldTemplateModel<T,M,S>>
-//  {
-//    SourceContext context;
-//    ICanonGenerator<T,M,S,O,A,P,F> generator;
-//    TemplateModelConsumer consumer;
-//
-//    GenerationHelper(SourceContext context, ICanonGenerator<T,M,S,O,A,P,F> generator, TemplateModelConsumer consumer)
-//    {
-//      this.context = context;
-//      this.generator = generator;
-//      this.consumer = consumer;
-//    }
 
-//    void generateFor() throws GenerationException
-//    {
-//      JsonObject generatorConfig = sourceContext_.getModel().getXCanonGenerators().getJsonObject().getRequiredObject(generator.getLanguage());
-//    
-//      GeneratorContext<T,M,S,O,A,P,F> generatorModelContext = generator.createModelContext(CanonModelContext.this, sourceContext_, generatorConfig);
-//    
-//      M templateModel = generatorModelContext.generateModel();
-//      
-//      if(context.printErrors())
-//        throw new GenerationException("Generation failed for " + context.getInputSourceName());
-//    
-//      gather(generatorModelContext, templateModel.asTemplateModel(), consumer);
-//      //generator.generate(context.getModel(), context, this, consumer);
-//
-//    }
+  private S generateObjectSchema(ResolvedSchema resolvedSchema, M model, boolean isReference, Schema schema,
+      String identifier) throws GenerationException
+  {
+    O entity = generator_.generateObjectSchema(model, resolvedSchema, identifier, isReference);
+    schemaModelMap_.put(resolvedSchema.getUri(), entity.asSchemaTemplateModel());
 
-    
-//  }
-    
-
-
-    public M process(GeneratorTemplateProcessor<T,M,S,O,A,P,F> templateProcessor) throws GenerationException
+    if(schema.getXCanonExtends() != null)
     {
-      
-      String identifier = generator_.getIdentifierName(sourceContext_.getInputSourceName(), sourceContext_.getModel());
-      
-      M parentModel = generator_.generateOpenApiObject(sourceContext_, sourceContext_.getInputSourceName(), sourceContext_.getResolvedOpenApiObject(), identifier);
-      
-      NameCollisionDetector ncd = new NameCollisionDetector(generator_, sourceContext_.getSchemas(), true);
+      entity.setExtends(generateSchema(resolvedSchema.getResolvedExtends(), model, true));
+    }
+    
+    if(!resolvedSchema.getResolvedProperties().isEmpty())
+    {
+      NameCollisionDetector ncd = new NameCollisionDetector(generator_, resolvedSchema.getResolvedProperties(), false);
+//              .create(canonContext, getSourceContext().getUrl(), modelContext.getGenerator(), schemaInfo.getProperties(), false);
       
       ncd.logCollisions(sourceContext_);
       
-      for(ResolvedSchema resolvedSchema : sourceContext_.getSchemas().values())
+      for(Entry<String, ResolvedSchema> propertyEntry : resolvedSchema.getResolvedProperties().entrySet())
       {
-        S model = generateSchema(resolvedSchema, parentModel,
-            false);
+        String propertyIdentifier = generator_.getIdentifierName(propertyEntry.getKey(), propertyEntry.getValue().getSchema());
+//          String typeIdentifier = modelContext.getGenerator().getIdentifierName(entry.getValue().getName(), entry.getValue());
+        ResolvedSchema resolvedPropertySchema = propertyEntry.getValue();
         
-        parentModel.addSchema(model);
+        S typeSchema = generateSchema(resolvedPropertySchema, model, true);
+        boolean required = schema.getRequired() != null && schema.getRequired().contains(propertyEntry.getKey());
+      
+        entity.addField(propertyEntry.getKey(),
+            generator_.generateField(model, propertyEntry.getKey(), propertyEntry.getValue(), propertyIdentifier, typeSchema, required));
+        
       }
       
-
-      if(sourceContext_.printErrors())
-        throw new GenerationException("Generation failed for " + sourceContext_.getInputSourceName());
-    
-      //gather(parentModel.asTemplateModel(), templateProcessor);
-      
-      templateProcessor.accept(this, parentModel.asTemplateModel());
-      for(S model : schemaModelMap_.values())
+      for(Entry<String, ResolvedSchema> innerClassEntry : resolvedSchema.getInnerClasses().getResolvedProperties().entrySet())
       {
-        templateProcessor.accept(this, model.asTemplateModel());
+        S innerClass = generateSchema(innerClassEntry.getValue(), model, false);
+        entity.addInnerClass(innerClassEntry.getKey(), innerClass);
       }
-      
-      return parentModel;
     }
     
-//    private void gather(T model, GeneratorTemplateProcessor<T,M,S,O,A,P,F> templateProcessor)
-//    {
-//      templateProcessor.accept(this, model);
-//      
-//      for(T child : model.getChildren())
-//        gather(child, templateProcessor);
-//    }
+    return entity.asSchemaTemplateModel();
+  }
 
-    public void populateTemplateModel(Map<String, Object> map)
+  public M process(GeneratorTemplateProcessor<T,M,S,O,A,P,F,G> templateProcessor) throws GenerationException
+  {
+    
+    String identifier = generator_.getIdentifierName(sourceContext_.getInputSourceName(), sourceContext_.getModel());
+    
+    M parentModel = generator_.generateOpenApiObject(sourceContext_, sourceContext_.getInputSourceName(), sourceContext_.getResolvedOpenApiObject(), identifier);
+    
+    NameCollisionDetector ncd = new NameCollisionDetector(generator_, sourceContext_.getSchemas(), true);
+    
+    ncd.logCollisions(sourceContext_);
+    
+    for(ResolvedSchema resolvedSchema : sourceContext_.getSchemas().values())
     {
-      generator_.populateTemplateModel(sourceContext_, map);
-      generationContext_.populateTemplateModel(map);
+      S model = generateSchema(resolvedSchema, parentModel,
+          false);
+      
+      parentModel.addSchema(model);
     }
+    
+
+    if(sourceContext_.printErrors())
+      throw new GenerationException("Generation failed for " + sourceContext_.getInputSourceName());
+  
+    //gather(parentModel.asTemplateModel(), templateProcessor);
+    
+    templateProcessor.accept(this, parentModel.asTemplateModel());
+    for(S model : schemaModelMap_.values())
+    {
+      templateProcessor.accept(this, model.asTemplateModel());
+    }
+    
+    return parentModel;
+  }
+
+  public void populateTemplateModel(Map<String, Object> map)
+  {
+    generator_.populateTemplateModel(sourceContext_, map);
+    generationContext_.populateTemplateModel(map);
+  }
 }

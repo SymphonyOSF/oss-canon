@@ -334,7 +334,7 @@ public class Canon2
     try
     {
       Class<?> generatorClass = Class.forName(parts[0]);
-      ICanonGenerator<?,?,?,?,?,?,?> generator = (ICanonGenerator<?,?,?,?,?,?,?>)generatorClass.newInstance();
+      ICanonGenerator<?,?,?,?,?,?,?,?> generator = (ICanonGenerator<?,?,?,?,?,?,?,?>)generatorClass.newInstance();
       File f = new File(parts[1]);
       
       if (!f.exists())
@@ -395,7 +395,7 @@ public class Canon2
         ;
     
     
-    for(ICanonGenerator<?,?,?,?,?,?,?> generator : generators_)
+    for(ICanonGenerator<?,?,?,?,?,?,?,?> generator : generators_)
       builder.withGenerator(generator);
     
     if (verbose_)

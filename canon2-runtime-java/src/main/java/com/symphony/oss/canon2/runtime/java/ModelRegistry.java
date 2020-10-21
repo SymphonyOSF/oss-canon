@@ -25,6 +25,7 @@ package com.symphony.oss.canon2.runtime.java;
 
 import java.io.InputStream;
 import java.io.Reader;
+import java.io.StringReader;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -429,6 +430,25 @@ public class ModelRegistry
   public Entity parseOne(Reader reader) throws ParserResultException
   {
     return newInstance(JsonParser.parseObject(reader));
+  }
+  
+
+  /**
+   * Return a new entity instance parsed from the given input.
+   * 
+   * @param input A String containing the serialized form of an entity.
+   * 
+   * @return The deserialized entity.
+   * 
+   * @throws ParserResultException If the value cannot be parsed.
+   * @throws NullPointerException if the value is null.
+   * @throws IllegalStateException if the value is not of the expected type or is otherwise invalid.
+   * This may be the case if the schema defines limits on the magnitude of the value, or if a facade
+   * has been written for the type.
+   */
+  public Entity parseOne(String input) throws ParserResultException
+  {
+    return newInstance(JsonParser.parseObject(new StringReader(input)));
   }
 
   /**

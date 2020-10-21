@@ -21,7 +21,7 @@
  *    Generator groupId    org.symphonyoss.s2.canon
  *              artifactId canon2-generator-java
  *    Template name        template/Object/_Entity.java.ftl
- *    At                   2020-10-13 12:56:55 BST
+ *    At                   2020-10-21 11:57:10 BST
  *----------------------------------------------------------------------------------------------------
  */
 
@@ -424,16 +424,29 @@ public abstract class OpenApiObjectEntity extends ObjectEntity
   }
 
   /**
-   * Initialiser for OpenApiObject
+   * Abstract Initialiser for OpenApiObject
    */
-  
   public interface Initialiser extends IObjectEntityInitialiser
   {
+    /**
+     * Return an instance or builder containing the values for a new instance.
+     * 
+     * @return an instance or builder containing the values for a new instance.
+     */
     IOpenApiObjectInstanceOrBuilder getInstanceOrBuilder();
   }
 
+  /**
+   * JSON Initialiser for OpenApiObject
+   */
   public static class JsonInitialiser extends JsonObjectEntityInitialiser implements Initialiser
   {
+      /**
+       * Constructor.
+       * 
+       * @param jsonObject      A JSON Object.
+       * @param modelRegistry   A parser context for deserialisation.
+       */
     public JsonInitialiser(JsonObject jsonObject, ModelRegistry modelRegistry)
     {
       super(jsonObject, modelRegistry);
@@ -637,14 +650,11 @@ public abstract class OpenApiObjectEntity extends ObjectEntity
      *
      * @return This (fluent method).
      */
-     // base type ComponentsObject
-     // base name ComponentsObject
     public T withComponents(ComponentsObject value)
     {
       _components_ = value;
       return self();
     }
-// field.typeSchema.schemaType OBJECT
 
     /**
      * Return the value of the x-canon-generators attribute.
@@ -664,14 +674,11 @@ public abstract class OpenApiObjectEntity extends ObjectEntity
      *
      * @return This (fluent method).
      */
-     // base type CanonGeneratorConfig
-     // base name CanonGeneratorConfig
     public T withXCanonGenerators(CanonGeneratorConfig value)
     {
       _xCanonGenerators_ = value;
       return self();
     }
-// field.typeSchema.schemaType OBJECT
 
     /**
      * Return the value of the openapi attribute.
@@ -691,14 +698,11 @@ public abstract class OpenApiObjectEntity extends ObjectEntity
      *
      * @return This (fluent method).
      */
-     // base type String
-     // base name openapi
     public T withOpenapi(String value)
     {
       _openapi_ = value;
       return self();
     }
-// field.typeSchema.schemaType STRING
 
     /**
      * Return the value of the paths attribute.
@@ -718,14 +722,11 @@ public abstract class OpenApiObjectEntity extends ObjectEntity
      *
      * @return This (fluent method).
      */
-     // base type PathsObject
-     // base name PathsObject
     public T withPaths(PathsObject value)
     {
       _paths_ = value;
       return self();
     }
-// field.typeSchema.schemaType OBJECT
 
     /**
      * Return the value of the x-canon-id attribute.
@@ -745,14 +746,11 @@ public abstract class OpenApiObjectEntity extends ObjectEntity
      *
      * @return This (fluent method).
      */
-     // base type String
-     // base name x-canon-id
     public T withXCanonId(String value)
     {
       _xCanonId_ = value;
       return self();
     }
-// field.typeSchema.schemaType STRING
 
     /**
      * Return the value of the x-canon-version attribute.
@@ -772,14 +770,11 @@ public abstract class OpenApiObjectEntity extends ObjectEntity
      *
      * @return This (fluent method).
      */
-     // base type SemanticVersion
-     // base name SemanticVersion
     public T withXCanonVersion(SemanticVersion value)
     {
       _xCanonVersion_ = value;
       return self();
     }
-// field.typeSchema.schemaType STRING
 
     /**
      * Return the value of the x-canon-identifier attribute.
@@ -799,14 +794,11 @@ public abstract class OpenApiObjectEntity extends ObjectEntity
      *
      * @return This (fluent method).
      */
-     // base type String
-     // base name x-canon-identifier
     public T withXCanonIdentifier(String value)
     {
       _xCanonIdentifier_ = value;
       return self();
     }
-// field.typeSchema.schemaType STRING
 
     /**
      * Return the value of the canon attribute.
@@ -826,14 +818,11 @@ public abstract class OpenApiObjectEntity extends ObjectEntity
      *
      * @return This (fluent method).
      */
-     // base type String
-     // base name canon
     public T withCanon(String value)
     {
       _canon_ = value;
       return self();
     }
-// field.typeSchema.schemaType STRING
 
     /**
      * Return the value of the info attribute.
@@ -855,8 +844,6 @@ public abstract class OpenApiObjectEntity extends ObjectEntity
      *
      * @return This (fluent method).
      */
-     // base type InfoObject
-     // base name InfoObject
     public T withInfo(InfoObject value)
     {
         if(value == null)
@@ -865,7 +852,6 @@ public abstract class OpenApiObjectEntity extends ObjectEntity
       _info_ = value;
       return self();
     }
-// field.typeSchema.schemaType OBJECT
 
     @Override
     public JsonObject getJsonObject()

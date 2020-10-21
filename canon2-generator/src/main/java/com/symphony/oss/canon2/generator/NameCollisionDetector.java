@@ -42,7 +42,7 @@ class NameCollisionDetector
   private Set<List<String>> collisionSet_ = new HashSet<>();
   private Set<String>       invalidSet_   = new HashSet<>();
   
-//  public static NameCollisionDetector create(ICanonContext canonContext, URL url, ICanonGenerator<?,?,?,?,?,?,?> generator, Map<String, Object> schemaOrReferences, boolean isSchema) throws GenerationException
+//  public static NameCollisionDetector create(ICanonContext canonContext, URL url, ICanonGenerator<?,?,?,?,?,?,?,?> generator, Map<String, Object> schemaOrReferences, boolean isSchema) throws GenerationException
 //  {
 //    Map<String, Schema> schemas = new HashMap<>(schemaOrReferences.size());
 //    
@@ -67,7 +67,7 @@ class NameCollisionDetector
 //    return new NameCollisionDetector(generator, schemas, isSchema);
 //  }
   
-  NameCollisionDetector(ICanonGenerator<?,?,?,?,?,?,?> generator, Map<String, ResolvedSchema> schemas, boolean isSchema)
+  NameCollisionDetector(ICanonGenerator<?,?,?,?,?,?,?,?> generator, Map<String, ResolvedSchema> schemas, boolean isSchema)
   {
     Map<String, List<String>>   camelMap  = new HashMap<>();
     

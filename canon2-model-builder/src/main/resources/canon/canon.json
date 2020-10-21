@@ -118,38 +118,11 @@
           "LIST"
         ]
       },
-      
-      "SimpleObject": {
-        "type": "object",
-        "required": ["name"],
-        "properties": {
-          "name": {
-            "type": "string"
-          },
-          "value": {
-            "type": "integer"
-          }
-        }
-      },
       "Schema": {
         "description": "A data type definition.",
         "type": "object",
         "x-canon-facade": true,
         "properties": {
-          "objectListField": {
-            "type": "array",
-            "x-canon-cardinality": "LIST",
-            "items": {
-              "$ref": "#/components/schemas/SimpleObject"
-            }
-          },
-          "stringListField": {
-            "type": "array",
-            "x-canon-cardinality": "LIST",
-            "items": {
-              "type": "string"
-            }
-          },
           "oneOf": {
             "type": "array",
             "x-canon-cardinality": "SET",

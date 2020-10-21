@@ -23,6 +23,7 @@ import java.util.Map;
 import javax.annotation.Nonnull;
 
 import com.symphony.oss.canon2.model.Schema;
+import com.symphony.oss.canon2.model.SchemaType;
 
 public class ResolvedSchema implements IResolvedEntity
 {
@@ -35,6 +36,7 @@ public class ResolvedSchema implements IResolvedEntity
   private final ResolvedSchema.SingletonBuilder           resolvedExtendsBuilder_;
   private final ResolvedPropertiesObject.SingletonBuilder resolvedPropertiesBuilder_;
   private final ResolvedPropertiesObject.SingletonBuilder innerClassesBuilder_;
+//  private final ResolvedSubSchemas.SingletonBuilder       subSchemasBuilder_;
   private final ResolvedOpenApiObject.SingletonBuilder    openApiObjectBuilder_; 
   
   private ResolvedSchema(SingletonBuilder builder)
@@ -48,6 +50,7 @@ public class ResolvedSchema implements IResolvedEntity
     resolvedExtendsBuilder_     = builder.resolvedExtendsBuilder_;
     resolvedPropertiesBuilder_  = builder.resolvedPropertiesBuilder_;
     innerClassesBuilder_        = builder.innerClassesBuilder_;
+//    subSchemasBuilder_          = builder.subSchemasBuilder_;
     openApiObjectBuilder_       = builder.openApiObjectBuilder_;
   }
   
@@ -62,6 +65,7 @@ public class ResolvedSchema implements IResolvedEntity
     ResolvedSchema.SingletonBuilder           resolvedExtendsBuilder_;
     ResolvedPropertiesObject.SingletonBuilder resolvedPropertiesBuilder_;
     ResolvedPropertiesObject.SingletonBuilder innerClassesBuilder_;
+//    ResolvedSubSchemas.SingletonBuilder       subSchemasBuilder_;
     ResolvedOpenApiObject.SingletonBuilder    openApiObjectBuilder_; 
     ResolvedSchema                            built_;
 
@@ -139,6 +143,16 @@ public class ResolvedSchema implements IResolvedEntity
       
       return this;
     }
+    
+//    public SingletonBuilder withSubSchemas(com.symphony.oss.canon2.core.ResolvedSubSchemas.SingletonBuilder subSchemasBuilder)
+//    {
+//      if(built_ != null)
+//        throw new IllegalStateException("SingletonBuilder has already been built");
+//      
+//      subSchemasBuilder_ = subSchemasBuilder;
+//      
+//      return this;
+//    }
     
     public SingletonBuilder withInnerClasses(ResolvedPropertiesObject.SingletonBuilder innerClassesBuilder)
     {
@@ -239,6 +253,14 @@ public class ResolvedSchema implements IResolvedEntity
     return innerClassesBuilder_.build();
   }
 
+//  public ResolvedSubSchemas getResolvedSubSchemas()
+//  {
+//    if(subSchemasBuilder_ == null)
+//      return null;
+//  
+//    return subSchemasBuilder_.build();
+//  }
+
   @Override
   public ResolvedOpenApiObject getResolvedOpenApiObject()
   {
@@ -246,6 +268,11 @@ public class ResolvedSchema implements IResolvedEntity
       return null;
     
     return openApiObjectBuilder_.build();
+  }
+  
+  public SchemaTemplateModelType getSchemaType()
+  {
+    return SchemaTemplateModelType.valueOf(SchemaType.valueOf(getSchema().getType().toUpperCase()));
   }
 
   public void validate(CanonModelContext modelContext)

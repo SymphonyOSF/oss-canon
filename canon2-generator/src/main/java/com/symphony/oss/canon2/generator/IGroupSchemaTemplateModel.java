@@ -19,12 +19,17 @@
 package com.symphony.oss.canon2.generator;
 
 import java.util.Collection;
-import java.util.Collections;
 
-import com.symphony.oss.canon2.model.CanonCardinality;
-import com.symphony.oss.canon2.model.SchemaType;
-
-public interface IArraySchemaTemplateModel<
+/**
+ * A TemplateModel representing one of the group schemas, oneOf, allOf, anyOf.
+ * 
+ * @author Bruce Skingle
+ *
+ * @param <T>
+ * @param <M>
+ * @param <S>
+ */
+public interface IGroupSchemaTemplateModel<
   T extends ITemplateModel<T,M,S>,
   M extends IOpenApiTemplateModel<T,M,S>,
   S extends ISchemaTemplateModel<T,M,S>
@@ -41,20 +46,15 @@ public interface IArraySchemaTemplateModel<
    */
   S asSchemaTemplateModel();
 
-  void setElementType(S elementType);
-  S getElementType();
+  void addSubSchema(S subSchema);
+  
+  Collection<S> getSubSchemas();
   
   @Override
   default Collection<T> getChildren()
   {
-    return (Collection<T>) Collections.singleton(getElementType());
+    return (Collection<T>) getSubSchemas();
   }
 
-//  @Override
-//  default SchemaType getSchemaType()
-//  {
-//    return SchemaType.ARRAY;
-//  }
-  
-  CanonCardinality getCardinality();
+  void addInnerClass(S innerClass);
 }

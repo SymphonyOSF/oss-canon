@@ -24,6 +24,7 @@ import java.util.Map;
 
 import com.symphony.oss.canon2.core.GenerationException;
 import com.symphony.oss.canon2.core.ResolvedSchema;
+import com.symphony.oss.canon2.core.SchemaTemplateModelType;
 import com.symphony.oss.canon2.generator.IObjectSchemaTemplateModel;
 
 public class JavaObjectSchemaTemplateModel extends JavaSchemaTemplateModel
@@ -55,7 +56,7 @@ JavaFieldTemplateModel
   JavaObjectSchemaTemplateModel(ResolvedSchema resolvedSchema, String identifier, String packageName, JavaOpenApiTemplateModel model,
       String... temaplates) throws GenerationException
   {
-    super(resolvedSchema, identifier, packageName, model, temaplates);
+    super(resolvedSchema, SchemaTemplateModelType.OBJECT, identifier, packageName, model, temaplates);
     
     type_ = resolvedSchema.getResolvedContainer() == null ? getCamelCapitalizedName() :
       capitalize(toCamelCase(resolvedSchema.getResolvedContainer().getName())) + "." + getCamelCapitalizedName();

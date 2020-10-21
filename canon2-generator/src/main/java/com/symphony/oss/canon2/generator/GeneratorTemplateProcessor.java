@@ -16,7 +16,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.function.Consumer;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -44,43 +43,44 @@ S extends ISchemaTemplateModel<T,M,S>,
 O extends IObjectSchemaTemplateModel<T,M,S,F>,
 A extends IArraySchemaTemplateModel<T,M,S>,
 P extends IPrimitiveSchemaTemplateModel<T,M,S>,
-F extends IFieldTemplateModel<T,M,S>>
+F extends IFieldTemplateModel<T,M,S>,
+G extends IGroupSchemaTemplateModel<T,M,S>>
 {
   private static Logger log_ = LoggerFactory.getLogger(GeneratorTemplateProcessor.class);
   
-  private final ICanonGenerator<T,M,S,O,A,P,F>  generator_;
+  private final ICanonGenerator<T,M,S,O,A,P,F,G>  generator_;
   private final Map<String, List<TemplateContext>> map_ = new HashMap<>();
   
-  GeneratorTemplateProcessor(ICanonGenerator<T, M, S, O, A, P, F> generator)
+  GeneratorTemplateProcessor(ICanonGenerator<T,M,S,O,A,P,F,G> generator)
   {
     generator_ = generator;
   }
 
-  public ICanonGenerator<T, M, S, O, A, P, F> getGenerator()
+  public ICanonGenerator<T,M,S,O,A,P,F,G> getGenerator()
   {
     return generator_;
   }
   
   public void process(CanonGenerationContext canonGenerationContext, SourceContext sourceContext) throws GenerationException
   {
-    GeneratorContext<T,M,S,O,A,P,F> generatorContext = new GeneratorContext<>(canonGenerationContext, generator_, sourceContext);
+    GeneratorContext<T,M,S,O,A,P,F,G> generatorContext = new GeneratorContext<>(canonGenerationContext, generator_, sourceContext);
     
     generatorContext.process(this);
   }
   
   private class TemplateContext
   {
-    private GeneratorContext<T,M,S,O,A,P,F> generatorContext_;
+    private GeneratorContext<T,M,S,O,A,P,F,G> generatorContext_;
     private T templateModel_;
     
-    private TemplateContext(GeneratorContext<T,M,S,O,A,P,F> generatorContext, T templateModel)
+    private TemplateContext(GeneratorContext<T,M,S,O,A,P,F,G> generatorContext, T templateModel)
     {
       generatorContext_ = generatorContext;
       templateModel_ = templateModel;
     }
   }
 
-  public synchronized void accept(GeneratorContext<T,M,S,O,A,P,F> generatorContext, T templateModel)
+  public synchronized void accept(GeneratorContext<T,M,S,O,A,P,F,G> generatorContext, T templateModel)
   {
     if(templateModel.getTemaplates() != null)
     {
@@ -112,8 +112,8 @@ F extends IFieldTemplateModel<T,M,S>>
         
         log_.info("Process template " + templateGroup + ", model " + modelContext.templateModel_.getName() + "...");
         
-        GeneratorContext<?,?,?,?,?,?,?> generatorModelContext = modelContext.generatorContext_;
-        ICanonGenerator<?,?,?,?,?,?,?> generator = generatorModelContext.getGenerator();
+        GeneratorContext<?,?,?,?,?,?,?,?> generatorModelContext = modelContext.generatorContext_;
+        ICanonGenerator<?,?,?,?,?,?,?,?> generator = generatorModelContext.getGenerator();
         
         for(TemplateType templateType : TemplateType.values())
         {
@@ -165,7 +165,7 @@ F extends IFieldTemplateModel<T,M,S>>
     }
   }
   
-  Map<String, Object> newTemplateModel(GeneratorContext<T,M,S,O,A,P,F> modelContext, String templateName, TemplateType templateType, ITemplateModel<T,M,S> entity)
+  Map<String, Object> newTemplateModel(GeneratorContext<T,M,S,O,A,P,F,G> modelContext, String templateName, TemplateType templateType, ITemplateModel<T,M,S> entity)
   {
     Map<String, Object> map = new HashMap<>();
     
@@ -243,9 +243,9 @@ F extends IFieldTemplateModel<T,M,S>>
 //  P extends IPrimitiveSchemaTemplateModel<T,M,S>,
 //  F extends IFieldTemplateModel<T,M,S>
 //  >
-//  void generateModel(TemplateModelContext<T,M,S,O,A,P,F> modelContext, String templateGroup) throws GenerationException
+//  void generateModel(TemplateModelContext<T,M,S,O,A,P,F,G> modelContext, String templateGroup) throws GenerationException
 //  {
-//    //new Helper<T,M,S,O,A,P,F>(modelContext).generateModel(templateGroup);
+//    //new Helper<T,M,S,O,A,P,F,G>(modelContext).generateModel(templateGroup);
 //    
 //    
 //  }
@@ -261,9 +261,9 @@ F extends IFieldTemplateModel<T,M,S>>
 //  F extends IFieldTemplateModel<T,M,S>
 //  >
 //  {
-//    private TemplateModelContext<T,M,S,O,A,P,F> modelContext_;
+//    private TemplateModelContext<T,M,S,O,A,P,F,G> modelContext_;
 //
-//    private Helper(TemplateModelContext<T,M,S,O,A,P,F> modelContext)
+//    private Helper(TemplateModelContext<T,M,S,O,A,P,F,G> modelContext)
 //    {
 //      modelContext_ = modelContext;
 //    }
@@ -273,8 +273,8 @@ F extends IFieldTemplateModel<T,M,S>>
 //
 //      log_.info("Process template " + templateGroup + ", model " + modelContext_.getModel().getName() + "...");
 //      
-//      GeneratorContext<T,M,S,O,A,P,F> generatorModelContext = modelContext_.getContext();
-//      ICanonGenerator<T,M,S,O,A,P,F> generator = generatorModelContext.getGenerator();
+//      GeneratorContext<T,M,S,O,A,P,F,G> generatorModelContext = modelContext_.getContext();
+//      ICanonGenerator<T,M,S,O,A,P,F,G> generator = generatorModelContext.getGenerator();
 //      
 //      for(TemplateType templateType : TemplateType.values())
 //      {
@@ -289,7 +289,7 @@ F extends IFieldTemplateModel<T,M,S>>
 //    }
 //
 //
-//    private void generate(ICanonGenerator<T,M,S,O,A,P,F> generator, GeneratorContext<T,M,S,O,A,P,F> modelContext, T entity,
+//    private void generate(ICanonGenerator<T,M,S,O,A,P,F,G> generator, GeneratorContext<T,M,S,O,A,P,F,G> modelContext, T entity,
 //        TemplateType templateType, String templateName) throws GenerationException
 //    {
 //      IPathNameConstructor<T> pathBuilder = modelContext.getPathBuilder(templateType);

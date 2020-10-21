@@ -21,7 +21,7 @@
  *    Generator groupId    org.symphonyoss.s2.canon
  *              artifactId canon2-generator-java
  *    Template name        template/Object/_Entity.java.ftl
- *    At                   2020-10-13 12:56:56 BST
+ *    At                   2020-10-21 11:57:10 BST
  *----------------------------------------------------------------------------------------------------
  */
 
@@ -187,16 +187,29 @@ public abstract class ComponentsObjectEntity extends ObjectEntity
   }
 
   /**
-   * Initialiser for ComponentsObject
+   * Abstract Initialiser for ComponentsObject
    */
-  
   public interface Initialiser extends IObjectEntityInitialiser
   {
+    /**
+     * Return an instance or builder containing the values for a new instance.
+     * 
+     * @return an instance or builder containing the values for a new instance.
+     */
     IComponentsObjectInstanceOrBuilder getInstanceOrBuilder();
   }
 
+  /**
+   * JSON Initialiser for ComponentsObject
+   */
   public static class JsonInitialiser extends JsonObjectEntityInitialiser implements Initialiser
   {
+      /**
+       * Constructor.
+       * 
+       * @param jsonObject      A JSON Object.
+       * @param modelRegistry   A parser context for deserialisation.
+       */
     public JsonInitialiser(JsonObject jsonObject, ModelRegistry modelRegistry)
     {
       super(jsonObject, modelRegistry);
@@ -280,14 +293,11 @@ public abstract class ComponentsObjectEntity extends ObjectEntity
      *
      * @return This (fluent method).
      */
-     // base type SchemasObject
-     // base name SchemasObject
     public T withSchemas(SchemasObject value)
     {
       _schemas_ = value;
       return self();
     }
-// field.typeSchema.schemaType OBJECT
 
     @Override
     public JsonObject getJsonObject()

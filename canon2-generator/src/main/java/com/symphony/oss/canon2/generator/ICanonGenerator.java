@@ -29,6 +29,7 @@ import com.symphony.oss.canon2.core.GenerationException;
 import com.symphony.oss.canon2.core.INamedModelEntity;
 import com.symphony.oss.canon2.core.ResolvedOpenApiObject;
 import com.symphony.oss.canon2.core.ResolvedSchema;
+import com.symphony.oss.canon2.core.SchemaTemplateModelType;
 import com.symphony.oss.canon2.core.SourceContext;
 import com.symphony.oss.canon2.model.CanonCardinality;
 import com.symphony.oss.canon2.model.CanonGeneratorConfig;
@@ -44,16 +45,17 @@ S extends ISchemaTemplateModel<T,M,S>,
 O extends IObjectSchemaTemplateModel<T,M,S,F>,
 A extends IArraySchemaTemplateModel<T,M,S>,
 P extends IPrimitiveSchemaTemplateModel<T,M,S>,
-F extends IFieldTemplateModel<T,M,S>>
+F extends IFieldTemplateModel<T,M,S>,
+G extends IGroupSchemaTemplateModel<T,M,S>>
 {
   
   TemplateLoader getTemplateLoader();
 
   Configuration getFreemarkerConfig();
   
-  ICanonGenerator<T,M,S,O,A,P,F> withTemplateDir(File templateDir);
+  ICanonGenerator<T,M,S,O,A,P,F,G> withTemplateDir(File templateDir);
 
-  //IGeneratorModelContext<T,M,S,O,A,P,F> createModelContext(ICanonContext canonContext, IModelContext context, JsonObject generatorConfig);
+  //IGeneratorModelContext<T,M,S,O,A,P,F,G> createModelContext(ICanonContext canonContext, IModelContext context, JsonObject generatorConfig);
 
   String getLanguage();
 
@@ -93,6 +95,9 @@ F extends IFieldTemplateModel<T,M,S>>
     
     return null;
   }
+  
+  G generateGroupSchema(M model, ResolvedSchema resolvedSchema, String identifier, boolean isReference,
+      SchemaTemplateModelType oneOf);
 
   // these things are really generate operations, maybe the things above should be renamed...
 //  M generateModel()

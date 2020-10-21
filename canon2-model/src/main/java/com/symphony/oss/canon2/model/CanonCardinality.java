@@ -21,7 +21,7 @@
  *    Generator groupId    org.symphonyoss.s2.canon
  *              artifactId canon2-generator-java
  *    Template name        template/Enum/_.java.ftl
- *    At                   2020-10-13 12:56:55 BST
+ *    At                   2020-10-21 11:57:10 BST
  *----------------------------------------------------------------------------------------------------
  */
 package com.symphony.oss.canon2.model;
@@ -57,6 +57,30 @@ public enum CanonCardinality
   public String getValue()
   {
     return value_;
+  }
+  
+  /**
+   * Deserialize an enum constant value from a String value.
+   * 
+   * @param value The serialized form of an enum constant.
+   * 
+   * @return The enum constant value from the given String value.
+   * 
+   * @throws IllegalArgumentException If the given value is not a valid enum constant.
+   */
+  public static final CanonCardinality deserialize(String value)
+  {
+    switch(value)
+    {
+      case "LIST":
+        return LIST;
+        
+      case "SET":
+        return SET;
+        
+      default:
+        throw new IllegalArgumentException("No enum constant \"" + value + "\" in CanonCardinality");
+    }
   }
 }
 /*----------------------------------------------------------------------------------------------------

@@ -21,28 +21,38 @@
  *    Generator groupId    org.symphonyoss.s2.canon
  *              artifactId canon2-generator-java
  *    Template name        template/Object/I_InstanceOrBuilder.java.ftl
- *    At                   2020-10-21 11:57:10 BST
+ *    At                   2020-10-19 18:02:13 BST
  *----------------------------------------------------------------------------------------------------
  */
 
 package com.symphony.oss.canon2.model;
 
+import java.math.BigInteger;
+
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 import com.symphony.oss.canon2.runtime.java.IObjectEntityInitialiser;
 
 /**
- * Instance or Builder for Object ComponentsObject
+ * Instance or Builder for Object SimpleObject
  */
-public interface IComponentsObjectInstanceOrBuilder extends IObjectEntityInitialiser
+public interface ISimpleObjectInstanceOrBuilder extends IObjectEntityInitialiser
 {
   
   /**
-   * Return the value of the schemas attribute.
+   * Return the value of the name attribute.
    *
-   * @return the value of the schemas attribute.
+   * @return the value of the name attribute.
    */
-  @Nullable SchemasObject getSchemas();
+  @Nonnull String getName();
+  
+  /**
+   * Return the value of the value attribute.
+   *
+   * @return the value of the value attribute.
+   */
+  @Nullable BigInteger getValue();
 }
 /*----------------------------------------------------------------------------------------------------
  * End of template template/Object/I_InstanceOrBuilder.java.ftl

@@ -52,7 +52,7 @@ public class CanonGenerationContext extends CanonModelContext
   private final boolean                        templateDebug_;
   private final String                         license_;
   private final String                         copyright_;
-  private final ImmutableList<ICanonGenerator<?,?,?,?,?,?,?>> generators_;
+  private final ImmutableList<ICanonGenerator<?,?,?,?,?,?,?,?>> generators_;
   
   private CanonGenerationContext(AbstractBuilder<?,?> builder)
   {
@@ -77,7 +77,7 @@ public class CanonGenerationContext extends CanonModelContext
     private boolean                               templateDebug_;
     private String                                license_;
     private String                                copyright_;
-    private List<ICanonGenerator<?,?,?,?,?,?,?>>  generators_ = new LinkedList<>();
+    private List<ICanonGenerator<?,?,?,?,?,?,?,?>>  generators_ = new LinkedList<>();
     
     public AbstractBuilder(Class<T> type)
     {
@@ -126,14 +126,14 @@ public class CanonGenerationContext extends CanonModelContext
       return self();
     }
 
-    public T withGenerators(List<ICanonGenerator<?,?,?,?,?,?,?>> generators)
+    public T withGenerators(List<ICanonGenerator<?,?,?,?,?,?,?,?>> generators)
     {
       generators_ = generators;
       
       return self();
     }
 
-    public T withGenerator(ICanonGenerator<?,?,?,?,?,?,?> generator)
+    public T withGenerator(ICanonGenerator<?,?,?,?,?,?,?,?> generator)
     {
       generators_.add(generator);
       
@@ -221,7 +221,7 @@ public class CanonGenerationContext extends CanonModelContext
   }
 
 
-  public List<com.symphony.oss.canon2.generator.ICanonGenerator<?, ?, ?, ?, ?, ?, ?>> getGenerators()
+  public List<com.symphony.oss.canon2.generator.ICanonGenerator<?,?,?,?,?,?,?,?>> getGenerators()
   {
     return generators_;
   }
@@ -244,23 +244,23 @@ public class CanonGenerationContext extends CanonModelContext
   @Override
   protected void process(Deque<SourceContext> processQueue) throws GenerationException
   {
-    List<GeneratorTemplateProcessor<?,?,?,?,?,?,?>> templateProcessors = new ArrayList<>(generators_.size());
+    List<GeneratorTemplateProcessor<?,?,?,?,?,?,?,?>> templateProcessors = new ArrayList<>(generators_.size());
     
-    for(ICanonGenerator<?,?,?,?,?,?,?> generator : generators_)
+    for(ICanonGenerator<?,?,?,?,?,?,?,?> generator : generators_)
     {
        templateProcessors.add(new GeneratorTemplateProcessor<>(generator));
     }
     
     for(SourceContext sourceContext : processQueue)
     {
-      for(GeneratorTemplateProcessor<?,?,?,?,?,?,?> templateProcessor : templateProcessors)
+      for(GeneratorTemplateProcessor<?,?,?,?,?,?,?,?> templateProcessor : templateProcessors)
       {
         templateProcessor.process(this, sourceContext);
         
       }
     }
     
-    for(GeneratorTemplateProcessor<?,?,?,?,?,?,?> templateProcessor : templateProcessors)
+    for(GeneratorTemplateProcessor<?,?,?,?,?,?,?,?> templateProcessor : templateProcessors)
     {
       templateProcessor.generate();
     }
@@ -282,9 +282,9 @@ public class CanonGenerationContext extends CanonModelContext
 //  P extends IPrimitiveSchemaTemplateModel<T,M,S>,
 //  F extends IFieldTemplateModel<T,M,S>
 //  >
-//  GeneratorContext<T,M,S,O,A,P,F> createGeneratorContext(ICanonGenerator<T,M,S,O,A,P,F> generator, SourceContext sourceContext)
+//  GeneratorContext<T,M,S,O,A,P,F,G> createGeneratorContext(ICanonGenerator<T,M,S,O,A,P,F,G> generator, SourceContext sourceContext)
 //  {
-//    return new GeneratorContext<T,M,S,O,A,P,F>(this, generator, sourceContext);
+//    return new GeneratorContext<T,M,S,O,A,P,F,G>(this, generator, sourceContext);
 //  }
   
 //  private <
@@ -296,9 +296,9 @@ public class CanonGenerationContext extends CanonModelContext
 //  P extends IPrimitiveSchemaTemplateModel<T,M,S>,
 //  F extends IFieldTemplateModel<T,M,S>
 //  >
-//  void process(SourceContext context, ICanonGenerator<T,M,S,O,A,P,F> generator,
+//  void process(SourceContext context, ICanonGenerator<T,M,S,O,A,P,F,G> generator,
 //      TemplateModelConsumer consumer)
 //  {
-//    new GeneratorContext<T,M,S,O,A,P,F>(generator, this, context, consumer).generateFor();
+//    new GeneratorContext<T,M,S,O,A,P,F,G>(generator, this, context, consumer).generateFor();
 //  }
 }

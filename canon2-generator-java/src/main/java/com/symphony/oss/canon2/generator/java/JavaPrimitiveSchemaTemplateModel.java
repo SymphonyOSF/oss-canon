@@ -68,7 +68,7 @@ JavaSchemaTemplateModel>
   JavaPrimitiveSchemaTemplateModel(ResolvedSchema resolvedSchema, String identifier, String packageName, JavaOpenApiTemplateModel model,
        String... templates) throws GenerationException
   { 
-    super(resolvedSchema, identifier, packageName, model, templates);
+    super(resolvedSchema, resolvedSchema.getSchemaType(), identifier, packageName, model, templates);
     
     javaType_ = initType(resolvedSchema.getSchema());
     isGenerated_ = resolvedSchema.isGenerated();

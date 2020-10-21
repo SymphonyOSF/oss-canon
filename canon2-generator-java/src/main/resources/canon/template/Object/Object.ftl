@@ -56,15 +56,27 @@
     <@importType schema />
   </#switch>
 </#macro>
-<#list entity.fields as field>
-  <#assign imports = imports + [
-      "javax.annotation.${field.nullable}"
-    ]>
-  <@importType field.typeSchema />
-  <#if field.typeSchema.schemaType == "ARRAY">
-    <@importArrayJsonType field.typeSchema />
-  </#if>
-</#list>
+<#macro importFields entity>
+  <#list entity.fields as field>
+    <#assign imports = imports + [
+        "javax.annotation.${field.nullable}"
+      ]>
+    <@importType field.typeSchema />
+    <#if field.typeSchema.schemaType == "ARRAY">
+      <@importArrayJsonType field.typeSchema />
+    </#if>
+  </#list>
+  <#list entity.innerClasses as innerClass>
+    <#list innerClass.fields as field>
+      <#if field.typeSchema.schemaType == "OBJECT">
+        <@importFields field.typeSchema/>
+      <#else>
+        <@importType field/>
+      </#if>
+    </#list>
+  </#list>
+</#macro>
+<@importFields entity/>
 
 package ${genPackage};
 
@@ -382,19 +394,13 @@ ${indent}     * @param value The value to be set.
 ${indent}     *
 ${indent}     * @return This (fluent method).
 ${indent}     */
-${indent}     // base type ${field.typeSchema.type}
-${indent}     // base name ${field.typeSchema.name}
 ${indent}    public T with${field.camelCapitalizedName}(${field.typeSchema.type} value)
 ${indent}    {
     <@checkFieldLimits "        " field "value"/>
 ${indent}      _${field.camelName}_ = ${field.typeSchema.copyPrefix}value${field.typeSchema.copySuffix};
 ${indent}      return self();
 ${indent}    }
-// field.typeSchema.schemaType ${field.typeSchema.schemaType}
 <#if field.typeSchema.schemaType == "ARRAY">
-// field.typeSchema.elementType.class ${field.typeSchema.elementType.class}
-// field.typeSchema.elementType.name ${field.typeSchema.elementType.name}
-// field.typeSchema.elementType.isGenerated ${field.typeSchema.elementType.isGenerated?then('Y', 'N')}
 </#if>
     <#if field.typeSchema.schemaType == "ARRAY" && field.typeSchema.elementType.schemaType == "PRIMITIVE" && field.typeSchema.elementType.primitiveType??>
 
@@ -405,7 +411,6 @@ ${indent}     * @param value The value to be set.
 ${indent}     *
 ${indent}     * @return This (fluent method).
 ${indent}     */
-${indent}     // Array
 ${indent}    public T with${field.camelCapitalizedName}(${field.typeSchema.type} value)
 ${indent}    {
     <@checkFieldLimits "    " field "value"/>
@@ -422,7 +427,6 @@ ${indent}     * @param value The value to be set.
 ${indent}     *
 ${indent}     * @return This (fluent method).
 ${indent}     */
-${indent}     //typedef
 ${indent}    public T with${field.camelCapitalizedName}(${field.typeSchema.primitiveType} value)
 ${indent}    {
     <#if field.required>

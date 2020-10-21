@@ -46,12 +46,12 @@ public interface ISchemaTemplateModel<
    */
   T asTemplateModel();
   
-  /**
-   * Return the type of this schema.
-   * 
-   * @return the type of this schema.
-   */
-  SchemaType getSchemaType();
+//  /**
+//   * Return the type of this schema.
+//   * 
+//   * @return the type of this schema.
+//   */
+//  SchemaType getSchemaType();
   
   /**
    * Return true if this schema or any of its children is required, or has validation limits. 

@@ -31,10 +31,12 @@ import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URL;
 import java.util.Map.Entry;
+import java.util.Set;
 
 import javax.annotation.Nullable;
 import javax.annotation.concurrent.Immutable;
 
+import com.symphony.oss.canon.json.IParserContext;
 import com.symphony.oss.canon.json.model.JsonDomNode;
 import com.symphony.oss.canon.json.model.JsonObject;
 import com.symphony.oss.canon2.core.CanonModelContext;
@@ -43,8 +45,8 @@ import com.symphony.oss.canon2.core.INamedModelEntity;
 import com.symphony.oss.canon2.core.ResolvedOpenApiObject;
 import com.symphony.oss.canon2.core.ResolvedPropertiesObject;
 import com.symphony.oss.canon2.core.ResolvedSchema;
+import com.symphony.oss.canon2.core.ResolvedSubSchemas;
 import com.symphony.oss.canon2.core.SourceContext;
-import com.symphony.oss.canon2.core.ResolvedSchema.SingletonBuilder;
 import com.symphony.oss.canon2.runtime.java.Entity;
 
 
@@ -98,12 +100,32 @@ public class Schema extends SchemaEntity implements INamedModelEntity
   {
     ResolvedPropertiesObject.SingletonBuilder  resolvedPropertiesBuilder = new ResolvedPropertiesObject.SingletonBuilder();
     ResolvedPropertiesObject.SingletonBuilder  innerClassesBuilder       = new ResolvedPropertiesObject.SingletonBuilder();
+//    ResolvedSubSchemas.SingletonBuilder        subSchemasBuilder       = new ResolvedSubSchemas.SingletonBuilder();
     builder
         .withSchema(this)
         .withResolvedProperties(resolvedPropertiesBuilder)
-        .withInnerClasses( innerClassesBuilder)
+        .withInnerClasses(innerClassesBuilder)
+//        .withSubSchemas(subSchemasBuilder)
         .withGenerated(generated)
         ;
+    
+    Set<SchemaOrRef> oneOf = getOneOf();
+    
+    if(oneOf != null && !oneOf.isEmpty())
+    {
+      int i=1;
+      for(SchemaOrRef subSchema : oneOf)
+      {
+        String name = subSchema.getRef() == null ? "$" + i : subSchema.getRef().getName();
+        
+        ResolvedSchema.SingletonBuilder resolvedSubSchema = subSchema.link(openApiObjectBuilder, modelContext, sourceContext, name, uri, subSchema, builder);
+        resolvedPropertiesBuilder.with(name, resolvedSubSchema);
+        
+        if(subSchema.getSchema() != null)
+          innerClassesBuilder.with(name, resolvedSubSchema);
+        i++;
+      }
+    }
     
     PropertiesObject propertiesObject  = getProperties();
     
@@ -216,10 +238,16 @@ public class Schema extends SchemaEntity implements INamedModelEntity
 
   public String getSourceLocation()
   {
-    return "unknown location";
+    IParserContext context = getJsonDomNode().getContext();
+    
+    if(context == null)
+      return "unknown location";
+    
+    return context.toString();
   }
 
-  private SingletonBuilder fetchSchema(ResolvedOpenApiObject.SingletonBuilder openApiObjectBuilder, CanonModelContext modelContext, SourceContext sourceContext, ReferenceObject ref,
+  // Duplicated in SchemaOrRef - that's the correct place for this
+  private ResolvedSchema.SingletonBuilder fetchSchema(ResolvedOpenApiObject.SingletonBuilder openApiObjectBuilder, CanonModelContext modelContext, SourceContext sourceContext, ReferenceObject ref,
       boolean generated) throws GenerationException
   {
     Schema schema;
