@@ -152,7 +152,7 @@
             "type": "string"
           }
         },
-        "additionalProperties": true
+        "XXXadditionalProperties": true
       },
       "Schema": {
         "description": "A data type definition.",

@@ -57,9 +57,12 @@ public class ObjectEntity extends Entity
   {
     super(initialiser);
     
-    Objects.requireNonNull(initialiser.getJsonObject());
+    Objects.requireNonNull(initialiser.getJsonDomNode());
     
-    jsonObject_   = initialiser.getJsonObject();
+    if(!(initialiser.getJsonDomNode() instanceof JsonObject))
+      throw new IllegalArgumentException("Initialiser must be a Json Object not " + initialiser.getJsonDomNode().getClass().getSimpleName());
+    
+    jsonObject_   = (JsonObject) initialiser.getJsonDomNode();
     type_         = initialiser.getCanonType();
     majorVersion_ = initialiser.getCanonMajorVersion();
     minorVersion_ = initialiser.getCanonMinorVersion();
@@ -77,7 +80,13 @@ public class ObjectEntity extends Entity
   {
     super(builder);
     
-    jsonObject_   = builder.getJsonObject();
+    Objects.requireNonNull(builder.getJsonDomNode());
+    
+    if(!(builder.getJsonDomNode() instanceof JsonObject))
+      throw new IllegalArgumentException("Initialiser must be a Json Object not " + builder.getJsonDomNode().getClass().getSimpleName());
+    
+    
+    jsonObject_   = (JsonObject) builder.getJsonDomNode();
     type_         = builder.getCanonType();
     majorVersion_ = builder.getCanonMajorVersion();
     minorVersion_ = builder.getCanonMinorVersion();
@@ -278,12 +287,6 @@ public class ObjectEntity extends Entity
      */
     @Override
     public abstract Integer    getCanonMinorVersion();
-
-    @Override
-    public JsonDomNode getJsonDomNode()
-    {
-      return getJsonObject();
-    }
 
 //    @Override
 //    public abstract JsonObject getJsonObject();

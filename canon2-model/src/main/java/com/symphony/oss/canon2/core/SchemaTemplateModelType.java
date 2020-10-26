@@ -24,7 +24,7 @@ public enum SchemaTemplateModelType
   /** ARRAY */
   ARRAY("array", false, false),
   /** OBJECT */
-  OBJECT("object", true, false),
+  OBJECT("object", false, true),
   /** BOOLEAN */
   BOOLEAN("boolean", false, false),
   /** INTEGER */

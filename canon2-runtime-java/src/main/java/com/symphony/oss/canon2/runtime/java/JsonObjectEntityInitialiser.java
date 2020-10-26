@@ -21,6 +21,8 @@ package com.symphony.oss.canon2.runtime.java;
 import java.util.HashSet;
 import java.util.Set;
 
+import javax.annotation.Nonnull;
+
 import com.google.common.collect.ImmutableSet;
 import com.symphony.oss.canon.json.model.JsonDomNode;
 import com.symphony.oss.canon.json.model.JsonObject;
@@ -31,7 +33,7 @@ import com.symphony.oss.canon.json.model.JsonObject;
  * @author Bruce Skingle
  *
  */
-public abstract class JsonObjectEntityInitialiser implements IJsonObjectEntityInitialiser
+public abstract class JsonObjectEntityInitialiser extends JsonEntityInitialiser implements IJsonObjectEntityInitialiser
 {
   private final JsonObject    jsonObject_;
   private final String        type_;
@@ -48,6 +50,8 @@ public abstract class JsonObjectEntityInitialiser implements IJsonObjectEntityIn
    */
   public JsonObjectEntityInitialiser(JsonObject jsonObject, ModelRegistry modelRegistry)
   {
+    super(jsonObject);
+    
     jsonObject_ = jsonObject;
     modelRegistry_ = modelRegistry;
     keySet_ = new HashSet<>(jsonObject.getNames());
@@ -99,19 +103,13 @@ public abstract class JsonObjectEntityInitialiser implements IJsonObjectEntityIn
   }
 
   @Override
-  public JsonDomNode getJsonDomNode()
-  {
-    return jsonObject_;
-  }
-
-  @Override
   public ModelRegistry getModelRegistry()
   {
     return modelRegistry_;
   }
 
   @Override
-  public String getCanonType()
+  public @Nonnull String getCanonType()
   {
     return type_;
   }

@@ -568,7 +568,9 @@ ${indent}  }
 <#if entity.additionalProperties??>
 // entity.additionalProperties ${entity.additionalProperties.name}
 </#if>
+// innerClasses
   <#list entity.innerClasses as innerClass>
+  // innerClass ${innerClass.name} ${innerClass.schemaType} ${innerClass.schemaType.class}
     <#if innerClass.schemaType.isObject>
       <#if nested>
         <#assign modifier = classModifier/>

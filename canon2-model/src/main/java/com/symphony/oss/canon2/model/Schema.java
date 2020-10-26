@@ -140,7 +140,7 @@ public class Schema extends SchemaEntity implements INamedModelEntity
         ResolvedSchema.SingletonBuilder resolvedSubSchema = subSchema.link(openApiObjectBuilder, modelContext, sourceContext, name, uri, builder);
         resolvedPropertiesBuilder.with(name, resolvedSubSchema);
         
-        if(resolvedSubSchema.build().getSchemaType().getIsObject())
+        if(subSchema.getSchema() != null && resolvedSubSchema.build().getSchemaType().getIsObject())
           innerClassesBuilder.with(name, resolvedSubSchema);
         i++;
       }
