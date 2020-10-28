@@ -21,7 +21,7 @@
  *    Generator groupId    org.symphonyoss.s2.canon
  *              artifactId canon2-generator-java
  *    Template name        template/Object/_.java.ftl
- *    At                   2020-10-21 14:50:09 BST
+ *    At                   2020-10-28 11:40:29 GMT
  *----------------------------------------------------------------------------------------------------
  */
 
@@ -31,6 +31,8 @@ import javax.annotation.Nullable;
 import javax.annotation.concurrent.Immutable;
 
 import com.google.common.collect.ImmutableSet;
+import com.symphony.oss.canon.json.ParserException;
+import com.symphony.oss.canon.json.model.JsonDomNode;
 import com.symphony.oss.canon.json.model.JsonObject;
 import com.symphony.oss.canon2.runtime.java.IObjectEntityInitialiser;
 import com.symphony.oss.canon2.runtime.java.JsonObjectEntityInitialiser;
@@ -118,7 +120,7 @@ public class CanonAttributes extends ObjectEntity
     }
 
     /**
-     * Return the minjor type version for entities created by this factory.
+     * Return the minor type version for entities created by this factory.
      *
      * @return The minor type version for entities created by this factory.
      */
@@ -128,9 +130,21 @@ public class CanonAttributes extends ObjectEntity
     }
 
     @Override
-    public CanonAttributes newInstance(JsonObject jsonObject, ModelRegistry modelRegistry)
+    public CanonAttributes newInstance(JsonDomNode node, ModelRegistry modelRegistry)
     {
-      return new CanonAttributes(new JsonInitialiser(jsonObject, modelRegistry));
+      if(node instanceof JsonObject)
+      {
+        return new CanonAttributes(new JsonInitialiser((JsonObject)node, modelRegistry));
+      }
+
+      if(!modelRegistry.getParserValidation().isIgnoreInvalidAttributes())
+      {
+        throw new ParserException("CanonAttributes must be an Object node not " + node.getClass().getName(), node.getContext());
+      }
+      else
+      {
+        return null;
+      }
     }
   }
 
@@ -155,12 +169,12 @@ public class CanonAttributes extends ObjectEntity
       /**
        * Constructor.
        * 
-       * @param jsonObject      A JSON Object.
+       * @param json            JSON serialised form.
        * @param modelRegistry   A parser context for deserialisation.
        */
-    public JsonInitialiser(JsonObject jsonObject, ModelRegistry modelRegistry)
+    public JsonInitialiser(JsonObject json, ModelRegistry modelRegistry)
     {
-      super(jsonObject, modelRegistry);
+      super(json, modelRegistry);
     }
 
     @Override
@@ -208,8 +222,9 @@ public class CanonAttributes extends ObjectEntity
     {
     }*/
 
+
     @Override
-    public JsonObject getJsonObject()
+    public JsonObject getJson()
     {
       JsonObject.Builder builder = new JsonObject.Builder();
 
@@ -225,12 +240,6 @@ public class CanonAttributes extends ObjectEntity
     public void populateJson(JsonObject.Builder builder)
     {
       super.populateJson(builder);
-    }
-
-    @Override
-    public void validate(FaultAccumulator faultAccumulator)
-    {
-      super.validate(faultAccumulator);
     }
 
     @Override
@@ -256,6 +265,18 @@ public class CanonAttributes extends ObjectEntity
     {
       return TYPE_MINOR_VERSION;
     }
+
+    @Override
+    public void validate(FaultAccumulator faultAccumulator)
+    {
+      super.validate(faultAccumulator);
+    }
+  }
+
+  //@Override
+  public ImmutableSet<String> getCanonUnknownKeys()
+  {
+    return unknownKeys_;
   }
 
   /**
@@ -288,11 +309,6 @@ public class CanonAttributes extends ObjectEntity
     }
   }
 
-  @Override
-  public ImmutableSet<String> getCanonUnknownKeys()
-  {
-    return unknownKeys_;
-  }
 
   @Override
   public boolean equals(Object obj)
@@ -309,6 +325,8 @@ public class CanonAttributes extends ObjectEntity
     return toString().hashCode();
   }
 
+// entity.additionalProperties??
+// innerClasses
 }
 
 /*----------------------------------------------------------------------------------------------------

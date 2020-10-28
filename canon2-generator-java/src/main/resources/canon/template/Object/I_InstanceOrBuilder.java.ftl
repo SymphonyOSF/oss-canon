@@ -1,7 +1,7 @@
 <#include "/copyrightHeader.ftl"/>
 <#include "InstanceOrBuilder.ftl"/>
 <#assign imports = entity.imports + [
-  "com.symphony.oss.canon2.runtime.java.IObjectEntityInitialiser"
+  "com.symphony.oss.canon2.runtime.java.I${entity.initialiserType}"
   ]>
 <#macro importType schema>
   <#if schema.externalType??>

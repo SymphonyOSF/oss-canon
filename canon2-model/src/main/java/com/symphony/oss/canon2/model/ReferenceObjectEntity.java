@@ -21,7 +21,7 @@
  *    Generator groupId    org.symphonyoss.s2.canon
  *              artifactId canon2-generator-java
  *    Template name        template/Object/_Entity.java.ftl
- *    At                   2020-10-21 14:50:09 BST
+ *    At                   2020-10-28 11:40:29 GMT
  *----------------------------------------------------------------------------------------------------
  */
 
@@ -32,6 +32,7 @@ import javax.annotation.Nullable;
 import javax.annotation.concurrent.Immutable;
 
 import com.google.common.collect.ImmutableSet;
+import com.symphony.oss.canon.json.ParserException;
 import com.symphony.oss.canon.json.model.JsonDomNode;
 import com.symphony.oss.canon.json.model.JsonNull;
 import com.symphony.oss.canon.json.model.JsonObject;
@@ -81,7 +82,7 @@ public abstract class ReferenceObjectEntity extends ObjectEntity
       node = jsonInitialiser.get("$ref");
       if(node == null || node instanceof JsonNull)
       {
-        throw new IllegalArgumentException("$ref is required.");
+        throw new ParserException("$ref is required.", jsonInitialiser.getJson().getContext());
       }
       else
       {
@@ -91,7 +92,7 @@ public abstract class ReferenceObjectEntity extends ObjectEntity
         }
         else 
         {
-          throw new IllegalArgumentException("$ref must be an instance of JsonString not " + node.getClass().getName());
+          throw new ParserException("$ref must be an instance of JsonString not " + node.getClass().getName(), node.getContext());
         }
       }
       unknownKeys_ = jsonInitialiser.getCanonUnknownKeys();
@@ -145,7 +146,7 @@ public abstract class ReferenceObjectEntity extends ObjectEntity
     }
 
     /**
-     * Return the minjor type version for entities created by this factory.
+     * Return the minor type version for entities created by this factory.
      *
      * @return The minor type version for entities created by this factory.
      */
@@ -155,9 +156,21 @@ public abstract class ReferenceObjectEntity extends ObjectEntity
     }
 
     @Override
-    public ReferenceObject newInstance(JsonObject jsonObject, ModelRegistry modelRegistry)
+    public ReferenceObject newInstance(JsonDomNode node, ModelRegistry modelRegistry)
     {
-      return new ReferenceObject(new JsonInitialiser(jsonObject, modelRegistry));
+      if(node instanceof JsonObject)
+      {
+        return new ReferenceObject(new JsonInitialiser((JsonObject)node, modelRegistry));
+      }
+
+      if(!modelRegistry.getParserValidation().isIgnoreInvalidAttributes())
+      {
+        throw new ParserException("ReferenceObject must be an Object node not " + node.getClass().getName(), node.getContext());
+      }
+      else
+      {
+        return null;
+      }
     }
   }
 
@@ -182,12 +195,12 @@ public abstract class ReferenceObjectEntity extends ObjectEntity
       /**
        * Constructor.
        * 
-       * @param jsonObject      A JSON Object.
+       * @param json            JSON serialised form.
        * @param modelRegistry   A parser context for deserialisation.
        */
-    public JsonInitialiser(JsonObject jsonObject, ModelRegistry modelRegistry)
+    public JsonInitialiser(JsonObject json, ModelRegistry modelRegistry)
     {
-      super(jsonObject, modelRegistry);
+      super(json, modelRegistry);
     }
 
     @Override
@@ -239,7 +252,7 @@ public abstract class ReferenceObjectEntity extends ObjectEntity
         }
         else if(!modelRegistry.getParserValidation().isIgnoreInvalidAttributes())
         {
-          throw new IllegalArgumentException("$ref must be an instance of JsonString not " + node.getClass().getName());
+          throw new ParserException("$ref must be an instance of JsonString not " + node.getClass().getName(), node.getContext());
         }
       }
       return super.withValues(jsonObject, modelRegistry);
@@ -279,8 +292,9 @@ public abstract class ReferenceObjectEntity extends ObjectEntity
       return self();
     }
 
+
     @Override
-    public JsonObject getJsonObject()
+    public JsonObject getJson()
     {
       JsonObject.Builder builder = new JsonObject.Builder();
 
@@ -301,13 +315,6 @@ public abstract class ReferenceObjectEntity extends ObjectEntity
       {
           builder.addIfNotNull("$ref", get$ref());
       }
-    }
-
-    @Override
-    public void validate(FaultAccumulator faultAccumulator)
-    {
-      super.validate(faultAccumulator);
-      faultAccumulator.checkNotNull(_$ref_, "$ref");
     }
 
     @Override
@@ -333,6 +340,19 @@ public abstract class ReferenceObjectEntity extends ObjectEntity
     {
       return TYPE_MINOR_VERSION;
     }
+
+    @Override
+    public void validate(FaultAccumulator faultAccumulator)
+    {
+      super.validate(faultAccumulator);
+      faultAccumulator.checkNotNull(_$ref_, "$ref");
+    }
+  }
+
+  //@Override
+  public ImmutableSet<String> getCanonUnknownKeys()
+  {
+    return unknownKeys_;
   }
 
   /**
@@ -365,11 +385,6 @@ public abstract class ReferenceObjectEntity extends ObjectEntity
     }
   }
 
-  @Override
-  public ImmutableSet<String> getCanonUnknownKeys()
-  {
-    return unknownKeys_;
-  }
 
   /**
    * Return the value of the $ref attribute.
@@ -396,6 +411,8 @@ public abstract class ReferenceObjectEntity extends ObjectEntity
     return toString().hashCode();
   }
 
+// entity.additionalProperties??
+// innerClasses
 }
 
 /*----------------------------------------------------------------------------------------------------

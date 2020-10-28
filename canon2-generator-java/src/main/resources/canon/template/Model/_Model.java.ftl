@@ -2,7 +2,7 @@
 
 package ${genPackage};
 
-import com.symphony.oss.canon2.runtime.java.ObjectEntity;
+import com.symphony.oss.canon2.runtime.java.Entity;
 
 /**
  * Model class for ${model.name}
@@ -20,7 +20,7 @@ import com.symphony.oss.canon2.runtime.java.ObjectEntity;
 public class ${model.camelCapitalizedName}Model
 {
   /** Factories for every object in the model. */
-  public static final ObjectEntity.Factory<?>[] FACTORIES = new ObjectEntity.Factory<?>[]
+  public static final Entity.Factory<?>[] FACTORIES = new Entity.Factory<?>[]
   {
 <#macro generateFactories indent object prefix>
 <#t>${separator}${indent}${prefix}${object.camelCapitalizedName}.FACTORY<#assign separator = ",\n"/><#list object.innerClasses as innerClass>

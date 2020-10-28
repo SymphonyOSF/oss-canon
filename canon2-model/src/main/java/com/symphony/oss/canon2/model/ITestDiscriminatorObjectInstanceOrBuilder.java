@@ -32,17 +32,17 @@ import javax.annotation.Nullable;
 import com.symphony.oss.canon2.runtime.java.IObjectEntityInitialiser;
 
 /**
- * Instance or Builder for Object ComponentsObject
+ * Instance or Builder for Object TestDiscriminatorObject
  */
-public interface IComponentsObjectInstanceOrBuilder extends IObjectEntityInitialiser
+public interface ITestDiscriminatorObjectInstanceOrBuilder extends IObjectEntityInitialiser
 {
   
   /**
-   * Return the value of the schemas attribute.
+   * Return the value of the propertyName attribute.
    *
-   * @return the value of the schemas attribute.
+   * @return the value of the propertyName attribute.
    */
-  @Nullable SchemasObject getSchemas();
+  @Nullable String getPropertyName();
 }
 /*----------------------------------------------------------------------------------------------------
  * End of template template/Object/I_InstanceOrBuilder.java.ftl

@@ -49,6 +49,11 @@ JavaSchemaTemplateModel>
     minItems_ = resolvedSchema.getSchema().getMinItems();
     maxItems_ = resolvedSchema.getSchema().getMaxItems();
   }
+  
+  public String getBaseSuperType()
+  {
+    return "Entity";
+  }
 
   @Override
   public void setElementType(JavaSchemaTemplateModel elementType)

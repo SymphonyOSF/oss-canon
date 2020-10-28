@@ -21,7 +21,7 @@
  *    Generator groupId    org.symphonyoss.s2.canon
  *              artifactId canon2-generator-java
  *    Template name        template/Object/_Entity.java.ftl
- *    At                   2020-10-21 14:50:09 BST
+ *    At                   2020-10-28 11:40:29 GMT
  *----------------------------------------------------------------------------------------------------
  */
 
@@ -36,6 +36,7 @@ import javax.annotation.Nullable;
 import javax.annotation.concurrent.Immutable;
 
 import com.google.common.collect.ImmutableSet;
+import com.symphony.oss.canon.json.ParserException;
 import com.symphony.oss.canon.json.model.JsonArray;
 import com.symphony.oss.canon.json.model.JsonBoolean;
 import com.symphony.oss.canon.json.model.JsonDomNode;
@@ -115,7 +116,7 @@ public abstract class SchemaEntity extends ObjectEntity
         }
         else 
         {
-          throw new IllegalArgumentException("maxItems must be an instance of JsonParsedNumber not " + node.getClass().getName());
+          throw new ParserException("maxItems must be an instance of JsonParsedNumber not " + node.getClass().getName(), node.getContext());
         }
       }
 
@@ -132,7 +133,7 @@ public abstract class SchemaEntity extends ObjectEntity
         }
         else 
         {
-          throw new IllegalArgumentException("x-canon-builderFacade must be an instance of JsonBoolean not " + node.getClass().getName());
+          throw new ParserException("x-canon-builderFacade must be an instance of JsonBoolean not " + node.getClass().getName(), node.getContext());
         }
       }
 
@@ -149,7 +150,7 @@ public abstract class SchemaEntity extends ObjectEntity
         }
         else 
         {
-          throw new IllegalArgumentException("format must be an instance of JsonString not " + node.getClass().getName());
+          throw new ParserException("format must be an instance of JsonString not " + node.getClass().getName(), node.getContext());
         }
       }
 
@@ -166,7 +167,7 @@ public abstract class SchemaEntity extends ObjectEntity
         }
         else 
         {
-          throw new IllegalArgumentException("x-canon-cardinality must be an instance of JsonString not " + node.getClass().getName());
+          throw new ParserException("x-canon-cardinality must be an instance of JsonString not " + node.getClass().getName(), node.getContext());
         }
       }
 
@@ -183,7 +184,7 @@ public abstract class SchemaEntity extends ObjectEntity
         }
         else 
         {
-          throw new IllegalArgumentException("x-canon-identifier must be an instance of JsonString not " + node.getClass().getName());
+          throw new ParserException("x-canon-identifier must be an instance of JsonString not " + node.getClass().getName(), node.getContext());
         }
       }
 
@@ -200,7 +201,7 @@ public abstract class SchemaEntity extends ObjectEntity
         }
         else 
         {
-          throw new IllegalArgumentException("type must be an instance of JsonString not " + node.getClass().getName());
+          throw new ParserException("type must be an instance of JsonString not " + node.getClass().getName(), node.getContext());
         }
       }
 
@@ -217,7 +218,7 @@ public abstract class SchemaEntity extends ObjectEntity
         }
         else 
         {
-          throw new IllegalArgumentException("x-canon-facade must be an instance of JsonBoolean not " + node.getClass().getName());
+          throw new ParserException("x-canon-facade must be an instance of JsonBoolean not " + node.getClass().getName(), node.getContext());
         }
       }
 
@@ -240,7 +241,7 @@ public abstract class SchemaEntity extends ObjectEntity
             }
             else 
             {
-              throw new IllegalArgumentException("enum items must be an instance of JsonString not " + item0.getClass().getName());
+              throw new ParserException("enum items must be an instance of JsonString not " + item0.getClass().getName(), item0.getContext());
             }
             itemSet0.add(itemValue0);
           }
@@ -248,7 +249,7 @@ public abstract class SchemaEntity extends ObjectEntity
         }
         else 
         {
-          throw new IllegalArgumentException("enum must be a JsonArray node not " + node.getClass().getName());
+          throw new ParserException("enum must be a JsonArray node not " + node.getClass().getName(), node.getContext());
         }
       }
 
@@ -271,7 +272,7 @@ public abstract class SchemaEntity extends ObjectEntity
             }
             else 
             {
-              throw new IllegalArgumentException("required items must be an instance of JsonString not " + item0.getClass().getName());
+              throw new ParserException("required items must be an instance of JsonString not " + item0.getClass().getName(), item0.getContext());
             }
             itemSet0.add(itemValue0);
           }
@@ -279,7 +280,7 @@ public abstract class SchemaEntity extends ObjectEntity
         }
         else 
         {
-          throw new IllegalArgumentException("required must be a JsonArray node not " + node.getClass().getName());
+          throw new ParserException("required must be a JsonArray node not " + node.getClass().getName(), node.getContext());
         }
       }
 
@@ -290,14 +291,8 @@ public abstract class SchemaEntity extends ObjectEntity
       }
       else
       {
-        if(node instanceof JsonObject)
-        {
-          _discriminator_ = jsonInitialiser.getModelRegistry().newInstance((JsonObject)node, DiscriminatorObject.TYPE_ID, DiscriminatorObject.class);
-        }
-        else 
-        {
-          throw new IllegalArgumentException("discriminator must be an Object node not " + node.getClass().getName());
-        }
+    
+        _discriminator_ = DiscriminatorObject.FACTORY.newInstance(node, jsonInitialiser.getModelRegistry());
       }
 
       node = jsonInitialiser.get("minItems");
@@ -313,7 +308,7 @@ public abstract class SchemaEntity extends ObjectEntity
         }
         else 
         {
-          throw new IllegalArgumentException("minItems must be an instance of JsonParsedNumber not " + node.getClass().getName());
+          throw new ParserException("minItems must be an instance of JsonParsedNumber not " + node.getClass().getName(), node.getContext());
         }
       }
 
@@ -330,21 +325,15 @@ public abstract class SchemaEntity extends ObjectEntity
           for(JsonDomNode item0 : (JsonArray)node)
           {
             SchemaOrRef itemValue0 = null;
-            if(item0 instanceof JsonObject)
-            {
-              itemValue0 = jsonInitialiser.getModelRegistry().newInstance((JsonObject)item0, SchemaOrRef.TYPE_ID, SchemaOrRef.class);
-            }
-            else 
-            {
-              throw new IllegalArgumentException("oneOf items must be an Object node not " + item0.getClass().getName());
-            }
+    
+            itemValue0 = SchemaOrRef.FACTORY.newInstance(item0, jsonInitialiser.getModelRegistry());
             itemSet0.add(itemValue0);
           }
           _oneOf_ = ImmutableSet.copyOf(itemSet0);
         }
         else 
         {
-          throw new IllegalArgumentException("oneOf must be a JsonArray node not " + node.getClass().getName());
+          throw new ParserException("oneOf must be a JsonArray node not " + node.getClass().getName(), node.getContext());
         }
       }
 
@@ -355,14 +344,8 @@ public abstract class SchemaEntity extends ObjectEntity
       }
       else
       {
-        if(node instanceof JsonObject)
-        {
-          _xCanonAttributes_ = jsonInitialiser.getModelRegistry().newInstance((JsonObject)node, CanonAttributes.TYPE_ID, CanonAttributes.class);
-        }
-        else 
-        {
-          throw new IllegalArgumentException("x-canon-attributes must be an Object node not " + node.getClass().getName());
-        }
+    
+        _xCanonAttributes_ = CanonAttributes.FACTORY.newInstance(node, jsonInitialiser.getModelRegistry());
       }
 
       node = jsonInitialiser.get("maximum");
@@ -378,7 +361,7 @@ public abstract class SchemaEntity extends ObjectEntity
         }
         else 
         {
-          throw new IllegalArgumentException("maximum must be an instance of JsonParsedNumber not " + node.getClass().getName());
+          throw new ParserException("maximum must be an instance of JsonParsedNumber not " + node.getClass().getName(), node.getContext());
         }
       }
 
@@ -389,14 +372,8 @@ public abstract class SchemaEntity extends ObjectEntity
       }
       else
       {
-        if(node instanceof JsonObject)
-        {
-          _additionalProperties_ = jsonInitialiser.getModelRegistry().newInstance((JsonObject)node, AdditionalProperties.TYPE_ID, AdditionalProperties.class);
-        }
-        else 
-        {
-          throw new IllegalArgumentException("additionalProperties must be an Object node not " + node.getClass().getName());
-        }
+    
+        _additionalProperties_ = AdditionalProperties.FACTORY.newInstance(node, jsonInitialiser.getModelRegistry());
       }
 
       node = jsonInitialiser.get("minimum");
@@ -412,7 +389,7 @@ public abstract class SchemaEntity extends ObjectEntity
         }
         else 
         {
-          throw new IllegalArgumentException("minimum must be an instance of JsonParsedNumber not " + node.getClass().getName());
+          throw new ParserException("minimum must be an instance of JsonParsedNumber not " + node.getClass().getName(), node.getContext());
         }
       }
 
@@ -423,14 +400,8 @@ public abstract class SchemaEntity extends ObjectEntity
       }
       else
       {
-        if(node instanceof JsonObject)
-        {
-          _properties_ = jsonInitialiser.getModelRegistry().newInstance((JsonObject)node, PropertiesObject.TYPE_ID, PropertiesObject.class);
-        }
-        else 
-        {
-          throw new IllegalArgumentException("properties must be an Object node not " + node.getClass().getName());
-        }
+    
+        _properties_ = PropertiesObject.FACTORY.newInstance(node, jsonInitialiser.getModelRegistry());
       }
 
       node = jsonInitialiser.get("x-canon-extends");
@@ -440,14 +411,8 @@ public abstract class SchemaEntity extends ObjectEntity
       }
       else
       {
-        if(node instanceof JsonObject)
-        {
-          _xCanonExtends_ = jsonInitialiser.getModelRegistry().newInstance((JsonObject)node, ReferenceObject.TYPE_ID, ReferenceObject.class);
-        }
-        else 
-        {
-          throw new IllegalArgumentException("x-canon-extends must be an Object node not " + node.getClass().getName());
-        }
+    
+        _xCanonExtends_ = ReferenceObject.FACTORY.newInstance(node, jsonInitialiser.getModelRegistry());
       }
       unknownKeys_ = jsonInitialiser.getCanonUnknownKeys();
     }
@@ -514,7 +479,7 @@ public abstract class SchemaEntity extends ObjectEntity
     }
 
     /**
-     * Return the minjor type version for entities created by this factory.
+     * Return the minor type version for entities created by this factory.
      *
      * @return The minor type version for entities created by this factory.
      */
@@ -524,9 +489,21 @@ public abstract class SchemaEntity extends ObjectEntity
     }
 
     @Override
-    public Schema newInstance(JsonObject jsonObject, ModelRegistry modelRegistry)
+    public Schema newInstance(JsonDomNode node, ModelRegistry modelRegistry)
     {
-      return new Schema(new JsonInitialiser(jsonObject, modelRegistry));
+      if(node instanceof JsonObject)
+      {
+        return new Schema(new JsonInitialiser((JsonObject)node, modelRegistry));
+      }
+
+      if(!modelRegistry.getParserValidation().isIgnoreInvalidAttributes())
+      {
+        throw new ParserException("Schema must be an Object node not " + node.getClass().getName(), node.getContext());
+      }
+      else
+      {
+        return null;
+      }
     }
   }
 
@@ -551,12 +528,12 @@ public abstract class SchemaEntity extends ObjectEntity
       /**
        * Constructor.
        * 
-       * @param jsonObject      A JSON Object.
+       * @param json            JSON serialised form.
        * @param modelRegistry   A parser context for deserialisation.
        */
-    public JsonInitialiser(JsonObject jsonObject, ModelRegistry modelRegistry)
+    public JsonInitialiser(JsonObject json, ModelRegistry modelRegistry)
     {
-      super(jsonObject, modelRegistry);
+      super(json, modelRegistry);
     }
 
     @Override
@@ -642,7 +619,7 @@ public abstract class SchemaEntity extends ObjectEntity
         }
         else if(!modelRegistry.getParserValidation().isIgnoreInvalidAttributes())
         {
-          throw new IllegalArgumentException("maxItems must be an instance of JsonParsedNumber not " + node.getClass().getName());
+          throw new ParserException("maxItems must be an instance of JsonParsedNumber not " + node.getClass().getName(), node.getContext());
         }
       }
       if(jsonObject.containsKey("x-canon-builderFacade"))
@@ -654,7 +631,7 @@ public abstract class SchemaEntity extends ObjectEntity
         }
         else if(!modelRegistry.getParserValidation().isIgnoreInvalidAttributes())
         {
-          throw new IllegalArgumentException("x-canon-builderFacade must be an instance of JsonBoolean not " + node.getClass().getName());
+          throw new ParserException("x-canon-builderFacade must be an instance of JsonBoolean not " + node.getClass().getName(), node.getContext());
         }
       }
       if(jsonObject.containsKey("format"))
@@ -666,7 +643,7 @@ public abstract class SchemaEntity extends ObjectEntity
         }
         else if(!modelRegistry.getParserValidation().isIgnoreInvalidAttributes())
         {
-          throw new IllegalArgumentException("format must be an instance of JsonString not " + node.getClass().getName());
+          throw new ParserException("format must be an instance of JsonString not " + node.getClass().getName(), node.getContext());
         }
       }
       if(jsonObject.containsKey("x-canon-cardinality"))
@@ -678,7 +655,7 @@ public abstract class SchemaEntity extends ObjectEntity
         }
         else if(!modelRegistry.getParserValidation().isIgnoreInvalidAttributes())
         {
-          throw new IllegalArgumentException("x-canon-cardinality must be an instance of JsonString not " + node.getClass().getName());
+          throw new ParserException("x-canon-cardinality must be an instance of JsonString not " + node.getClass().getName(), node.getContext());
         }
       }
       if(jsonObject.containsKey("x-canon-identifier"))
@@ -690,7 +667,7 @@ public abstract class SchemaEntity extends ObjectEntity
         }
         else if(!modelRegistry.getParserValidation().isIgnoreInvalidAttributes())
         {
-          throw new IllegalArgumentException("x-canon-identifier must be an instance of JsonString not " + node.getClass().getName());
+          throw new ParserException("x-canon-identifier must be an instance of JsonString not " + node.getClass().getName(), node.getContext());
         }
       }
       if(jsonObject.containsKey("type"))
@@ -702,7 +679,7 @@ public abstract class SchemaEntity extends ObjectEntity
         }
         else if(!modelRegistry.getParserValidation().isIgnoreInvalidAttributes())
         {
-          throw new IllegalArgumentException("type must be an instance of JsonString not " + node.getClass().getName());
+          throw new ParserException("type must be an instance of JsonString not " + node.getClass().getName(), node.getContext());
         }
       }
       if(jsonObject.containsKey("x-canon-facade"))
@@ -714,7 +691,7 @@ public abstract class SchemaEntity extends ObjectEntity
         }
         else if(!modelRegistry.getParserValidation().isIgnoreInvalidAttributes())
         {
-          throw new IllegalArgumentException("x-canon-facade must be an instance of JsonBoolean not " + node.getClass().getName());
+          throw new ParserException("x-canon-facade must be an instance of JsonBoolean not " + node.getClass().getName(), node.getContext());
         }
       }
       if(jsonObject.containsKey("enum"))
@@ -732,7 +709,7 @@ public abstract class SchemaEntity extends ObjectEntity
             }
             else if(!modelRegistry.getParserValidation().isIgnoreInvalidAttributes())
             {
-              throw new IllegalArgumentException("enum items must be an instance of JsonString not " + item0.getClass().getName());
+              throw new ParserException("enum items must be an instance of JsonString not " + item0.getClass().getName(), item0.getContext());
             }
             itemSet0.add(itemValue0);
           }
@@ -740,7 +717,7 @@ public abstract class SchemaEntity extends ObjectEntity
         }
         else if(!modelRegistry.getParserValidation().isIgnoreInvalidAttributes())
         {
-          throw new IllegalArgumentException("enum must be a JsonArray node not " + node.getClass().getName());
+          throw new ParserException("enum must be a JsonArray node not " + node.getClass().getName(), node.getContext());
         }
       }
       if(jsonObject.containsKey("required"))
@@ -758,7 +735,7 @@ public abstract class SchemaEntity extends ObjectEntity
             }
             else if(!modelRegistry.getParserValidation().isIgnoreInvalidAttributes())
             {
-              throw new IllegalArgumentException("required items must be an instance of JsonString not " + item0.getClass().getName());
+              throw new ParserException("required items must be an instance of JsonString not " + item0.getClass().getName(), item0.getContext());
             }
             itemSet0.add(itemValue0);
           }
@@ -766,20 +743,14 @@ public abstract class SchemaEntity extends ObjectEntity
         }
         else if(!modelRegistry.getParserValidation().isIgnoreInvalidAttributes())
         {
-          throw new IllegalArgumentException("required must be a JsonArray node not " + node.getClass().getName());
+          throw new ParserException("required must be a JsonArray node not " + node.getClass().getName(), node.getContext());
         }
       }
       if(jsonObject.containsKey("discriminator"))
       {
         JsonDomNode  node = jsonObject.get("discriminator");
-        if(node instanceof JsonObject)
-        {
-          _discriminator_ = modelRegistry.newInstance((JsonObject)node, DiscriminatorObject.TYPE_ID, DiscriminatorObject.class);
-        }
-        else if(!modelRegistry.getParserValidation().isIgnoreInvalidAttributes())
-        {
-          throw new IllegalArgumentException("discriminator must be an Object node not " + node.getClass().getName());
-        }
+    
+        _discriminator_ = DiscriminatorObject.FACTORY.newInstance(node, modelRegistry);
       }
       if(jsonObject.containsKey("minItems"))
       {
@@ -790,7 +761,7 @@ public abstract class SchemaEntity extends ObjectEntity
         }
         else if(!modelRegistry.getParserValidation().isIgnoreInvalidAttributes())
         {
-          throw new IllegalArgumentException("minItems must be an instance of JsonParsedNumber not " + node.getClass().getName());
+          throw new ParserException("minItems must be an instance of JsonParsedNumber not " + node.getClass().getName(), node.getContext());
         }
       }
       if(jsonObject.containsKey("oneOf"))
@@ -802,34 +773,22 @@ public abstract class SchemaEntity extends ObjectEntity
           for(JsonDomNode item0 : (JsonArray)node)
           {
             SchemaOrRef itemValue0 = null;
-            if(item0 instanceof JsonObject)
-            {
-              itemValue0 = modelRegistry.newInstance((JsonObject)item0, SchemaOrRef.TYPE_ID, SchemaOrRef.class);
-            }
-            else if(!modelRegistry.getParserValidation().isIgnoreInvalidAttributes())
-            {
-              throw new IllegalArgumentException("oneOf items must be an Object node not " + item0.getClass().getName());
-            }
+    
+            itemValue0 = SchemaOrRef.FACTORY.newInstance(item0, modelRegistry);
             itemSet0.add(itemValue0);
           }
           _oneOf_ = ImmutableSet.copyOf(itemSet0);
         }
         else if(!modelRegistry.getParserValidation().isIgnoreInvalidAttributes())
         {
-          throw new IllegalArgumentException("oneOf must be a JsonArray node not " + node.getClass().getName());
+          throw new ParserException("oneOf must be a JsonArray node not " + node.getClass().getName(), node.getContext());
         }
       }
       if(jsonObject.containsKey("x-canon-attributes"))
       {
         JsonDomNode  node = jsonObject.get("x-canon-attributes");
-        if(node instanceof JsonObject)
-        {
-          _xCanonAttributes_ = modelRegistry.newInstance((JsonObject)node, CanonAttributes.TYPE_ID, CanonAttributes.class);
-        }
-        else if(!modelRegistry.getParserValidation().isIgnoreInvalidAttributes())
-        {
-          throw new IllegalArgumentException("x-canon-attributes must be an Object node not " + node.getClass().getName());
-        }
+    
+        _xCanonAttributes_ = CanonAttributes.FACTORY.newInstance(node, modelRegistry);
       }
       if(jsonObject.containsKey("maximum"))
       {
@@ -840,20 +799,14 @@ public abstract class SchemaEntity extends ObjectEntity
         }
         else if(!modelRegistry.getParserValidation().isIgnoreInvalidAttributes())
         {
-          throw new IllegalArgumentException("maximum must be an instance of JsonParsedNumber not " + node.getClass().getName());
+          throw new ParserException("maximum must be an instance of JsonParsedNumber not " + node.getClass().getName(), node.getContext());
         }
       }
       if(jsonObject.containsKey("additionalProperties"))
       {
         JsonDomNode  node = jsonObject.get("additionalProperties");
-        if(node instanceof JsonObject)
-        {
-          _additionalProperties_ = modelRegistry.newInstance((JsonObject)node, AdditionalProperties.TYPE_ID, AdditionalProperties.class);
-        }
-        else if(!modelRegistry.getParserValidation().isIgnoreInvalidAttributes())
-        {
-          throw new IllegalArgumentException("additionalProperties must be an Object node not " + node.getClass().getName());
-        }
+    
+        _additionalProperties_ = AdditionalProperties.FACTORY.newInstance(node, modelRegistry);
       }
       if(jsonObject.containsKey("minimum"))
       {
@@ -864,32 +817,20 @@ public abstract class SchemaEntity extends ObjectEntity
         }
         else if(!modelRegistry.getParserValidation().isIgnoreInvalidAttributes())
         {
-          throw new IllegalArgumentException("minimum must be an instance of JsonParsedNumber not " + node.getClass().getName());
+          throw new ParserException("minimum must be an instance of JsonParsedNumber not " + node.getClass().getName(), node.getContext());
         }
       }
       if(jsonObject.containsKey("properties"))
       {
         JsonDomNode  node = jsonObject.get("properties");
-        if(node instanceof JsonObject)
-        {
-          _properties_ = modelRegistry.newInstance((JsonObject)node, PropertiesObject.TYPE_ID, PropertiesObject.class);
-        }
-        else if(!modelRegistry.getParserValidation().isIgnoreInvalidAttributes())
-        {
-          throw new IllegalArgumentException("properties must be an Object node not " + node.getClass().getName());
-        }
+    
+        _properties_ = PropertiesObject.FACTORY.newInstance(node, modelRegistry);
       }
       if(jsonObject.containsKey("x-canon-extends"))
       {
         JsonDomNode  node = jsonObject.get("x-canon-extends");
-        if(node instanceof JsonObject)
-        {
-          _xCanonExtends_ = modelRegistry.newInstance((JsonObject)node, ReferenceObject.TYPE_ID, ReferenceObject.class);
-        }
-        else if(!modelRegistry.getParserValidation().isIgnoreInvalidAttributes())
-        {
-          throw new IllegalArgumentException("x-canon-extends must be an Object node not " + node.getClass().getName());
-        }
+    
+        _xCanonExtends_ = ReferenceObject.FACTORY.newInstance(node, modelRegistry);
       }
       return super.withValues(jsonObject, modelRegistry);
     }
@@ -1348,8 +1289,9 @@ public abstract class SchemaEntity extends ObjectEntity
       return self();
     }
 
+
     @Override
-    public JsonObject getJsonObject()
+    public JsonObject getJson()
     {
       JsonObject.Builder builder = new JsonObject.Builder();
 
@@ -1423,7 +1365,7 @@ public abstract class SchemaEntity extends ObjectEntity
 
       if(getDiscriminator() != null)
       {
-          builder.addIfNotNull("discriminator", getDiscriminator().getJsonObject());
+          builder.addIfNotNull("discriminator", getDiscriminator().getJson());
       }
 
       if(getMinItems() != null)
@@ -1436,14 +1378,14 @@ public abstract class SchemaEntity extends ObjectEntity
           JsonArray.Builder arrayBuilder = new JsonArray.Builder();
           for(SchemaOrRef item : getOneOf())
           {
-            arrayBuilder.with(item.getJsonObject());
+            arrayBuilder.with(item.getJson());
           }
           builder.with("oneOf", arrayBuilder.build());
       }
 
       if(getXCanonAttributes() != null)
       {
-          builder.addIfNotNull("x-canon-attributes", getXCanonAttributes().getJsonObject());
+          builder.addIfNotNull("x-canon-attributes", getXCanonAttributes().getJson());
       }
 
       if(getMaximum() != null)
@@ -1453,7 +1395,7 @@ public abstract class SchemaEntity extends ObjectEntity
 
       if(getAdditionalProperties() != null)
       {
-          builder.addIfNotNull("additionalProperties", getAdditionalProperties().getJsonObject());
+          builder.addIfNotNull("additionalProperties", getAdditionalProperties().getJson());
       }
 
       if(getMinimum() != null)
@@ -1463,19 +1405,13 @@ public abstract class SchemaEntity extends ObjectEntity
 
       if(getProperties() != null)
       {
-          builder.addIfNotNull("properties", getProperties().getJsonObject());
+          builder.addIfNotNull("properties", getProperties().getJson());
       }
 
       if(getXCanonExtends() != null)
       {
-          builder.addIfNotNull("x-canon-extends", getXCanonExtends().getJsonObject());
+          builder.addIfNotNull("x-canon-extends", getXCanonExtends().getJson());
       }
-    }
-
-    @Override
-    public void validate(FaultAccumulator faultAccumulator)
-    {
-      super.validate(faultAccumulator);
     }
 
     @Override
@@ -1501,6 +1437,18 @@ public abstract class SchemaEntity extends ObjectEntity
     {
       return TYPE_MINOR_VERSION;
     }
+
+    @Override
+    public void validate(FaultAccumulator faultAccumulator)
+    {
+      super.validate(faultAccumulator);
+    }
+  }
+
+  //@Override
+  public ImmutableSet<String> getCanonUnknownKeys()
+  {
+    return unknownKeys_;
   }
 
   /**
@@ -1533,11 +1481,6 @@ public abstract class SchemaEntity extends ObjectEntity
     }
   }
 
-  @Override
-  public ImmutableSet<String> getCanonUnknownKeys()
-  {
-    return unknownKeys_;
-  }
 
   /**
    * Return the value of the maxItems attribute.
@@ -1734,6 +1677,8 @@ public abstract class SchemaEntity extends ObjectEntity
     return toString().hashCode();
   }
 
+// entity.additionalProperties??
+// innerClasses
 }
 
 /*----------------------------------------------------------------------------------------------------

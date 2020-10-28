@@ -44,7 +44,7 @@ public ${classModifier}class ${className} extends TypeDef implements Comparable<
   public ${className}(@Nonnull ${entity.javaType} value)
   {
     value_ = Objects.requireNonNull(value);
-    <@checkLimits "    " entity "value" "value"/>
+    <@checkLimits "    " entity "value" "value" "new new ParserException" ", value.getContext()"/>
   }
 
   /**
@@ -59,7 +59,7 @@ public ${classModifier}class ${className} extends TypeDef implements Comparable<
     if(node instanceof ${entity.jsonNodeType})
     {
       value_ = ((${entity.jsonNodeType})node).as${entity.javaType}();
-      <@checkLimits "    " entity "value" "value_"/>
+      <@checkLimits "    " entity "value" "value_" "new new ParserException" ", node.getContext()"/>
     }
     else
     {

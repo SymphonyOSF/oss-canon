@@ -21,7 +21,7 @@
  *    Generator groupId    org.symphonyoss.s2.canon
  *              artifactId canon2-generator-java
  *    Template name        template/Object/I_InstanceOrBuilder.java.ftl
- *    At                   2020-10-21 14:50:09 BST
+ *    At                   2020-10-28 11:40:29 GMT
  *----------------------------------------------------------------------------------------------------
  */
 
@@ -29,12 +29,12 @@ package com.symphony.oss.canon2.model;
 
 import javax.annotation.Nullable;
 
-import com.symphony.oss.canon2.runtime.java.IObjectEntityInitialiser;
+import com.symphony.oss.canon2.runtime.java.IEntityInitialiser;
 
 /**
  * Instance or Builder for Object AdditionalProperties
  */
-public interface IAdditionalPropertiesInstanceOrBuilder extends IObjectEntityInitialiser
+public interface IAdditionalPropertiesInstanceOrBuilder extends IEntityInitialiser
 {
   
   /**

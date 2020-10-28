@@ -21,7 +21,7 @@
  *    Generator groupId    org.symphonyoss.s2.canon
  *              artifactId canon2-generator-java
  *    Template name        template/Object/_.java.ftl
- *    At                   2020-10-21 14:50:09 BST
+ *    At                   2020-10-28 11:40:29 GMT
  *----------------------------------------------------------------------------------------------------
  */
 
@@ -31,6 +31,7 @@ import javax.annotation.Nullable;
 import javax.annotation.concurrent.Immutable;
 
 import com.google.common.collect.ImmutableSet;
+import com.symphony.oss.canon.json.ParserException;
 import com.symphony.oss.canon.json.model.JsonDomNode;
 import com.symphony.oss.canon.json.model.JsonNull;
 import com.symphony.oss.canon.json.model.JsonObject;
@@ -90,7 +91,7 @@ public class DiscriminatorObject extends ObjectEntity
         }
         else 
         {
-          throw new IllegalArgumentException("propertyName must be an instance of JsonString not " + node.getClass().getName());
+          throw new ParserException("propertyName must be an instance of JsonString not " + node.getClass().getName(), node.getContext());
         }
       }
       unknownKeys_ = jsonInitialiser.getCanonUnknownKeys();
@@ -141,7 +142,7 @@ public class DiscriminatorObject extends ObjectEntity
     }
 
     /**
-     * Return the minjor type version for entities created by this factory.
+     * Return the minor type version for entities created by this factory.
      *
      * @return The minor type version for entities created by this factory.
      */
@@ -151,9 +152,21 @@ public class DiscriminatorObject extends ObjectEntity
     }
 
     @Override
-    public DiscriminatorObject newInstance(JsonObject jsonObject, ModelRegistry modelRegistry)
+    public DiscriminatorObject newInstance(JsonDomNode node, ModelRegistry modelRegistry)
     {
-      return new DiscriminatorObject(new JsonInitialiser(jsonObject, modelRegistry));
+      if(node instanceof JsonObject)
+      {
+        return new DiscriminatorObject(new JsonInitialiser((JsonObject)node, modelRegistry));
+      }
+
+      if(!modelRegistry.getParserValidation().isIgnoreInvalidAttributes())
+      {
+        throw new ParserException("DiscriminatorObject must be an Object node not " + node.getClass().getName(), node.getContext());
+      }
+      else
+      {
+        return null;
+      }
     }
   }
 
@@ -178,12 +191,12 @@ public class DiscriminatorObject extends ObjectEntity
       /**
        * Constructor.
        * 
-       * @param jsonObject      A JSON Object.
+       * @param json            JSON serialised form.
        * @param modelRegistry   A parser context for deserialisation.
        */
-    public JsonInitialiser(JsonObject jsonObject, ModelRegistry modelRegistry)
+    public JsonInitialiser(JsonObject json, ModelRegistry modelRegistry)
     {
-      super(jsonObject, modelRegistry);
+      super(json, modelRegistry);
     }
 
     @Override
@@ -235,7 +248,7 @@ public class DiscriminatorObject extends ObjectEntity
         }
         else if(!modelRegistry.getParserValidation().isIgnoreInvalidAttributes())
         {
-          throw new IllegalArgumentException("propertyName must be an instance of JsonString not " + node.getClass().getName());
+          throw new ParserException("propertyName must be an instance of JsonString not " + node.getClass().getName(), node.getContext());
         }
       }
       return super.withValues(jsonObject, modelRegistry);
@@ -270,8 +283,9 @@ public class DiscriminatorObject extends ObjectEntity
       return self();
     }
 
+
     @Override
-    public JsonObject getJsonObject()
+    public JsonObject getJson()
     {
       JsonObject.Builder builder = new JsonObject.Builder();
 
@@ -292,12 +306,6 @@ public class DiscriminatorObject extends ObjectEntity
       {
           builder.addIfNotNull("propertyName", getPropertyName());
       }
-    }
-
-    @Override
-    public void validate(FaultAccumulator faultAccumulator)
-    {
-      super.validate(faultAccumulator);
     }
 
     @Override
@@ -323,6 +331,18 @@ public class DiscriminatorObject extends ObjectEntity
     {
       return TYPE_MINOR_VERSION;
     }
+
+    @Override
+    public void validate(FaultAccumulator faultAccumulator)
+    {
+      super.validate(faultAccumulator);
+    }
+  }
+
+  //@Override
+  public ImmutableSet<String> getCanonUnknownKeys()
+  {
+    return unknownKeys_;
   }
 
   /**
@@ -355,11 +375,6 @@ public class DiscriminatorObject extends ObjectEntity
     }
   }
 
-  @Override
-  public ImmutableSet<String> getCanonUnknownKeys()
-  {
-    return unknownKeys_;
-  }
 
   /**
    * Return the value of the propertyName attribute.
@@ -386,6 +401,8 @@ public class DiscriminatorObject extends ObjectEntity
     return toString().hashCode();
   }
 
+// entity.additionalProperties??
+// innerClasses
 }
 
 /*----------------------------------------------------------------------------------------------------

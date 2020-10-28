@@ -142,15 +142,6 @@
         "additionalProperties": {
           "type": "string",
           "format": "uri"
-        }
-      }, 
-      "TestDiscriminatorObject": {
-        "type": "object",
-        "x-canon-facade": false,
-        "properties": {
-          "propertyName": {
-            "type": "string"
-          }
         },
         "XXXadditionalProperties": true
       },

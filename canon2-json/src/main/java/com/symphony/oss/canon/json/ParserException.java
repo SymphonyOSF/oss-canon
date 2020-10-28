@@ -26,7 +26,7 @@ import java.util.Objects;
  * @author Bruce Skingle
  *
  */
-public class ParserException extends Exception
+public class ParserException extends RuntimeException
 {
   private static final long    serialVersionUID = 1L;
 

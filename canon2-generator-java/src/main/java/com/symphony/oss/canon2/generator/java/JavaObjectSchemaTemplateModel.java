@@ -50,9 +50,12 @@ JavaFieldTemplateModel
   private Map<String, JavaSchemaTemplateModel> innerClassMap_ = new HashMap<>();
   private boolean hasLimits_;
   private JavaSchemaTemplateModel superType_;
+  private final String baseSuperType_;
   private final String type_;
   private boolean additionalPropertiesAllowed_;
   private JavaSchemaTemplateModel additionalProperties_;
+  private final String initialiserType_;
+  private final String jsonNodeType_;
   
   
   JavaObjectSchemaTemplateModel(ResolvedSchema resolvedSchema, String identifier, String packageName, JavaOpenApiTemplateModel model,
@@ -62,8 +65,44 @@ JavaFieldTemplateModel
     
     type_ = resolvedSchema.getResolvedContainer() == null ? getCamelCapitalizedName() :
       capitalize(toCamelCase(resolvedSchema.getResolvedContainer().getName())) + "." + getCamelCapitalizedName();
+    
+    switch(resolvedSchema.getSchemaType())
+    {
+      case ONE_OF:
+      case ANY_OF:
+        initialiserType_ = "EntityInitialiser";
+        baseSuperType_ = "Entity";
+        jsonNodeType_ = "JsonDomNode";
+        break;
+        
+      default:
+        initialiserType_ = "ObjectEntityInitialiser";
+        baseSuperType_ = "ObjectEntity";
+        jsonNodeType_ = "JsonObject";
+    }
   }
   
+  public String getFullyQualifiedSuperTypeName()
+  {
+    if(superType_ == null)
+      return "com.symphony.oss.canon2.runtime.java." + baseSuperType_;
+    
+    return superType_.getPackageName() + "." + superType_.getType();
+  }
+  
+  public String getSuperTypeName()
+  {
+    if(superType_ == null)
+      return baseSuperType_;
+    
+    return superType_.getType();
+  }
+
+  public String getInitialiserType()
+  {
+    return initialiserType_;
+  }
+
   @Override
   public void setExtends(JavaSchemaTemplateModel extendsSchema)
   {
@@ -109,7 +148,7 @@ JavaFieldTemplateModel
   @Override
   public String getJsonNodeType()
   {
-    return "JsonObject";
+    return jsonNodeType_;
   }
 
   @Override

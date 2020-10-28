@@ -21,7 +21,7 @@
  *    Generator groupId    org.symphonyoss.s2.canon
  *              artifactId canon2-generator-java
  *    Template name        template/Object/_.java.ftl
- *    At                   2020-10-21 14:50:09 BST
+ *    At                   2020-10-28 11:40:29 GMT
  *----------------------------------------------------------------------------------------------------
  */
 
@@ -31,14 +31,15 @@ import javax.annotation.Nullable;
 import javax.annotation.concurrent.Immutable;
 
 import com.google.common.collect.ImmutableSet;
+import com.symphony.oss.canon.json.ParserException;
 import com.symphony.oss.canon.json.model.JsonBoolean;
 import com.symphony.oss.canon.json.model.JsonDomNode;
 import com.symphony.oss.canon.json.model.JsonNull;
 import com.symphony.oss.canon.json.model.JsonObject;
-import com.symphony.oss.canon2.runtime.java.IObjectEntityInitialiser;
-import com.symphony.oss.canon2.runtime.java.JsonObjectEntityInitialiser;
+import com.symphony.oss.canon2.runtime.java.Entity;
+import com.symphony.oss.canon2.runtime.java.IEntityInitialiser;
+import com.symphony.oss.canon2.runtime.java.JsonEntityInitialiser;
 import com.symphony.oss.canon2.runtime.java.ModelRegistry;
-import com.symphony.oss.canon2.runtime.java.ObjectEntity;
 import com.symphony.oss.commons.fault.FaultAccumulator;
 
 /**
@@ -46,7 +47,7 @@ import com.symphony.oss.commons.fault.FaultAccumulator;
  * Generated from AdditionalProperties at {entity.context.path}
  */
 @Immutable
-public class AdditionalProperties extends ObjectEntity
+public class AdditionalProperties extends Entity
 {
   /** Type ID */
   public static final String  TYPE_ID = "com.symphony.oss.canon2.model.AdditionalProperties";
@@ -72,55 +73,29 @@ public class AdditionalProperties extends ObjectEntity
   {
     super(initialiser);
 
-    if(initialiser instanceof JsonObjectEntityInitialiser)
+    if(initialiser instanceof JsonEntityInitialiser)
     {
-      JsonObjectEntityInitialiser jsonInitialiser = (JsonObjectEntityInitialiser)initialiser;
+      JsonEntityInitialiser jsonInitialiser = (JsonEntityInitialiser)initialiser;
 
-//      if(node instanceof JsonBoolean)
-//      {
-//        _$1_ = ((JsonBoolean)node).asBoolean();
-//      }
-//      else 
-//      {
-//        _$1_ = null;
-//      }
-      _schemaOrRef_ = jsonInitialiser.getModelRegistry().newInstance(jsonInitialiser.getJsonObject(), SchemaOrRef.TYPE_ID, SchemaOrRef.class);
-      
-      JsonDomNode  node;
+      JsonDomNode  node = jsonInitialiser.getJson();
+      int          valueCnt = 0;
 
-//      node = jsonInitialiser.get("SchemaOrRef");
-//      if(node == null || node instanceof JsonNull)
-//      {
-//        _schemaOrRef_ = null;
-//      }
-//      else
-//      {
-//        if(node instanceof JsonObject)
+
+//START
+    
+        _schemaOrRef_ = SchemaOrRef.FACTORY.newInstance(node, jsonInitialiser.getModelRegistry());
+
+
+//START
+//        if(node instanceof JsonBoolean)
 //        {
-//          _schemaOrRef_ = jsonInitialiser.getModelRegistry().newInstance((JsonObject)node, SchemaOrRef.TYPE_ID, SchemaOrRef.class);
+//          _$1_ = ((JsonBoolean)node).asBoolean();
 //        }
 //        else 
 //        {
-//          throw new IllegalArgumentException("SchemaOrRef must be an Object node not " + node.getClass().getName());
+//          throw new ParserException("$1 must be an instance of JsonBoolean not " + node.getClass().getName(), node.getContext());
 //        }
-//      }
-
-      node = jsonInitialiser.get("$1");
-      if(node == null || node instanceof JsonNull)
-      {
         _$1_ = null;
-      }
-      else
-      {
-        if(node instanceof JsonBoolean)
-        {
-          _$1_ = ((JsonBoolean)node).asBoolean();
-        }
-        else 
-        {
-          throw new IllegalArgumentException("$1 must be an instance of JsonBoolean not " + node.getClass().getName());
-        }
-      }
       unknownKeys_ = jsonInitialiser.getCanonUnknownKeys();
     }
     else
@@ -141,7 +116,7 @@ public class AdditionalProperties extends ObjectEntity
   /**
    * Factory class for AdditionalProperties.
    */
-  public static class Factory extends ObjectEntity.Factory<AdditionalProperties>
+  public static class Factory extends Entity.Factory<AdditionalProperties>
   {
     @Override
     public String getCanonType()
@@ -170,7 +145,7 @@ public class AdditionalProperties extends ObjectEntity
     }
 
     /**
-     * Return the minjor type version for entities created by this factory.
+     * Return the minor type version for entities created by this factory.
      *
      * @return The minor type version for entities created by this factory.
      */
@@ -180,16 +155,16 @@ public class AdditionalProperties extends ObjectEntity
     }
 
     @Override
-    public AdditionalProperties newInstance(JsonObject jsonObject, ModelRegistry modelRegistry)
+    public AdditionalProperties newInstance(JsonDomNode node, ModelRegistry modelRegistry)
     {
-      return new AdditionalProperties(new JsonInitialiser(jsonObject, modelRegistry));
+      return new AdditionalProperties(new JsonInitialiser(node, modelRegistry));
     }
   }
 
   /**
    * Abstract Initialiser for AdditionalProperties
    */
-  public interface Initialiser extends IObjectEntityInitialiser
+  public interface Initialiser extends IEntityInitialiser
   {
     /**
      * Return an instance or builder containing the values for a new instance.
@@ -202,17 +177,17 @@ public class AdditionalProperties extends ObjectEntity
   /**
    * JSON Initialiser for AdditionalProperties
    */
-  public static class JsonInitialiser extends JsonObjectEntityInitialiser implements Initialiser
+  public static class JsonInitialiser extends JsonEntityInitialiser implements Initialiser
   {
       /**
        * Constructor.
        * 
-       * @param jsonObject      A JSON Object.
+       * @param json            JSON serialised form.
        * @param modelRegistry   A parser context for deserialisation.
        */
-    public JsonInitialiser(JsonObject jsonObject, ModelRegistry modelRegistry)
+    public JsonInitialiser(JsonDomNode json, ModelRegistry modelRegistry)
     {
-      super(jsonObject, modelRegistry);
+      super(json, modelRegistry);
     }
 
     @Override
@@ -229,7 +204,7 @@ public class AdditionalProperties extends ObjectEntity
    * @param <B> The concrete type of the built object.
    */
   public static abstract class AbstractBuilder<T extends AbstractBuilder<T,B>, B extends AdditionalProperties>
-    extends ObjectEntity.AbstractBuilder<T,B>
+    extends Entity.AbstractBuilder<T,B>
     implements IAdditionalPropertiesInstanceOrBuilder, Initialiser
   {
     protected SchemaOrRef                _schemaOrRef_;
@@ -260,14 +235,8 @@ public class AdditionalProperties extends ObjectEntity
       if(jsonObject.containsKey("SchemaOrRef"))
       {
         JsonDomNode  node = jsonObject.get("SchemaOrRef");
-        if(node instanceof JsonObject)
-        {
-          _schemaOrRef_ = modelRegistry.newInstance((JsonObject)node, SchemaOrRef.TYPE_ID, SchemaOrRef.class);
-        }
-        else if(!modelRegistry.getParserValidation().isIgnoreInvalidAttributes())
-        {
-          throw new IllegalArgumentException("SchemaOrRef must be an Object node not " + node.getClass().getName());
-        }
+    
+        _schemaOrRef_ = SchemaOrRef.FACTORY.newInstance(node, modelRegistry);
       }
       if(jsonObject.containsKey("$1"))
       {
@@ -278,7 +247,7 @@ public class AdditionalProperties extends ObjectEntity
         }
         else if(!modelRegistry.getParserValidation().isIgnoreInvalidAttributes())
         {
-          throw new IllegalArgumentException("$1 must be an instance of JsonBoolean not " + node.getClass().getName());
+          throw new ParserException("$1 must be an instance of JsonBoolean not " + node.getClass().getName(), node.getContext());
         }
       }
       return super.withValues(jsonObject, modelRegistry);
@@ -338,33 +307,11 @@ public class AdditionalProperties extends ObjectEntity
       return self();
     }
 
-    @Override
-    public JsonObject getJsonObject()
-    {
-      JsonObject.Builder builder = new JsonObject.Builder();
-
-      builder.addIfNotNull(JSON_TYPE, AdditionalProperties.TYPE_ID);
-      builder.addIfNotNull(JSON_VERSION, AdditionalProperties.TYPE_VERSION);
-
-      populateJson(builder);
-
-      return builder.build();
-    }
 
     @Override
-    public void populateJson(JsonObject.Builder builder)
+    public JsonDomNode getJson()
     {
-      super.populateJson(builder);
-
-      if(getSchemaOrRef() != null)
-      {
-          builder.addIfNotNull("SchemaOrRef", getSchemaOrRef().getJsonObject());
-      }
-
-      if(get$1() != null)
-      {
-          builder.addIfNotNull("$1", get$1());
-      }
+      return null; // TODO: implement
     }
 
     @Override
@@ -372,30 +319,12 @@ public class AdditionalProperties extends ObjectEntity
     {
       super.validate(faultAccumulator);
     }
+  }
 
-    @Override
-    public String getCanonType()
-    {
-      return TYPE_ID;
-    }
-
-    @Override
-    public String getCanonVersion()
-    {
-      return TYPE_VERSION;
-    }
-
-    @Override
-    public @Nullable Integer getCanonMajorVersion()
-    {
-      return TYPE_MAJOR_VERSION;
-    }
-
-    @Override
-    public @Nullable Integer getCanonMinorVersion()
-    {
-      return TYPE_MINOR_VERSION;
-    }
+  //@Override
+  public ImmutableSet<String> getCanonUnknownKeys()
+  {
+    return unknownKeys_;
   }
 
   /**
@@ -428,11 +357,6 @@ public class AdditionalProperties extends ObjectEntity
     }
   }
 
-  @Override
-  public ImmutableSet<String> getCanonUnknownKeys()
-  {
-    return unknownKeys_;
-  }
 
   /**
    * Return the value of the SchemaOrRef attribute.
@@ -485,6 +409,8 @@ public class AdditionalProperties extends ObjectEntity
 
     return null;
   }
+// entity.additionalProperties??
+// innerClasses
 }
 
 /*----------------------------------------------------------------------------------------------------

@@ -39,7 +39,6 @@ public abstract class JsonObjectEntityInitialiser extends JsonEntityInitialiser 
   private final String        type_;
   private final Integer       majorVersion_;
   private final Integer       minorVersion_;
-  private final ModelRegistry modelRegistry_;
   private final Set<String>   keySet_;
   
   /**
@@ -50,10 +49,9 @@ public abstract class JsonObjectEntityInitialiser extends JsonEntityInitialiser 
    */
   public JsonObjectEntityInitialiser(JsonObject jsonObject, ModelRegistry modelRegistry)
   {
-    super(jsonObject);
+    super(jsonObject, modelRegistry);
     
     jsonObject_ = jsonObject;
-    modelRegistry_ = modelRegistry;
     keySet_ = new HashSet<>(jsonObject.getNames());
     
     if(keySet_.remove(Entity.JSON_TYPE))
@@ -97,15 +95,9 @@ public abstract class JsonObjectEntityInitialiser extends JsonEntityInitialiser 
   }
 
   @Override
-  public JsonObject getJsonObject()
+  public JsonObject getJson()
   {
     return jsonObject_;
-  }
-
-  @Override
-  public ModelRegistry getModelRegistry()
-  {
-    return modelRegistry_;
   }
 
   @Override

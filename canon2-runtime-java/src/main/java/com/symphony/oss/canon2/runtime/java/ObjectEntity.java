@@ -57,12 +57,9 @@ public class ObjectEntity extends Entity
   {
     super(initialiser);
     
-    Objects.requireNonNull(initialiser.getJsonDomNode());
+    Objects.requireNonNull(initialiser.getJsonObject());
     
-    if(!(initialiser.getJsonDomNode() instanceof JsonObject))
-      throw new IllegalArgumentException("Initialiser must be a Json Object not " + initialiser.getJsonDomNode().getClass().getSimpleName());
-    
-    jsonObject_   = (JsonObject) initialiser.getJsonDomNode();
+    jsonObject_   = initialiser.getJsonObject();
     type_         = initialiser.getCanonType();
     majorVersion_ = initialiser.getCanonMajorVersion();
     minorVersion_ = initialiser.getCanonMinorVersion();
@@ -160,6 +157,12 @@ public class ObjectEntity extends Entity
    * 
    * @return the JSON object from which this entity was created.
    */
+  public JsonObject getJson()
+  {
+    return jsonObject_;
+  }
+  
+  @Deprecated
   public JsonObject getJsonObject()
   {
     return jsonObject_;
@@ -226,8 +229,6 @@ public class ObjectEntity extends Entity
     extends Entity.AbstractBuilder<T,B>
     implements IObjectEntityInitialiser
   {
-    private ModelRegistry modelRegistry_ = ModelRegistry.DEFAULT;
-
     /**
      * Constructor.
      * 
@@ -249,6 +250,12 @@ public class ObjectEntity extends Entity
       super(type);
     }
     
+    @Override
+    public JsonDomNode getJsonDomNode()
+    {
+      return getJsonObject();
+    }
+
     // TODO: perhaps if withValues has been set this should return a non-empty set, if there were unknown keys in the object given.
     @Override
     public ImmutableSet<String> getCanonUnknownKeys()
@@ -291,12 +298,6 @@ public class ObjectEntity extends Entity
 //    @Override
 //    public abstract JsonObject getJsonObject();
 
-    @Override
-    public ModelRegistry getModelRegistry()
-    {
-      return modelRegistry_;
-    }
-
     /**
      * Populate the given JsonObject.Builder with all attributes.
      * 
@@ -316,9 +317,10 @@ public class ObjectEntity extends Entity
      * 
      * @return This (fluent method).
      */
+    @Override
     public T withValues(JsonObject jsonObject, ModelRegistry modelRegistry)
     {
-      return self();
+      return super.withValues(jsonObject, modelRegistry);
     }
   }
 }

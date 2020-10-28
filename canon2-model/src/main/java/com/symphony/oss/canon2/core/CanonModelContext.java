@@ -232,6 +232,11 @@ public abstract class CanonModelContext
         }
         throw new GenerationException("Failed to parse model", e);
       }
+      catch(ParserException e)
+      {
+        log_.error(e.toString());
+        throw new GenerationException("Failed to parse model", e);
+      }
       validateQueue_.add(sourceContext);
       modelMap_.put(sourceContext.getUrl(), model);
       

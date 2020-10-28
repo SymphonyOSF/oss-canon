@@ -21,7 +21,7 @@
  *    Generator groupId    org.symphonyoss.s2.canon
  *              artifactId canon2-generator-java
  *    Template name        template/Object/_Entity.java.ftl
- *    At                   2020-10-21 14:50:09 BST
+ *    At                   2020-10-28 11:40:29 GMT
  *----------------------------------------------------------------------------------------------------
  */
 
@@ -31,6 +31,7 @@ import javax.annotation.Nullable;
 import javax.annotation.concurrent.Immutable;
 
 import com.google.common.collect.ImmutableSet;
+import com.symphony.oss.canon.json.ParserException;
 import com.symphony.oss.canon.json.model.JsonDomNode;
 import com.symphony.oss.canon.json.model.JsonNull;
 import com.symphony.oss.canon.json.model.JsonObject;
@@ -83,14 +84,8 @@ public abstract class ComponentsObjectEntity extends ObjectEntity
       }
       else
       {
-        if(node instanceof JsonObject)
-        {
-          _schemas_ = jsonInitialiser.getModelRegistry().newInstance((JsonObject)node, SchemasObject.TYPE_ID, SchemasObject.class);
-        }
-        else 
-        {
-          throw new IllegalArgumentException("schemas must be an Object node not " + node.getClass().getName());
-        }
+    
+        _schemas_ = SchemasObject.FACTORY.newInstance(node, jsonInitialiser.getModelRegistry());
       }
       unknownKeys_ = jsonInitialiser.getCanonUnknownKeys();
     }
@@ -140,7 +135,7 @@ public abstract class ComponentsObjectEntity extends ObjectEntity
     }
 
     /**
-     * Return the minjor type version for entities created by this factory.
+     * Return the minor type version for entities created by this factory.
      *
      * @return The minor type version for entities created by this factory.
      */
@@ -150,9 +145,21 @@ public abstract class ComponentsObjectEntity extends ObjectEntity
     }
 
     @Override
-    public ComponentsObject newInstance(JsonObject jsonObject, ModelRegistry modelRegistry)
+    public ComponentsObject newInstance(JsonDomNode node, ModelRegistry modelRegistry)
     {
-      return new ComponentsObject(new JsonInitialiser(jsonObject, modelRegistry));
+      if(node instanceof JsonObject)
+      {
+        return new ComponentsObject(new JsonInitialiser((JsonObject)node, modelRegistry));
+      }
+
+      if(!modelRegistry.getParserValidation().isIgnoreInvalidAttributes())
+      {
+        throw new ParserException("ComponentsObject must be an Object node not " + node.getClass().getName(), node.getContext());
+      }
+      else
+      {
+        return null;
+      }
     }
   }
 
@@ -177,12 +184,12 @@ public abstract class ComponentsObjectEntity extends ObjectEntity
       /**
        * Constructor.
        * 
-       * @param jsonObject      A JSON Object.
+       * @param json            JSON serialised form.
        * @param modelRegistry   A parser context for deserialisation.
        */
-    public JsonInitialiser(JsonObject jsonObject, ModelRegistry modelRegistry)
+    public JsonInitialiser(JsonObject json, ModelRegistry modelRegistry)
     {
-      super(jsonObject, modelRegistry);
+      super(json, modelRegistry);
     }
 
     @Override
@@ -228,14 +235,8 @@ public abstract class ComponentsObjectEntity extends ObjectEntity
       if(jsonObject.containsKey("schemas"))
       {
         JsonDomNode  node = jsonObject.get("schemas");
-        if(node instanceof JsonObject)
-        {
-          _schemas_ = modelRegistry.newInstance((JsonObject)node, SchemasObject.TYPE_ID, SchemasObject.class);
-        }
-        else if(!modelRegistry.getParserValidation().isIgnoreInvalidAttributes())
-        {
-          throw new IllegalArgumentException("schemas must be an Object node not " + node.getClass().getName());
-        }
+    
+        _schemas_ = SchemasObject.FACTORY.newInstance(node, modelRegistry);
       }
       return super.withValues(jsonObject, modelRegistry);
     }
@@ -269,8 +270,9 @@ public abstract class ComponentsObjectEntity extends ObjectEntity
       return self();
     }
 
+
     @Override
-    public JsonObject getJsonObject()
+    public JsonObject getJson()
     {
       JsonObject.Builder builder = new JsonObject.Builder();
 
@@ -289,14 +291,8 @@ public abstract class ComponentsObjectEntity extends ObjectEntity
 
       if(getSchemas() != null)
       {
-          builder.addIfNotNull("schemas", getSchemas().getJsonObject());
+          builder.addIfNotNull("schemas", getSchemas().getJson());
       }
-    }
-
-    @Override
-    public void validate(FaultAccumulator faultAccumulator)
-    {
-      super.validate(faultAccumulator);
     }
 
     @Override
@@ -322,6 +318,18 @@ public abstract class ComponentsObjectEntity extends ObjectEntity
     {
       return TYPE_MINOR_VERSION;
     }
+
+    @Override
+    public void validate(FaultAccumulator faultAccumulator)
+    {
+      super.validate(faultAccumulator);
+    }
+  }
+
+  //@Override
+  public ImmutableSet<String> getCanonUnknownKeys()
+  {
+    return unknownKeys_;
   }
 
   /**
@@ -354,11 +362,6 @@ public abstract class ComponentsObjectEntity extends ObjectEntity
     }
   }
 
-  @Override
-  public ImmutableSet<String> getCanonUnknownKeys()
-  {
-    return unknownKeys_;
-  }
 
   /**
    * Return the value of the schemas attribute.
@@ -385,6 +388,8 @@ public abstract class ComponentsObjectEntity extends ObjectEntity
     return toString().hashCode();
   }
 
+// entity.additionalProperties??
+// innerClasses
 }
 
 /*----------------------------------------------------------------------------------------------------

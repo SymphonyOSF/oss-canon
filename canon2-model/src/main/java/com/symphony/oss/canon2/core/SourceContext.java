@@ -38,6 +38,7 @@ import java.util.Map.Entry;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.symphony.oss.canon.json.ParserException;
 import com.symphony.oss.canon.json.ParserResultException;
 import com.symphony.oss.canon2.core.ResolvedOpenApiObject.SingletonBuilder;
 import com.symphony.oss.canon2.model.OpenApiObject;
@@ -154,7 +155,7 @@ public class SourceContext
 //    }
 //  }
   
-  OpenApiObject parse(ModelRegistry modelRegistry) throws ParserResultException
+  OpenApiObject parse(ModelRegistry modelRegistry) throws ParserResultException, ParserException
   {
     log_.info("Parsing {}...", getInputSource());
     

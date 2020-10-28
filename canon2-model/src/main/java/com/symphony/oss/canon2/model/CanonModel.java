@@ -21,13 +21,13 @@
  *    Generator groupId    org.symphonyoss.s2.canon
  *              artifactId canon2-generator-java
  *    Template name        template/Model/_Model.java.ftl
- *    At                   2020-10-21 14:50:09 BST
+ *    At                   2020-10-28 15:36:29 GMT
  *----------------------------------------------------------------------------------------------------
  */
 
 package com.symphony.oss.canon2.model;
 
-import com.symphony.oss.canon2.runtime.java.ObjectEntity;
+import com.symphony.oss.canon2.runtime.java.Entity;
 
 /**
  * Model class for canon
@@ -35,7 +35,7 @@ import com.symphony.oss.canon2.runtime.java.ObjectEntity;
 public class CanonModel
 {
   /** Factories for every object in the model. */
-  public static final ObjectEntity.Factory<?>[] FACTORIES = new ObjectEntity.Factory<?>[]
+  public static final Entity.Factory<?>[] FACTORIES = new Entity.Factory<?>[]
   {
     CanonGeneratorConfig.FACTORY,
     SchemaOrRef.FACTORY,

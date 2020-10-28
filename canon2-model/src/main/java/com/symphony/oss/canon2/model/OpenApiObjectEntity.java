@@ -21,7 +21,7 @@
  *    Generator groupId    org.symphonyoss.s2.canon
  *              artifactId canon2-generator-java
  *    Template name        template/Object/_Entity.java.ftl
- *    At                   2020-10-21 14:50:09 BST
+ *    At                   2020-10-28 11:40:29 GMT
  *----------------------------------------------------------------------------------------------------
  */
 
@@ -32,6 +32,7 @@ import javax.annotation.Nullable;
 import javax.annotation.concurrent.Immutable;
 
 import com.google.common.collect.ImmutableSet;
+import com.symphony.oss.canon.json.ParserException;
 import com.symphony.oss.canon.json.model.JsonDomNode;
 import com.symphony.oss.canon.json.model.JsonNull;
 import com.symphony.oss.canon.json.model.JsonObject;
@@ -93,14 +94,8 @@ public abstract class OpenApiObjectEntity extends ObjectEntity
       }
       else
       {
-        if(node instanceof JsonObject)
-        {
-          _components_ = jsonInitialiser.getModelRegistry().newInstance((JsonObject)node, ComponentsObject.TYPE_ID, ComponentsObject.class);
-        }
-        else 
-        {
-          throw new IllegalArgumentException("components must be an Object node not " + node.getClass().getName());
-        }
+    
+        _components_ = ComponentsObject.FACTORY.newInstance(node, jsonInitialiser.getModelRegistry());
       }
 
       node = jsonInitialiser.get("x-canon-generators");
@@ -110,14 +105,8 @@ public abstract class OpenApiObjectEntity extends ObjectEntity
       }
       else
       {
-        if(node instanceof JsonObject)
-        {
-          _xCanonGenerators_ = jsonInitialiser.getModelRegistry().newInstance((JsonObject)node, CanonGeneratorConfig.TYPE_ID, CanonGeneratorConfig.class);
-        }
-        else 
-        {
-          throw new IllegalArgumentException("x-canon-generators must be an Object node not " + node.getClass().getName());
-        }
+    
+        _xCanonGenerators_ = CanonGeneratorConfig.FACTORY.newInstance(node, jsonInitialiser.getModelRegistry());
       }
 
       node = jsonInitialiser.get("openapi");
@@ -133,7 +122,7 @@ public abstract class OpenApiObjectEntity extends ObjectEntity
         }
         else 
         {
-          throw new IllegalArgumentException("openapi must be an instance of JsonString not " + node.getClass().getName());
+          throw new ParserException("openapi must be an instance of JsonString not " + node.getClass().getName(), node.getContext());
         }
       }
 
@@ -144,14 +133,8 @@ public abstract class OpenApiObjectEntity extends ObjectEntity
       }
       else
       {
-        if(node instanceof JsonObject)
-        {
-          _paths_ = jsonInitialiser.getModelRegistry().newInstance((JsonObject)node, PathsObject.TYPE_ID, PathsObject.class);
-        }
-        else 
-        {
-          throw new IllegalArgumentException("paths must be an Object node not " + node.getClass().getName());
-        }
+    
+        _paths_ = PathsObject.FACTORY.newInstance(node, jsonInitialiser.getModelRegistry());
       }
 
       node = jsonInitialiser.get("x-canon-id");
@@ -167,7 +150,7 @@ public abstract class OpenApiObjectEntity extends ObjectEntity
         }
         else 
         {
-          throw new IllegalArgumentException("x-canon-id must be an instance of JsonString not " + node.getClass().getName());
+          throw new ParserException("x-canon-id must be an instance of JsonString not " + node.getClass().getName(), node.getContext());
         }
       }
 
@@ -184,7 +167,7 @@ public abstract class OpenApiObjectEntity extends ObjectEntity
         }
         else 
         {
-          throw new IllegalArgumentException("x-canon-version must be an instance of JsonString not " + node.getClass().getName());
+          throw new ParserException("x-canon-version must be an instance of JsonString not " + node.getClass().getName(), node.getContext());
         }
       }
 
@@ -201,7 +184,7 @@ public abstract class OpenApiObjectEntity extends ObjectEntity
         }
         else 
         {
-          throw new IllegalArgumentException("x-canon-identifier must be an instance of JsonString not " + node.getClass().getName());
+          throw new ParserException("x-canon-identifier must be an instance of JsonString not " + node.getClass().getName(), node.getContext());
         }
       }
 
@@ -218,25 +201,19 @@ public abstract class OpenApiObjectEntity extends ObjectEntity
         }
         else 
         {
-          throw new IllegalArgumentException("canon must be an instance of JsonString not " + node.getClass().getName());
+          throw new ParserException("canon must be an instance of JsonString not " + node.getClass().getName(), node.getContext());
         }
       }
 
       node = jsonInitialiser.get("info");
       if(node == null || node instanceof JsonNull)
       {
-        throw new IllegalArgumentException("info is required.");
+        throw new ParserException("info is required.", jsonInitialiser.getJson().getContext());
       }
       else
       {
-        if(node instanceof JsonObject)
-        {
-          _info_ = jsonInitialiser.getModelRegistry().newInstance((JsonObject)node, InfoObject.TYPE_ID, InfoObject.class);
-        }
-        else 
-        {
-          throw new IllegalArgumentException("info must be an Object node not " + node.getClass().getName());
-        }
+    
+        _info_ = InfoObject.FACTORY.newInstance(node, jsonInitialiser.getModelRegistry());
       }
       unknownKeys_ = jsonInitialiser.getCanonUnknownKeys();
     }
@@ -297,7 +274,7 @@ public abstract class OpenApiObjectEntity extends ObjectEntity
     }
 
     /**
-     * Return the minjor type version for entities created by this factory.
+     * Return the minor type version for entities created by this factory.
      *
      * @return The minor type version for entities created by this factory.
      */
@@ -307,9 +284,21 @@ public abstract class OpenApiObjectEntity extends ObjectEntity
     }
 
     @Override
-    public OpenApiObject newInstance(JsonObject jsonObject, ModelRegistry modelRegistry)
+    public OpenApiObject newInstance(JsonDomNode node, ModelRegistry modelRegistry)
     {
-      return new OpenApiObject(new JsonInitialiser(jsonObject, modelRegistry));
+      if(node instanceof JsonObject)
+      {
+        return new OpenApiObject(new JsonInitialiser((JsonObject)node, modelRegistry));
+      }
+
+      if(!modelRegistry.getParserValidation().isIgnoreInvalidAttributes())
+      {
+        throw new ParserException("OpenApiObject must be an Object node not " + node.getClass().getName(), node.getContext());
+      }
+      else
+      {
+        return null;
+      }
     }
   }
 
@@ -334,12 +323,12 @@ public abstract class OpenApiObjectEntity extends ObjectEntity
       /**
        * Constructor.
        * 
-       * @param jsonObject      A JSON Object.
+       * @param json            JSON serialised form.
        * @param modelRegistry   A parser context for deserialisation.
        */
-    public JsonInitialiser(JsonObject jsonObject, ModelRegistry modelRegistry)
+    public JsonInitialiser(JsonObject json, ModelRegistry modelRegistry)
     {
-      super(jsonObject, modelRegistry);
+      super(json, modelRegistry);
     }
 
     @Override
@@ -401,26 +390,14 @@ public abstract class OpenApiObjectEntity extends ObjectEntity
       if(jsonObject.containsKey("components"))
       {
         JsonDomNode  node = jsonObject.get("components");
-        if(node instanceof JsonObject)
-        {
-          _components_ = modelRegistry.newInstance((JsonObject)node, ComponentsObject.TYPE_ID, ComponentsObject.class);
-        }
-        else if(!modelRegistry.getParserValidation().isIgnoreInvalidAttributes())
-        {
-          throw new IllegalArgumentException("components must be an Object node not " + node.getClass().getName());
-        }
+    
+        _components_ = ComponentsObject.FACTORY.newInstance(node, modelRegistry);
       }
       if(jsonObject.containsKey("x-canon-generators"))
       {
         JsonDomNode  node = jsonObject.get("x-canon-generators");
-        if(node instanceof JsonObject)
-        {
-          _xCanonGenerators_ = modelRegistry.newInstance((JsonObject)node, CanonGeneratorConfig.TYPE_ID, CanonGeneratorConfig.class);
-        }
-        else if(!modelRegistry.getParserValidation().isIgnoreInvalidAttributes())
-        {
-          throw new IllegalArgumentException("x-canon-generators must be an Object node not " + node.getClass().getName());
-        }
+    
+        _xCanonGenerators_ = CanonGeneratorConfig.FACTORY.newInstance(node, modelRegistry);
       }
       if(jsonObject.containsKey("openapi"))
       {
@@ -431,20 +408,14 @@ public abstract class OpenApiObjectEntity extends ObjectEntity
         }
         else if(!modelRegistry.getParserValidation().isIgnoreInvalidAttributes())
         {
-          throw new IllegalArgumentException("openapi must be an instance of JsonString not " + node.getClass().getName());
+          throw new ParserException("openapi must be an instance of JsonString not " + node.getClass().getName(), node.getContext());
         }
       }
       if(jsonObject.containsKey("paths"))
       {
         JsonDomNode  node = jsonObject.get("paths");
-        if(node instanceof JsonObject)
-        {
-          _paths_ = modelRegistry.newInstance((JsonObject)node, PathsObject.TYPE_ID, PathsObject.class);
-        }
-        else if(!modelRegistry.getParserValidation().isIgnoreInvalidAttributes())
-        {
-          throw new IllegalArgumentException("paths must be an Object node not " + node.getClass().getName());
-        }
+    
+        _paths_ = PathsObject.FACTORY.newInstance(node, modelRegistry);
       }
       if(jsonObject.containsKey("x-canon-id"))
       {
@@ -455,7 +426,7 @@ public abstract class OpenApiObjectEntity extends ObjectEntity
         }
         else if(!modelRegistry.getParserValidation().isIgnoreInvalidAttributes())
         {
-          throw new IllegalArgumentException("x-canon-id must be an instance of JsonString not " + node.getClass().getName());
+          throw new ParserException("x-canon-id must be an instance of JsonString not " + node.getClass().getName(), node.getContext());
         }
       }
       if(jsonObject.containsKey("x-canon-version"))
@@ -467,7 +438,7 @@ public abstract class OpenApiObjectEntity extends ObjectEntity
         }
         else if(!modelRegistry.getParserValidation().isIgnoreInvalidAttributes())
         {
-          throw new IllegalArgumentException("x-canon-version must be an instance of JsonString not " + node.getClass().getName());
+          throw new ParserException("x-canon-version must be an instance of JsonString not " + node.getClass().getName(), node.getContext());
         }
       }
       if(jsonObject.containsKey("x-canon-identifier"))
@@ -479,7 +450,7 @@ public abstract class OpenApiObjectEntity extends ObjectEntity
         }
         else if(!modelRegistry.getParserValidation().isIgnoreInvalidAttributes())
         {
-          throw new IllegalArgumentException("x-canon-identifier must be an instance of JsonString not " + node.getClass().getName());
+          throw new ParserException("x-canon-identifier must be an instance of JsonString not " + node.getClass().getName(), node.getContext());
         }
       }
       if(jsonObject.containsKey("canon"))
@@ -491,20 +462,14 @@ public abstract class OpenApiObjectEntity extends ObjectEntity
         }
         else if(!modelRegistry.getParserValidation().isIgnoreInvalidAttributes())
         {
-          throw new IllegalArgumentException("canon must be an instance of JsonString not " + node.getClass().getName());
+          throw new ParserException("canon must be an instance of JsonString not " + node.getClass().getName(), node.getContext());
         }
       }
       if(jsonObject.containsKey("info"))
       {
         JsonDomNode  node = jsonObject.get("info");
-        if(node instanceof JsonObject)
-        {
-          _info_ = modelRegistry.newInstance((JsonObject)node, InfoObject.TYPE_ID, InfoObject.class);
-        }
-        else if(!modelRegistry.getParserValidation().isIgnoreInvalidAttributes())
-        {
-          throw new IllegalArgumentException("info must be an Object node not " + node.getClass().getName());
-        }
+    
+        _info_ = InfoObject.FACTORY.newInstance(node, modelRegistry);
       }
       return super.withValues(jsonObject, modelRegistry);
     }
@@ -743,8 +708,9 @@ public abstract class OpenApiObjectEntity extends ObjectEntity
       return self();
     }
 
+
     @Override
-    public JsonObject getJsonObject()
+    public JsonObject getJson()
     {
       JsonObject.Builder builder = new JsonObject.Builder();
 
@@ -763,12 +729,12 @@ public abstract class OpenApiObjectEntity extends ObjectEntity
 
       if(getComponents() != null)
       {
-          builder.addIfNotNull("components", getComponents().getJsonObject());
+          builder.addIfNotNull("components", getComponents().getJson());
       }
 
       if(getXCanonGenerators() != null)
       {
-          builder.addIfNotNull("x-canon-generators", getXCanonGenerators().getJsonObject());
+          builder.addIfNotNull("x-canon-generators", getXCanonGenerators().getJson());
       }
 
       if(getOpenapi() != null)
@@ -778,7 +744,7 @@ public abstract class OpenApiObjectEntity extends ObjectEntity
 
       if(getPaths() != null)
       {
-          builder.addIfNotNull("paths", getPaths().getJsonObject());
+          builder.addIfNotNull("paths", getPaths().getJson());
       }
 
       if(getXCanonId() != null)
@@ -803,15 +769,8 @@ public abstract class OpenApiObjectEntity extends ObjectEntity
 
       if(getInfo() != null)
       {
-          builder.addIfNotNull("info", getInfo().getJsonObject());
+          builder.addIfNotNull("info", getInfo().getJson());
       }
-    }
-
-    @Override
-    public void validate(FaultAccumulator faultAccumulator)
-    {
-      super.validate(faultAccumulator);
-      faultAccumulator.checkNotNull(_info_, "info");
     }
 
     @Override
@@ -837,6 +796,19 @@ public abstract class OpenApiObjectEntity extends ObjectEntity
     {
       return TYPE_MINOR_VERSION;
     }
+
+    @Override
+    public void validate(FaultAccumulator faultAccumulator)
+    {
+      super.validate(faultAccumulator);
+      faultAccumulator.checkNotNull(_info_, "info");
+    }
+  }
+
+  //@Override
+  public ImmutableSet<String> getCanonUnknownKeys()
+  {
+    return unknownKeys_;
   }
 
   /**
@@ -869,11 +841,6 @@ public abstract class OpenApiObjectEntity extends ObjectEntity
     }
   }
 
-  @Override
-  public ImmutableSet<String> getCanonUnknownKeys()
-  {
-    return unknownKeys_;
-  }
 
   /**
    * Return the value of the components attribute.
@@ -980,6 +947,8 @@ public abstract class OpenApiObjectEntity extends ObjectEntity
     return toString().hashCode();
   }
 
+// entity.additionalProperties??
+// innerClasses
 }
 
 /*----------------------------------------------------------------------------------------------------

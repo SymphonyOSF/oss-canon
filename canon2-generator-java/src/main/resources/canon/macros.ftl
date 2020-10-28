@@ -13,7 +13,7 @@
     <#case "ALL_OF">
     <#case "ANY_OF">
     <#case "ONE_OF">
-${indent}${var}.addIfNotNull("${name}", ${source}.getJsonObject());
+${indent}${var}.addIfNotNull("${name}", ${source}.getJson());
     <#break>
     <#case "ARRAY">
 ${indent}JsonArray.Builder arrayBuilder = new JsonArray.Builder();
@@ -42,7 +42,7 @@ UNEXPECTED SCHEMA TYPE ${schema.schemaType} in generateCreateJsonDomNodeFromFiel
     <#case "ALL_OF">
     <#case "ANY_OF">
     <#case "ONE_OF">
-${indent}${var}.with(${source}.getJsonObject());
+${indent}${var}.with(${source}.getJson());
     <#break>
     <#case "ARRAY">
 ${indent}JsonArray.Builder arrayBuilder${cnt} = new JsonArray.Builder();
@@ -87,14 +87,8 @@ UNEXPECTED SCHEMA TYPE ${schema.schemaType} in generateCreateJsonDomNodeFromFiel
     <#case "ALL_OF">
     <#case "ANY_OF">
     <#case "ONE_OF">
-${indent}if(${node} instanceof JsonObject)
-${indent}{
-${indent}  ${var} = ${modelRegistry}.newInstance((JsonObject)${node}, ${schema.camelCapitalizedName}.TYPE_ID, ${schema.type}.class);
-${indent}}
-${indent}else ${ifValidation}
-${indent}{
-${indent}  throw new IllegalArgumentException("${name} must be an Object node not " + ${node}.getClass().getName());
-${indent}}
+    
+${indent}${var} = ${schema.type}.FACTORY.newInstance(${node}, ${modelRegistry});
     <#break>
     
     <#case "ARRAY">
@@ -123,7 +117,7 @@ ${indent}  ${var} = ImmutableSet.copyOf(itemSet${cnt});
 ${indent}}
 ${indent}else ${ifValidation}
 ${indent}{
-${indent}  throw new IllegalArgumentException("${name} must be a JsonArray node not " + ${node}.getClass().getName());
+${indent}  throw new ParserException("${name} must be a JsonArray node not " + ${node}.getClass().getName(), ${node}.getContext());
 ${indent}}
     <#break>
     
@@ -155,11 +149,11 @@ UNEXPECTED SCHEMA TYPE ${schema.schemaType} in generateCreateFieldFromJsonDomNod
 ${indent}if(${node} instanceof ${schema.jsonNodeType})
 ${indent}{
 ${indent}  ${var} = ${schema.constructPrefix}((${schema.jsonNodeType})${node}).as${schema.javaType}()${schema.constructSuffix};
-      <@checkLimits "${indent}" schema name var/>
+      <@checkLimits "${indent}" schema name var "new new ParserException" ", ${node}.getContext()"/>
 ${indent}}
 ${indent}else ${ifValidation}
 ${indent}{
-${indent}  throw new IllegalArgumentException("${name} must be an instance of ${schema.jsonNodeType} not " + ${node}.getClass().getName());
+${indent}  throw new ParserException("${name} must be an instance of ${schema.jsonNodeType} not " + ${node}.getClass().getName(), ${node}.getContext());
 ${indent}}
 </#macro>
 
@@ -171,7 +165,7 @@ ${indent}}
  # @param var       A java variable containing the value being checked
  #----------------------------------------------------------------------------------------------------->
 <#macro checkFieldLimits indent field var>
-  <@checkLimits indent field.typeSchema, field.name, var/>
+  <@checkLimits indent field.typeSchema, field.name, var "new new IllegalArgumentException" ""/>
   <#if field.required>
 ${indent}if(${var} == null)
 ${indent}  throw new IllegalArgumentException("${field.name} is required.");
@@ -187,23 +181,23 @@ ${indent}  throw new IllegalArgumentException("${field.name} is required.");
  # @param name      The name to be used in error messages
  # @param var       A java variable containing the value being checked
  #----------------------------------------------------------------------------------------------------->
-<#macro checkLimits indent schema name var>
+<#macro checkLimits indent schema name var exceptionPrefix exceptionSuffix>
   <#if schema.minimum??>
     <#if schema.exclusiveMinimum>
 ${indent}if(${var} != null && ${var} <= ${schema.minimum})
-${indent}  throw new IllegalArgumentException("Value " + ${var} + " of ${name} is less than or equal to the exclusive minimum allowed of ${schema.minimum}");
+${indent}  throw ${exceptionPrefix}("Value " + ${var} + " of ${name} is less than or equal to the exclusive minimum allowed of ${schema.minimum}"${exceptionSuffix});
     <#else>
 ${indent}if(${var} != null && ${var} < ${schema.minimum})
-${indent}  throw new IllegalArgumentException("Value " + ${var} + " of ${name} is less than the minimum allowed of ${schema.minimum}");
+${indent}  throw ${exceptionPrefix}("Value " + ${var} + " of ${name} is less than the minimum allowed of ${schema.minimum}"${exceptionSuffix});
     </#if>
   </#if>
   <#if schema.maximum??>
     <#if schema.exclusiveMaximum>
 ${indent}if(${var} != null && ${var} >= ${schema.maximum})
-${indent}  throw new IllegalArgumentException("Value " + ${var} + " of ${name} is greater than or equal to the exclusive maximum allowed of ${schema.maximum}");
+${indent}  throw ${exceptionPrefix}("Value " + ${var} + " of ${name} is greater than or equal to the exclusive maximum allowed of ${schema.maximum}"${exceptionSuffix});
     <#else>
 ${indent}if(${var} != null && ${var} > ${schema.maximum})
-${indent}  throw new IllegalArgumentException("Value " + ${var} + " of ${name} is greater than the maximum allowed of ${schema.maximum}");
+${indent}  throw ${exceptionPrefix}("Value " + ${var} + " of ${name} is greater than the maximum allowed of ${schema.maximum}"${exceptionSuffix});
     </#if>
   
   </#if>

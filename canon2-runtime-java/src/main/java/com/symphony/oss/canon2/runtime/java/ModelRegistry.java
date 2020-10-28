@@ -23,17 +23,16 @@
 
 package com.symphony.oss.canon2.runtime.java;
 
-import java.io.InputStream;
 import java.io.Reader;
 import java.io.StringReader;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.function.Consumer;
 
 import com.google.common.collect.ImmutableMap;
 import com.symphony.oss.canon.json.JsonParser;
+import com.symphony.oss.canon.json.ParserException;
 import com.symphony.oss.canon.json.ParserResultException;
 import com.symphony.oss.canon.json.model.JsonArray;
 import com.symphony.oss.canon.json.model.JsonArrayDom;
@@ -54,6 +53,8 @@ public class ModelRegistry
 {
   /** A default ModelRegistry with no factories and the default validation level. */
   public static final ModelRegistry                     DEFAULT = new Builder().build();
+  /** A default ModelRegistry with no factories and strict validation. */
+  public static final ModelRegistry                     STRICT = new Builder().withValidation(ParserValidation.STRICT).build();
   
   private final ParserValidation                        parserValidation_;
   private final ImmutableMap<String, Entity.Factory<?>> factoryMap_;
@@ -82,7 +83,7 @@ public class ModelRegistry
    * @return The deserialized entity.
    * 
    * @throws NullPointerException if the value is null.
-   * @throws IllegalStateException if the value is otherwise invalid.
+   * @throws ParserException if the value is otherwise invalid.
    * This may be the case if the schema defines limits on the magnitude of the value, or if a facade
    * has been written for the type.
    */
@@ -119,7 +120,7 @@ public class ModelRegistry
    * @return The deserialized entity.
    * 
    * @throws NullPointerException if the value is null.
-   * @throws IllegalStateException if the value is not of the expected type or is otherwise invalid.
+   * @throws ParserException if the value is not of the expected type or is otherwise invalid.
    * This may be the case if the schema defines limits on the magnitude of the value, or if a facade
    * has been written for the type.
    */
@@ -152,7 +153,7 @@ public class ModelRegistry
       
       if(factory == null)
       {
-        throw new IllegalStateException("Unknown type \"" + typeId + "\"");
+        throw new ParserException("Unknown type \"" + typeId + "\"", jsonObject.getContext());
       }
     }
     
@@ -164,7 +165,7 @@ public class ModelRegistry
     }
     else
     {
-      throw new IllegalStateException("Expected instance of " + type + " but found a " + typeId);
+      throw new ParserException("Expected instance of " + type + " but found a " + typeId, jsonObject.getContext());
     }
   }
   
@@ -284,7 +285,7 @@ public class ModelRegistry
    * @throws NullPointerException if the value is null.
    * 
    * @throws ParserResultException If the value cannot be parsed.
-   * @throws IllegalStateException if the value is not of the expected type or is otherwise invalid.
+   * @throws ParserException if the value is not of the expected type or is otherwise invalid.
    * This may be the case if the schema defines limits on the magnitude of the value, or if a facade
    * has been written for the type.
    */
@@ -423,11 +424,11 @@ public class ModelRegistry
    * 
    * @throws ParserResultException If the value cannot be parsed.
    * @throws NullPointerException if the value is null.
-   * @throws IllegalStateException if the value is not of the expected type or is otherwise invalid.
+   * @throws ParserException if the value is not of the expected type or is otherwise invalid.
    * This may be the case if the schema defines limits on the magnitude of the value, or if a facade
    * has been written for the type.
    */
-  public Entity parseOne(Reader reader) throws ParserResultException
+  public Entity parseOne(Reader reader) throws ParserResultException, ParserException
   {
     return newInstance(JsonParser.parseObject(reader));
   }
@@ -442,48 +443,55 @@ public class ModelRegistry
    * 
    * @throws ParserResultException If the value cannot be parsed.
    * @throws NullPointerException if the value is null.
-   * @throws IllegalStateException if the value is not of the expected type or is otherwise invalid.
+   * @throws ParserException if the value is not of the expected type or is otherwise invalid.
    * This may be the case if the schema defines limits on the magnitude of the value, or if a facade
    * has been written for the type.
    */
-  public Entity parseOne(String input) throws ParserResultException
+  public Entity parseOne(String input) throws ParserResultException, ParserException
   {
     return newInstance(JsonParser.parseObject(new StringReader(input)));
   }
 
-  /**
-   * Parse a stream of entities from the given input and pass them to the given consumer.
-   * 
-   * @param in            A input stream containing serialised entities.
-   * @param consumer      A sink for the parsed entities.
-   * @throws IllegalStateException  If the input is not an array of serialised entities.
-   */
-  public void parseStream(InputStream in, Consumer<Entity> consumer)
-  {
-    Consumer<JsonDomNode> jsonConsumer = new Consumer<JsonDomNode>()
-    {
-      @Override
-      public void accept(JsonDomNode node)
-      {
-        if(node instanceof JsonObject)
-        {
-          Entity result = newInstance((JsonObject)node);
-          
-          consumer.accept(result);
-        }
-        else
-        {
-          throw new IllegalStateException("Expected an array of JSON objects but read a " + node.getClass().getName());
-        }
-      }
-    };
-    
-    new JsonParser.Builder()
-        .withInput(in)
-        .withArrayElementConsumer(jsonConsumer)
-        .build()
-        .parse();
-  }
+//  /**
+//   * Parse a stream of entities from the given input and pass them to the given consumer.
+//   * 
+//   * @param in            A input stream containing serialised entities.
+//   * @param consumer      A sink for the parsed entities.
+//   * @throws ParserException  If the input is not an array of serialised entities.
+//   */
+//  public void parseStream(InputStream in, Consumer<Entity> consumer)
+//  {
+//    Consumer<JsonDomNode> jsonConsumer = new Consumer<JsonDomNode>()
+//    {
+//      @Override
+//      public void accept(JsonDomNode node)
+//      {
+//        if(node instanceof JsonObject)
+//        {
+//          try
+//          {
+//            Entity result = newInstance((JsonObject)node);
+//            
+//            consumer.accept(result);
+//          }
+//          catch(ParserException e)
+//          {
+//            throw new InvocationTargetException(e);
+//          }
+//        }
+//        else
+//        {
+//          throw new ParserException("Expected an array of JSON objects but read a " + node.getClass().getName(), node.getContext());
+//        }
+//      }
+//    };
+//    
+//    new JsonParser.Builder()
+//        .withInput(in)
+//        .withArrayElementConsumer(jsonConsumer)
+//        .build()
+//        .parse();
+//  }
   
   /**
    * Builder for ModelRegistry.

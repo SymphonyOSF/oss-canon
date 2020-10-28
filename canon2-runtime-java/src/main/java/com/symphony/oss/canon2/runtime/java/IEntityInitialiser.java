@@ -18,6 +18,7 @@
 
 package com.symphony.oss.canon2.runtime.java;
 
+import com.google.common.collect.ImmutableSet;
 import com.symphony.oss.canon.json.model.JsonDomNode;
 
 /**
@@ -32,6 +33,26 @@ public interface IEntityInitialiser
    * 
    * @return a JSON serialised form for the entity to be initialised.
    */
-  JsonDomNode getJsonDomNode();
+  JsonDomNode getJson();
   
+  @Deprecated
+  default JsonDomNode getJsonDomNode()
+  {
+    return getJson();
+  }
+  /**
+   * Return a ModelRegistry for deserialization.
+   * 
+   * @return a ModelRegistry for deserialization.
+   */
+  ModelRegistry getModelRegistry();
+  
+  /**
+   * The set of keys present in the JSON from which this object was deserialized which are not defined by
+   * the schema. In the case where an object extends some other object the super-class unknown keys will include
+   * all keys defined by the current class.
+   * 
+   * @return The set of unknown keys  in the JSON from which this object was deserialized;
+   */
+  ImmutableSet<String> getCanonUnknownKeys();
 }

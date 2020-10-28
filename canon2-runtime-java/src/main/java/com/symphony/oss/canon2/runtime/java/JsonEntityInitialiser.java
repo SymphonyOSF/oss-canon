@@ -18,20 +18,37 @@
 
 package com.symphony.oss.canon2.runtime.java;
 
+import com.google.common.collect.ImmutableSet;
 import com.symphony.oss.canon.json.model.JsonDomNode;
 
 public class JsonEntityInitialiser implements IEntityInitialiser
 {
+  private static final ImmutableSet<String> EMPTY_KEYS = ImmutableSet.of();
+  
   private final JsonDomNode jsonDomNode_;
+  private final ModelRegistry modelRegistry_;
 
-  public JsonEntityInitialiser(JsonDomNode jsonDomNode)
+  public JsonEntityInitialiser(JsonDomNode jsonDomNode, ModelRegistry modelRegistry)
   {
     jsonDomNode_ = jsonDomNode;
+    modelRegistry_ = modelRegistry;
   }
 
   @Override
-  public JsonDomNode getJsonDomNode()
+  public JsonDomNode getJson()
   {
     return jsonDomNode_;
+  }
+
+  @Override
+  public ModelRegistry getModelRegistry()
+  {
+    return modelRegistry_;
+  }
+
+  @Override
+  public ImmutableSet<String> getCanonUnknownKeys()
+  {
+    return EMPTY_KEYS;
   }
 }

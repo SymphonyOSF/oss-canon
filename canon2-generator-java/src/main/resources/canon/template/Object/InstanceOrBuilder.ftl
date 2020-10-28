@@ -7,7 +7,7 @@
 ${indent}/**
 ${indent} * Instance or Builder for Object ${entity}
 ${indent} */
-${indent}public interface I${entity.camelCapitalizedName}InstanceOrBuilder extends IObjectEntityInitialiser
+${indent}public interface I${entity.camelCapitalizedName}InstanceOrBuilder extends I${entity.initialiserType}
 ${indent}{
 <#list entity.fields as field>
 ${indent}  

@@ -27,6 +27,8 @@ import java.util.Objects;
 
 import javax.annotation.Nonnull;
 
+import com.google.common.collect.ImmutableSet;
+import com.symphony.oss.canon.json.ParserException;
 import com.symphony.oss.canon.json.model.JsonDomNode;
 import com.symphony.oss.canon.json.model.JsonObject;
 import com.symphony.oss.commons.fluent.BaseAbstractBuilder;
@@ -88,12 +90,18 @@ public class Entity
   
   
 
+  @Deprecated
+  public @Nonnull JsonDomNode getJsonDomNode()
+  {
+    return jsonDomNode_;
+  }
+  
   /**
    * Return the serialized form of this object.
    * 
    * @return the serialized form of this object.
    */
-  public @Nonnull JsonDomNode getJsonDomNode()
+  public @Nonnull JsonDomNode getJson()
   {
     return jsonDomNode_;
   }
@@ -128,6 +136,8 @@ public class Entity
     extends BaseAbstractBuilder<T,B>
     implements IEntityInitialiser
   {
+    private ModelRegistry modelRegistry_ = ModelRegistry.DEFAULT;
+
     /**
      * Constructor.
      * 
@@ -136,6 +146,43 @@ public class Entity
     public AbstractBuilder(Class<T> type)
     {
       super(type);
+    }
+
+    /**
+     * Constructor.
+     * 
+     * @param type Concrete type of the builder.
+     * @param initial Initial values for the builder.
+     */
+    public AbstractBuilder(Class<T> type, B initial)
+    {
+      super(type);
+    }
+
+    @Override
+    public ModelRegistry getModelRegistry()
+    {
+      return modelRegistry_;
+    }
+    
+    /**
+     * Initialize this builder with the values from the given serialized form.
+     * 
+     * @param jsonObject    The serialized form of an instance of the built type.
+     * @param modelRegistry A model registry.
+     * 
+     * @return This (fluent method).
+     */
+    public T withValues(JsonObject jsonObject, ModelRegistry modelRegistry)
+    {
+      return self();
+    }
+
+    // TODO: perhaps if withValues has been set this should return a non-empty set, if there were unknown keys in the object given.
+    @Override
+    public ImmutableSet<String> getCanonUnknownKeys()
+    {
+      return ImmutableSet.of();
     }
   }
   
@@ -163,9 +210,19 @@ public class Entity
      * 
      * @return An instance of the entity represented by the given serialized form.
      * 
-     * @throws IllegalArgumentException If the given JSON is not valid.
+     * @throws ParserException  If the given JSON is not valid.
      */
-    public abstract B newInstance(JsonObject jsonObject, ModelRegistry modelRegistry);
+    public abstract B newInstance(JsonDomNode jsonObject, ModelRegistry modelRegistry);
+//    public B newInstance(JsonDomNode jsonObject, ModelRegistry modelRegistry)
+//    {
+//      return newInstance((JsonObject)jsonObject, modelRegistry);
+//    }
+//    
+//    @Deprecated
+//    public B newInstance(JsonObject jsonObject, ModelRegistry modelRegistry)
+//    {
+//      return null;
+//    }
     
     /**
      * Return a new entity instance created from the given JSON serialization.
@@ -174,7 +231,7 @@ public class Entity
      * 
      * @return An instance of the entity represented by the given serialized form.
      * 
-     * @throws IllegalArgumentException If the given JSON is not valid.
+     * @throws ParserException If the given JSON is not valid.
      */
     public B newInstance(JsonObject jsonObject)
     {
