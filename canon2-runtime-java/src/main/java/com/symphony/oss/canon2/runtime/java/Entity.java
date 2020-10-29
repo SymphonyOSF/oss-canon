@@ -27,7 +27,6 @@ import java.util.Objects;
 
 import javax.annotation.Nonnull;
 
-import com.google.common.collect.ImmutableSet;
 import com.symphony.oss.canon.json.ParserException;
 import com.symphony.oss.canon.json.model.JsonDomNode;
 import com.symphony.oss.canon.json.model.JsonObject;
@@ -56,44 +55,23 @@ public class Entity
    */
   public Entity(IEntityInitialiser initialiser)
   {
-    Objects.requireNonNull(initialiser.getJsonDomNode());
+    Objects.requireNonNull(initialiser.getJson());
     
-    jsonDomNode_ = initialiser.getJsonDomNode();
+    jsonDomNode_ = initialiser.getJson();
   }
   
-  
-  
-  
-  
-//  @Deprecated
-//  public Entity(@Nonnull AbstractBuilder<?,?> builder)
-//  {
-//    jsonDomNode_ = builder.getJsonDomNode();
-//  }
-  
-  @Deprecated
-  public Entity(Entity other)
-  {
-    jsonDomNode_ = other.jsonDomNode_;
-  }
-  
-  @Deprecated
+  /**
+   * Constructor.
+   * 
+   * This constructor is intended for creating an untyped Entity where the actual type ofthe object is unknown.
+   * 
+   * @param jsonDomNode The JSON serialised form of the entity.
+   */
   public Entity(@Nonnull JsonDomNode jsonDomNode)
   {
     Objects.requireNonNull(jsonDomNode);
     
     jsonDomNode_ = jsonDomNode;
-  }
-  
-  
-  
-  
-  
-
-  @Deprecated
-  public @Nonnull JsonDomNode getJsonDomNode()
-  {
-    return jsonDomNode_;
   }
   
   /**
@@ -178,12 +156,13 @@ public class Entity
       return self();
     }
 
-    // TODO: perhaps if withValues has been set this should return a non-empty set, if there were unknown keys in the object given.
-    @Override
-    public ImmutableSet<String> getCanonUnknownKeys()
-    {
-      return ImmutableSet.of();
-    }
+//    @Override
+//    @Deprecated
+//    public ImmutableSet<String> getCanonUnknownKeys()
+//    {
+//      // TODO Auto-generated method stub
+//      return null;
+//    }
   }
   
   /**
@@ -224,18 +203,18 @@ public class Entity
 //      return null;
 //    }
     
-    /**
-     * Return a new entity instance created from the given JSON serialization.
-     * 
-     * @param jsonObject    The JSON serialized form of the required entity.
-     * 
-     * @return An instance of the entity represented by the given serialized form.
-     * 
-     * @throws ParserException If the given JSON is not valid.
-     */
-    public B newInstance(JsonObject jsonObject)
-    {
-      return newInstance(jsonObject, ModelRegistry.DEFAULT);
-    }
+//    /**
+//     * Return a new entity instance created from the given JSON serialization.
+//     * 
+//     * @param jsonObject    The JSON serialized form of the required entity.
+//     * 
+//     * @return An instance of the entity represented by the given serialized form.
+//     * 
+//     * @throws ParserException If the given JSON is not valid.
+//     */
+//    public B newInstance(JsonObject jsonObject)
+//    {
+//      return newInstance(jsonObject, ModelRegistry.DEFAULT);
+//    }
   }
 }

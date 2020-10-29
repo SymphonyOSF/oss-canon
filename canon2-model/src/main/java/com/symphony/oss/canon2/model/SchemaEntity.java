@@ -21,7 +21,7 @@
  *    Generator groupId    org.symphonyoss.s2.canon
  *              artifactId canon2-generator-java
  *    Template name        template/Object/_Entity.java.ftl
- *    At                   2020-10-28 11:40:29 GMT
+ *    At                   2020-10-28 18:16:15 GMT
  *----------------------------------------------------------------------------------------------------
  */
 
@@ -44,7 +44,10 @@ import com.symphony.oss.canon.json.model.JsonNull;
 import com.symphony.oss.canon.json.model.JsonObject;
 import com.symphony.oss.canon.json.model.JsonParsedNumber;
 import com.symphony.oss.canon.json.model.JsonString;
+import com.symphony.oss.canon2.runtime.java.Entity;
+import com.symphony.oss.canon2.runtime.java.IEntityInitialiser;
 import com.symphony.oss.canon2.runtime.java.IObjectEntityInitialiser;
+import com.symphony.oss.canon2.runtime.java.JsonEntityInitialiser;
 import com.symphony.oss.canon2.runtime.java.JsonObjectEntityInitialiser;
 import com.symphony.oss.canon2.runtime.java.ModelRegistry;
 import com.symphony.oss.canon2.runtime.java.ObjectEntity;
@@ -61,16 +64,13 @@ public abstract class SchemaEntity extends ObjectEntity
   public static final String  TYPE_ID = "com.symphony.oss.canon2.model.Schema";
   /** Type version */
   public static final String  TYPE_VERSION = "1.0";
-  /** Type major version */
-  public static final Integer TYPE_MAJOR_VERSION = 1;
-  /** Type minor version */
-  public static final Integer TYPE_MINOR_VERSION = 0;
   /** Factory instance */
   public static final Factory FACTORY = new Factory();
 
   private final ImmutableSet<String>        unknownKeys_;
   private final BigInteger                 _maxItems_;
   private final Boolean                    _xCanonBuilderFacade_;
+  private final AdditionalProperties       _xXXadditionalProperties_;
   private final String                     _format_;
   private final CanonCardinality           _xCanonCardinality_;
   private final String                     _xCanonIdentifier_;
@@ -83,7 +83,6 @@ public abstract class SchemaEntity extends ObjectEntity
   private final Set<SchemaOrRef>           _oneOf_;
   private final CanonAttributes            _xCanonAttributes_;
   private final BigDecimal                 _maximum_;
-  private final AdditionalProperties       _additionalProperties_;
   private final BigDecimal                 _minimum_;
   private final PropertiesObject           _properties_;
   private final ReferenceObject            _xCanonExtends_;
@@ -135,6 +134,17 @@ public abstract class SchemaEntity extends ObjectEntity
         {
           throw new ParserException("x-canon-builderFacade must be an instance of JsonBoolean not " + node.getClass().getName(), node.getContext());
         }
+      }
+
+      node = jsonInitialiser.get("XXXadditionalProperties");
+      if(node == null || node instanceof JsonNull)
+      {
+        _xXXadditionalProperties_ = null;
+      }
+      else
+      {
+    
+        _xXXadditionalProperties_ = AdditionalProperties.FACTORY.newInstance(node, jsonInitialiser.getModelRegistry());
       }
 
       node = jsonInitialiser.get("format");
@@ -365,17 +375,6 @@ public abstract class SchemaEntity extends ObjectEntity
         }
       }
 
-      node = jsonInitialiser.get("additionalProperties");
-      if(node == null || node instanceof JsonNull)
-      {
-        _additionalProperties_ = null;
-      }
-      else
-      {
-    
-        _additionalProperties_ = AdditionalProperties.FACTORY.newInstance(node, jsonInitialiser.getModelRegistry());
-      }
-
       node = jsonInitialiser.get("minimum");
       if(node == null || node instanceof JsonNull)
       {
@@ -426,6 +425,7 @@ public abstract class SchemaEntity extends ObjectEntity
       }
       _maxItems_ = builder.getMaxItems();
       _xCanonBuilderFacade_ = builder.getXCanonBuilderFacade();
+      _xXXadditionalProperties_ = builder.getXXXadditionalProperties();
       _format_ = builder.getFormat();
       _xCanonCardinality_ = builder.getXCanonCardinality();
       _xCanonIdentifier_ = builder.getXCanonIdentifier();
@@ -438,7 +438,6 @@ public abstract class SchemaEntity extends ObjectEntity
       _oneOf_ = ImmutableSet.copyOf(builder.getOneOf());
       _xCanonAttributes_ = builder.getXCanonAttributes();
       _maximum_ = builder.getMaximum();
-      _additionalProperties_ = builder.getAdditionalProperties();
       _minimum_ = builder.getMinimum();
       _properties_ = builder.getProperties();
       _xCanonExtends_ = builder.getXCanonExtends();
@@ -456,36 +455,6 @@ public abstract class SchemaEntity extends ObjectEntity
     public String getCanonType()
     {
       return TYPE_ID;
-    }
-
-    /**
-     * Return the type version (_version JSON attribute) for entities created by this factory.
-     *
-     * @return The type version for entities created by this factory.
-     */
-    public String getCanonVersion()
-    {
-      return TYPE_VERSION;
-    }
-
-    /**
-     * Return the major type version for entities created by this factory.
-     *
-     * @return The major type version for entities created by this factory.
-     */
-    public @Nullable Integer getCanonMajorVersion()
-    {
-      return TYPE_MAJOR_VERSION;
-    }
-
-    /**
-     * Return the minor type version for entities created by this factory.
-     *
-     * @return The minor type version for entities created by this factory.
-     */
-    public @Nullable Integer getCanonMinorVersion()
-    {
-      return TYPE_MINOR_VERSION;
     }
 
     @Override
@@ -550,11 +519,13 @@ public abstract class SchemaEntity extends ObjectEntity
    * @param <B> The concrete type of the built object.
    */
   public static abstract class AbstractBuilder<T extends AbstractBuilder<T,B>, B extends SchemaEntity>
+// super class name
     extends ObjectEntity.AbstractBuilder<T,B>
     implements ISchemaInstanceOrBuilder, Initialiser
   {
     protected BigInteger                 _maxItems_;
     protected Boolean                    _xCanonBuilderFacade_;
+    protected AdditionalProperties       _xXXadditionalProperties_;
     protected String                     _format_;
     protected CanonCardinality           _xCanonCardinality_;
     protected String                     _xCanonIdentifier_;
@@ -567,7 +538,6 @@ public abstract class SchemaEntity extends ObjectEntity
     protected Set<SchemaOrRef>           _oneOf_ = new HashSet<SchemaOrRef>();
     protected CanonAttributes            _xCanonAttributes_;
     protected BigDecimal                 _maximum_;
-    protected AdditionalProperties       _additionalProperties_;
     protected BigDecimal                 _minimum_;
     protected PropertiesObject           _properties_;
     protected ReferenceObject            _xCanonExtends_;
@@ -589,6 +559,7 @@ public abstract class SchemaEntity extends ObjectEntity
 
       _maxItems_ = initial.getMaxItems();
       _xCanonBuilderFacade_ = initial.getXCanonBuilderFacade();
+      _xXXadditionalProperties_ = initial.getXXXadditionalProperties();
       _format_ = initial.getFormat();
       _xCanonCardinality_ = initial.getXCanonCardinality();
       _xCanonIdentifier_ = initial.getXCanonIdentifier();
@@ -601,7 +572,6 @@ public abstract class SchemaEntity extends ObjectEntity
       _oneOf_ = ImmutableSet.copyOf(initial.getOneOf());
       _xCanonAttributes_ = initial.getXCanonAttributes();
       _maximum_ = initial.getMaximum();
-      _additionalProperties_ = initial.getAdditionalProperties();
       _minimum_ = initial.getMinimum();
       _properties_ = initial.getProperties();
       _xCanonExtends_ = initial.getXCanonExtends();
@@ -633,6 +603,12 @@ public abstract class SchemaEntity extends ObjectEntity
         {
           throw new ParserException("x-canon-builderFacade must be an instance of JsonBoolean not " + node.getClass().getName(), node.getContext());
         }
+      }
+      if(jsonObject.containsKey("XXXadditionalProperties"))
+      {
+        JsonDomNode  node = jsonObject.get("XXXadditionalProperties");
+    
+        _xXXadditionalProperties_ = AdditionalProperties.FACTORY.newInstance(node, modelRegistry);
       }
       if(jsonObject.containsKey("format"))
       {
@@ -802,12 +778,6 @@ public abstract class SchemaEntity extends ObjectEntity
           throw new ParserException("maximum must be an instance of JsonParsedNumber not " + node.getClass().getName(), node.getContext());
         }
       }
-      if(jsonObject.containsKey("additionalProperties"))
-      {
-        JsonDomNode  node = jsonObject.get("additionalProperties");
-    
-        _additionalProperties_ = AdditionalProperties.FACTORY.newInstance(node, modelRegistry);
-      }
       if(jsonObject.containsKey("minimum"))
       {
         JsonDomNode  node = jsonObject.get("minimum");
@@ -839,6 +809,7 @@ public abstract class SchemaEntity extends ObjectEntity
     {
       result.add(_maxItems_);
       result.add(_xCanonBuilderFacade_);
+      result.add(_xXXadditionalProperties_);
       result.add(_format_);
       result.add(_xCanonCardinality_);
       result.add(_xCanonIdentifier_);
@@ -851,7 +822,6 @@ public abstract class SchemaEntity extends ObjectEntity
       result.add(_oneOf_);
       result.add(_xCanonAttributes_);
       result.add(_maximum_);
-      result.add(_additionalProperties_);
       result.add(_minimum_);
       result.add(_properties_);
       result.add(_xCanonExtends_);
@@ -902,6 +872,30 @@ public abstract class SchemaEntity extends ObjectEntity
     public T withXCanonBuilderFacade(Boolean value)
     {
       _xCanonBuilderFacade_ = value;
+      return self();
+    }
+
+    /**
+     * Return the value of the XXXadditionalProperties attribute.
+     *
+     * @return the value of the XXXadditionalProperties attribute.
+     */
+    @Override
+    public @Nullable AdditionalProperties getXXXadditionalProperties()
+    {
+      return _xXXadditionalProperties_;
+    }
+
+    /**
+     * Set the value of the XXXadditionalProperties attribute.
+     *
+     * @param value The value to be set.
+     *
+     * @return This (fluent method).
+     */
+    public T withXXXadditionalProperties(AdditionalProperties value)
+    {
+      _xXXadditionalProperties_ = value;
       return self();
     }
 
@@ -1194,30 +1188,6 @@ public abstract class SchemaEntity extends ObjectEntity
     }
 
     /**
-     * Return the value of the additionalProperties attribute.
-     *
-     * @return the value of the additionalProperties attribute.
-     */
-    @Override
-    public @Nullable AdditionalProperties getAdditionalProperties()
-    {
-      return _additionalProperties_;
-    }
-
-    /**
-     * Set the value of the additionalProperties attribute.
-     *
-     * @param value The value to be set.
-     *
-     * @return This (fluent method).
-     */
-    public T withAdditionalProperties(AdditionalProperties value)
-    {
-      _additionalProperties_ = value;
-      return self();
-    }
-
-    /**
      * Return the value of the minimum attribute.
      *
      * @return the value of the minimum attribute.
@@ -1302,7 +1272,7 @@ public abstract class SchemaEntity extends ObjectEntity
 
       return builder.build();
     }
-
+//T1 entity Schema OBJECT
     @Override
     public void populateJson(JsonObject.Builder builder)
     {
@@ -1316,6 +1286,11 @@ public abstract class SchemaEntity extends ObjectEntity
       if(getXCanonBuilderFacade() != null)
       {
           builder.addIfNotNull("x-canon-builderFacade", getXCanonBuilderFacade());
+      }
+
+      if(getXXXadditionalProperties() != null)
+      {
+          builder.addIfNotNull("XXXadditionalProperties", getXXXadditionalProperties().getJson());
       }
 
       if(getFormat() != null)
@@ -1393,11 +1368,6 @@ public abstract class SchemaEntity extends ObjectEntity
           builder.addIfNotNull("maximum", getMaximum());
       }
 
-      if(getAdditionalProperties() != null)
-      {
-          builder.addIfNotNull("additionalProperties", getAdditionalProperties().getJson());
-      }
-
       if(getMinimum() != null)
       {
           builder.addIfNotNull("minimum", getMinimum());
@@ -1415,37 +1385,13 @@ public abstract class SchemaEntity extends ObjectEntity
     }
 
     @Override
-    public String getCanonType()
-    {
-      return TYPE_ID;
-    }
-
-    @Override
-    public String getCanonVersion()
-    {
-      return TYPE_VERSION;
-    }
-
-    @Override
-    public @Nullable Integer getCanonMajorVersion()
-    {
-      return TYPE_MAJOR_VERSION;
-    }
-
-    @Override
-    public @Nullable Integer getCanonMinorVersion()
-    {
-      return TYPE_MINOR_VERSION;
-    }
-
-    @Override
     public void validate(FaultAccumulator faultAccumulator)
     {
       super.validate(faultAccumulator);
     }
   }
 
-  //@Override
+  @Override
   public ImmutableSet<String> getCanonUnknownKeys()
   {
     return unknownKeys_;
@@ -1500,6 +1446,16 @@ public abstract class SchemaEntity extends ObjectEntity
   public @Nullable Boolean getXCanonBuilderFacade()
   {
     return _xCanonBuilderFacade_;
+  }
+
+  /**
+   * Return the value of the XXXadditionalProperties attribute.
+   *
+   * @return the value of the XXXadditionalProperties attribute.
+   */
+  public @Nullable AdditionalProperties getXXXadditionalProperties()
+  {
+    return _xXXadditionalProperties_;
   }
 
   /**
@@ -1620,16 +1576,6 @@ public abstract class SchemaEntity extends ObjectEntity
   public @Nullable BigDecimal getMaximum()
   {
     return _maximum_;
-  }
-
-  /**
-   * Return the value of the additionalProperties attribute.
-   *
-   * @return the value of the additionalProperties attribute.
-   */
-  public @Nullable AdditionalProperties getAdditionalProperties()
-  {
-    return _additionalProperties_;
   }
 
   /**

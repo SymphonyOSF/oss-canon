@@ -90,7 +90,7 @@ G extends IGroupSchemaTemplateModel<T,M,S>>
     
     if(generators != null)
     {
-      return generators.getJsonObject().getObject(getLanguage());
+      return generators.getJson().getObject(getLanguage());
     }
     
     return null;

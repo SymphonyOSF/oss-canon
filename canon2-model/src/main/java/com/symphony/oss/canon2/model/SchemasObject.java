@@ -65,7 +65,7 @@ public class SchemasObject extends SchemasObjectEntity
     
     for(String name : getCanonUnknownKeys())
     {
-      schemas.put(name, Schema.FACTORY.newInstance(getJsonObject().getObject(name), initialiser.getModelRegistry()));
+      schemas.put(name, Schema.FACTORY.newInstance(getJson().getObject(name), initialiser.getModelRegistry()));
     }
     
     schemas_ = ImmutableMap.copyOf(schemas);

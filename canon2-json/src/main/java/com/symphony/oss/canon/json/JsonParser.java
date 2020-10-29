@@ -200,7 +200,7 @@ public class JsonParser extends Parser
 
   private JsonArray getArray() throws IOException
   {
-    JsonArray.Builder  builder = new JsonArray.Builder();
+    JsonArray.Builder  builder = new JsonArray.Builder().withContext(getContext());
     
     processArrayContents(builder);
     
@@ -247,7 +247,7 @@ public class JsonParser extends Parser
 
   private JsonObject getObject() throws IOException, ParserException
   {
-    JsonObject.Builder  builder = new JsonObject.Builder().withCanonicalize(canonicalize_);
+    JsonObject.Builder  builder = new JsonObject.Builder().withCanonicalize(canonicalize_).withContext(getContext());
     char                token   = expectCharToken(QUOTE, END_OBJECT);
     
     if(token == QUOTE)

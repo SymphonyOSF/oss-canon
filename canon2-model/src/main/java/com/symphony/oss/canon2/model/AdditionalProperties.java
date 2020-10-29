@@ -21,7 +21,7 @@
  *    Generator groupId    org.symphonyoss.s2.canon
  *              artifactId canon2-generator-java
  *    Template name        template/Object/_.java.ftl
- *    At                   2020-10-28 11:40:29 GMT
+ *    At                   2020-10-28 18:16:15 GMT
  *----------------------------------------------------------------------------------------------------
  */
 
@@ -38,8 +38,11 @@ import com.symphony.oss.canon.json.model.JsonNull;
 import com.symphony.oss.canon.json.model.JsonObject;
 import com.symphony.oss.canon2.runtime.java.Entity;
 import com.symphony.oss.canon2.runtime.java.IEntityInitialiser;
+import com.symphony.oss.canon2.runtime.java.IObjectEntityInitialiser;
 import com.symphony.oss.canon2.runtime.java.JsonEntityInitialiser;
+import com.symphony.oss.canon2.runtime.java.JsonObjectEntityInitialiser;
 import com.symphony.oss.canon2.runtime.java.ModelRegistry;
+import com.symphony.oss.canon2.runtime.java.ObjectEntity;
 import com.symphony.oss.commons.fault.FaultAccumulator;
 
 /**
@@ -53,14 +56,9 @@ public class AdditionalProperties extends Entity
   public static final String  TYPE_ID = "com.symphony.oss.canon2.model.AdditionalProperties";
   /** Type version */
   public static final String  TYPE_VERSION = "1.0";
-  /** Type major version */
-  public static final Integer TYPE_MAJOR_VERSION = 1;
-  /** Type minor version */
-  public static final Integer TYPE_MINOR_VERSION = 0;
   /** Factory instance */
   public static final Factory FACTORY = new Factory();
 
-  private final ImmutableSet<String>        unknownKeys_;
   private final SchemaOrRef                _schemaOrRef_;
   private final Boolean                    _$1_;
 
@@ -87,16 +85,14 @@ public class AdditionalProperties extends Entity
 
 
 //START
-//        if(node instanceof JsonBoolean)
-//        {
-//          _$1_ = ((JsonBoolean)node).asBoolean();
-//        }
-//        else 
-//        {
-//          throw new ParserException("$1 must be an instance of JsonBoolean not " + node.getClass().getName(), node.getContext());
-//        }
-        _$1_ = null;
-      unknownKeys_ = jsonInitialiser.getCanonUnknownKeys();
+        if(node instanceof JsonBoolean)
+        {
+          _$1_ = ((JsonBoolean)node).asBoolean();
+        }
+        else 
+        {
+          throw new ParserException("$1 must be an instance of JsonBoolean not " + node.getClass().getName(), node.getContext());
+        }
     }
     else
     {
@@ -108,7 +104,6 @@ public class AdditionalProperties extends Entity
       }
       _schemaOrRef_ = builder.getSchemaOrRef();
       _$1_ = builder.get$1();
-      unknownKeys_ = builder.getCanonUnknownKeys();
     }
   }
 
@@ -122,36 +117,6 @@ public class AdditionalProperties extends Entity
     public String getCanonType()
     {
       return TYPE_ID;
-    }
-
-    /**
-     * Return the type version (_version JSON attribute) for entities created by this factory.
-     *
-     * @return The type version for entities created by this factory.
-     */
-    public String getCanonVersion()
-    {
-      return TYPE_VERSION;
-    }
-
-    /**
-     * Return the major type version for entities created by this factory.
-     *
-     * @return The major type version for entities created by this factory.
-     */
-    public @Nullable Integer getCanonMajorVersion()
-    {
-      return TYPE_MAJOR_VERSION;
-    }
-
-    /**
-     * Return the minor type version for entities created by this factory.
-     *
-     * @return The minor type version for entities created by this factory.
-     */
-    public @Nullable Integer getCanonMinorVersion()
-    {
-      return TYPE_MINOR_VERSION;
     }
 
     @Override
@@ -204,6 +169,7 @@ public class AdditionalProperties extends Entity
    * @param <B> The concrete type of the built object.
    */
   public static abstract class AbstractBuilder<T extends AbstractBuilder<T,B>, B extends AdditionalProperties>
+// super class name
     extends Entity.AbstractBuilder<T,B>
     implements IAdditionalPropertiesInstanceOrBuilder, Initialiser
   {
@@ -321,11 +287,6 @@ public class AdditionalProperties extends Entity
     }
   }
 
-  //@Override
-  public ImmutableSet<String> getCanonUnknownKeys()
-  {
-    return unknownKeys_;
-  }
 
   /**
    * Builder for AdditionalProperties

@@ -83,15 +83,22 @@ public class ParserException extends RuntimeException
 
   private static String getErrorMessage(String message, IParserContext context)
   {
-    Objects.nonNull(context);
-    
     StringBuilder s = new StringBuilder(message);
-    
-    if(context.getInputSource() != null)
+   
+    if(context == null)
     {
-      s.append(" in \"" + context.getInputSource() + "\"");
+      s.append(" at unknown location");
+    }
+    else
+    {
+      if(context.getInputSource() != null)
+      {
+        s.append(" in \"" + context.getInputSource() + "\"");
+      }
+      
+      s.append(" at line ").append(context.getLine()).append(", col ").append(context.getCol());
     }
     
-      return s.append(" at line ").append(context.getLine()).append(", col ").append(context.getCol()).toString();
+    return s.toString();
   }
 }

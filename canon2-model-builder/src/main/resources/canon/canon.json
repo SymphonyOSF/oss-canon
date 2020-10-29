@@ -95,7 +95,7 @@
         "description": "An element to hold various schemas for the specification.",
         "type": "object",
         "x-canon-facade": true,
-        "additionalProperties": {
+        "XXadditionalProperties": {
           "$ref": "#/components/schemas/Schema"
         }
       },
@@ -139,11 +139,11 @@
             "type": "string"
           }
         },
-        "additionalProperties": {
+        "XXXadditionalProperties": {
           "type": "string",
           "format": "uri"
         },
-        "XXXadditionalProperties": true
+        "ZZZadditionalProperties": true
       },
       "Schema": {
         "description": "A data type definition.",
@@ -175,7 +175,7 @@
           "properties": {
             "$ref": "#/components/schemas/PropertiesObject"
           },
-          "additionalProperties": {
+          "XXXadditionalProperties": {
             "$ref": "#/components/schemas/AdditionalProperties"
           },
           "x-canon-extends": {
@@ -238,7 +238,7 @@
         "description": "A collection of schema properties (fields).",
         "type": "object",
         "x-canon-facade": true,
-        "additionalProperties": {
+        "XXadditionalProperties": {
           "$ref": "#/components/schemas/Schema"
         }
       },

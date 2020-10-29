@@ -18,9 +18,7 @@
 
 package com.symphony.oss.canon2.runtime.java;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-
+import com.google.common.collect.ImmutableSet;
 import com.symphony.oss.canon.json.model.JsonObject;
 
 /**
@@ -36,32 +34,15 @@ extends IEntityInitialiser
    * 
    * @return a JSON serialised form for the object to be initialised.
    */
+  @Override
   JsonObject getJson();
   
-  @Deprecated
-  default JsonObject getJsonObject()
-  {
-    return getJson();
-  }
-
   /**
-   * Return the type identifier (_type JSON attribute) for this entity.
+   * The set of keys present in the JSON from which this object was deserialized which are not defined by
+   * the schema. In the case where an object extends some other object the super-class unknown keys will include
+   * all keys defined by the current class.
    * 
-   * @return The type identifier for this object.
+   * @return The set of unknown keys  in the JSON from which this object was deserialized;
    */
-  @Nonnull String getCanonType();
-
-  /**
-   * Return The major part of the canon schema version defining this object.
-   * 
-   * @return The major part of the canon schema version defining this object.
-   */
-  @Nullable Integer getCanonMajorVersion();
-
-  /**
-   * Return The minor part of the canon schema version defining this object.
-   * 
-   * @return The minor part of the canon schema version defining this object.
-   */
-  @Nullable Integer getCanonMinorVersion();
+  ImmutableSet<String> getCanonUnknownKeys();
 }

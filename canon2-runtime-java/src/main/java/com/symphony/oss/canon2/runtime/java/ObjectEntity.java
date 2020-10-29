@@ -23,15 +23,9 @@
 
 package com.symphony.oss.canon2.runtime.java;
 
-import java.util.HashSet;
 import java.util.Objects;
-import java.util.Set;
-
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 
 import com.google.common.collect.ImmutableSet;
-import com.symphony.oss.canon.json.model.JsonDomNode;
 import com.symphony.oss.canon.json.model.JsonObject;
 
 /**
@@ -40,12 +34,9 @@ import com.symphony.oss.canon.json.model.JsonObject;
  * @author Bruce Skingle
  *
  */
-public class ObjectEntity extends Entity 
+public abstract class ObjectEntity extends Entity 
 {
   private final JsonObject           jsonObject_;
-  private final String               type_;
-  private final Integer              majorVersion_;
-  private final Integer              minorVersion_;
   private final ImmutableSet<String> unknownKeys_;
   
   /**
@@ -57,141 +48,21 @@ public class ObjectEntity extends Entity
   {
     super(initialiser);
     
-    Objects.requireNonNull(initialiser.getJsonObject());
+    Objects.requireNonNull(initialiser.getJson());
     
-    jsonObject_   = initialiser.getJsonObject();
-    type_         = initialiser.getCanonType();
-    majorVersion_ = initialiser.getCanonMajorVersion();
-    minorVersion_ = initialiser.getCanonMinorVersion();
+    jsonObject_   = initialiser.getJson();
     unknownKeys_  = initialiser.getCanonUnknownKeys();
   }
-  
-  
-  
-  
-  
-  
-  
-  @Deprecated
-  public ObjectEntity(AbstractBuilder<?,?> builder)
-  {
-    super(builder);
-    
-    Objects.requireNonNull(builder.getJsonDomNode());
-    
-    if(!(builder.getJsonDomNode() instanceof JsonObject))
-      throw new IllegalArgumentException("Initialiser must be a Json Object not " + builder.getJsonDomNode().getClass().getSimpleName());
-    
-    
-    jsonObject_   = (JsonObject) builder.getJsonDomNode();
-    type_         = builder.getCanonType();
-    majorVersion_ = builder.getCanonMajorVersion();
-    minorVersion_ = builder.getCanonMinorVersion();
-    unknownKeys_  = ImmutableSet.of();
-  }
-  
-  @Deprecated
-  public ObjectEntity(ObjectEntity other)
-  {
-    super(other);
-    
-    jsonObject_   = other.getJsonObject();
-    type_         = other.getCanonType();
-    majorVersion_ = other.getCanonMajorVersion();
-    minorVersion_ = other.getCanonMinorVersion();
-    unknownKeys_  = other.unknownKeys_;
-  }
-  
-  @Deprecated
-  public ObjectEntity(JsonObject jsonObject)
-  {
-    super(jsonObject);
-    
-    jsonObject_ = jsonObject;
-    
-    Set<String>       keySet = new HashSet<>(jsonObject.getNames());
-    
-    if(keySet.remove(JSON_TYPE))
-      type_ = jsonObject_.get(JSON_TYPE).toString();
-    else
-      type_ = "UNKNONWN";
-    
-    if(keySet.remove(JSON_VERSION))
-    {
-      String versionStr = jsonObject_.get(JSON_VERSION).toString();
-      int     i = versionStr.indexOf('.');
-      
-      if(i == -1)
-        throw new IllegalArgumentException("Version must be of the form Magor.Minor not \"" + versionStr + "\"");
-      
-      try
-      {
-        majorVersion_ = Integer.parseInt(versionStr.substring(0,i));
-        minorVersion_ = Integer.parseInt(versionStr.substring(i+1));
-      }
-      catch(NumberFormatException e)
-      {
-        throw new IllegalArgumentException("Version must be of the form Magor.Minor not \"" + versionStr + "\"", e);
-      }
-    }
-    else
-    {
-      majorVersion_ = null;
-      minorVersion_ = null;
-    }
-    
-    unknownKeys_ = ImmutableSet.copyOf(keySet);
-  }
-  
-  
-  
-  
-  
-  
-  
-  
-  
   
   /**
    * Return the JSON object from which this entity was created.
    * 
    * @return the JSON object from which this entity was created.
    */
+  @Override
   public JsonObject getJson()
   {
     return jsonObject_;
-  }
-  
-  @Deprecated
-  public JsonObject getJsonObject()
-  {
-    return jsonObject_;
-  }
-  
-  /**
-   * Return the type identifier (_type JSON attribute) for this entity.
-   * 
-   * @return The type identifier for this object.
-   */
-  public @Nonnull String getCanonType()
-  {
-    return type_;
-  }
-
-  /**
-   * @return The major part of the canon schema version defining this object.
-   */
-  public @Nullable Integer getCanonMajorVersion()
-  {
-    return majorVersion_;
-  }
-
-  /**
-   * @return The minor part of the canon schema version defining this object.
-   */
-  public @Nullable Integer getCanonMinorVersion()
-  {
-    return minorVersion_;
   }
   
   /**
@@ -249,12 +120,6 @@ public class ObjectEntity extends Entity
     {
       super(type);
     }
-    
-    @Override
-    public JsonDomNode getJsonDomNode()
-    {
-      return getJsonObject();
-    }
 
     // TODO: perhaps if withValues has been set this should return a non-empty set, if there were unknown keys in the object given.
     @Override
@@ -263,37 +128,49 @@ public class ObjectEntity extends Entity
       return ImmutableSet.of();
     }
 
-    /**
-     * Return the type id (_type JSON attribute) for entities created by this builder.
-     * 
-     * @return The type id for entities created by this builder.
-     */
-    @Override
-    public abstract String     getCanonType();
+//    /**
+//     * Return the type id (_type JSON attribute) for entities created by this builder.
+//     * 
+//     * @return The type id for entities created by this builder.
+//     */
+//    @Deprecated
+//    public String     getCanonType()
+//    {
+//      return null;
+//    }
+//    
+//    /**
+//     * Return the type version (_version JSON attribute) for this entity.
+//     * 
+//     * @return The type version for this entity.
+//     */
+//    @Deprecated
+//    public String getCanonVersion()
+//    {
+//      return null;
+//    }
     
-    /**
-     * Return the type version (_version JSON attribute) for this entity.
-     * 
-     * @return The type version for this entity.
-     */
-    
-    public abstract String getCanonVersion();
-    
-    /**
-     * Return the major type version for entities created by this builder.
-     * 
-     * @return The major type version for entities created by this builder.
-     */
-    @Override
-    public abstract Integer    getCanonMajorVersion();
-    
-    /**
-     * Return the minor type version for entities created by this builder.
-     * 
-     * @return The minor type version for entities created by this builder.
-     */
-    @Override
-    public abstract Integer    getCanonMinorVersion();
+//    /**
+//     * Return the major type version for entities created by this builder.
+//     * 
+//     * @return The major type version for entities created by this builder.
+//     */
+//    @Deprecated
+//    public Integer    getCanonMajorVersion()
+//    {
+//      return 0;
+//    }
+//    
+//    /**
+//     * Return the minor type version for entities created by this builder.
+//     * 
+//     * @return The minor type version for entities created by this builder.
+//     */
+//    @Deprecated
+//    public Integer    getCanonMinorVersion()
+//    {
+//      return 0;
+//    }
 
 //    @Override
 //    public abstract JsonObject getJsonObject();

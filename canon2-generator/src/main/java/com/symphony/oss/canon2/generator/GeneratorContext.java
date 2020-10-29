@@ -169,7 +169,7 @@ G extends IGroupSchemaTemplateModel<T,M,S>>
     }
     else
     {
-      throw new GenerationException(new SyntaxErrorException("Invalid schema", resolvedSchema.getSchema().getJsonDomNode().getContext()));
+      throw new GenerationException(new SyntaxErrorException("Invalid schema", resolvedSchema.getSchema().getJson().getContext()));
     }
   }
 

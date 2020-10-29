@@ -21,8 +21,6 @@ package com.symphony.oss.canon2.runtime.java;
 import java.util.HashSet;
 import java.util.Set;
 
-import javax.annotation.Nonnull;
-
 import com.google.common.collect.ImmutableSet;
 import com.symphony.oss.canon.json.model.JsonDomNode;
 import com.symphony.oss.canon.json.model.JsonObject;
@@ -37,8 +35,6 @@ public abstract class JsonObjectEntityInitialiser extends JsonEntityInitialiser 
 {
   private final JsonObject    jsonObject_;
   private final String        type_;
-  private final Integer       majorVersion_;
-  private final Integer       minorVersion_;
   private final Set<String>   keySet_;
   
   /**
@@ -58,32 +54,6 @@ public abstract class JsonObjectEntityInitialiser extends JsonEntityInitialiser 
       type_ = jsonObject_.getString(Entity.JSON_TYPE, "UNKNONWN");
     else
       type_ = "UNKNONWN";
-    
-    keySet_.remove(Entity.JSON_VERSION);
-    String versionStr = jsonObject_.getString(Entity.JSON_VERSION, null);
-    
-    if(versionStr != null)
-    {
-      int     i = versionStr.indexOf('.');
-      
-      if(i == -1)
-        throw new IllegalArgumentException("Version must be of the form Major.Minor not \"" + versionStr + "\"");
-      
-      try
-      {
-        majorVersion_ = Integer.parseInt(versionStr.substring(0,i));
-        minorVersion_ = Integer.parseInt(versionStr.substring(i+1));
-      }
-      catch(NumberFormatException e)
-      {
-        throw new IllegalArgumentException("Version must be of the form Major.Minor not \"" + versionStr + "\"", e);
-      }
-    }
-    else
-    {
-      majorVersion_ = null;
-      minorVersion_ = null;
-    }
   }
   
   @Override
@@ -98,24 +68,6 @@ public abstract class JsonObjectEntityInitialiser extends JsonEntityInitialiser 
   public JsonObject getJson()
   {
     return jsonObject_;
-  }
-
-  @Override
-  public @Nonnull String getCanonType()
-  {
-    return type_;
-  }
-
-  @Override
-  public Integer getCanonMajorVersion()
-  {
-    return majorVersion_;
-  }
-
-  @Override
-  public Integer getCanonMinorVersion()
-  {
-    return minorVersion_;
   }
 
   @Override

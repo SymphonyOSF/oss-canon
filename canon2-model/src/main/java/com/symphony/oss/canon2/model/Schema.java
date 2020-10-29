@@ -70,7 +70,7 @@ public class Schema extends SchemaEntity implements INamedModelEntity
     super(initialiser);
 
     Entity      items = null; 
-    JsonDomNode itemsNode = getJsonObject().get("items");
+    JsonDomNode itemsNode = getJson().get("items");
     
     if(itemsNode instanceof JsonObject)
     {
@@ -89,7 +89,7 @@ public class Schema extends SchemaEntity implements INamedModelEntity
   @Override
   public @Nullable String getXCanonIdentifier(String language)
   {
-    return getJsonObject().getString("x-canon-" + language + "-identifier", null);
+    return getJson().getString("x-canon-" + language + "-identifier", null);
   }
   
   //public void resolve(CanonModelContext generationContext, SchemaInfo schemaInfo)
@@ -104,29 +104,30 @@ public class Schema extends SchemaEntity implements INamedModelEntity
         .withInnerClasses(innerClassesBuilder)
         .withGenerated(generated)
         ;
-    
-    if(getAdditionalProperties() != null)
-    {
-      Object additionalProperies = getAdditionalProperties().canonGetValue();
-      
-      if(additionalProperies instanceof Boolean)
-      {
-        builder.withAdditionalPropertiesAllowed((boolean)additionalProperies);
-      }
-      else if(additionalProperies instanceof SchemaOrRef)
-      {
-        SchemaOrRef schemaOrRef = (SchemaOrRef) additionalProperies;
-        
-        String name = schemaOrRef.getRef() == null ? "$additionalProperties" : schemaOrRef.getRef().getName();
-        
-        ResolvedSchema.SingletonBuilder resolvedAdditionalProperties = schemaOrRef.link(openApiObjectBuilder, modelContext, sourceContext, name, uri, builder);
-        builder.withResolvedAdditionalProperties(resolvedAdditionalProperties);
-      }
-      else if(additionalProperies != null)
-      {
-        throw new GenerationException("Unexpected additional properties object of type " + additionalProperies.getClass());
-      }
-    }
+
+    // TODO: Put back
+//    if(getAdditionalProperties() != null)
+//    {
+//      Object additionalProperies = getAdditionalProperties().canonGetValue();
+//      
+//      if(additionalProperies instanceof Boolean)
+//      {
+//        builder.withAdditionalPropertiesAllowed((boolean)additionalProperies);
+//      }
+//      else if(additionalProperies instanceof SchemaOrRef)
+//      {
+//        SchemaOrRef schemaOrRef = (SchemaOrRef) additionalProperies;
+//        
+//        String name = schemaOrRef.getRef() == null ? "$additionalProperties" : schemaOrRef.getRef().getName();
+//        
+//        ResolvedSchema.SingletonBuilder resolvedAdditionalProperties = schemaOrRef.link(openApiObjectBuilder, modelContext, sourceContext, name, uri, builder);
+//        builder.withResolvedAdditionalProperties(resolvedAdditionalProperties);
+//      }
+//      else if(additionalProperies != null)
+//      {
+//        throw new GenerationException("Unexpected additional properties object of type " + additionalProperies.getClass());
+//      }
+//    }
     
     Set<SchemaOrRef> oneOf = getOneOf();
     
@@ -259,7 +260,7 @@ public class Schema extends SchemaEntity implements INamedModelEntity
 
   public String getSourceLocation()
   {
-    IParserContext context = getJsonDomNode().getContext();
+    IParserContext context = getJson().getContext();
     
     if(context == null)
       return "unknown location";
@@ -309,7 +310,7 @@ public class Schema extends SchemaEntity implements INamedModelEntity
 //  @Override
 //  public Set<?> getEnumValues(String type) throws GenerationException
 //  {
-//      IImmutableJsonDomNode enumNode = getJsonObject().get("enum");
+//      IImmutableJsonDomNode enumNode = getJson().get("enum");
 //      
 //      if(enumNode == null)
 //        return null;

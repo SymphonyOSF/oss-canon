@@ -22,6 +22,7 @@ import javax.annotation.Nullable;
 import javax.annotation.concurrent.Immutable;
 
 import com.symphony.oss.canon.json.IParserContext;
+import com.symphony.oss.commons.fault.FaultAccumulator;
 import com.symphony.oss.commons.fluent.BaseAbstractBuilder;
 
 /**
@@ -136,6 +137,14 @@ public abstract class JsonDomNode implements Comparable<JsonDomNode>
       canonicalize_ = canonicalize;
       
       return self();
+    }
+
+    @Override
+    protected void validate(FaultAccumulator faultAccumulator)
+    {
+      if(context_ == null)
+        System.out.println("HERE " + toString());
+      super.validate(faultAccumulator);
     }
   }
 }

@@ -59,7 +59,7 @@ public class PropertiesObject extends PropertiesObjectEntity
     
     for(String name : getCanonUnknownKeys())
     {
-      JsonObject json = getJsonObject().getObject(name);
+      JsonObject json = getJson().getObject(name);
       if(json.get("$ref") == null)
         properties.put(name, Schema.FACTORY.newInstance(json, initialiser.getModelRegistry()));
       else

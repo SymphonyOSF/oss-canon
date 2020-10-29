@@ -56,6 +56,7 @@ JavaFieldTemplateModel
   private JavaSchemaTemplateModel additionalProperties_;
   private final String initialiserType_;
   private final String jsonNodeType_;
+  private final boolean objectType_;
   
   
   JavaObjectSchemaTemplateModel(ResolvedSchema resolvedSchema, String identifier, String packageName, JavaOpenApiTemplateModel model,
@@ -69,19 +70,25 @@ JavaFieldTemplateModel
     switch(resolvedSchema.getSchemaType())
     {
       case ONE_OF:
-      case ANY_OF:
         initialiserType_ = "EntityInitialiser";
         baseSuperType_ = "Entity";
         jsonNodeType_ = "JsonDomNode";
+        objectType_ = false;
         break;
         
       default:
         initialiserType_ = "ObjectEntityInitialiser";
         baseSuperType_ = "ObjectEntity";
         jsonNodeType_ = "JsonObject";
+        objectType_ = true;
     }
   }
   
+  public boolean getIsObjectType()
+  {
+    return objectType_;
+  }
+
   public String getFullyQualifiedSuperTypeName()
   {
     if(superType_ == null)

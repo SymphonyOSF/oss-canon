@@ -61,15 +61,15 @@ public class SchemaOrRef extends SchemaOrRefEntity
   {
     super(initialiser);
     
-    if(getJsonObject().get("$ref") == null)
+    if(getJson().get("$ref") == null)
     {
-      schema_ = Schema.FACTORY.newInstance(getJsonObject(), initialiser.getModelRegistry());
+      schema_ = Schema.FACTORY.newInstance(getJson(), initialiser.getModelRegistry());
       ref_ = null;
     }
     else
     {
       schema_ = null;
-      ref_ = ReferenceObject.FACTORY.newInstance(getJsonObject(), initialiser.getModelRegistry());
+      ref_ = ReferenceObject.FACTORY.newInstance(getJson(), initialiser.getModelRegistry());
     }
   }
 

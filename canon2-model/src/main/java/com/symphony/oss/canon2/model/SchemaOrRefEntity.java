@@ -21,7 +21,7 @@
  *    Generator groupId    org.symphonyoss.s2.canon
  *              artifactId canon2-generator-java
  *    Template name        template/Object/_Entity.java.ftl
- *    At                   2020-10-28 11:40:29 GMT
+ *    At                   2020-10-28 18:16:15 GMT
  *----------------------------------------------------------------------------------------------------
  */
 
@@ -51,10 +51,6 @@ public abstract class SchemaOrRefEntity extends ObjectEntity
   public static final String  TYPE_ID = "com.symphony.oss.canon2.model.SchemaOrRef";
   /** Type version */
   public static final String  TYPE_VERSION = "1.0";
-  /** Type major version */
-  public static final Integer TYPE_MAJOR_VERSION = 1;
-  /** Type minor version */
-  public static final Integer TYPE_MINOR_VERSION = 0;
   /** Factory instance */
   public static final Factory FACTORY = new Factory();
 
@@ -97,36 +93,6 @@ public abstract class SchemaOrRefEntity extends ObjectEntity
     public String getCanonType()
     {
       return TYPE_ID;
-    }
-
-    /**
-     * Return the type version (_version JSON attribute) for entities created by this factory.
-     *
-     * @return The type version for entities created by this factory.
-     */
-    public String getCanonVersion()
-    {
-      return TYPE_VERSION;
-    }
-
-    /**
-     * Return the major type version for entities created by this factory.
-     *
-     * @return The major type version for entities created by this factory.
-     */
-    public @Nullable Integer getCanonMajorVersion()
-    {
-      return TYPE_MAJOR_VERSION;
-    }
-
-    /**
-     * Return the minor type version for entities created by this factory.
-     *
-     * @return The minor type version for entities created by this factory.
-     */
-    public @Nullable Integer getCanonMinorVersion()
-    {
-      return TYPE_MINOR_VERSION;
     }
 
     @Override
@@ -191,6 +157,7 @@ public abstract class SchemaOrRefEntity extends ObjectEntity
    * @param <B> The concrete type of the built object.
    */
   public static abstract class AbstractBuilder<T extends AbstractBuilder<T,B>, B extends SchemaOrRefEntity>
+// super class name
     extends ObjectEntity.AbstractBuilder<T,B>
     implements ISchemaOrRefInstanceOrBuilder, Initialiser
   {
@@ -235,35 +202,11 @@ public abstract class SchemaOrRefEntity extends ObjectEntity
 
       return builder.build();
     }
-
+//T1 entity SchemaOrRef OBJECT
     @Override
     public void populateJson(JsonObject.Builder builder)
     {
       super.populateJson(builder);
-    }
-
-    @Override
-    public String getCanonType()
-    {
-      return TYPE_ID;
-    }
-
-    @Override
-    public String getCanonVersion()
-    {
-      return TYPE_VERSION;
-    }
-
-    @Override
-    public @Nullable Integer getCanonMajorVersion()
-    {
-      return TYPE_MAJOR_VERSION;
-    }
-
-    @Override
-    public @Nullable Integer getCanonMinorVersion()
-    {
-      return TYPE_MINOR_VERSION;
     }
 
     @Override
@@ -273,7 +216,7 @@ public abstract class SchemaOrRefEntity extends ObjectEntity
     }
   }
 
-  //@Override
+  @Override
   public ImmutableSet<String> getCanonUnknownKeys()
   {
     return unknownKeys_;

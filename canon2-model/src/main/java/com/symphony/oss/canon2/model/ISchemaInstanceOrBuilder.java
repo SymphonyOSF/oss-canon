@@ -21,7 +21,7 @@
  *    Generator groupId    org.symphonyoss.s2.canon
  *              artifactId canon2-generator-java
  *    Template name        template/Object/I_InstanceOrBuilder.java.ftl
- *    At                   2020-10-28 11:40:29 GMT
+ *    At                   2020-10-28 18:16:15 GMT
  *----------------------------------------------------------------------------------------------------
  */
 
@@ -54,6 +54,13 @@ public interface ISchemaInstanceOrBuilder extends IObjectEntityInitialiser
    * @return the value of the x-canon-builderFacade attribute.
    */
   @Nullable Boolean getXCanonBuilderFacade();
+  
+  /**
+   * Return the value of the XXXadditionalProperties attribute.
+   *
+   * @return the value of the XXXadditionalProperties attribute.
+   */
+  @Nullable AdditionalProperties getXXXadditionalProperties();
   
   /**
    * Return the value of the format attribute.
@@ -138,13 +145,6 @@ public interface ISchemaInstanceOrBuilder extends IObjectEntityInitialiser
    * @return the value of the maximum attribute.
    */
   @Nullable BigDecimal getMaximum();
-  
-  /**
-   * Return the value of the additionalProperties attribute.
-   *
-   * @return the value of the additionalProperties attribute.
-   */
-  @Nullable AdditionalProperties getAdditionalProperties();
   
   /**
    * Return the value of the minimum attribute.

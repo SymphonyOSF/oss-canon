@@ -163,8 +163,8 @@ JavaSchemaTemplateModel>
     
     if(attr != null)
     {
-      externalPackage_ = attr.getJsonObject().getString("javaExternalPackage", "");
-      externalType_ = attr.getJsonObject().getString("javaExternalType", null);
+      externalPackage_ = attr.getJson().getString("javaExternalPackage", "");
+      externalType_ = attr.getJson().getString("javaExternalType", null);
       constructPrefix = getCamelCapitalizedName() + "Builder.build(";
       getValuePrefix = getCamelCapitalizedName() + "Builder.to" + javaType_ + "(";
       getValueSuffix = ")";
@@ -210,6 +210,7 @@ JavaSchemaTemplateModel>
     return isGenerated_;
   }
 
+  @Override
   public String getQuotedName()
   {
     return javaType_;
@@ -337,7 +338,7 @@ JavaSchemaTemplateModel>
     {
       case "number":
       case "integer":
-        JsonDomNode node = entity.getJsonObject().get(name);
+        JsonDomNode node = entity.getJson().get(name);
       
         if(node == null)
         {
@@ -366,7 +367,7 @@ JavaSchemaTemplateModel>
     {
       case "number":
       case "integer":
-        JsonDomNode node = entity.getJsonObject().get(name);
+        JsonDomNode node = entity.getJson().get(name);
       
         if(node instanceof IBooleanProvider)
         {
@@ -383,6 +384,7 @@ JavaSchemaTemplateModel>
     log_.warn("Unrecognized " + entity.getType() + " format \"" + entity.getFormat() + "\" ignored at " + entity.getSourceLocation());
   }
 
+  @Override
   public String getType()
   {
     return type_;

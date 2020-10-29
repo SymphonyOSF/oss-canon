@@ -46,7 +46,7 @@ public class JsonEntityInitialiser implements IEntityInitialiser
     return modelRegistry_;
   }
 
-  @Override
+  @Deprecated
   public ImmutableSet<String> getCanonUnknownKeys()
   {
     return EMPTY_KEYS;

@@ -125,14 +125,12 @@ ${indent}  /** Type ID */
 ${indent}  public static final String  TYPE_ID = "${model.canonId}.${entity.name}";
 ${indent}  /** Type version */
 ${indent}  public static final String  TYPE_VERSION = "${model.canonVersion}";
-${indent}  /** Type major version */
-${indent}  public static final Integer TYPE_MAJOR_VERSION = ${model.canonMajorVersion};
-${indent}  /** Type minor version */
-${indent}  public static final Integer TYPE_MINOR_VERSION = ${model.canonMinorVersion};
 ${indent}  /** Factory instance */
 ${indent}  public static final Factory FACTORY = new Factory();
 
+<#if entity.isObjectType>
 ${indent}  private final ${"ImmutableSet<String>"?right_pad(25)}   unknownKeys_;
+</#if>
 <#list entity.fields as field>
 ${indent}  private final ${field.type?right_pad(25)}  _${field.camelName}_;
 </#list>
@@ -189,9 +187,9 @@ ${indent}      {
 ${indent}      }
   </#list>
 </#if>
+${indent}      unknownKeys_ = jsonInitialiser.getCanonUnknownKeys();
       <#break>
 </#switch>
-${indent}      unknownKeys_ = jsonInitialiser.getCanonUnknownKeys();
 ${indent}    }
 ${indent}    else
 ${indent}    {
@@ -205,7 +203,9 @@ ${indent}      }
 ${indent}      _${field.camelName}_ = ${field.typeSchema.copyPrefix}builder.get${field.camelCapitalizedName}()${field.typeSchema.copySuffix};
     <@checkFieldLimits "${indent}      " field "_${field.camelName}_"/>
 </#list>
+<#if entity.isObjectType>
 ${indent}      unknownKeys_ = builder.getCanonUnknownKeys();
+</#if>
 ${indent}    }
 ${indent}  }
 
@@ -224,36 +224,6 @@ ${indent}    @Override
 ${indent}    public String getCanonType()
 ${indent}    {
 ${indent}      return TYPE_ID;
-${indent}    }
-
-${indent}    /**
-${indent}     * Return the type version (_version JSON attribute) for entities created by this factory.
-${indent}     *
-${indent}     * @return The type version for entities created by this factory.
-${indent}     */
-${indent}    public String getCanonVersion()
-${indent}    {
-${indent}      return TYPE_VERSION;
-${indent}    }
-
-${indent}    /**
-${indent}     * Return the major type version for entities created by this factory.
-${indent}     *
-${indent}     * @return The major type version for entities created by this factory.
-${indent}     */
-${indent}    public @Nullable Integer getCanonMajorVersion()
-${indent}    {
-${indent}      return TYPE_MAJOR_VERSION;
-${indent}    }
-
-${indent}    /**
-${indent}     * Return the minor type version for entities created by this factory.
-${indent}     *
-${indent}     * @return The minor type version for entities created by this factory.
-${indent}     */
-${indent}    public @Nullable Integer getCanonMinorVersion()
-${indent}    {
-${indent}      return TYPE_MINOR_VERSION;
 ${indent}    }
 
 ${indent}    @Override
@@ -489,30 +459,6 @@ ${indent}      {
 ${indent}      }
   </#list>
 ${indent}    }
-
-${indent}    @Override
-${indent}    public String getCanonType()
-${indent}    {
-${indent}      return TYPE_ID;
-${indent}    }
-
-${indent}    @Override
-${indent}    public String getCanonVersion()
-${indent}    {
-${indent}      return TYPE_VERSION;
-${indent}    }
-
-${indent}    @Override
-${indent}    public @Nullable Integer getCanonMajorVersion()
-${indent}    {
-${indent}      return TYPE_MAJOR_VERSION;
-${indent}    }
-
-${indent}    @Override
-${indent}    public @Nullable Integer getCanonMinorVersion()
-${indent}    {
-${indent}      return TYPE_MINOR_VERSION;
-${indent}    }
       <#break>
     <#case "ONE_OF">
 ${indent}    @Override
@@ -535,11 +481,13 @@ ${indent}      faultAccumulator.checkNotNull(_${field.camelName}_, "${field.name
 ${indent}    }
 ${indent}  }
 
-${indent}  //@Override
+<#if entity.isObjectType>
+${indent}  @Override
 ${indent}  public ImmutableSet<String> getCanonUnknownKeys()
 ${indent}  {
 ${indent}    return unknownKeys_;
 ${indent}  }
+</#if>
 <#------------------------------------------------------------------------------------------------------------------------------
 
  Builder

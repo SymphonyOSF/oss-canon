@@ -60,7 +60,7 @@ public class OpenApiObject extends OpenApiObjectEntity implements INamedModelEnt
   @Override
   public @Nullable String getXCanonIdentifier(String language)
   {
-    return getJsonObject().getString("x-canon-" + language + "-identifier", null);
+    return getJson().getString("x-canon-" + language + "-identifier", null);
   }
 
   public <T extends Entity> T get(String fragment, Class<T> type)
@@ -107,7 +107,7 @@ public class OpenApiObject extends OpenApiObjectEntity implements INamedModelEnt
 //    log_.info("resolve model");
 //    
 ////    ResolvedModel.Builder builder = new ResolvedModel.Builder()
-////        .withValues(getJsonObject(), generationContext.getModelRegistry());
+////        .withValues(getJson(), generationContext.getModelRegistry());
 ////    
 ////    // dodge canon1 bugs
 ////

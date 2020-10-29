@@ -21,7 +21,7 @@
  *    Generator groupId    org.symphonyoss.s2.canon
  *              artifactId canon2-generator-java
  *    Template name        template/TypeDef/_.java.ftl
- *    At                   2020-10-28 11:40:29 GMT
+ *    At                   2020-10-28 18:16:15 GMT
  *----------------------------------------------------------------------------------------------------
  */
 
