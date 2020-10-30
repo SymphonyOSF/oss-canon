@@ -1,0 +1,33 @@
+{
+  "canon": "0.0.1",
+  "info": {
+    "title": "Recursion example",
+    "license": {
+      "name": "Apache2"
+    }
+  },
+  "x-canon-id": "com.symphony.oss.canon2.test.recursive",
+  "x-canon-version": "1.0",
+  "x-canon-generators": {
+    "java": {
+      "genPackage":  "com.symphony.oss.canon2.test.recursive"
+    }
+  },
+  "components": {
+    "schemas": {   
+      "ResolvedSchema": {
+        "description": "A data type definition with all references resolved.",
+        "type": "object",
+        "x-canon-facade": true,
+        "properties": {
+          "resolvedItems": {
+            "$ref": "#/components/schemas/ResolvedSchema"
+          },
+          "uri": {
+            "type": "string"
+          }
+        }
+      }
+    }
+  }
+}

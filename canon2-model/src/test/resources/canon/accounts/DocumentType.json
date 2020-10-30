@@ -1,0 +1,9 @@
+{
+  "description": "The type of a document.",
+  "type": "string",
+  "enum": [
+    "invoice",
+    "creditNote",
+    "statement"
+  ]
+}

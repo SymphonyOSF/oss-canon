@@ -1,0 +1,463 @@
+{
+  "canon": "0.0.1",
+  "info": {
+    "title": "Canon Template Type Check",
+    "license": {
+      "name": "Apache2"
+    }
+  },
+  "x-canon-id": "com.symphony.oss.canon.test.typeCheck",
+  "x-canon-version": "1.0",
+  "x-canon-generators": {
+    "java": {
+      "genPackage":  "com.symphony.oss.canon.test.typeCheck"
+    }
+  },
+  "components": {
+    "schemas": {
+      "IntTypedef": {
+        "description": "An integer typedef.",
+        "type": "integer"
+      },
+      "MessageId": {
+        "type": "string",
+        "format": "byte",
+        "x-canon-facade": true,
+        "minimum": 2.1,
+        "maximum": 7.2 
+      },
+      "DoubleTypedef": {
+        "description": "A double typedef with a facade.",
+        "x-canon-facade": true,
+        "type": "number",
+        "format": "double",
+        "minimum": -765546546547723.03330025,
+        "maximum": 7665465456464550000.00333025
+      },
+      "Colour": {
+        "description": "An enumeration.",
+        "type": "string",
+        "enum": [
+          "black",
+          "white",
+          "red",
+          "blue",
+          "green"
+        ]
+      },
+      "Instant": {
+        "description": "A nanosecond resolution timestamp, compatible with the Java8 definition of Instant.",
+        "type": "string",
+        "# This is a test comment.": [],
+        "# This is a another comment.": [
+          "I can put stuff in here",
+          "so I have as much space as I need."
+        ],
+        "x-canon-attributes": {
+          "javaExternalPackage": "java.time",
+          "javaExternalType": "Instant"
+        }
+      },
+      "2": {
+        "description": "A value with a problematic name.",
+        "type": "string",
+        "format": "byte",
+        "x-canon-identifier": "Two"
+      },
+      "string": {
+        "description": "A value with a problematic name.",
+        "type": "string",
+        "format": "byte",
+        "x-canon-identifier": "StringTypeDef"
+      },
+      "\"-\"": {
+        "description": "A value with a problematic name.",
+        "type": "string",
+        "format": "byte",
+        "x-canon-identifier": "Hyphen"
+      },
+      "SimpleObject": {
+        "type": "object",
+        "required": ["name"],
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "value": {
+            "type": "integer"
+          }
+        }
+      },
+      "ExternalObject": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "userId": {
+            "$ref": "typedef.json#/components/schemas/UserId"
+          }
+        }
+      },
+      
+      "ListOfInts": {
+        "description": "A list of integers.",
+        "type": "array",
+        "x-canon-cardinality": "LIST",
+        "minItems": 1,
+        "maxItems": 5,
+        "items": {
+          "description": "An integer element.",
+          "type": "integer"
+        }
+      },
+      
+      "SetOfInts": {
+        "description": "A set of integers.",
+        "type": "array",
+        "x-canon-cardinality": "SET",
+        "items": {
+          "description": "An integer element.",
+          "type": "integer"
+        }
+      },
+      
+      "[2]": {
+        "description": "A list of 2's.",
+        "type": "array",
+        "x-canon-cardinality": "LIST",
+        "x-canon-identifier": "listOfTwo",
+        "minItems": 1,
+        "maxItems": 5,
+        "items": {
+          "$ref": "#/components/schemas/2"
+        }
+      },
+      "ListOfExternal": {
+        "description": "A list of externals.",
+        "type": "array",
+        "x-canon-cardinality": "LIST",
+        "minItems": 1,
+        "maxItems": 5,
+        "items": {
+          "$ref": "#/components/schemas/Instant"
+        }
+      },
+      "ListOfEnums": {
+        "description": "A list of enums.",
+        "type": "array",
+        "x-canon-cardinality": "LIST",
+        "minItems": 1,
+        "maxItems": 5,
+        "items": {
+          "$ref": "#/components/schemas/Colour"
+        }
+      },
+      "ListOfObjects": {
+        "description": "A list of objects.",
+        "type": "array",
+        "x-canon-cardinality": "LIST",
+        "minItems": 1,
+        "maxItems": 5,
+        "items": {
+          "$ref": "#/components/schemas/SimpleObject"
+        }
+      },
+      
+      "ObjectWithInts": {
+        "type": "object",
+        "properties": {
+          "intField": {
+            "type": "integer"
+          },
+          "intListField": {
+            "type": "array",
+            "x-canon-cardinality": "LIST",
+            "minItems": 1,
+            "maxItems": 5,
+            "items": {
+              "description": "An integer element.",
+              "type": "integer"
+            }
+          },
+          "intSetField": {
+            "description": "A set of integers.",
+            "type": "array",
+            "x-canon-cardinality": "SET",
+            "items": {
+              "description": "An integer element.",
+              "type": "integer"
+            }
+          },
+          "intTypedefField": {
+            "$ref": "#/components/schemas/IntTypedef"
+          },
+          "aSetOfTypedefsField": {
+            "$ref": "#/components/schemas/SetOfInts"
+          },
+          "aListofTypedefsField": {
+            "$ref": "#/components/schemas/ListOfInts"
+          }
+        }
+      },
+      
+      "NestedArray": {
+        "type": "object",
+        "properties": {
+          "intListListField": {
+            "type": "array",
+            "x-canon-cardinality": "LIST",
+            "minItems": 1,
+            "maxItems": 5,
+            "items": {
+              "description": "Level 1 element.",
+              "type": "array",
+              "x-canon-cardinality": "LIST",
+              "minItems": 0,
+              "maxItems": 50,
+              "items": {
+                "description": "Level 2 element.",
+                "type": "array",
+                "x-canon-cardinality": "LIST",
+                "minItems": 0,
+                "maxItems": 500,
+                "items": {
+                  "description": "Level 3 element.",
+                  "type": "integer"
+                }
+              }
+            }
+          }
+        }
+      },
+      
+      "AllTheTypes": {
+        "type": "object",
+        "required": [
+          "intField",
+          "int64Field"
+        ],
+        "properties": {
+          "intField": {
+            "type": "integer"
+          },
+          "int64Field": {
+              "type": "integer",
+              "format": "int64",
+              "minimum": 6,
+              "maximum": 8,
+              "exclusiveMaximum": true
+          },
+          "int32Field": {
+              "type": "integer",
+              "format": "int32"
+          },
+          "doubleField": {
+              "type": "number"
+          },
+          "collideField": {
+              "type": "number",
+              "format": "float"
+          },
+          "collide_field": {
+              "type": "boolean",
+              "x-canon-identifier": "non-java-Collide-Field"
+          },
+          "collide-field": {
+              "type": "string",
+              "x-canon-identifier": "non-java-identifier",
+              "x-canon-java-identifier": "javaCollideField"
+          },
+          "byteStringField": {
+              "type": "string",
+              "format": "byte"
+          },
+          "objectField": {
+              "$ref": "#/components/schemas/SimpleObject"
+          },
+          "inlineObjectField": {
+            "type": "object",
+            "required": ["name"],
+            "properties": {
+              "name": {
+                "type": "string"
+              },
+              "value": {
+                "type": "integer"
+              },
+              "nestedObjectField": {
+                "type": "object",
+                "required": ["name"],
+                "properties": {
+                  "name": {
+                    "type": "string"
+                  },
+                  "value": {
+                    "type": "integer"
+                  }
+                }
+              }
+            }
+          },
+          "typeDefField": {
+              "$ref": "#/components/schemas/IntTypedef"
+          },
+          "raison_d'être": {
+              "type": "string"
+          },
+          "externalField": {
+              "$ref": "#/components/schemas/Instant"
+          },
+          "enumsField": {
+              "$ref": "#/components/schemas/Colour"
+          }
+        }
+      },
+      
+      "AllTheLists": {
+        "type": "object",
+        "properties": {
+          "intField": {
+            "type": "integer"
+          },
+          "int64ListField": {
+            "type": "array",
+            "x-canon-cardinality": "LIST",
+            "items": {
+              "type": "integer",
+              "format": "int64"
+            }
+          },
+          "int32ListField": {
+            "type": "array",
+            "x-canon-cardinality": "LIST",
+            "items": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          "doubleListField": {
+            "type": "array",
+            "x-canon-cardinality": "LIST",
+            "items": {
+              "type": "number"
+            }
+          },
+          "floatListField": {
+            "type": "array",
+            "x-canon-cardinality": "LIST",
+            "items": {
+              "type": "number",
+              "format": "float"
+            }
+          },
+          "booleanListField": {
+            "type": "array",
+            "x-canon-cardinality": "LIST",
+            "items": {
+              "type": "boolean"
+            }
+          },
+          "stringListField": {
+            "type": "array",
+            "x-canon-cardinality": "LIST",
+            "items": {
+              "type": "string"
+            }
+          },
+          "byteStringListField": {
+            "type": "array",
+            "x-canon-cardinality": "LIST",
+            "items": {
+              "type": "string",
+              "format": "byte"
+            }
+          },
+          "objectListField": {
+            "type": "array",
+            "x-canon-cardinality": "LIST",
+            "items": {
+              "$ref": "#/components/schemas/SimpleObject"
+            }
+          },
+          "typeDefListField": {
+            "type": "array",
+            "x-canon-cardinality": "LIST",
+            "items": {
+              "$ref": "#/components/schemas/IntTypedef"
+            }
+          },
+          "\"-\"": {
+            "description": "A list of direct externals.",
+            "type": "array",
+            "x-canon-cardinality": "LIST",
+            "x-canon-identifier": "hyphen",
+            "minItems": 1,
+            "maxItems": 5,
+            "items": {
+              "$ref": "#/components/schemas/2"
+            }
+          },
+          "externalListField": {
+            "description": "A list of externals.",
+            "type": "array",
+            "x-canon-cardinality": "LIST",
+            "minItems": 1,
+            "maxItems": 5,
+            "items": {
+              "$ref": "#/components/schemas/Instant"
+            }
+          },
+          "enumsListField": {
+            "description": "A list of enums.",
+            "type": "array",
+            "x-canon-cardinality": "LIST",
+            "minItems": 1,
+            "maxItems": 5,
+            "items": {
+              "$ref": "#/components/schemas/Colour"
+            }
+          }
+        }
+      },
+      
+      "FundamentalObject": {
+        "type": "object",
+        "x-canon-facade": true,
+        "x-canon-builderFacade": true,
+        "required": [
+          "instant"
+        ],
+        "properties": {
+          "instant": {
+            "$ref": "#/components/schemas/Instant"
+          },
+          "instantList": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Instant"
+            }
+          }
+        }
+      },
+      
+      "VersionedObject": {
+        "type": "object",
+        "x-canon-facade": true,
+        "extends": "#/components/schemas/FundamentalObject",
+        "required": [
+          "instant1",
+          "instant2"
+        ],
+        "properties": {
+          "instant1": {
+            "$ref": "#/components/schemas/Instant"
+          },
+          "instant2": {
+            "$ref": "#/components/schemas/Instant"
+          }
+        }
+      }
+    }
+  }
+}
