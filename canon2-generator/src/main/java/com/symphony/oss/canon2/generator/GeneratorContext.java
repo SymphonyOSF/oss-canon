@@ -110,7 +110,7 @@ G extends IGroupSchemaTemplateModel<T,M,S>>
     Schema schema = resolvedSchema.getSchema();
     String identifier = generator_.getIdentifierName(resolvedSchema.getName(), schema);
     
-    System.out.println("SCHEMA " + resolvedSchema.getName() + " isGenerated:" + resolvedSchema.isGenerated());
+    System.out.println("SCHEMA " + resolvedSchema.getName());
     
     if(resolvedSchema instanceof ResolvedObjectSchema)
     {

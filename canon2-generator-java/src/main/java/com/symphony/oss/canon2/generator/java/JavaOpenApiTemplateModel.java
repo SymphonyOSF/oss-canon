@@ -63,10 +63,4 @@ implements IJavaTemplateModel
   {
     return getCamelCapitalizedName() + "Model";
   }
-
-  @Override
-  public boolean getIsGenerated()
-  {
-    return true;
-  }
 }

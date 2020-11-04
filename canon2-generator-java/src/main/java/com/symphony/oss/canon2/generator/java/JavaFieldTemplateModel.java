@@ -70,10 +70,4 @@ implements IJavaTemplateModel
   {
     return "JavaFieldTemplateModel " + getTypeSchema().getCamelCapitalizedName() + " " + getCamelName();
   }
-  
-  @Override
-  public boolean getIsGenerated()
-  {
-    return getTypeSchema().getIsGenerated();
-  }
 }

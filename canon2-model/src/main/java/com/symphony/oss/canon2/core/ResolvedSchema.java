@@ -158,6 +158,10 @@ public class ResolvedSchema extends ResolvedEntity
 
   public boolean isGenerated()
   {
+    if(generated_)
+      System.out.println("generated");
+    else
+      System.out.println("NOT generated");
     return generated_;
   }
   

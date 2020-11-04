@@ -67,7 +67,7 @@ implements IJavaTemplateModel
   {
     super(resolvedSchema, schemaType, identifier, model, templates);
 
-    if(isExternal() && resolvedSchema.isGenerated())
+    if(isExternal())
     {
       addImport(packageName + "." + getCamelCapitalizedName());
     }
@@ -246,12 +246,6 @@ implements IJavaTemplateModel
   public boolean getExclusiveMaximum()
   {
     return false;
-  }
-  
-  @Override
-  public boolean getIsGenerated()
-  {
-    return true;
   }
 
   public Collection<JavaSchemaTemplateModel> getInnerClasses()

@@ -59,7 +59,6 @@ JavaSchemaTemplateModel>
   private final ImmutableMap<String, String> enumMap_;
   private final String                       externalPackage_;
   private final String                       externalType_;
-  private final boolean isGenerated_;
 
   JavaNumberSchemaTemplateModel(ResolvedNumberSchema resolvedSchema, String identifier, String packageName, JavaOpenApiTemplateModel model,
        String... templates)
@@ -86,8 +85,6 @@ JavaSchemaTemplateModel>
         break;
 
     }
-    
-    isGenerated_ = resolvedSchema.isGenerated();
 
     String constructPrefix = null;
     String getValuePrefix = "";
@@ -218,12 +215,6 @@ JavaSchemaTemplateModel>
     }
     getValuePrefix_ = getValuePrefix;
     getValueSuffix_ = getValueSuffix;
-  }
-
-  @Override
-  public boolean getIsGenerated()
-  {
-    return isGenerated_;
   }
 
   @Override

@@ -103,6 +103,4 @@ extends IJsonDomNodeProvider
   M getModel();
   
   Collection<T> getChildren();
-  
-  boolean getIsGenerated();
 }
