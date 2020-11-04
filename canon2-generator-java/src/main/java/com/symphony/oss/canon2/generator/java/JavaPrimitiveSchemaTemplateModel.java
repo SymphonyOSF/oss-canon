@@ -17,9 +17,10 @@ import org.slf4j.LoggerFactory;
 
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
+import com.symphony.oss.canon.json.SyntaxErrorException;
 import com.symphony.oss.canon.json.model.JsonDomNode;
-import com.symphony.oss.canon2.core.GenerationException;
-import com.symphony.oss.canon2.core.ResolvedSchema;
+import com.symphony.oss.canon.json.model.JsonParsedNumber;
+import com.symphony.oss.canon2.core.ResolvedPrimitiveSchema;
 import com.symphony.oss.canon2.generator.IPrimitiveSchemaTemplateModel;
 import com.symphony.oss.canon2.model.CanonAttributes;
 import com.symphony.oss.canon2.model.Schema;
@@ -46,7 +47,7 @@ JavaSchemaTemplateModel>
 //      "com.symphony.oss.commons.type.provider.IValueProvider"
 //  };
 
-  private final String          javaType_;
+  private final String                       javaType_;
   private final String                       type_;
   private final String                       primitiveType_;
   private final BigInteger                   minimum_;
@@ -65,8 +66,8 @@ JavaSchemaTemplateModel>
   private final String                       externalType_;
   private final boolean isGenerated_;
 
-  JavaPrimitiveSchemaTemplateModel(ResolvedSchema resolvedSchema, String identifier, String packageName, JavaOpenApiTemplateModel model,
-       String... templates) throws GenerationException
+  JavaPrimitiveSchemaTemplateModel(ResolvedPrimitiveSchema resolvedSchema, String identifier, String packageName, JavaOpenApiTemplateModel model,
+       String... templates)
   { 
     super(resolvedSchema, resolvedSchema.getSchemaType(), identifier, packageName, model, templates);
     
@@ -344,17 +345,13 @@ JavaSchemaTemplateModel>
         {
           return null;
         }
+        else if(node instanceof JsonParsedNumber)
+        {
+          return null; //((JsonParsedNumber)node).asBigInteger();
+        }
         else
         {
-          try
-          {
-            return new BigInteger(node.toString());
-          }
-          catch(NumberFormatException e)
-          {
-            log_.warn("Invalid " + name + " value \"" + node + "\" ignored at " + entity.getSourceLocation());
-            return null;
-          }
+          throw new SyntaxErrorException("Invalid " + name + " value \"" + node + "\"", node.getContext());
         }
     }
     
@@ -444,7 +441,7 @@ JavaSchemaTemplateModel>
   @Override
   public BigInteger getMinimum()
   {
-    return minimum_;
+    return null; //minimum_;
   }
 
   @Override

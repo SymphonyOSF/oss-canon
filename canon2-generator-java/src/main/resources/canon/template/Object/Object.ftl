@@ -5,7 +5,7 @@
   "com.symphony.oss.canon2.runtime.java.ModelRegistry",
   "com.symphony.oss.canon.json.model.JsonObject",
   "com.symphony.oss.canon.json.model.JsonDomNode",
-  "com.symphony.oss.canon.json.ParserException",
+  "com.symphony.oss.canon.json.ParserErrorException",
   "com.symphony.oss.commons.fault.FaultAccumulator"
   ]>
 <#include "/copyrightHeader.ftl"/>
@@ -96,7 +96,7 @@
 
 package ${genPackage};
 
-<#list entity.sortImports(imports) as import>
+<#list entity.sortImports(imports, genPackage) as import>
 ${import}
 </#list>
 <#macro generateObject indent entity className classModifier nested>
@@ -158,7 +158,7 @@ ${indent}      int          valueCnt = 0;
 ${indent}      if(node instanceof ${entity.jsonNodeType})
 ${indent}      {
 ${indent}        return ${entity.constructPrefix}((${entity.jsonNodeType})node).as${entity.javaType}()${entity.constructSuffix};
-      <@checkLimits "${indent}      " entity name var "new new ParserException" ", node.getContext()"/>
+      <@checkLimits "${indent}      " entity name var "new new ParserErrorException" ", node.getContext()"/>
 ${indent}      }
 */ -->
 
@@ -176,7 +176,7 @@ ${indent}      node = jsonInitialiser.get("${field.quotedName}");
 ${indent}      if(node == null || node instanceof JsonNull)
 ${indent}      {
     <#if field.required>
-${indent}        throw new ParserException("${field.name} is required.", jsonInitialiser.getJson().getContext());
+${indent}        throw new ParserErrorException("${field.name} is required.", jsonInitialiser.getJson().getContext());
     <#else>
 ${indent}        _${field.camelName}_ = null;
     </#if>
@@ -241,7 +241,7 @@ ${indent}      }
 
 ${indent}      if(!modelRegistry.getParserValidation().isIgnoreInvalidAttributes())
 ${indent}      {
-${indent}        throw new ParserException("${entity.name} must be an Object node not " + node.getClass().getName(), node.getContext());
+${indent}        throw new ParserErrorException("${entity.name} must be an Object node not " + node.getClass().getName(), node.getContext());
 ${indent}      }
 ${indent}      else
 ${indent}      {

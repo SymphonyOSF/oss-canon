@@ -20,6 +20,8 @@ package com.symphony.oss.canon2.generator;
 
 import java.util.Collection;
 
+import com.symphony.oss.canon.json.model.IJsonDomNodeProvider;
+
 /**
  * Super-interface for all template model objects.
  * 
@@ -35,6 +37,7 @@ public interface ITemplateModel<
 T extends ITemplateModel<T,M,S>,
 M extends IOpenApiTemplateModel<T,M,S>,
 S extends ISchemaTemplateModel<T,M,S>>
+extends IJsonDomNodeProvider
 {
   /**
    * Return the name of this model entity as written in the input spec.

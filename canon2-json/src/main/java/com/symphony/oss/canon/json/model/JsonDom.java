@@ -23,6 +23,7 @@ import java.util.List;
 
 import com.google.common.collect.ImmutableList;
 import com.symphony.oss.canon.json.IParserContext;
+import com.symphony.oss.canon.json.ParserErrorException;
 import com.symphony.oss.canon.json.ParserException;
 import com.symphony.oss.commons.fault.FaultAccumulator;
 import com.symphony.oss.commons.fluent.BaseAbstractBuilder;
@@ -218,7 +219,7 @@ public class JsonDom
      */
     public ParserBuilder withError(Exception e, IParserContext context)
     {
-      return withError(new ParserException(e.getMessage(), context, e));
+      return withError(new ParserErrorException(e.getMessage(), context, e));
     }
 
     @Override

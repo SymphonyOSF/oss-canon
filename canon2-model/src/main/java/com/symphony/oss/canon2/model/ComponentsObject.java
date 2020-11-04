@@ -30,7 +30,6 @@ package com.symphony.oss.canon2.model;
 import javax.annotation.concurrent.Immutable;
 
 import com.symphony.oss.canon2.core.CanonModelContext;
-import com.symphony.oss.canon2.core.GenerationException;
 import com.symphony.oss.canon2.core.ResolvedComponentsObject;
 import com.symphony.oss.canon2.core.ResolvedOpenApiObject;
 import com.symphony.oss.canon2.core.SourceContext;
@@ -66,7 +65,7 @@ public class ComponentsObject extends ComponentsObjectEntity
     throw new IllegalArgumentException("No path element " + parts[index]);
   }
 
-  public ResolvedComponentsObject.SingletonBuilder link(ResolvedOpenApiObject.SingletonBuilder openApiObjectBuilder, CanonModelContext modelContext, SourceContext sourceContext, String uri) throws GenerationException
+  public ResolvedComponentsObject.SingletonBuilder link(ResolvedOpenApiObject.SingletonBuilder openApiObjectBuilder, CanonModelContext modelContext, SourceContext sourceContext, String uri)
   {
     ResolvedComponentsObject.SingletonBuilder builder = new ResolvedComponentsObject.SingletonBuilder();
     

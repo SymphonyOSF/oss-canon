@@ -22,14 +22,23 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import com.symphony.oss.canon.json.ParserResultException;
 import com.symphony.oss.canon.json.SyntaxErrorException;
-import com.symphony.oss.canon2.core.GenerationException;
+import com.symphony.oss.canon2.core.ResolvedArraySchema;
+import com.symphony.oss.canon2.core.ResolvedBigDecimalSchema;
+import com.symphony.oss.canon2.core.ResolvedBigIntegerSchema;
+import com.symphony.oss.canon2.core.ResolvedBooleanSchema;
+import com.symphony.oss.canon2.core.ResolvedDoubleSchema;
+import com.symphony.oss.canon2.core.ResolvedFloatSchema;
+import com.symphony.oss.canon2.core.ResolvedIntegerSchema;
+import com.symphony.oss.canon2.core.ResolvedLongSchema;
+import com.symphony.oss.canon2.core.ResolvedObjectSchema;
+import com.symphony.oss.canon2.core.ResolvedPrimitiveSchema;
 import com.symphony.oss.canon2.core.ResolvedSchema;
-import com.symphony.oss.canon2.core.SchemaTemplateModelType;
+import com.symphony.oss.canon2.core.ResolvedStringSchema;
 import com.symphony.oss.canon2.core.SourceContext;
 import com.symphony.oss.canon2.model.CanonCardinality;
 import com.symphony.oss.canon2.model.Schema;
-import com.symphony.oss.canon2.model.SchemaOrRef;
 import com.symphony.oss.commons.fault.CodingFault;
 
 /**
@@ -91,11 +100,8 @@ G extends IGroupSchemaTemplateModel<T,M,S>>
     return sourceContext_;
   }
   
-  S generateSchema(ResolvedSchema resolvedSchema, M model,
-      boolean isReference) throws GenerationException
+  S generateSchema(ResolvedSchema resolvedSchema, M model)
   {
-    System.err.println("generateSchema " + resolvedSchema.getName() + " " + resolvedSchema.getSchema());
-    
     S existingSchema = schemaModelMap_.get(resolvedSchema.getUri());
     
     if(existingSchema != null)
@@ -104,84 +110,155 @@ G extends IGroupSchemaTemplateModel<T,M,S>>
     Schema schema = resolvedSchema.getSchema();
     String identifier = generator_.getIdentifierName(resolvedSchema.getName(), schema);
     
-    if(schema.getOneOf() != null)
+    System.out.println("SCHEMA " + resolvedSchema.getName() + " isGenerated:" + resolvedSchema.isGenerated());
+    
+    if(resolvedSchema instanceof ResolvedObjectSchema)
     {
-      return generateObjectSchema(resolvedSchema, model,
-          isReference, schema, identifier);
-      
-//      G oneOfSchema = generator_.generateGroupSchema(model, resolvedSchema, identifier, isReference, SchemaTemplateModelType.ONE_OF);
+      return generateObjectSchema((ResolvedObjectSchema)resolvedSchema, model,
+          schema, identifier);
+    }
+    if(resolvedSchema instanceof ResolvedArraySchema)
+    {
+      return generateArraySchema((ResolvedArraySchema)resolvedSchema, model,
+          schema, identifier);
+    }
+    if(resolvedSchema instanceof ResolvedPrimitiveSchema)
+    {
+      return generatePrimitiveSchema((ResolvedPrimitiveSchema)resolvedSchema, model,
+          identifier);
+    }
+    throw new SyntaxErrorException("Invalid schema", resolvedSchema.getSchema().getJson().getContext());
+    
+//    if(schema.getOneOf() != null)
+//    {
+//      return generateObjectSchema(resolvedSchema, model,
+//          schema, identifier);
 //      
-//      schemaModelMap_.put(resolvedSchema.getUri(), oneOfSchema.asSchemaTemplateModel());
-//      
-//      for(Entry<String, ResolvedSchema> innerClassEntry : resolvedSchema.getInnerClasses().getResolvedProperties().entrySet())
+////      G oneOfSchema = generator_.generateGroupSchema(model, resolvedSchema, identifier, SchemaTemplateModelType.ONE_OF);
+////      
+////      schemaModelMap_.put(resolvedSchema.getUri(), oneOfSchema.asSchemaTemplateModel());
+////      
+////      for(Entry<String, ResolvedSchema> innerClassEntry : resolvedSchema.getInnerClasses().getResolvedProperties().entrySet())
+////      {
+////        S innerClass = generateSchema(innerClassEntry.getValue(), model, false);
+////        oneOfSchema.addInnerClass(innerClass);
+////      }
+////      
+////      for(ResolvedSchema subSchema : resolvedSchema.getResolvedSubSchemas().getSubSchemas())
+////      {
+////        S subSchemaModel = generateSchema(subSchema, model, true /* this needs to move into resolved schema */);
+////        
+////        oneOfSchema.addSubSchema(subSchemaModel);
+////      }
+////      
+////      return oneOfSchema.asSchemaTemplateModel();
+//    }
+//    else if(schema.getType() != null)
+//    {
+//      switch(schema.getType())
 //      {
-//        S innerClass = generateSchema(innerClassEntry.getValue(), model, false);
-//        oneOfSchema.addInnerClass(innerClass);
-//      }
-//      
-//      for(ResolvedSchema subSchema : resolvedSchema.getResolvedSubSchemas().getSubSchemas())
-//      {
-//        S subSchemaModel = generateSchema(subSchema, model, true /* this needs to move into resolved schema */);
+//        case "object":
+//          return generateObjectSchema(resolvedSchema, model,
+//              schema, identifier);
 //        
-//        oneOfSchema.addSubSchema(subSchemaModel);
+//        
+//        case "array":
+//          CanonCardinality cardinality = schema.getXCanonCardinality();
+//          if(cardinality == null)
+//          {
+//            cardinality = CanonCardinality.LIST; 
+//          }
+//          
+//          A arraySchema = generator_.generateArraySchema(model, resolvedSchema, identifier, cardinality);
+//          
+//          schemaModelMap_.put(resolvedSchema.getUri(), arraySchema.asSchemaTemplateModel());
+//          
+//          S itemsModel = generateSchema(resolvedSchema.getResolvedItems(), model, resolvedSchema.getSchema().getItemsSchema() == null);
+//          
+//          arraySchema.setElementType(itemsModel);
+//          
+//          return arraySchema.asSchemaTemplateModel();
+//          
+//        case "number":
+//        case "boolean":
+//        case "string":
+//        case "integer":
+//          S primitiveSchema = generator_.generatePrimativeSchema(model, resolvedSchema, identifier).asSchemaTemplateModel();
+//          schemaModelMap_.put(resolvedSchema.getUri(), primitiveSchema);
+//          
+//          return primitiveSchema;
+//          
+//        default:
+//          throw new CodingFault("Unknown schema type " + schema.getType());
 //      }
-//      
-//      return oneOfSchema.asSchemaTemplateModel();
-    }
-    else if(schema.getType() != null)
-    {
-      switch(schema.getType())
-      {
-        case "object":
-          return generateObjectSchema(resolvedSchema, model,
-              isReference, schema, identifier);
-        
-        
-        case "array":
-          CanonCardinality cardinality = schema.getXCanonCardinality();
-          if(cardinality == null)
-          {
-            cardinality = CanonCardinality.LIST; 
-          }
-          
-          A arraySchema = generator_.generateArraySchema(model, resolvedSchema, identifier, isReference, cardinality);
-          
-          schemaModelMap_.put(resolvedSchema.getUri(), arraySchema.asSchemaTemplateModel());
-          
-          S itemsModel = generateSchema(resolvedSchema.getResolvedItems(), model, resolvedSchema.getSchema().getItemsSchema() == null);
-          
-          arraySchema.setElementType(itemsModel);
-          
-          return arraySchema.asSchemaTemplateModel();
-          
-        case "number":
-        case "boolean":
-        case "string":
-        case "integer":
-          S primitiveSchema = generator_.generatePrimativeSchema(model, resolvedSchema, identifier, isReference).asSchemaTemplateModel();
-          schemaModelMap_.put(resolvedSchema.getUri(), primitiveSchema);
-          
-          return primitiveSchema;
-          
-        default:
-          throw new CodingFault("Unknown schema type " + schema.getType());
-      }
-    }
-    else
-    {
-      throw new GenerationException(new SyntaxErrorException("Invalid schema", resolvedSchema.getSchema().getJson().getContext()));
-    }
+//    }
+//    else
+//    {
+//      throw new SyntaxErrorException("Invalid schema", resolvedSchema.getSchema().getJson().getContext());
+//    }
   }
 
-  private S generateObjectSchema(ResolvedSchema resolvedSchema, M model, boolean isReference, Schema schema,
-      String identifier) throws GenerationException
+  private S generatePrimitiveSchema(ResolvedPrimitiveSchema resolvedSchema, M model,
+      String identifier)
   {
-    O entity = generator_.generateObjectSchema(model, resolvedSchema, identifier, isReference);
+    S primitiveSchema = doGeneratePrimativeSchema(model, resolvedSchema, identifier).asSchemaTemplateModel();
+    schemaModelMap_.put(resolvedSchema.getUri(), primitiveSchema);
+    
+    return primitiveSchema;
+  }
+
+  private P doGeneratePrimativeSchema(M model,
+      ResolvedPrimitiveSchema resolvedSchema, String identifier)
+  {
+    if(resolvedSchema instanceof ResolvedBigDecimalSchema)
+      return generator_.generateBigDecimalSchema(model, (ResolvedBigDecimalSchema)resolvedSchema, identifier);
+    if(resolvedSchema instanceof ResolvedBigIntegerSchema)
+      return generator_.generateBigIntegerSchema(model, (ResolvedBigIntegerSchema)resolvedSchema, identifier);
+    if(resolvedSchema instanceof ResolvedDoubleSchema)
+      return generator_.generateDoubleSchema(model, (ResolvedDoubleSchema)resolvedSchema, identifier);
+    if(resolvedSchema instanceof ResolvedFloatSchema)
+      return generator_.generateFloatSchema(model, (ResolvedFloatSchema)resolvedSchema, identifier);
+    if(resolvedSchema instanceof ResolvedIntegerSchema)
+      return generator_.generateIntegerSchema(model, (ResolvedIntegerSchema)resolvedSchema, identifier);
+    if(resolvedSchema instanceof ResolvedLongSchema)
+      return generator_.generateLongSchema(model, (ResolvedLongSchema)resolvedSchema, identifier);
+    if(resolvedSchema instanceof ResolvedStringSchema)
+      return generator_.generateStringSchema(model, (ResolvedStringSchema)resolvedSchema, identifier);
+    if(resolvedSchema instanceof ResolvedBooleanSchema)
+      return generator_.generateBooleanSchema(model, (ResolvedBooleanSchema)resolvedSchema, identifier);
+    
+    throw new CodingFault("Unknown ResolvedPrimitiveSchema subtype " + resolvedSchema.getClass());
+  }
+
+  private S generateArraySchema(ResolvedArraySchema resolvedSchema, M model, Schema schema,
+      String identifier)
+  {
+    CanonCardinality cardinality = schema.getXCanonCardinality();
+    if(cardinality == null)
+    {
+      cardinality = CanonCardinality.LIST; 
+    }
+    
+    A arraySchema = generator_.generateArraySchema(model, resolvedSchema, identifier, cardinality);
+    
+    schemaModelMap_.put(resolvedSchema.getUri(), arraySchema.asSchemaTemplateModel());
+    
+    S itemsModel = generateSchema(resolvedSchema.getResolvedItems(), model);
+    
+    arraySchema.setElementType(itemsModel);
+    
+    return arraySchema.asSchemaTemplateModel();
+  }
+
+  private S generateObjectSchema(ResolvedObjectSchema resolvedSchema, M model, Schema schema,
+      String identifier)
+  {
+    O entity = generator_.generateObjectSchema(model, resolvedSchema, identifier);
     schemaModelMap_.put(resolvedSchema.getUri(), entity.asSchemaTemplateModel());
 
     if(schema.getXCanonExtends() != null)
     {
-      entity.setExtends(generateSchema(resolvedSchema.getResolvedExtends(), model, true));
+      entity.setExtends(generateSchema(resolvedSchema.getResolvedExtends(), model));
     }
     
     if(!resolvedSchema.getResolvedProperties().isEmpty())
@@ -189,7 +266,7 @@ G extends IGroupSchemaTemplateModel<T,M,S>>
       NameCollisionDetector ncd = new NameCollisionDetector(generator_, resolvedSchema.getResolvedProperties(), false);
 //              .create(canonContext, getSourceContext().getUrl(), modelContext.getGenerator(), schemaInfo.getProperties(), false);
       
-      ncd.logCollisions(sourceContext_);
+      ncd.logCollisions(sourceContext_, resolvedSchema);
       
       for(Entry<String, ResolvedSchema> propertyEntry : resolvedSchema.getResolvedProperties().entrySet())
       {
@@ -197,7 +274,7 @@ G extends IGroupSchemaTemplateModel<T,M,S>>
 //          String typeIdentifier = modelContext.getGenerator().getIdentifierName(entry.getValue().getName(), entry.getValue());
         ResolvedSchema resolvedPropertySchema = propertyEntry.getValue();
         
-        S typeSchema = generateSchema(resolvedPropertySchema, model, true);
+        S typeSchema = generateSchema(resolvedPropertySchema, model);
         boolean required = schema.getRequired() != null && schema.getRequired().contains(propertyEntry.getKey());
       
         entity.addField(propertyEntry.getKey(),
@@ -207,14 +284,14 @@ G extends IGroupSchemaTemplateModel<T,M,S>>
       
       for(Entry<String, ResolvedSchema> innerClassEntry : resolvedSchema.getInnerClasses().getResolvedProperties().entrySet())
       {
-        S innerClass = generateSchema(innerClassEntry.getValue(), model, false);
+        S innerClass = generateSchema(innerClassEntry.getValue(), model);
         entity.addInnerClass(innerClassEntry.getKey(), innerClass);
       }
     }
     
     if(resolvedSchema.getResolvedAdditionalProperties() != null)
     {
-      S additionalPropertiesSchema = generateSchema(resolvedSchema.getResolvedAdditionalProperties(), model, true);
+      S additionalPropertiesSchema = generateSchema(resolvedSchema.getResolvedAdditionalProperties(), model);
       
       entity.setAdditionalProperties(additionalPropertiesSchema);
     }
@@ -226,7 +303,7 @@ G extends IGroupSchemaTemplateModel<T,M,S>>
     return entity.asSchemaTemplateModel();
   }
 
-  public M process(GeneratorTemplateProcessor<T,M,S,O,A,P,F,G> templateProcessor) throws GenerationException
+  public M process(GeneratorTemplateProcessor<T,M,S,O,A,P,F,G> templateProcessor) throws ParserResultException
   {
     
     String identifier = generator_.getIdentifierName(sourceContext_.getInputSourceName(), sourceContext_.getModel());
@@ -235,19 +312,17 @@ G extends IGroupSchemaTemplateModel<T,M,S>>
     
     NameCollisionDetector ncd = new NameCollisionDetector(generator_, sourceContext_.getSchemas(), true);
     
-    ncd.logCollisions(sourceContext_);
+    ncd.logCollisions(sourceContext_, sourceContext_.getResolvedOpenApiObject());
     
     for(ResolvedSchema resolvedSchema : sourceContext_.getSchemas().values())
     {
-      S model = generateSchema(resolvedSchema, parentModel,
-          false);
+      S model = generateSchema(resolvedSchema, parentModel);
       
       parentModel.addSchema(model);
     }
     
 
-    if(sourceContext_.printErrors())
-      throw new GenerationException("Generation failed for " + sourceContext_.getInputSourceName());
+    sourceContext_.printErrorsAndThrowException();
   
     //gather(parentModel.asTemplateModel(), templateProcessor);
     

@@ -138,13 +138,5 @@ public abstract class JsonDomNode implements Comparable<JsonDomNode>
       
       return self();
     }
-
-    @Override
-    protected void validate(FaultAccumulator faultAccumulator)
-    {
-      if(context_ == null)
-        System.out.println("HERE " + toString());
-      super.validate(faultAccumulator);
-    }
   }
 }

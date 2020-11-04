@@ -28,6 +28,7 @@ import java.util.Objects;
 import javax.annotation.Nonnull;
 
 import com.symphony.oss.canon.json.ParserException;
+import com.symphony.oss.canon.json.model.IJsonDomNodeProvider;
 import com.symphony.oss.canon.json.model.JsonDomNode;
 import com.symphony.oss.canon.json.model.JsonObject;
 import com.symphony.oss.commons.fluent.BaseAbstractBuilder;
@@ -38,7 +39,7 @@ import com.symphony.oss.commons.fluent.BaseAbstractBuilder;
  * @author Bruce Skingle
  *
  */
-public class Entity
+public class Entity implements IJsonDomNodeProvider
 {
   /** Name of the JSON type attribute in a serialised canon object. */
   public static final String JSON_TYPE = "_type";
@@ -79,6 +80,7 @@ public class Entity
    * 
    * @return the serialized form of this object.
    */
+  @Override
   public @Nonnull JsonDomNode getJson()
   {
     return jsonDomNode_;

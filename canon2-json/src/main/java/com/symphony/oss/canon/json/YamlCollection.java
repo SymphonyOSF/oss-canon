@@ -131,7 +131,7 @@ class YamlCollection
         return objectBuilder_.build();
         
       default:
-        throw new ParserException("Build called on a collection of type " + type_, context);
+        throw new ParserErrorException("Build called on a collection of type " + type_, context);
     }
   }
 
@@ -140,7 +140,7 @@ class YamlCollection
     if(type_ == YamlCollectionType.COLLECTION)
       type_ = type;
     else if(type_ != type)
-      throw new ParserException("Attempt to force a collection of type " + type_ + " to " + type, context);
+      throw new ParserErrorException("Attempt to force a collection of type " + type_ + " to " + type, context);
   }
   
 }

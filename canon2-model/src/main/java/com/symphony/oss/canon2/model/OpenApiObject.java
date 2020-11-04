@@ -32,7 +32,6 @@ import javax.annotation.concurrent.Immutable;
 
 import com.google.common.collect.ImmutableMap;
 import com.symphony.oss.canon2.core.CanonModelContext;
-import com.symphony.oss.canon2.core.GenerationException;
 import com.symphony.oss.canon2.core.INamedModelEntity;
 import com.symphony.oss.canon2.core.ResolvedOpenApiObject;
 import com.symphony.oss.canon2.core.SourceContext;
@@ -84,7 +83,7 @@ public class OpenApiObject extends OpenApiObjectEntity implements INamedModelEnt
     throw new IllegalArgumentException("No path element " + parts[index]);
   }
 
-  public void fetchReferences(CanonModelContext generationContext, SourceContext sourceContext) throws GenerationException
+  public void fetchReferences(CanonModelContext generationContext, SourceContext sourceContext)
   {
     SchemasObject schemas = getComponents().getSchemas();
     
@@ -94,7 +93,7 @@ public class OpenApiObject extends OpenApiObjectEntity implements INamedModelEnt
     }
   }
 
-  public void link(ResolvedOpenApiObject.SingletonBuilder builder, CanonModelContext modelContext, SourceContext sourceContext, String uri) throws GenerationException
+  public void link(ResolvedOpenApiObject.SingletonBuilder builder, CanonModelContext modelContext, SourceContext sourceContext, String uri)
   {
     if(getComponents() != null)
     {

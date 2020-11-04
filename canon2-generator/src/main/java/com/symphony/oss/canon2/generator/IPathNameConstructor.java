@@ -23,10 +23,8 @@
 
 package com.symphony.oss.canon2.generator;
 
-import com.symphony.oss.canon2.core.GenerationException;
-
 @FunctionalInterface
 public interface IPathNameConstructor<T extends ITemplateModel<?,?,?>>
 {
-  String  constructFile(String templateName, T entity) throws GenerationException;
+  String  constructFile(String templateName, T entity);
 }

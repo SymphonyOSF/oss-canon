@@ -31,7 +31,7 @@ import javax.annotation.Nullable;
 import javax.annotation.concurrent.Immutable;
 
 import com.google.common.collect.ImmutableSet;
-import com.symphony.oss.canon.json.ParserException;
+import com.symphony.oss.canon.json.ParserErrorException;
 import com.symphony.oss.canon.json.model.JsonDomNode;
 import com.symphony.oss.canon.json.model.JsonObject;
 import com.symphony.oss.canon2.runtime.java.IObjectEntityInitialiser;
@@ -105,7 +105,7 @@ public class InfoObject extends ObjectEntity
 
       if(!modelRegistry.getParserValidation().isIgnoreInvalidAttributes())
       {
-        throw new ParserException("InfoObject must be an Object node not " + node.getClass().getName(), node.getContext());
+        throw new ParserErrorException("InfoObject must be an Object node not " + node.getClass().getName(), node.getContext());
       }
       else
       {

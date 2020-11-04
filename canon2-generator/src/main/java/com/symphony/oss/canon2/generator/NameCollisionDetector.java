@@ -26,6 +26,9 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
+import com.symphony.oss.canon.json.ParserErrorException;
+import com.symphony.oss.canon.json.model.IJsonDomNodeProvider;
+import com.symphony.oss.canon2.core.ResolvedObjectSchema;
 import com.symphony.oss.canon2.core.ResolvedSchema;
 import com.symphony.oss.canon2.core.SourceContext;
 
@@ -38,9 +41,8 @@ class NameCollisionDetector
   };
 
 //  private static Logger log_ = LoggerFactory.getLogger(NameCollisionDetector.class);
-  
-  private Set<List<String>> collisionSet_ = new HashSet<>();
-  private Set<String>       invalidSet_   = new HashSet<>();
+  private Set<List<String>>     collisionSet_     = new HashSet<>();
+  private Set<ParserErrorException>  invalidSet_       = new HashSet<>();
   
 //  public static NameCollisionDetector create(ICanonContext canonContext, URL url, ICanonGenerator<?,?,?,?,?,?,?,?> generator, Map<String, Object> schemaOrReferences, boolean isSchema) throws GenerationException
 //  {
@@ -93,7 +95,7 @@ class NameCollisionDetector
         
         if(!check)
         {
-          invalidSet_.add((isSchema ? "Schema" : "Attribute") + " \"" + entry.getKey() + "\" at " + entry.getValue().getSchema().getSourceLocation() + " (maps to " + name + ")");
+          invalidSet_.add(new ParserErrorException((isSchema ? "Schema" : "Attribute") + " \"" + entry.getKey() + "\" maps to \"" + name + "\"", entry.getValue().getSchema()));
           break;
         }
       }
@@ -105,7 +107,7 @@ class NameCollisionDetector
           try
           {
             Class.forName(packageName + "." +  name);
-            invalidSet_.add("Schema \"" + entry.getKey() + "\" at " + entry.getValue().getSchema().getSourceLocation() + " (maps to " + name + ")");
+            invalidSet_.add(new ParserErrorException("Schema \"" + entry.getKey() + "\" maps to \"" + name + "\"", entry.getValue().getSchema()));
             break;
           }
           catch (ClassNotFoundException e)
@@ -128,19 +130,21 @@ class NameCollisionDetector
     return collisionSet_;
   }
 
-  void logCollisions(SourceContext sourceContext)
+  void logCollisions(SourceContext sourceContext, IJsonDomNodeProvider context)
   {
     for(List<String> c : getCollisionSet())
     {
-      sourceContext.error("The following names would collide when mapped to a Java identifier, user x-canon-java-identifier or x-canon-identifier");
+      StringBuilder s = new StringBuilder("The following names would collide when mapped to a Java identifier, user x-canon-java-identifier or x-canon-identifier");
       
       for(String cn : c)
-        sourceContext.error("  " + cn);
+        s.append("\n  " + cn);
+      
+      sourceContext.error(new ParserErrorException(s.toString(), context));
     }
     
-    for(String s : invalidSet_)
+    for(ParserErrorException e : invalidSet_)
     {
-      sourceContext.error(s + " is not a valid Java identifier, user x-canon-java-identifier or x-canon-identifier");
+      sourceContext.error(e);
     }
   }
 }

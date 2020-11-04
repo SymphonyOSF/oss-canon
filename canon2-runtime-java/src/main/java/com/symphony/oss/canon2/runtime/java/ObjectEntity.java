@@ -26,6 +26,7 @@ package com.symphony.oss.canon2.runtime.java;
 import java.util.Objects;
 
 import com.google.common.collect.ImmutableSet;
+import com.symphony.oss.canon.json.model.IJsonObjectProvider;
 import com.symphony.oss.canon.json.model.JsonObject;
 
 /**
@@ -34,7 +35,7 @@ import com.symphony.oss.canon.json.model.JsonObject;
  * @author Bruce Skingle
  *
  */
-public abstract class ObjectEntity extends Entity 
+public abstract class ObjectEntity extends Entity implements IJsonObjectProvider
 {
   private final JsonObject           jsonObject_;
   private final ImmutableSet<String> unknownKeys_;

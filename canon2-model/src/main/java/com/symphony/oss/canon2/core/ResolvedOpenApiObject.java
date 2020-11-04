@@ -18,36 +18,69 @@
 
 package com.symphony.oss.canon2.core;
 
+import com.symphony.oss.canon.json.model.JsonDomNode;
 import com.symphony.oss.canon2.model.OpenApiObject;
 
-public class ResolvedOpenApiObject implements IResolvedEntity
+public class ResolvedOpenApiObject extends ResolvedEntity
 {
-  private final OpenApiObject model_;
-  private final ResolvedComponentsObject components_ ;
+  private final OpenApiObject            model_;
+  private final ResolvedComponentsObject components_;
+  private final boolean                  referencedModel_;
   
-  private ResolvedOpenApiObject(SingletonBuilder builder)
+  private ResolvedOpenApiObject(AbstractBuilder<?, ?> builder)
   {
-    model_ = builder.model_;
-    components_ = builder.componentsBuilder_.build();
+    super(builder);
+    
+    model_            = builder.model_;
+    referencedModel_  = builder.referencedModel_;
+    components_       = builder.componentsBuilder_.build();
   }
   
-  public static class SingletonBuilder
+  public abstract static class AbstractBuilder<T extends AbstractBuilder<T, B>, B extends ResolvedOpenApiObject> extends ResolvedEntity.AbstractBuilder<T,B>
   {
     ResolvedComponentsObject.SingletonBuilder componentsBuilder_;
-    ResolvedOpenApiObject built_;
-    OpenApiObject model_;
+    ResolvedOpenApiObject                     built_;
+    OpenApiObject                             model_;
+    boolean                                   referencedModel_;
     
-    public synchronized SingletonBuilder withComponents(ResolvedComponentsObject.SingletonBuilder schemasBuilder)
+    AbstractBuilder(Class<T> type)
+    {
+      super(type);
+    }
+
+    public synchronized T withComponents(ResolvedComponentsObject.SingletonBuilder schemasBuilder)
     {
       if(built_ != null)
         throw new IllegalStateException("SingletonBuilder has already been built");
       
       componentsBuilder_ = schemasBuilder;
       
-      return this;
+      return self();
     }
-    
-    public synchronized ResolvedOpenApiObject build()
+
+    public T withModel(OpenApiObject model)
+    {
+      model_ = model;
+      
+      return self();
+    }
+
+    public T withReferencedModel(boolean referencedModel)
+    {
+      referencedModel_ = referencedModel;
+      return self();
+    }
+  }
+  
+  public static class SingletonBuilder extends AbstractBuilder<SingletonBuilder, ResolvedOpenApiObject>
+  {
+    public SingletonBuilder()
+    {
+      super(SingletonBuilder.class);
+    }
+
+    @Override
+    protected ResolvedOpenApiObject construct()
     {
       if(built_ == null)
         built_ = new ResolvedOpenApiObject(this);
@@ -55,10 +88,17 @@ public class ResolvedOpenApiObject implements IResolvedEntity
       return built_;
     }
 
-    public void withModel(OpenApiObject model)
+    @Override
+    boolean isBuilt()
     {
-      model_ = model;
+      return built_ != null;
     }
+  }
+  
+  @Override
+  public JsonDomNode getJson()
+  {
+    return model_.getJson();
   }
 
   public OpenApiObject getModel()
@@ -71,14 +111,21 @@ public class ResolvedOpenApiObject implements IResolvedEntity
     return components_;
   }
   
-  public void validate(CanonModelContext modelContext)
+  public void validate(SourceContext context)
   {
+    super.validate(context);
+    
     if(getComponents() != null)
-      getComponents().validate(modelContext);
+      getComponents().validate(context);
   }
 
   public ResolvedOpenApiObject getResolvedOpenApiObject()
   {
     return this;
+  }
+
+  public boolean isReferencedModel()
+  {
+    return referencedModel_;
   }
 }

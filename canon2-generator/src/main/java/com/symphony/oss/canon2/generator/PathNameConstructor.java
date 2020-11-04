@@ -29,7 +29,7 @@ import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.symphony.oss.canon2.core.GenerationException;
+import com.symphony.oss.commons.fault.CodingFault;
 
 
 public class PathNameConstructor<T extends ITemplateModel<?,?,?>> implements IPathNameConstructor<T>
@@ -43,13 +43,13 @@ public class PathNameConstructor<T extends ITemplateModel<?,?,?>> implements IPa
 
   @Override
   public String constructFile(String templateName,
-      T modelElement)  throws GenerationException
+      T modelElement) 
   {
     return constructFile(null, templateName, modelElement, modelElement.getName());
   }
 
   protected String constructFile(String directoryPath, String templateName,
-     T modelElement, String modelElementName)  throws GenerationException
+     T modelElement, String modelElementName) 
   {
     int     underscoreIndex = templateName.indexOf('_');
     int     dollarIndex = templateName.indexOf('$');
@@ -132,7 +132,7 @@ public class PathNameConstructor<T extends ITemplateModel<?,?,?>> implements IPa
                 }
                 catch (NoSuchMethodException | SecurityException | IllegalAccessException | IllegalArgumentException | InvocationTargetException e)
                 {
-                  throw new GenerationException("Unknown variable \"" + name + "\"", e);
+                  throw new CodingFault("Unknown variable \"" + name + "\"", e);
                 }
               }
               s.append(value);

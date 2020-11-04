@@ -27,23 +27,40 @@
 
 package com.symphony.oss.canon2.model;
 
+import java.math.BigDecimal;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Map.Entry;
 import java.util.Set;
+import java.util.function.Consumer;
 
 import javax.annotation.Nullable;
 import javax.annotation.concurrent.Immutable;
 
 import com.symphony.oss.canon.json.IParserContext;
+import com.symphony.oss.canon.json.ParserErrorException;
+import com.symphony.oss.canon.json.ParserException;
+import com.symphony.oss.canon.json.ParserWarningException;
+import com.symphony.oss.canon.json.SyntaxErrorException;
 import com.symphony.oss.canon.json.model.JsonDomNode;
 import com.symphony.oss.canon.json.model.JsonObject;
 import com.symphony.oss.canon2.core.CanonModelContext;
-import com.symphony.oss.canon2.core.GenerationException;
 import com.symphony.oss.canon2.core.INamedModelEntity;
+import com.symphony.oss.canon2.core.ResolvedArraySchema;
+import com.symphony.oss.canon2.core.ResolvedBigDecimalSchema;
+import com.symphony.oss.canon2.core.ResolvedBigIntegerSchema;
+import com.symphony.oss.canon2.core.ResolvedBooleanSchema;
+import com.symphony.oss.canon2.core.ResolvedDoubleSchema;
+import com.symphony.oss.canon2.core.ResolvedFloatSchema;
+import com.symphony.oss.canon2.core.ResolvedIntegerSchema;
+import com.symphony.oss.canon2.core.ResolvedLongSchema;
+import com.symphony.oss.canon2.core.ResolvedNumberSchema;
+import com.symphony.oss.canon2.core.ResolvedObjectSchema;
 import com.symphony.oss.canon2.core.ResolvedOpenApiObject;
+import com.symphony.oss.canon2.core.ResolvedOpenApiObject.SingletonBuilder;
 import com.symphony.oss.canon2.core.ResolvedPropertiesObject;
 import com.symphony.oss.canon2.core.ResolvedSchema;
+import com.symphony.oss.canon2.core.ResolvedStringSchema;
 import com.symphony.oss.canon2.core.SourceContext;
 import com.symphony.oss.canon2.runtime.java.Entity;
 
@@ -94,16 +111,271 @@ public class Schema extends SchemaEntity implements INamedModelEntity
   
   //public void resolve(CanonModelContext generationContext, SchemaInfo schemaInfo)
   
-  public void link(ResolvedOpenApiObject.SingletonBuilder openApiObjectBuilder, ResolvedSchema.SingletonBuilder builder, CanonModelContext modelContext, SourceContext sourceContext, String uri,  boolean generated) throws GenerationException
+  public void link(ResolvedOpenApiObject.SingletonBuilder openApiObjectBuilder, CanonModelContext modelContext, SourceContext sourceContext, 
+      Consumer<ResolvedSchema.AbstractBuilder<?,?>> builderConsumer,
+      String uri,  boolean generated)
   {
-    ResolvedPropertiesObject.SingletonBuilder  resolvedPropertiesBuilder = new ResolvedPropertiesObject.SingletonBuilder();
-    ResolvedPropertiesObject.SingletonBuilder  innerClassesBuilder       = new ResolvedPropertiesObject.SingletonBuilder();
+    Set<SchemaOrRef> oneOf = getOneOf();
+    Set<SchemaOrRef> anyOf = null; //getAnyOf();
+    Set<SchemaOrRef> allOf = null; //getAllOf();
+    String type = getType();
+    
+    int typeIndicatorCnt = 0;
+    
+    if(oneOf != null)
+    {
+      typeIndicatorCnt++;
+      
+      if(oneOf.isEmpty())
+        throw new SyntaxErrorException("oneOf may not be empty", getJson().getContext());
+      
+      linkOneOf(oneOf, openApiObjectBuilder, modelContext, sourceContext, builderConsumer, uri);
+    }
+    
+    if(anyOf != null)
+    {
+      typeIndicatorCnt++;
+      
+      sourceContext.error(new ParserErrorException("Unimplemented feature", getJson().getContext()));
+    }
+    
+    if(allOf != null)
+    {
+      typeIndicatorCnt++;
+      
+      sourceContext.error(new ParserErrorException("Unimplemented feature", getJson().getContext()));
+    }
+    
+    if(type != null)
+    {
+      typeIndicatorCnt++;
+      
+      switch(type)
+      {
+        case "object":
+          linkObject(openApiObjectBuilder, modelContext, sourceContext, builderConsumer, uri);
+          break;
+          
+        case "array":
+          linkArray(openApiObjectBuilder, modelContext, sourceContext, builderConsumer, uri);
+          break;
+          
+        case "boolean":
+          builderConsumer.accept(new ResolvedBooleanSchema.SingletonBuilder());
+          break;
+          
+        case "number":
+          linkNumber(sourceContext, builderConsumer);
+          break;
+          
+        case  "integer":
+          linkInteger(sourceContext, builderConsumer);
+          break;
+          
+        case "string":
+          linkString(sourceContext, builderConsumer);
+          break;
+          
+        default:
+          sourceContext.error(new SyntaxErrorException("Unexpected type value \"" + type + "\"", getJson().getContext()));
+      }
+    }
+    
+    if(typeIndicatorCnt != 1)
+    {
+      sourceContext.error(new SyntaxErrorException("Exactly one of oneOf, anyOf, allOf and type must be specified.", getJson().getContext()));
+    }
+  }
+  
+  private void linkString(SourceContext sourceContext, Consumer<ResolvedSchema.AbstractBuilder<?,?>> builderConsumer)
+  {
+    ResolvedStringSchema.SingletonBuilder       builder = new ResolvedStringSchema.SingletonBuilder();
+
+    builderConsumer.accept(builder);
+    Set<String> x = getEnum();
+//    builder
+//      .withMinLength(getMinLength())
+//      .withMaxLength(getMaxLength())
+//      .withPattern(getPattern())
+//      ;
+  }
+
+  private void linkInteger(SourceContext sourceContext, Consumer<ResolvedSchema.AbstractBuilder<?,?>> builderConsumer)
+  {
+    if(getFormat() == null)
+    {
+      linkNumber(new ResolvedBigIntegerSchema.SingletonBuilder(), builderConsumer);
+    }
+    else switch(getFormat())
+    {
+      case "int64":
+        linkNumber(new ResolvedLongSchema.SingletonBuilder(), builderConsumer);
+        break;
+        
+      case "int32":
+        linkNumber(new ResolvedIntegerSchema.SingletonBuilder(), builderConsumer);
+        break;
+        
+      case "float":
+      case "double":
+        sourceContext.error(new SyntaxErrorException("Invalid floating point format for integer type \"" + getFormat() + "\"", getJson().getContext()));
+        linkNumber(new ResolvedBigIntegerSchema.SingletonBuilder(), builderConsumer);
+        break;
+        
+      default:
+        sourceContext.error(new ParserWarningException("Unknown number format \"" + getFormat() + "\" ignored.", getJson().getContext()));
+        linkNumber(new ResolvedBigIntegerSchema.SingletonBuilder(), builderConsumer);
+    }
+  }
+
+  private void linkNumber(SourceContext sourceContext, Consumer<ResolvedSchema.AbstractBuilder<?,?>> builderConsumer)
+  {
+    if(getFormat() == null)
+    {
+      linkNumber(new ResolvedBigDecimalSchema.SingletonBuilder(), builderConsumer);
+    }
+    else switch(getFormat())
+    {
+      case "int64":
+        linkNumber(new ResolvedLongSchema.SingletonBuilder(), builderConsumer);
+        break;
+        
+      case "int32":
+        linkNumber(new ResolvedIntegerSchema.SingletonBuilder(), builderConsumer);
+        break;
+      
+      case "float":
+        linkNumber(new ResolvedFloatSchema.SingletonBuilder(), builderConsumer);
+        break;
+      
+      case "double":
+        linkNumber(new ResolvedDoubleSchema.SingletonBuilder(), builderConsumer);
+        break;
+      
+      default:
+        linkNumber(new ResolvedBigDecimalSchema.SingletonBuilder(), builderConsumer);
+        sourceContext.error(new ParserWarningException("Unknown number format \"" + getFormat() + "\" ignored.", getJson().getContext()));
+    }
+  }
+  
+  private void linkNumber(ResolvedNumberSchema.AbstractBuilder<?,?> builder, Consumer<ResolvedSchema.AbstractBuilder<?,?>> builderConsumer)
+  {
+    builderConsumer.accept(builder);
+    
     builder
-        .withSchema(this)
-        .withResolvedProperties(resolvedPropertiesBuilder)
-        .withInnerClasses(innerClassesBuilder)
-        .withGenerated(generated)
+        .withMinimum(getJson().get("minimum"))
+        //.withExclusiveMinimum(getExclusiveMinimum())
+        .withMaximum(getJson().get("maximum"))
+        //.withExclusiveMaximum(getExclusiveMaximum())
         ;
+  }
+
+  private void linkArray(
+      SingletonBuilder openApiObjectBuilder, CanonModelContext modelContext, SourceContext sourceContext, Consumer<ResolvedSchema.AbstractBuilder<?,?>> builderConsumer, String uri)
+  {
+    ResolvedArraySchema.SingletonBuilder       builder = new ResolvedArraySchema.SingletonBuilder();
+
+    builderConsumer.accept(builder);
+    // if(getA)
+
+     if(itemsSchema_ != null)
+     { 
+       builder.withResolvedItems(
+           modelContext.link(openApiObjectBuilder, sourceContext, "items BRUCE 001", uri + "/items", itemsSchema_, isGenerated(itemsSchema_.getType()), builder)
+           //itemsSchema_.link(modelContext, sourceContext, uri + "/items", true)
+           );
+     }
+     else if(itemsReference_ != null)
+     {
+//       Schema schema = fetchSchema(modelContext, sourceContext, itemsReference_, uri, "items", false);
+       builder.withResolvedItems(fetchSchema(openApiObjectBuilder, modelContext, sourceContext, itemsReference_, true));
+       
+//           modelContext.link(sourceContext, uri + "/items", schema, generated)
+//           schema.link(modelContext, sourceContext, itemsReference_.getAbsoluteUri(sourceContext.getUrl()), false));
+     }
+     
+//     Schema schema = itemsSchema_;
+//     boolean itemsIsGenerated = false;
+//     String  itemsName = "items";
+//     String itemsPath = schemaInfo.getName() + "/items";
+//     
+//     if(schema == null && itemsReference_ != null)
+//     {
+//       try
+//       {
+//         schema = fetchSchema(schemaInfo.getOpenApiObject(), generationContext, itemsReference_);
+//         itemsIsGenerated = true;
+//         itemsName = itemsPath = itemsReference_.getName();
+//       }
+//       catch(GenerationException e)
+//       {
+//         schemaInfo.getModelContext().error("Invalid schema reference \"" + itemsReference_.get$ref() + "\" at " + getSourceLocation());
+//       }
+//     }
+//     
+//     if(schema != null)
+//     {
+//       SchemaInfo itemsInfo = new SchemaInfo(schemaInfo, itemsName, itemsPath, schema, itemsIsGenerated);
+//       
+//       generationContext.resolve(itemsInfo);
+//       
+//       schemaInfo.setItems(itemsInfo);
+//       
+////       builder.withResolvedItems(resolver.resolve(openApiObject, generationContext, modelContext, schema, null, itemsIsGenerated));
+//     }
+  }
+
+  private void linkObject(
+      SingletonBuilder openApiObjectBuilder, CanonModelContext modelContext, SourceContext sourceContext, Consumer<ResolvedSchema.AbstractBuilder<?,?>> builderConsumer, String uri)
+  {
+    ResolvedObjectSchema.SingletonBuilder       builder = new ResolvedObjectSchema.SingletonBuilder();
+    ResolvedPropertiesObject.SingletonBuilder   resolvedPropertiesBuilder = new ResolvedPropertiesObject.SingletonBuilder();
+    ResolvedPropertiesObject.SingletonBuilder   innerClassesBuilder       = new ResolvedPropertiesObject.SingletonBuilder();
+    
+    builder
+      .withResolvedProperties(resolvedPropertiesBuilder)
+      .withInnerClasses(innerClassesBuilder)
+      ;
+    
+    builderConsumer.accept(builder);
+    
+    PropertiesObject propertiesObject  = getProperties();
+  
+    if(propertiesObject != null)
+    {
+      for(Entry<String, Object> entry : propertiesObject.getProperties().entrySet())
+      {
+        if(entry.getValue() instanceof Schema)
+        {
+          Schema schema = (Schema)entry.getValue();
+          
+          ResolvedSchema.AbstractBuilder<?,?> resolvedProperty = modelContext.link(openApiObjectBuilder, sourceContext, entry.getKey(), uri + "/" + entry.getKey(), schema, isGenerated(schema.getType()), builder);
+          resolvedPropertiesBuilder.with(entry.getKey(), resolvedProperty);
+          
+          switch(schema.getType())
+          {
+            case "object":
+              innerClassesBuilder.with(entry.getKey(), resolvedProperty);
+              break;
+          }
+        }
+        else
+        {
+          ReferenceObject ref = (ReferenceObject)entry.getValue();
+          
+//          try
+//          {
+//                Schema schema = fetchSchema(modelContext, sourceContext, ref);
+//                ResolvedSchema.SingletonBuilder resolvedProperty = modelContext.link(sourceContext, sourceContext.getSchemaUri(entry.getKey()), schema, false); // isGenerated was true here in the previous version, what does this actually mean?
+            resolvedPropertiesBuilder.with(entry.getKey(), fetchSchema(openApiObjectBuilder, modelContext, sourceContext, ref, true));
+//          }
+//          catch(GenerationException e)
+//          {
+//            sourceContext.error("Invalid schema reference \"" + ref.get$ref() + "\" at " + getSourceLocation());
+//          }
+        }
+      }
+    }
 
     // TODO: Put back
 //    if(getAdditionalProperties() != null)
@@ -129,124 +401,56 @@ public class Schema extends SchemaEntity implements INamedModelEntity
 //      }
 //    }
     
-    Set<SchemaOrRef> oneOf = getOneOf();
-    
-    if(oneOf != null && !oneOf.isEmpty())
+    if(getXCanonExtends() != null)
     {
-      int i=1;
-      for(SchemaOrRef subSchema : oneOf)
-      {
-        String name = subSchema.getRef() == null ? "$" + i : subSchema.getRef().getName();
+//      try
+//      {
+        ResolvedSchema.AbstractBuilder<?, ?> superSchema = fetchSchema(openApiObjectBuilder, modelContext, sourceContext, getXCanonExtends(), true);
         
-        ResolvedSchema.SingletonBuilder resolvedSubSchema = subSchema.link(openApiObjectBuilder, modelContext, sourceContext, name, uri, builder);
-        resolvedPropertiesBuilder.with(name, resolvedSubSchema);
-        
-        if(subSchema.getSchema() != null && resolvedSubSchema.build().getSchemaType().getIsObject())
-          innerClassesBuilder.with(name, resolvedSubSchema);
-        i++;
-      }
-    }
-    
-    PropertiesObject propertiesObject  = getProperties();
-    
-    if(propertiesObject != null)
-    {
-      for(Entry<String, Object> entry : propertiesObject.getProperties().entrySet())
-      {
-        if(entry.getValue() instanceof Schema)
+        if(superSchema instanceof ResolvedObjectSchema.SingletonBuilder)
         {
-          Schema schema = (Schema)entry.getValue();
-          
-          ResolvedSchema.SingletonBuilder resolvedProperty = modelContext.link(openApiObjectBuilder, sourceContext, entry.getKey(), uri + "/" + entry.getKey(), schema, isGenerated(schema.getType()), builder);
-          resolvedPropertiesBuilder.with(entry.getKey(), resolvedProperty);
-          
-          switch(schema.getType())
-          {
-            case "object":
-              innerClassesBuilder.with(entry.getKey(), resolvedProperty);
-              break;
-          }
+          builder.withResolvedExtends((ResolvedObjectSchema.SingletonBuilder) superSchema);
         }
         else
         {
-          ReferenceObject ref = (ReferenceObject)entry.getValue();
-          
-          try
-          {
-//            Schema schema = fetchSchema(modelContext, sourceContext, ref);
-//            ResolvedSchema.SingletonBuilder resolvedProperty = modelContext.link(sourceContext, sourceContext.getSchemaUri(entry.getKey()), schema, false); // isGenerated was true here in the previous version, what does this actually mean?
-            resolvedPropertiesBuilder.with(entry.getKey(), fetchSchema(openApiObjectBuilder, modelContext, sourceContext, ref, true));
-          }
-          catch(GenerationException e)
-          {
-            sourceContext.error("Invalid schema reference \"" + ref.get$ref() + "\" at " + getSourceLocation());
-          }
+          throw new ParserErrorException("Super class must be an object", getXCanonExtends().getJson().getContext());
         }
-      }
-    }
-    
-   // if(getA)
-
-    if(itemsSchema_ != null)
-    { 
-      builder.withResolvedItems(
-          modelContext.link(openApiObjectBuilder, sourceContext, "items BRUCE 001", uri + "/items", itemsSchema_, isGenerated(itemsSchema_.getType()), builder)
-          //itemsSchema_.link(modelContext, sourceContext, uri + "/items", true)
-          );
-    }
-    else if(itemsReference_ != null)
-    {
-//      Schema schema = fetchSchema(modelContext, sourceContext, itemsReference_, uri, "items", false);
-      builder.withResolvedItems(fetchSchema(openApiObjectBuilder, modelContext, sourceContext, itemsReference_, true));
-      
-//          modelContext.link(sourceContext, uri + "/items", schema, generated)
-//          schema.link(modelContext, sourceContext, itemsReference_.getAbsoluteUri(sourceContext.getUrl()), false));
-    }
-    
-//    Schema schema = itemsSchema_;
-//    boolean itemsIsGenerated = false;
-//    String  itemsName = "items";
-//    String itemsPath = schemaInfo.getName() + "/items";
-//    
-//    if(schema == null && itemsReference_ != null)
-//    {
-//      try
-//      {
-//        schema = fetchSchema(schemaInfo.getOpenApiObject(), generationContext, itemsReference_);
-//        itemsIsGenerated = true;
-//        itemsName = itemsPath = itemsReference_.getName();
 //      }
 //      catch(GenerationException e)
 //      {
-//        schemaInfo.getModelContext().error("Invalid schema reference \"" + itemsReference_.get$ref() + "\" at " + getSourceLocation());
+//        sourceContext.error("Invalid schema reference \"" + getXCanonExtends().get$ref() + "\" at " + getSourceLocation());
 //      }
-//    }
-//    
-//    if(schema != null)
-//    {
-//      SchemaInfo itemsInfo = new SchemaInfo(schemaInfo, itemsName, itemsPath, schema, itemsIsGenerated);
-//      
-//      generationContext.resolve(itemsInfo);
-//      
-//      schemaInfo.setItems(itemsInfo);
-//      
-////      builder.withResolvedItems(resolver.resolve(openApiObject, generationContext, modelContext, schema, null, itemsIsGenerated));
-//    }
-    
-    if(getXCanonExtends() != null)
-    {
-      try
-      {
-        //Schema extendsSchema = fetchSchema(modelContext, sourceContext, getXCanonExtends());
-        builder.withResolvedExtends(fetchSchema(openApiObjectBuilder, modelContext, sourceContext, getXCanonExtends(), true));
-      }
-      catch(GenerationException e)
-      {
-        sourceContext.error("Invalid schema reference \"" + getXCanonExtends().get$ref() + "\" at " + getSourceLocation());
-      }
     }
   }
-  
+
+  private void linkOneOf(Set<SchemaOrRef> oneOf, ResolvedOpenApiObject.SingletonBuilder openApiObjectBuilder, CanonModelContext modelContext, SourceContext sourceContext, Consumer<ResolvedSchema.AbstractBuilder<?,?>> builderConsumer, String uri)
+  {
+    
+    ResolvedObjectSchema.SingletonBuilder       builder = new ResolvedObjectSchema.SingletonBuilder();
+    ResolvedPropertiesObject.SingletonBuilder   resolvedPropertiesBuilder = new ResolvedPropertiesObject.SingletonBuilder();
+    ResolvedPropertiesObject.SingletonBuilder   innerClassesBuilder       = new ResolvedPropertiesObject.SingletonBuilder();
+    
+    builderConsumer.accept(builder);
+    
+    builder
+      .withResolvedProperties(resolvedPropertiesBuilder)
+      .withInnerClasses(innerClassesBuilder)
+      ;
+    
+    int i=1;
+    for(SchemaOrRef subSchema : oneOf)
+    {
+      String name = subSchema.getRef() == null ? "$" + i : subSchema.getRef().getName();
+      
+      ResolvedSchema.AbstractBuilder<?,?> resolvedSubSchema = subSchema.link(openApiObjectBuilder, modelContext, sourceContext, name, uri, builder);
+      resolvedPropertiesBuilder.with(name, resolvedSubSchema);
+      
+      if(subSchema.getSchema() != null && resolvedSubSchema.build().getSchemaType().getIsObject())
+        innerClassesBuilder.with(name, resolvedSubSchema);
+      i++;
+    }
+  }
+
   private boolean isGenerated(String type)
   {
     // TODO: replace with type enum
@@ -269,8 +473,8 @@ public class Schema extends SchemaEntity implements INamedModelEntity
   }
 
   // Duplicated in SchemaOrRef - that's the correct place for this
-  private ResolvedSchema.SingletonBuilder fetchSchema(ResolvedOpenApiObject.SingletonBuilder openApiObjectBuilder, CanonModelContext modelContext, SourceContext sourceContext, ReferenceObject ref,
-      boolean generated) throws GenerationException
+  private ResolvedSchema.AbstractBuilder<?,?> fetchSchema(ResolvedOpenApiObject.SingletonBuilder openApiObjectBuilder, CanonModelContext modelContext, SourceContext sourceContext, ReferenceObject ref,
+      boolean generated) throws ParserException
   {
     Schema schema;
     String uri;
@@ -283,9 +487,9 @@ public class Schema extends SchemaEntity implements INamedModelEntity
       }
       catch(IllegalArgumentException e)
       {
-        throw new GenerationException("No such schema \"" + ref.getFragment() + "\"");
+        throw new ParserErrorException("No such schema \"" + ref.getFragment() + "\"", ref);
       }
-      uri = sourceContext.getUrl() + ref.getFragment();
+      uri = sourceContext.getUrl() + "#" + ref.getFragment();
     }
     else
     {
@@ -300,7 +504,7 @@ public class Schema extends SchemaEntity implements INamedModelEntity
       }
       catch (MalformedURLException e)
       {
-        throw new GenerationException(e);
+        throw new ParserErrorException("Invalid URL", ref, e);
       }
     }
     
@@ -308,7 +512,7 @@ public class Schema extends SchemaEntity implements INamedModelEntity
   }
 
 //  @Override
-//  public Set<?> getEnumValues(String type) throws GenerationException
+//  public Set<?> getEnumValues(String type)
 //  {
 //      IImmutableJsonDomNode enumNode = getJson().get("enum");
 //      
@@ -356,10 +560,8 @@ public class Schema extends SchemaEntity implements INamedModelEntity
     return itemsReference_;
   }
 
-  public void fetchReferences(CanonModelContext generationContext, SourceContext sourceContext) throws GenerationException
+  public void fetchReferences(CanonModelContext generationContext, SourceContext sourceContext)
   {
-    try
-    {
       PropertiesObject propertiesObject = getProperties();
       
       if(propertiesObject != null)
@@ -368,24 +570,29 @@ public class Schema extends SchemaEntity implements INamedModelEntity
         {
           if(entry.getValue() instanceof ReferenceObject)
           {
-            
-            generationContext.addReferencedModel(((ReferenceObject)entry.getValue()).getAbsoluteBaseUrl(sourceContext.getUrl()));
+            try
+            {
+              generationContext.addReferencedModel(((ReferenceObject)entry.getValue()).getAbsoluteBaseUrl(sourceContext.getUrl()));
+            }
+            catch(MalformedURLException e)
+            {
+              throw new ParserErrorException("Invalid URL", (ReferenceObject)entry.getValue(), e);
+            }
           }
         }
       }
       
       if(itemsReference_ != null)
       {
-        generationContext.addReferencedModel((itemsReference_).getAbsoluteBaseUrl(sourceContext.getUrl()));
-//        URL url = new URL(sourceContext.getUrl(), itemsReference_.getBaseUri().toString());
-//        
-//        generationContext.addReferencedModel(url);
+        try
+        {
+          generationContext.addReferencedModel(itemsReference_.getAbsoluteBaseUrl(sourceContext.getUrl()));
+        }
+        catch(MalformedURLException e)
+        {
+          throw new ParserErrorException("Invalid URL", itemsReference_, e);
+        }
       }
-    }
-    catch(MalformedURLException e)
-    {
-      throw new GenerationException(e);
-    }
   }
 
   /**

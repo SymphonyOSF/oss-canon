@@ -117,7 +117,7 @@ ${indent}  ${var} = ImmutableSet.copyOf(itemSet${cnt});
 ${indent}}
 ${indent}else ${ifValidation}
 ${indent}{
-${indent}  throw new ParserException("${name} must be a JsonArray node not " + ${node}.getClass().getName(), ${node}.getContext());
+${indent}  throw new ParserErrorException("${name} must be a JsonArray node not " + ${node}.getClass().getName(), ${node}.getContext());
 ${indent}}
     <#break>
     
@@ -149,11 +149,11 @@ UNEXPECTED SCHEMA TYPE ${schema.schemaType} in generateCreateFieldFromJsonDomNod
 ${indent}if(${node} instanceof ${schema.jsonNodeType})
 ${indent}{
 ${indent}  ${var} = ${schema.constructPrefix}((${schema.jsonNodeType})${node}).as${schema.javaType}()${schema.constructSuffix};
-      <@checkLimits "${indent}" schema name var "new new ParserException" ", ${node}.getContext()"/>
+      <@checkLimits "${indent}" schema name var "new new ParserErrorException" ", ${node}.getContext()"/>
 ${indent}}
 ${indent}else ${ifValidation}
 ${indent}{
-${indent}  throw new ParserException("${name} must be an instance of ${schema.jsonNodeType} not " + ${node}.getClass().getName(), ${node}.getContext());
+${indent}  throw new ParserErrorException("${name} must be an instance of ${schema.jsonNodeType} not " + ${node}.getClass().getName(), ${node}.getContext());
 ${indent}}
 </#macro>
 
@@ -182,6 +182,8 @@ ${indent}  throw new IllegalArgumentException("${field.name} is required.");
  # @param var       A java variable containing the value being checked
  #----------------------------------------------------------------------------------------------------->
 <#macro checkLimits indent schema name var exceptionPrefix exceptionSuffix>
+// schema.class ${schema.class}
+// name ${name}
   <#if schema.minimum??>
     <#if schema.exclusiveMinimum>
 ${indent}if(${var} != null && ${var} <= ${schema.minimum})

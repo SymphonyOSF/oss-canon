@@ -18,6 +18,10 @@
 
 package com.symphony.oss.canon2.core;
 
+import java.util.List;
+
+import com.symphony.oss.canon.json.ParserErrorException;
+
 public class ResolvedComponentsObject
 {
   private final ResolvedPropertiesObject schemas_ ;
@@ -56,10 +60,10 @@ public class ResolvedComponentsObject
     return schemas_;
   }
 
-  public void validate(CanonModelContext modelContext)
+  public void validate(SourceContext context)
   {
     if(getSchemas() != null)
-      getSchemas().validate(modelContext);
+      getSchemas().validate(context);
   }
   
 }

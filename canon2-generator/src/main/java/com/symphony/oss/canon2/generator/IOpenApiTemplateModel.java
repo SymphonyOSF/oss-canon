@@ -20,7 +20,6 @@ package com.symphony.oss.canon2.generator;
 
 import java.util.Collection;
 
-import com.symphony.oss.canon2.core.GenerationException;
 import com.symphony.oss.canon2.core.ResolvedOpenApiObject;
 
 /**
@@ -64,7 +63,7 @@ public interface IOpenApiTemplateModel<
    * 
    * @throws GenerationException If there is a duplicate name. 
    */
-  void addSchema(S schema) throws GenerationException;
+  void addSchema(S schema);
 
   /**
    * Return all schemas in this model.

@@ -23,7 +23,7 @@ package com.symphony.oss.canon.json;
  * @author Bruce Skingle
  *
  */
-public class DuplicateAttributeException extends ParserException
+public class DuplicateAttributeException extends ParserErrorException
 {
   private static final long serialVersionUID = 1L;
   

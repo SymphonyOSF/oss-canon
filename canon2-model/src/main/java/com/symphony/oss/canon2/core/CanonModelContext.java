@@ -31,14 +31,18 @@ import java.util.Deque;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Map;
+import java.util.Objects;
+import java.util.function.Consumer;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.google.common.collect.ImmutableMap;
+import com.symphony.oss.canon.json.ParserContext;
+import com.symphony.oss.canon.json.ParserErrorException;
 import com.symphony.oss.canon.json.ParserException;
 import com.symphony.oss.canon.json.ParserResultException;
-import com.symphony.oss.canon2.core.ResolvedSchema.SingletonBuilder;
+import com.symphony.oss.canon2.core.ResolvedOpenApiObject.SingletonBuilder;
 import com.symphony.oss.canon2.model.CanonModel;
 import com.symphony.oss.canon2.model.OpenApiObject;
 import com.symphony.oss.canon2.model.Schema;
@@ -74,7 +78,7 @@ public abstract class CanonModelContext
   private Deque<SourceContext>                  validateQueue_      = new LinkedList<>();
   private Deque<SourceContext>                  generateQueue_      = new LinkedList<>();
   private Map<URL, OpenApiObject>              modelMap_           = new HashMap<>();
-  private Map<String, ResolvedSchema.SingletonBuilder>  schemaMap_          = new HashMap<>();
+  private Map<String, ResolvedSchema.AbstractBuilder<?,?>>  schemaMap_          = new HashMap<>();
   
   protected CanonModelContext(AbstractBuilder<?,?> builder)
   {
@@ -130,25 +134,59 @@ public abstract class CanonModelContext
 //    }
 //  }
 
-
-  public synchronized ResolvedSchema.SingletonBuilder link(ResolvedOpenApiObject.SingletonBuilder openApiObjectBuilder, SourceContext sourceContext,
-      String name, String uri, Schema schema, boolean generated, SingletonBuilder resolvedContainerBuilder) throws GenerationException
+  private class BuilderConsumer implements Consumer<ResolvedSchema.AbstractBuilder<?, ?>>
   {
-    ResolvedSchema.SingletonBuilder builder = schemaMap_.get(uri);
+    private final String                                            name_;
+    private final SingletonBuilder                                  openApiObjectBuilder_;
+    private final String                                            uri_;
+    private final Schema                                            schema_;
+    private final boolean                                           generated_;
+    private final ResolvedObjectOrArraySchema.AbstractBuilder<?, ?> outerClassBuilder_;
+    private ResolvedSchema.AbstractBuilder<?, ?>                    builder_;
+
+    BuilderConsumer(ResolvedOpenApiObject.SingletonBuilder openApiObjectBuilder,
+      String name, String uri, Schema schema, boolean generated, ResolvedObjectOrArraySchema.AbstractBuilder<?,?> outerClassBuilder)
+    {
+      openApiObjectBuilder_ = openApiObjectBuilder;
+      name_ = name;
+      uri_ = uri;
+      schema_ = schema;
+      generated_ = generated;
+      outerClassBuilder_ = outerClassBuilder;
+    }
+    
+    @Override
+    public void accept(ResolvedSchema.AbstractBuilder<?, ?> builder)
+    {
+      builder_ = builder;
+      
+      builder
+        .withName(name_)
+        .withUri(uri_)
+        .withGenerated(generated_)
+        .withResolvedContainer(outerClassBuilder_)
+        .withResolvedOpenApiObject(openApiObjectBuilder_)
+        .withSchema(schema_)
+        ;
+  
+      schemaMap_.put(uri_, builder);   
+    }
+  }
+
+  public synchronized ResolvedSchema.AbstractBuilder<?,?> link(ResolvedOpenApiObject.SingletonBuilder openApiObjectBuilder, SourceContext sourceContext,
+      String name, String uri, Schema schema, boolean generated, ResolvedObjectOrArraySchema.AbstractBuilder<?,?> outerClassBuilder)
+  {
+    ResolvedSchema.AbstractBuilder<?,?> builder = schemaMap_.get(uri);
     
     if(builder == null)
     {
-      builder = new ResolvedSchema.SingletonBuilder()
-          .withName(name)
-          .withUri(uri)
-          .withGenerated(generated)
-          .withResolvedContainer(resolvedContainerBuilder)
-          .withResolvedOpenApiObject(openApiObjectBuilder)
-          ;
+      BuilderConsumer c = new BuilderConsumer(openApiObjectBuilder, name, uri, schema, generated, outerClassBuilder);
       
-      schemaMap_.put(uri, builder);   
-          
-      schema.link(openApiObjectBuilder, builder, this, sourceContext, uri, generated);
+      schema.link(openApiObjectBuilder, this, sourceContext,
+          c,
+          uri, generated);
+      
+      builder = c.builder_;
     }
     
     return builder;
@@ -162,7 +200,7 @@ public abstract class CanonModelContext
 //    }
 //  }
   
-  public ResolvedSchema.SingletonBuilder getSchemaInfo(String absoluteUri)
+  public ResolvedSchema.AbstractBuilder<?,?> getSchemaInfo(String absoluteUri)
   {
     return schemaMap_.get(absoluteUri);
   }
@@ -172,7 +210,7 @@ public abstract class CanonModelContext
     return modelRegistry_;
   }
 
-  public void addGenerationSource(File file) throws GenerationException
+  public void addGenerationSource(File file) throws ParserException
   {
     try
     {
@@ -184,18 +222,20 @@ public abstract class CanonModelContext
     }
     catch(IOException e)
     {
-      throw new GenerationException(e);
+      throw new ParserErrorException("Unable to open generation source ", new ParserContext(file.getAbsolutePath()), e);
     }
   }
   
-  public void addGenerationSource(URL baseUrl, Reader reader)
+  public SourceContext addGenerationSource(URL baseUrl, Reader reader)
   {
     SourceContext context = new SourceContext(this, baseUrl, reader, false, uriMap_);
     generationContexts_.put(baseUrl, context);
     parseQueue_.add(context);
+    
+    return context;
   }
   
-//  public IOpenApiObject  parseOneModel() throws GenerationException
+//  public IOpenApiObject  parseOneModel()
 //  {
 //    SourceContext context = parseQueue_.pollFirst();
 //    
@@ -209,34 +249,31 @@ public abstract class CanonModelContext
 //    return model;
 //  }
   
-  public void process() throws GenerationException
+  public void process() throws ParserResultException, ParserException
   {
     SourceContext sourceContext;
     OpenApiObject model;
     
     while((sourceContext = parseQueue_.pollFirst()) != null)
     {
-      try
-      {
-        model = sourceContext.parse(modelRegistry_);
-      }
-      catch(IllegalStateException e)
-      {
-        throw new GenerationException("Failed to parse model", e);
-      }
-      catch (ParserResultException e)
-      {
-        for(ParserException parserException : e.getParserExceptions())
-        {
-          log_.error(parserException.toString());
-        }
-        throw new GenerationException("Failed to parse model", e);
-      }
-      catch(ParserException e)
-      {
-        log_.error(e.toString());
-        throw new GenerationException("Failed to parse model", e);
-      }
+      model = sourceContext.parse(modelRegistry_);
+//      catch(IllegalStateException e)
+//      {
+//        throw new ParserErrorException("Failed to parse model", e);
+//      }
+//      catch (ParserResultException e)
+//      {
+//        for(ParserException parserException : e.getParserExceptions())
+//        {
+//          log_.error(parserException.toString());
+//        }
+//        throw new GenerationException("Failed to parse model", e);
+//      }
+//      catch(ParserException e)
+//      {
+//        log_.error(e.toString());
+//        throw new GenerationException("Failed to parse model", e);
+//      }
       validateQueue_.add(sourceContext);
       modelMap_.put(sourceContext.getUrl(), model);
       
@@ -248,12 +285,21 @@ public abstract class CanonModelContext
       validate(sourceContext);
     }
     
-    process(generateQueue_);
+
+//    try
+//    {
+      process(generateQueue_);
+//    }
+//    catch(ParserException e)
+//    {
+//      log_.error(e.toString());
+//      throw new GenerationException("Failed to parse model", e);
+//    }
   }
 
-  protected abstract void process(Deque<SourceContext> processQueue) throws GenerationException;
+  protected abstract void process(Deque<SourceContext> processQueue) throws ParserResultException;
 
-  void validate(SourceContext context) throws GenerationException
+  void validate(SourceContext context) throws ParserResultException
   {
 //    OpenApiObject                           model = context.getModel();
 //    ResolvedOpenApiObject.SingletonBuilder  builder = model.link(this, context);
@@ -262,10 +308,9 @@ public abstract class CanonModelContext
     context.link(this);
    // model.resolve(this, context);
     
-    context.getResolvedOpenApiObject().validate(this);
+    context.getResolvedOpenApiObject().validate(context);
     
-    if(context.printErrors())
-      throw new GenerationException("Generation failed for " + context.getInputSourceName());
+    context.printErrorsAndThrowException();
     
     if(!context.isReferencedModel())
     {
@@ -273,7 +318,7 @@ public abstract class CanonModelContext
     }
   }
 
-  public void addReferencedModel(URL url) throws GenerationException
+  public void addReferencedModel(URL url) throws ParserException
   {
     if(url != null)
     {

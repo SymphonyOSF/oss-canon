@@ -23,7 +23,7 @@
 
 package com.symphony.oss.canon.launch;
 
-import com.symphony.oss.canon2.core.GenerationException;
+import com.symphony.oss.canon.json.ParserResultException;
 import com.symphony.oss.canon2.generator.Canon2;
 
 public class Canon2Launch extends Canon2
@@ -33,10 +33,10 @@ public class Canon2Launch extends Canon2
    * 
    * @param argv
    *          command line arguments.
-   * @throws GenerationException
+   * @throws ParserResultException 
    *           If anything goes wrong.
    */
-  public static void main(String[] argv) throws  GenerationException
+  public static void main(String[] argv) throws ParserResultException
   {
     new Canon2Launch().run(argv);
   }

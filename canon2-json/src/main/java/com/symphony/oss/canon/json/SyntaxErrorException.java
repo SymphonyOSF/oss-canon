@@ -24,7 +24,7 @@ package com.symphony.oss.canon.json;
  * @author Bruce Skingle
  *
  */
-public class SyntaxErrorException extends ParserException
+public class SyntaxErrorException extends ParserErrorException
 {
   private static final long serialVersionUID = 1L;
 

@@ -30,6 +30,10 @@ import java.util.List;
 
 import org.junit.Test;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonMappingException;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.symphony.oss.canon.runtime.JsonArrayParser;
 
 public class JsonArrayParserTest
@@ -118,11 +122,11 @@ public class JsonArrayParserTest
       {
         System.err.println("Expected:");
         for(String s : expected)
-          System.err.println("   " + s);
+          System.err.println("   <" + s + ">");
         System.err.println();
         System.err.println("Received:");
         for(String s : results_)
-          System.err.println("   " + s);
+          System.err.println("   <" + s + ">");
         
         fail();
       }

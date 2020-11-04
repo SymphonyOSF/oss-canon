@@ -24,14 +24,22 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.symphony.oss.canon.json.model.JsonObject;
-import com.symphony.oss.canon2.core.GenerationException;
 import com.symphony.oss.canon2.core.INamedModelEntity;
-import com.symphony.oss.canon2.core.IResolvedEntity;
+import com.symphony.oss.canon2.core.ResolvedBigDecimalSchema;
+import com.symphony.oss.canon2.core.ResolvedBigIntegerSchema;
+import com.symphony.oss.canon2.core.ResolvedBooleanSchema;
+import com.symphony.oss.canon2.core.ResolvedDoubleSchema;
+import com.symphony.oss.canon2.core.ResolvedEntity;
+import com.symphony.oss.canon2.core.ResolvedFloatSchema;
+import com.symphony.oss.canon2.core.ResolvedIntegerSchema;
+import com.symphony.oss.canon2.core.ResolvedLongSchema;
 import com.symphony.oss.canon2.core.ResolvedOpenApiObject;
+import com.symphony.oss.canon2.core.ResolvedPrimitiveSchema;
 import com.symphony.oss.canon2.core.ResolvedSchema;
-import com.symphony.oss.canon2.core.SchemaTemplateModelType;
+import com.symphony.oss.canon2.core.ResolvedStringSchema;
 import com.symphony.oss.canon2.core.SourceContext;
 import com.symphony.oss.canon2.generator.CanonGenerator;
+import com.symphony.oss.canon2.generator.IGroupSchemaTemplateModel;
 import com.symphony.oss.canon2.generator.IPathNameConstructor;
 import com.symphony.oss.canon2.model.CanonCardinality;
 import com.symphony.oss.canon2.model.OpenApiObject;
@@ -44,7 +52,7 @@ JavaObjectSchemaTemplateModel,
 JavaArraySchemaTemplateModel,
 JavaPrimitiveSchemaTemplateModel,
 JavaFieldTemplateModel,
-JavaGroupSchemaTemplateModel
+IGroupSchemaTemplateModel<IJavaTemplateModel,JavaOpenApiTemplateModel,JavaSchemaTemplateModel>
 >
 {
   private static Logger log_ = LoggerFactory.getLogger(JavaGenerator.class);
@@ -133,7 +141,7 @@ JavaGroupSchemaTemplateModel
     return defaultGenerationPackage;
   }
 
-  public String getJavaGenerationPackage(IResolvedEntity resolvedEntity)
+  public String getJavaGenerationPackage(ResolvedEntity resolvedEntity)
   {
     return getJavaGenerationPackage(resolvedEntity.getResolvedOpenApiObject().getModel());
   }
@@ -241,38 +249,91 @@ JavaGroupSchemaTemplateModel
 
   
   @Override
-  public JavaObjectSchemaTemplateModel generateObjectSchema(JavaOpenApiTemplateModel model, ResolvedSchema resolvedSchema, String identifier, boolean isReference) throws GenerationException
+  public JavaObjectSchemaTemplateModel generateObjectSchema(JavaOpenApiTemplateModel model, ResolvedSchema resolvedSchema, String identifier)
   {
-    if(isReference)
+    if(resolvedSchema.isInnerClass())
       return new JavaObjectSchemaTemplateModel(resolvedSchema, identifier, getJavaGenerationPackage(resolvedSchema), model);
     else
       return new JavaObjectSchemaTemplateModel(resolvedSchema, identifier, getJavaGenerationPackage(resolvedSchema), model, "Object");
   }
 
   @Override
-  public JavaArraySchemaTemplateModel generateArraySchema(JavaOpenApiTemplateModel model, ResolvedSchema resolvedSchema, String identifier, boolean isReference, CanonCardinality cardinality) throws GenerationException
+  public JavaArraySchemaTemplateModel generateArraySchema(JavaOpenApiTemplateModel model, ResolvedSchema resolvedSchema, String identifier, CanonCardinality cardinality)
   {
-    if(isReference)
+    if(resolvedSchema.isInnerClass() || resolvedSchema.getResolvedOpenApiObject().isReferencedModel())
       return new JavaArraySchemaTemplateModel(resolvedSchema, identifier, getJavaGenerationPackage(resolvedSchema), cardinality, model);
     else
       return new JavaArraySchemaTemplateModel(resolvedSchema, identifier, getJavaGenerationPackage(resolvedSchema), cardinality, model,  "Array");
   }
 
   @Override
-  public JavaGroupSchemaTemplateModel generateGroupSchema(JavaOpenApiTemplateModel model, ResolvedSchema resolvedSchema,
-      String identifier, boolean isReference, SchemaTemplateModelType schemaType)
+  public JavaPrimitiveSchemaTemplateModel generateBigDecimalSchema(JavaOpenApiTemplateModel model,
+      ResolvedBigDecimalSchema resolvedSchema, String identifier)
   {
-    if(isReference)
-      return new JavaGroupSchemaTemplateModel(resolvedSchema, identifier, getJavaGenerationPackage(resolvedSchema), schemaType, model);
-    else
-      return new JavaGroupSchemaTemplateModel(resolvedSchema, identifier, getJavaGenerationPackage(resolvedSchema), schemaType, model,  schemaType.getValue());
+    return generatePrimativeSchema(model, resolvedSchema, identifier);
   }
 
   @Override
-  public JavaPrimitiveSchemaTemplateModel generatePrimativeSchema(
-      JavaOpenApiTemplateModel model, ResolvedSchema resolvedSchema, String identifier, boolean isReference) throws GenerationException
+  public JavaPrimitiveSchemaTemplateModel generateBigIntegerSchema(JavaOpenApiTemplateModel model,
+      ResolvedBigIntegerSchema resolvedSchema, String identifier)
   {
-    if(isReference || (!resolvedSchema.isGenerated() && !resolvedSchema.getSchema().isEnum()))
+    // TODO Auto-generated method stub
+    return generatePrimativeSchema(model, resolvedSchema, identifier);
+  }
+
+  @Override
+  public JavaPrimitiveSchemaTemplateModel generateDoubleSchema(JavaOpenApiTemplateModel model,
+      ResolvedDoubleSchema resolvedSchema, String identifier)
+  {
+    // TODO Auto-generated method stub
+    return generatePrimativeSchema(model, resolvedSchema, identifier);
+  }
+
+  @Override
+  public JavaPrimitiveSchemaTemplateModel generateFloatSchema(JavaOpenApiTemplateModel model,
+      ResolvedFloatSchema resolvedSchema, String identifier)
+  {
+    // TODO Auto-generated method stub
+    return generatePrimativeSchema(model, resolvedSchema, identifier);
+  }
+
+  @Override
+  public JavaPrimitiveSchemaTemplateModel generateIntegerSchema(JavaOpenApiTemplateModel model,
+      ResolvedIntegerSchema resolvedSchema, String identifier)
+  {
+    // TODO Auto-generated method stub
+    return generatePrimativeSchema(model, resolvedSchema, identifier);
+  }
+
+  @Override
+  public JavaPrimitiveSchemaTemplateModel generateLongSchema(JavaOpenApiTemplateModel model,
+      ResolvedLongSchema resolvedSchema, String identifier)
+  {
+    // TODO Auto-generated method stub
+    return generatePrimativeSchema(model, resolvedSchema, identifier);
+  }
+
+  @Override
+  public JavaPrimitiveSchemaTemplateModel generateStringSchema(JavaOpenApiTemplateModel model,
+      ResolvedStringSchema resolvedSchema, String identifier)
+  {
+    // TODO Auto-generated method stub
+    return generatePrimativeSchema(model, resolvedSchema, identifier);
+  }
+
+  @Override
+  public JavaPrimitiveSchemaTemplateModel generateBooleanSchema(JavaOpenApiTemplateModel model,
+      ResolvedBooleanSchema resolvedSchema, String identifier)
+  {
+    // TODO Auto-generated method stub
+    return generatePrimativeSchema(model, resolvedSchema, identifier);
+  }
+
+  public JavaPrimitiveSchemaTemplateModel generatePrimativeSchema(
+      JavaOpenApiTemplateModel model, ResolvedPrimitiveSchema resolvedSchema, String identifier)
+  {
+    //if(isReference || (!resolvedSchema.isGenerated() && !resolvedSchema.getSchema().isEnum()))
+    if(resolvedSchema.isInnerClass() || resolvedSchema.getResolvedOpenApiObject().isReferencedModel())
     {
       return new JavaPrimitiveSchemaTemplateModel(resolvedSchema, identifier, getJavaGenerationPackage(resolvedSchema), model);
     }

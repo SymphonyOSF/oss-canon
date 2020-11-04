@@ -123,7 +123,7 @@ implements IJavaTemplateModel
     return import_;
   }
 
-  public List<String> sortImports(List<String> list)
+  public List<String> sortImports(List<String> list, String genPackage)
   {
     String[] groups = new String[]
     {
@@ -133,20 +133,23 @@ implements IJavaTemplateModel
     
     for(String s : list)
     {
-      for(String group : groups)
+      if(needToImport(s, genPackage))
       {
-        if(s.startsWith(group))
+        for(String group : groups)
         {
-          Set<String> set = map.get(group);
-          
-          if(set == null)
+          if(s.startsWith(group))
           {
-            set = new TreeSet<>();
-            map.put(group,  set);
+            Set<String> set = map.get(group);
+            
+            if(set == null)
+            {
+              set = new TreeSet<>();
+              map.put(group,  set);
+            }
+            
+            set.add(s);
+            break;
           }
-          
-          set.add(s);
-          break;
         }
       }
     }
@@ -168,6 +171,16 @@ implements IJavaTemplateModel
     }
     
     return result;
+  }
+
+  private boolean needToImport(String s, String genPackage)
+  {
+    int i = s.lastIndexOf('.');
+    
+    if(i == -1)
+      return true;
+    
+    return !s.substring(0, i).equals(genPackage);
   }
 
   public boolean getGenerateFacade()

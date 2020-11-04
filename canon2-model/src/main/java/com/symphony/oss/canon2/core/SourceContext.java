@@ -38,9 +38,11 @@ import java.util.Map.Entry;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.symphony.oss.canon.json.IParserContext;
+import com.symphony.oss.canon.json.ParserContext;
+import com.symphony.oss.canon.json.ParserErrorException;
 import com.symphony.oss.canon.json.ParserException;
 import com.symphony.oss.canon.json.ParserResultException;
-import com.symphony.oss.canon2.core.ResolvedOpenApiObject.SingletonBuilder;
 import com.symphony.oss.canon2.model.OpenApiObject;
 import com.symphony.oss.canon2.runtime.java.ModelRegistry;
 
@@ -66,19 +68,19 @@ public class SourceContext
   private final String          inputSourceName_;
   private final boolean         referencedModel_;
   private Reader                reader_;
-  private List<String>          errors_ = new LinkedList<>();
+  private List<ParserException>          errors_ = new LinkedList<>();
 
 
 //  private List<SchemaInfo> schemas_ = new LinkedList<>();
   
   
 
-  public SourceContext(CanonModelContext modelSetParserContext, URL url, boolean referencedModel, Map<String, String> uriMap) throws GenerationException
+  public SourceContext(CanonModelContext modelSetParserContext, URL url, boolean referencedModel, Map<String, String> uriMap) throws ParserException
   {
     this(modelSetParserContext, url, openStream(url), referencedModel, uriMap);
   }
   
-  private static Reader openStream(URL url) throws GenerationException
+  private static Reader openStream(URL url) throws ParserException
   {
     try
     {
@@ -86,7 +88,7 @@ public class SourceContext
     }
     catch(IOException e)
     {
-      throw new GenerationException(e);
+      throw new ParserErrorException("Unable to read input", new ParserContext(url.toString()),e);
     }
   }
 
@@ -209,7 +211,7 @@ public class SourceContext
     return inputSourceFileName_;
   }
 
-  public void addReferencedModel(URI uri) throws GenerationException
+  public void addReferencedModel(URI uri, IParserContext parserContext) throws ParserException
   {
     try
     {
@@ -219,7 +221,7 @@ public class SourceContext
     }
     catch (IOException | URISyntaxException e)
     {
-      throw new GenerationException("Invalid URI \"" + uri + "\"", e);
+      throw new ParserErrorException("Invalid URI \"" + uri + "\"", parserContext, e);
     }
   }
   
@@ -256,24 +258,37 @@ public class SourceContext
     }
   }
   
-  public boolean  printErrors()
+  public void  printErrorsAndThrowException() throws ParserResultException
   {
     if(errors_.isEmpty())
-      return false;
+      return;
+    
+    boolean hasErrors = false;
     
     log_.error("=============================================================================================================================");
     log_.error(errors_.size() + " errors encountered:");
-    for(String error : errors_)
-      log_.error(error);
+    for(ParserException error : errors_)
+    {
+      log_.error(error.toString());
+      
+      if(error.isFatal())
+        hasErrors = true;
+    }
     log_.error("=============================================================================================================================");
     
-    return true;
+    if(hasErrors)
+      throw new ParserResultException(errors_);
   }
 
-  public void error(String error)
+  public void error(ParserException error)
   {
-    log_.error(error);
+    log_.error(error.toString());
     errors_.add(error);
+  }
+  
+  public List<ParserException> getErrors()
+  {
+    return errors_;
   }
 
 //  public List<SchemaInfo> getSchemas()
@@ -298,9 +313,11 @@ public class SourceContext
 //    return getUrl() + "#/components/schemas/" + schemaName;
 //  }
 
-  public void link(CanonModelContext canonModelContext) throws GenerationException
+  public void link(CanonModelContext canonModelContext)
   {
-    resolvedOpenApiObjectBuilder_.withModel(model_);
+    resolvedOpenApiObjectBuilder_
+      .withModel(model_)
+      .withReferencedModel(referencedModel_);
     model_.link(resolvedOpenApiObjectBuilder_, canonModelContext, this, getUrl() + "#");
   }
 

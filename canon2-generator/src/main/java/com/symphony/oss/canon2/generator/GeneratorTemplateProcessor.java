@@ -21,7 +21,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.google.common.io.Files;
-import com.symphony.oss.canon2.core.GenerationException;
+import com.symphony.oss.canon.json.ParserContext;
+import com.symphony.oss.canon.json.ParserErrorException;
+import com.symphony.oss.canon.json.ParserResultException;
 import com.symphony.oss.canon2.core.SourceContext;
 
 import freemarker.template.Configuration;
@@ -61,7 +63,7 @@ G extends IGroupSchemaTemplateModel<T,M,S>>
     return generator_;
   }
   
-  public void process(CanonGenerationContext canonGenerationContext, SourceContext sourceContext) throws GenerationException
+  public void process(CanonGenerationContext canonGenerationContext, SourceContext sourceContext) throws ParserResultException
   {
     GeneratorContext<T,M,S,O,A,P,F,G> generatorContext = new GeneratorContext<>(canonGenerationContext, generator_, sourceContext);
     
@@ -100,7 +102,7 @@ G extends IGroupSchemaTemplateModel<T,M,S>>
   }
 
  
-  void generate() throws GenerationException
+  void generate()
   {
     for(String templateGroup : map_.keySet())
     {
@@ -130,7 +132,7 @@ G extends IGroupSchemaTemplateModel<T,M,S>>
   }
   
   private void generate(TemplateContext templateContext,
-      TemplateType templateType, String templateName) throws GenerationException
+      TemplateType templateType, String templateName)
   {
     IPathNameConstructor<T> pathBuilder = templateContext.generatorContext_.getPathBuilder();
     Configuration freemarkerConfig = generator_.getFreemarkerConfig();
@@ -159,8 +161,8 @@ G extends IGroupSchemaTemplateModel<T,M,S>>
   
       } catch (IOException e)
       {
-        throw new GenerationException("ERROR processing " + targetFileName + " template " +
-            templateName, e);
+        throw new ParserErrorException("ERROR processing " + targetFileName + " template " +
+            templateName, new ParserContext(templateName), e);
       }
     }
   }
@@ -188,7 +190,7 @@ G extends IGroupSchemaTemplateModel<T,M,S>>
   }
   
   private void generate(Map<String, Object> model, TemplateType templateType, Template template,
-      String targetFileName, CanonGenerationContext generationContext) throws GenerationException
+      String targetFileName, CanonGenerationContext generationContext)
   {
     File genPath = new File(templateType == TemplateType.TEMPLATE ? generationContext.getTargetDir() : generationContext.getProformaDir(), targetFileName);
     
@@ -202,7 +204,7 @@ G extends IGroupSchemaTemplateModel<T,M,S>>
     {
       //dumpMap("", dataModel, new HashSet<Object>());
       
-      throw new GenerationException(e);
+      throw new ParserErrorException(e);
     }
     
     if(genPath.length() == 0L)
@@ -226,7 +228,7 @@ G extends IGroupSchemaTemplateModel<T,M,S>>
           }
           catch (IOException e)
           {
-            throw new GenerationException(e);
+            throw new ParserErrorException(e);
           }
         }
       }
@@ -243,7 +245,7 @@ G extends IGroupSchemaTemplateModel<T,M,S>>
 //  P extends IPrimitiveSchemaTemplateModel<T,M,S>,
 //  F extends IFieldTemplateModel<T,M,S>
 //  >
-//  void generateModel(TemplateModelContext<T,M,S,O,A,P,F,G> modelContext, String templateGroup) throws GenerationException
+//  void generateModel(TemplateModelContext<T,M,S,O,A,P,F,G> modelContext, String templateGroup)
 //  {
 //    //new Helper<T,M,S,O,A,P,F,G>(modelContext).generateModel(templateGroup);
 //    
@@ -268,7 +270,7 @@ G extends IGroupSchemaTemplateModel<T,M,S>>
 //      modelContext_ = modelContext;
 //    }
 //
-//    void generateModel(String templateGroup) throws GenerationException
+//    void generateModel(String templateGroup)
 //    {
 //
 //      log_.info("Process template " + templateGroup + ", model " + modelContext_.getModel().getName() + "...");
@@ -290,7 +292,7 @@ G extends IGroupSchemaTemplateModel<T,M,S>>
 //
 //
 //    private void generate(ICanonGenerator<T,M,S,O,A,P,F,G> generator, GeneratorContext<T,M,S,O,A,P,F,G> modelContext, T entity,
-//        TemplateType templateType, String templateName) throws GenerationException
+//        TemplateType templateType, String templateName)
 //    {
 //      IPathNameConstructor<T> pathBuilder = modelContext.getPathBuilder(templateType);
 //      Configuration freemarkerConfig = generator.getFreemarkerConfig();
@@ -326,7 +328,7 @@ G extends IGroupSchemaTemplateModel<T,M,S>>
 //    }
 //    
 //    private void generate(Map<String, Object> model, TemplateType templateType, Template template,
-//        String targetFileName) throws GenerationException
+//        String targetFileName)
 //    {
 //      File genPath = new File(templateType == TemplateType.TEMPLATE ? getTargetDir() : getProformaDir(), targetFileName);
 //      

@@ -160,6 +160,15 @@
           "type": {
             "type": "string"
           },
+          "pattern": {
+            "type": "string"
+          },
+          "minLength": {
+            "type": "integer"
+          },
+          "maxLength": {
+            "type": "integer"
+          },
           "format": {
             "type": "string"
           },

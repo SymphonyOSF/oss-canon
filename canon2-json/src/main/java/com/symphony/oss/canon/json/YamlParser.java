@@ -105,7 +105,7 @@ public class YamlParser extends Parser
     }
     catch(IOException e)
     {
-      domBuilder_.withError(new ParserException("Unable to read input (" + e.getMessage() + ")", this, e));
+      domBuilder_.withError(new ParserErrorException("Unable to read input (" + e.getMessage() + ")", this, e));
     }
    
     return domBuilder_.build();
@@ -548,7 +548,7 @@ public class YamlParser extends Parser
     }
     catch(RuntimeException e)
     {
-      throw new ParserException(e.toString(), context, e);
+      throw new ParserErrorException(e.toString(), context, e);
     }
   }
   
@@ -577,7 +577,7 @@ public class YamlParser extends Parser
           
           if(lineBuffer_ == null)
           {
-            throw new ParserException("Unexpected end of file in double quoted string", context);
+            throw new ParserErrorException("Unexpected end of file in double quoted string", context);
           }
         } while(lineBuffer_.trim().length() == 0);
         
@@ -743,7 +743,7 @@ public class YamlParser extends Parser
           
           if(lineBuffer_ == null)
           {
-            throw new ParserException("Unexpected end of file in single quoted string", context);
+            throw new ParserErrorException("Unexpected end of file in single quoted string", context);
           }
         } while(lineBuffer_.trim().length() == 0);
         

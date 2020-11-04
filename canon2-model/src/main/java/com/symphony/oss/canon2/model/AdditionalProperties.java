@@ -31,7 +31,7 @@ import javax.annotation.Nullable;
 import javax.annotation.concurrent.Immutable;
 
 import com.google.common.collect.ImmutableSet;
-import com.symphony.oss.canon.json.ParserException;
+import com.symphony.oss.canon.json.ParserErrorException;
 import com.symphony.oss.canon.json.model.JsonBoolean;
 import com.symphony.oss.canon.json.model.JsonDomNode;
 import com.symphony.oss.canon.json.model.JsonNull;
@@ -91,7 +91,7 @@ public class AdditionalProperties extends Entity
         }
         else 
         {
-          throw new ParserException("$1 must be an instance of JsonBoolean not " + node.getClass().getName(), node.getContext());
+          throw new ParserErrorException("$1 must be an instance of JsonBoolean not " + node.getClass().getName(), node.getContext());
         }
     }
     else
@@ -213,7 +213,7 @@ public class AdditionalProperties extends Entity
         }
         else if(!modelRegistry.getParserValidation().isIgnoreInvalidAttributes())
         {
-          throw new ParserException("$1 must be an instance of JsonBoolean not " + node.getClass().getName(), node.getContext());
+          throw new ParserErrorException("$1 must be an instance of JsonBoolean not " + node.getClass().getName(), node.getContext());
         }
       }
       return super.withValues(jsonObject, modelRegistry);

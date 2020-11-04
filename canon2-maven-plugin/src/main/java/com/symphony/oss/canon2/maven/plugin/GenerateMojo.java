@@ -60,7 +60,8 @@ import org.apache.maven.project.MavenProject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.symphony.oss.canon2.core.GenerationException;
+import com.symphony.oss.canon.json.ParserException;
+import com.symphony.oss.canon.json.ParserResultException;
 import com.symphony.oss.canon2.generator.CanonGenerationContext;
 import com.symphony.oss.canon2.generator.ICanonGenerator;
 
@@ -234,7 +235,7 @@ public class GenerateMojo extends AbstractMojo
       
 //      generationContext.generate();
     }
-    catch (GenerationException e)
+    catch (ParserException | ParserResultException e)
     {
       throw new MojoExecutionException("Generation failed", e);
     }

@@ -22,9 +22,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
-import com.symphony.oss.canon2.core.GenerationException;
 import com.symphony.oss.canon2.core.ResolvedSchema;
-import com.symphony.oss.canon2.core.SchemaTemplateModelType;
 import com.symphony.oss.canon2.generator.IObjectSchemaTemplateModel;
 
 public class JavaObjectSchemaTemplateModel extends JavaSchemaTemplateModel
@@ -60,7 +58,7 @@ JavaFieldTemplateModel
   
   
   JavaObjectSchemaTemplateModel(ResolvedSchema resolvedSchema, String identifier, String packageName, JavaOpenApiTemplateModel model,
-      String... temaplates) throws GenerationException
+      String... temaplates)
   {
     super(resolvedSchema, resolvedSchema.getSchemaType(), identifier, packageName, model, temaplates);
     
@@ -189,7 +187,7 @@ JavaFieldTemplateModel
   }
 
 //  @Override
-//  public void addField(JavaFieldTemplateModel field) throws GenerationException
+//  public void addField(JavaFieldTemplateModel field)
 //  {
 ////    if(fieldMap_.put(field.getCamelName(), field) != null)
 ////    {

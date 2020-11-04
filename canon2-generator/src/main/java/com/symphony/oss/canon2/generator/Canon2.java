@@ -32,7 +32,7 @@ import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.symphony.oss.canon2.core.GenerationException;
+import com.symphony.oss.canon.json.ParserResultException;
 
 public class Canon2
 {
@@ -117,7 +117,7 @@ public class Canon2
 //    new Canon().run(argv);
 //  }
 
-  protected void run(String[] argv) throws GenerationException
+  protected void run(String[] argv) throws ParserResultException
   {
     int i = 0;
 
@@ -371,7 +371,7 @@ public class Canon2
     }
   }
 
-  private void execute(List<File> files) throws GenerationException
+  private void execute(List<File> files) throws ParserResultException
   {
     if (verbose_)
     {

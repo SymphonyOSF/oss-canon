@@ -18,7 +18,7 @@
 
 package com.symphony.oss.canon2.generator;
 
-import com.symphony.oss.canon2.core.IResolvedEntity;
+import com.symphony.oss.canon2.core.ResolvedEntity;
 
 /**
  * Template model object for an object field.
@@ -36,7 +36,7 @@ S extends ISchemaTemplateModel<T,M,S>>
   private final S typeSchema_;
   private final boolean required_;
   
-  public FieldTemplateModel(String name, IResolvedEntity resolvedEntity, String identifier, M model,
+  public FieldTemplateModel(String name, ResolvedEntity resolvedEntity, String identifier, M model,
       S typeSchema, boolean required,
       String[] temaplates)
   {

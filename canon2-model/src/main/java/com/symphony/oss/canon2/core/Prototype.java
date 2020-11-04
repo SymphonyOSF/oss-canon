@@ -18,9 +18,9 @@
 
 package com.symphony.oss.canon2.core;
 
-public interface IResolvedEntity
+public class Prototype
 {
-
-  ResolvedOpenApiObject getResolvedOpenApiObject();
-
+  Prototype()
+  {
+  }
 }

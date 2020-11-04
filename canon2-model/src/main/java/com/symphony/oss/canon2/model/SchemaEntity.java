@@ -36,7 +36,7 @@ import javax.annotation.Nullable;
 import javax.annotation.concurrent.Immutable;
 
 import com.google.common.collect.ImmutableSet;
-import com.symphony.oss.canon.json.ParserException;
+import com.symphony.oss.canon.json.ParserErrorException;
 import com.symphony.oss.canon.json.model.JsonArray;
 import com.symphony.oss.canon.json.model.JsonBoolean;
 import com.symphony.oss.canon.json.model.JsonDomNode;
@@ -115,7 +115,7 @@ public abstract class SchemaEntity extends ObjectEntity
         }
         else 
         {
-          throw new ParserException("maxItems must be an instance of JsonParsedNumber not " + node.getClass().getName(), node.getContext());
+          throw new ParserErrorException("maxItems must be an instance of JsonParsedNumber not " + node.getClass().getName(), node.getContext());
         }
       }
 
@@ -132,11 +132,11 @@ public abstract class SchemaEntity extends ObjectEntity
         }
         else 
         {
-          throw new ParserException("x-canon-builderFacade must be an instance of JsonBoolean not " + node.getClass().getName(), node.getContext());
+          throw new ParserErrorException("x-canon-builderFacade must be an instance of JsonBoolean not " + node.getClass().getName(), node.getContext());
         }
       }
 
-      node = jsonInitialiser.get("XXXadditionalProperties");
+      node = jsonInitialiser.get("additionalProperties");
       if(node == null || node instanceof JsonNull)
       {
         _xXXadditionalProperties_ = null;
@@ -160,7 +160,7 @@ public abstract class SchemaEntity extends ObjectEntity
         }
         else 
         {
-          throw new ParserException("format must be an instance of JsonString not " + node.getClass().getName(), node.getContext());
+          throw new ParserErrorException("format must be an instance of JsonString not " + node.getClass().getName(), node.getContext());
         }
       }
 
@@ -177,7 +177,7 @@ public abstract class SchemaEntity extends ObjectEntity
         }
         else 
         {
-          throw new ParserException("x-canon-cardinality must be an instance of JsonString not " + node.getClass().getName(), node.getContext());
+          throw new ParserErrorException("x-canon-cardinality must be an instance of JsonString not " + node.getClass().getName(), node.getContext());
         }
       }
 
@@ -194,7 +194,7 @@ public abstract class SchemaEntity extends ObjectEntity
         }
         else 
         {
-          throw new ParserException("x-canon-identifier must be an instance of JsonString not " + node.getClass().getName(), node.getContext());
+          throw new ParserErrorException("x-canon-identifier must be an instance of JsonString not " + node.getClass().getName(), node.getContext());
         }
       }
 
@@ -211,7 +211,7 @@ public abstract class SchemaEntity extends ObjectEntity
         }
         else 
         {
-          throw new ParserException("type must be an instance of JsonString not " + node.getClass().getName(), node.getContext());
+          throw new ParserErrorException("type must be an instance of JsonString not " + node.getClass().getName(), node.getContext());
         }
       }
 
@@ -228,7 +228,7 @@ public abstract class SchemaEntity extends ObjectEntity
         }
         else 
         {
-          throw new ParserException("x-canon-facade must be an instance of JsonBoolean not " + node.getClass().getName(), node.getContext());
+          throw new ParserErrorException("x-canon-facade must be an instance of JsonBoolean not " + node.getClass().getName(), node.getContext());
         }
       }
 
@@ -251,7 +251,7 @@ public abstract class SchemaEntity extends ObjectEntity
             }
             else 
             {
-              throw new ParserException("enum items must be an instance of JsonString not " + item0.getClass().getName(), item0.getContext());
+              throw new ParserErrorException("enum items must be an instance of JsonString not " + item0.getClass().getName(), item0.getContext());
             }
             itemSet0.add(itemValue0);
           }
@@ -259,7 +259,7 @@ public abstract class SchemaEntity extends ObjectEntity
         }
         else 
         {
-          throw new ParserException("enum must be a JsonArray node not " + node.getClass().getName(), node.getContext());
+          throw new ParserErrorException("enum must be a JsonArray node not " + node.getClass().getName(), node.getContext());
         }
       }
 
@@ -282,7 +282,7 @@ public abstract class SchemaEntity extends ObjectEntity
             }
             else 
             {
-              throw new ParserException("required items must be an instance of JsonString not " + item0.getClass().getName(), item0.getContext());
+              throw new ParserErrorException("required items must be an instance of JsonString not " + item0.getClass().getName(), item0.getContext());
             }
             itemSet0.add(itemValue0);
           }
@@ -290,7 +290,7 @@ public abstract class SchemaEntity extends ObjectEntity
         }
         else 
         {
-          throw new ParserException("required must be a JsonArray node not " + node.getClass().getName(), node.getContext());
+          throw new ParserErrorException("required must be a JsonArray node not " + node.getClass().getName(), node.getContext());
         }
       }
 
@@ -318,7 +318,7 @@ public abstract class SchemaEntity extends ObjectEntity
         }
         else 
         {
-          throw new ParserException("minItems must be an instance of JsonParsedNumber not " + node.getClass().getName(), node.getContext());
+          throw new ParserErrorException("minItems must be an instance of JsonParsedNumber not " + node.getClass().getName(), node.getContext());
         }
       }
 
@@ -343,7 +343,7 @@ public abstract class SchemaEntity extends ObjectEntity
         }
         else 
         {
-          throw new ParserException("oneOf must be a JsonArray node not " + node.getClass().getName(), node.getContext());
+          throw new ParserErrorException("oneOf must be a JsonArray node not " + node.getClass().getName(), node.getContext());
         }
       }
 
@@ -371,7 +371,7 @@ public abstract class SchemaEntity extends ObjectEntity
         }
         else 
         {
-          throw new ParserException("maximum must be an instance of JsonParsedNumber not " + node.getClass().getName(), node.getContext());
+          throw new ParserErrorException("maximum must be an instance of JsonParsedNumber not " + node.getClass().getName(), node.getContext());
         }
       }
 
@@ -388,7 +388,7 @@ public abstract class SchemaEntity extends ObjectEntity
         }
         else 
         {
-          throw new ParserException("minimum must be an instance of JsonParsedNumber not " + node.getClass().getName(), node.getContext());
+          throw new ParserErrorException("minimum must be an instance of JsonParsedNumber not " + node.getClass().getName(), node.getContext());
         }
       }
 
@@ -467,7 +467,7 @@ public abstract class SchemaEntity extends ObjectEntity
 
       if(!modelRegistry.getParserValidation().isIgnoreInvalidAttributes())
       {
-        throw new ParserException("Schema must be an Object node not " + node.getClass().getName(), node.getContext());
+        throw new ParserErrorException("Schema must be an Object node not " + node.getClass().getName(), node.getContext());
       }
       else
       {
@@ -589,7 +589,7 @@ public abstract class SchemaEntity extends ObjectEntity
         }
         else if(!modelRegistry.getParserValidation().isIgnoreInvalidAttributes())
         {
-          throw new ParserException("maxItems must be an instance of JsonParsedNumber not " + node.getClass().getName(), node.getContext());
+          throw new ParserErrorException("maxItems must be an instance of JsonParsedNumber not " + node.getClass().getName(), node.getContext());
         }
       }
       if(jsonObject.containsKey("x-canon-builderFacade"))
@@ -601,7 +601,7 @@ public abstract class SchemaEntity extends ObjectEntity
         }
         else if(!modelRegistry.getParserValidation().isIgnoreInvalidAttributes())
         {
-          throw new ParserException("x-canon-builderFacade must be an instance of JsonBoolean not " + node.getClass().getName(), node.getContext());
+          throw new ParserErrorException("x-canon-builderFacade must be an instance of JsonBoolean not " + node.getClass().getName(), node.getContext());
         }
       }
       if(jsonObject.containsKey("XXXadditionalProperties"))
@@ -619,7 +619,7 @@ public abstract class SchemaEntity extends ObjectEntity
         }
         else if(!modelRegistry.getParserValidation().isIgnoreInvalidAttributes())
         {
-          throw new ParserException("format must be an instance of JsonString not " + node.getClass().getName(), node.getContext());
+          throw new ParserErrorException("format must be an instance of JsonString not " + node.getClass().getName(), node.getContext());
         }
       }
       if(jsonObject.containsKey("x-canon-cardinality"))
@@ -631,7 +631,7 @@ public abstract class SchemaEntity extends ObjectEntity
         }
         else if(!modelRegistry.getParserValidation().isIgnoreInvalidAttributes())
         {
-          throw new ParserException("x-canon-cardinality must be an instance of JsonString not " + node.getClass().getName(), node.getContext());
+          throw new ParserErrorException("x-canon-cardinality must be an instance of JsonString not " + node.getClass().getName(), node.getContext());
         }
       }
       if(jsonObject.containsKey("x-canon-identifier"))
@@ -643,7 +643,7 @@ public abstract class SchemaEntity extends ObjectEntity
         }
         else if(!modelRegistry.getParserValidation().isIgnoreInvalidAttributes())
         {
-          throw new ParserException("x-canon-identifier must be an instance of JsonString not " + node.getClass().getName(), node.getContext());
+          throw new ParserErrorException("x-canon-identifier must be an instance of JsonString not " + node.getClass().getName(), node.getContext());
         }
       }
       if(jsonObject.containsKey("type"))
@@ -655,7 +655,7 @@ public abstract class SchemaEntity extends ObjectEntity
         }
         else if(!modelRegistry.getParserValidation().isIgnoreInvalidAttributes())
         {
-          throw new ParserException("type must be an instance of JsonString not " + node.getClass().getName(), node.getContext());
+          throw new ParserErrorException("type must be an instance of JsonString not " + node.getClass().getName(), node.getContext());
         }
       }
       if(jsonObject.containsKey("x-canon-facade"))
@@ -667,7 +667,7 @@ public abstract class SchemaEntity extends ObjectEntity
         }
         else if(!modelRegistry.getParserValidation().isIgnoreInvalidAttributes())
         {
-          throw new ParserException("x-canon-facade must be an instance of JsonBoolean not " + node.getClass().getName(), node.getContext());
+          throw new ParserErrorException("x-canon-facade must be an instance of JsonBoolean not " + node.getClass().getName(), node.getContext());
         }
       }
       if(jsonObject.containsKey("enum"))
@@ -685,7 +685,7 @@ public abstract class SchemaEntity extends ObjectEntity
             }
             else if(!modelRegistry.getParserValidation().isIgnoreInvalidAttributes())
             {
-              throw new ParserException("enum items must be an instance of JsonString not " + item0.getClass().getName(), item0.getContext());
+              throw new ParserErrorException("enum items must be an instance of JsonString not " + item0.getClass().getName(), item0.getContext());
             }
             itemSet0.add(itemValue0);
           }
@@ -693,7 +693,7 @@ public abstract class SchemaEntity extends ObjectEntity
         }
         else if(!modelRegistry.getParserValidation().isIgnoreInvalidAttributes())
         {
-          throw new ParserException("enum must be a JsonArray node not " + node.getClass().getName(), node.getContext());
+          throw new ParserErrorException("enum must be a JsonArray node not " + node.getClass().getName(), node.getContext());
         }
       }
       if(jsonObject.containsKey("required"))
@@ -711,7 +711,7 @@ public abstract class SchemaEntity extends ObjectEntity
             }
             else if(!modelRegistry.getParserValidation().isIgnoreInvalidAttributes())
             {
-              throw new ParserException("required items must be an instance of JsonString not " + item0.getClass().getName(), item0.getContext());
+              throw new ParserErrorException("required items must be an instance of JsonString not " + item0.getClass().getName(), item0.getContext());
             }
             itemSet0.add(itemValue0);
           }
@@ -719,7 +719,7 @@ public abstract class SchemaEntity extends ObjectEntity
         }
         else if(!modelRegistry.getParserValidation().isIgnoreInvalidAttributes())
         {
-          throw new ParserException("required must be a JsonArray node not " + node.getClass().getName(), node.getContext());
+          throw new ParserErrorException("required must be a JsonArray node not " + node.getClass().getName(), node.getContext());
         }
       }
       if(jsonObject.containsKey("discriminator"))
@@ -737,7 +737,7 @@ public abstract class SchemaEntity extends ObjectEntity
         }
         else if(!modelRegistry.getParserValidation().isIgnoreInvalidAttributes())
         {
-          throw new ParserException("minItems must be an instance of JsonParsedNumber not " + node.getClass().getName(), node.getContext());
+          throw new ParserErrorException("minItems must be an instance of JsonParsedNumber not " + node.getClass().getName(), node.getContext());
         }
       }
       if(jsonObject.containsKey("oneOf"))
@@ -757,7 +757,7 @@ public abstract class SchemaEntity extends ObjectEntity
         }
         else if(!modelRegistry.getParserValidation().isIgnoreInvalidAttributes())
         {
-          throw new ParserException("oneOf must be a JsonArray node not " + node.getClass().getName(), node.getContext());
+          throw new ParserErrorException("oneOf must be a JsonArray node not " + node.getClass().getName(), node.getContext());
         }
       }
       if(jsonObject.containsKey("x-canon-attributes"))
@@ -775,7 +775,7 @@ public abstract class SchemaEntity extends ObjectEntity
         }
         else if(!modelRegistry.getParserValidation().isIgnoreInvalidAttributes())
         {
-          throw new ParserException("maximum must be an instance of JsonParsedNumber not " + node.getClass().getName(), node.getContext());
+          throw new ParserErrorException("maximum must be an instance of JsonParsedNumber not " + node.getClass().getName(), node.getContext());
         }
       }
       if(jsonObject.containsKey("minimum"))
@@ -787,7 +787,7 @@ public abstract class SchemaEntity extends ObjectEntity
         }
         else if(!modelRegistry.getParserValidation().isIgnoreInvalidAttributes())
         {
-          throw new ParserException("minimum must be an instance of JsonParsedNumber not " + node.getClass().getName(), node.getContext());
+          throw new ParserErrorException("minimum must be an instance of JsonParsedNumber not " + node.getClass().getName(), node.getContext());
         }
       }
       if(jsonObject.containsKey("properties"))

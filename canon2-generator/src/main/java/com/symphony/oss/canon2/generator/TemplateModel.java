@@ -18,7 +18,8 @@
 
 package com.symphony.oss.canon2.generator;
 
-import com.symphony.oss.canon2.core.IResolvedEntity;
+import com.symphony.oss.canon.json.model.JsonDomNode;
+import com.symphony.oss.canon2.core.ResolvedEntity;
 
 /**
  * Base implementation of ITemplateModel which provides a set of methods returning the entity name mapped
@@ -48,16 +49,21 @@ implements ITemplateModel<T,M,S>
   private final String   snakeUpperCaseName_;
   private final M        model_;
   private final boolean  external_;
+  private final JsonDomNode json_;
 
   /**
    * Constructor.
    * 
-   * @param name      The name of the entity represented by this model.
-   * @param resolvedEntity 
-   * @param model     The IOpenApiTemplateModel to which this entity belongs.
-   * @param templates The list of template names which should be run against this model.
+   * @param name            The name of the entity represented by this model as defined in the OpenApi document.
+   * @param resolvedEntity  The resolvedSchema object from the OpenApi model.
+   * @param identifier      The name this entity will be known by in generated code.
+   * @param model           The IOpenApiTemplateModel to which this entity belongs.
+   * @param templates       The list of template names which should be run against this model.
+   * 
+   * The reason we have name and identifier is that the name may be valid in general but a reserved word in the
+   * generated language.
    */
-  public TemplateModel(String name, IResolvedEntity resolvedEntity, String identifier, M model, String ...templates)
+  public TemplateModel(String name, ResolvedEntity resolvedEntity, String identifier, M model, String ...templates)
   {
     model_ = model ;
     name_ = name;
@@ -71,6 +77,13 @@ implements ITemplateModel<T,M,S>
     snakeUpperCaseName_ = snakeName_.toUpperCase();
     
     external_ = model != null && (resolvedEntity.getResolvedOpenApiObject() != model.getResolvedOpenApiObject());
+    json_ = resolvedEntity.getJson();
+  }
+
+  @Override
+  public JsonDomNode getJson()
+  {
+    return json_;
   }
 
   /**

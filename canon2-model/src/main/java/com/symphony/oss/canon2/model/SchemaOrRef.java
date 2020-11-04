@@ -33,12 +33,12 @@ import java.net.URL;
 import javax.annotation.concurrent.Immutable;
 
 import com.symphony.oss.canon.json.IParserContext;
+import com.symphony.oss.canon.json.ParserErrorException;
 import com.symphony.oss.canon2.core.CanonModelContext;
-import com.symphony.oss.canon2.core.GenerationException;
+import com.symphony.oss.canon2.core.ResolvedObjectSchema;
 import com.symphony.oss.canon2.core.ResolvedOpenApiObject;
 import com.symphony.oss.canon2.core.ResolvedSchema;
 import com.symphony.oss.canon2.core.SourceContext;
-import com.symphony.oss.canon2.core.ResolvedSchema.SingletonBuilder;
 
 
 /**
@@ -88,12 +88,12 @@ public class SchemaOrRef extends SchemaOrRefEntity
     return ref_ != null;
   }
 
-  public ResolvedSchema.SingletonBuilder link(ResolvedOpenApiObject.SingletonBuilder openApiObjectBuilder, CanonModelContext modelContext, SourceContext sourceContext,
-      String name, String parentUri, ResolvedSchema.SingletonBuilder builder) throws GenerationException
+  public ResolvedSchema.AbstractBuilder<?,?> link(ResolvedOpenApiObject.SingletonBuilder openApiObjectBuilder, CanonModelContext modelContext, SourceContext sourceContext,
+      String name, String parentUri, ResolvedObjectSchema.SingletonBuilder outerClassBuilder)
   {
     if(schema_ != null)
     {
-      return modelContext.link(openApiObjectBuilder, sourceContext, name, parentUri + "/" + name, schema_, isGenerated(schema_.getType()), builder);
+      return modelContext.link(openApiObjectBuilder, sourceContext, name, parentUri + "/" + name, schema_, isGenerated(schema_.getType()), outerClassBuilder);
     }
     else
     {
@@ -114,8 +114,8 @@ public class SchemaOrRef extends SchemaOrRefEntity
 //  }
 
   // Duplicated in Schema - THIS is the correct place for this
-  private SingletonBuilder fetchSchema(ResolvedOpenApiObject.SingletonBuilder openApiObjectBuilder, CanonModelContext modelContext, SourceContext sourceContext, ReferenceObject ref,
-      boolean generated) throws GenerationException
+  private ResolvedSchema.AbstractBuilder<?,?> fetchSchema(ResolvedOpenApiObject.SingletonBuilder openApiObjectBuilder, CanonModelContext modelContext, SourceContext sourceContext, ReferenceObject ref,
+      boolean generated)
   {
     Schema schema;
     String uri;
@@ -128,7 +128,7 @@ public class SchemaOrRef extends SchemaOrRefEntity
       }
       catch(IllegalArgumentException e)
       {
-        throw new GenerationException("No such schema \"" + ref.getFragment() + "\"");
+        throw new ParserErrorException("No such schema \"" + ref.getFragment() + "\"", ref);
       }
       uri = sourceContext.getUrl() + ref.getFragment();
     }
@@ -145,7 +145,7 @@ public class SchemaOrRef extends SchemaOrRefEntity
       }
       catch (MalformedURLException e)
       {
-        throw new GenerationException(e);
+        throw new ParserErrorException("Invalid URL", ref, e);
       }
     }
     

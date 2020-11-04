@@ -34,7 +34,7 @@ public class ResolvedPropertiesObject
   {
     ImmutableMap.Builder<String, ResolvedSchema> b = new ImmutableMap.Builder<String, ResolvedSchema>();
     
-    for(Entry<String, ResolvedSchema.SingletonBuilder> entry : builder.propertyBuilders_.entrySet())
+    for(Entry<String, ResolvedSchema.AbstractBuilder<?,?>> entry : builder.propertyBuilders_.entrySet())
     {
       b.put(entry.getKey(), entry.getValue().build());
     }
@@ -43,10 +43,10 @@ public class ResolvedPropertiesObject
   
   public static class SingletonBuilder
   {
-    Map<String, ResolvedSchema.SingletonBuilder> propertyBuilders_ = new HashMap<>();
+    Map<String, ResolvedSchema.AbstractBuilder<?,?>> propertyBuilders_ = new HashMap<>();
     ResolvedPropertiesObject built_;
     
-    public SingletonBuilder with(String name, ResolvedSchema.SingletonBuilder property)
+    public SingletonBuilder with(String name, ResolvedSchema.AbstractBuilder<?,?> property)
     {
       if(built_ != null)
         throw new IllegalStateException("SingletonBuilder has already been built");
@@ -65,11 +65,11 @@ public class ResolvedPropertiesObject
     }
   }
 
-  public void validate(CanonModelContext modelContext)
+  public void validate(SourceContext context)
   {
     for(ResolvedSchema schema : properties_.values())
     {
-      schema.validate(modelContext);
+      schema.validate(context);
     }
   }
 

@@ -24,7 +24,12 @@
             "$ref": "#/components/schemas/ResolvedSchema"
           },
           "uri": {
-            "type": "string"
+            "type": "string",
+            "format": "uri"
+          },
+          "count": {
+            "type": "integer",
+            "format": "big"
           }
         }
       }

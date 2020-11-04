@@ -35,6 +35,32 @@ public class ParserContext implements IParserContext
   /**
    * Constructor.
    * 
+   * @param inputSource The input source.
+   * @param line        The line number starting at 1.
+   * @param col         The column number starting at 1.
+   */
+  public ParserContext(String inputSource, int line, int col)
+  {
+    inputSource_ = inputSource;
+    line_ = line;
+    col_ = col;
+  }
+
+  /**
+   * Constructor for a file level error (reports line and column 0).
+   * 
+   * @param inputSource The input source.
+   */
+  public ParserContext(String inputSource)
+  {
+    inputSource_ = inputSource;
+    line_ = 0;
+    col_ = 0;
+  }
+
+  /**
+   * Constructor.
+   * 
    * @param other An existing parser context.
    */
   public ParserContext(IParserContext other)

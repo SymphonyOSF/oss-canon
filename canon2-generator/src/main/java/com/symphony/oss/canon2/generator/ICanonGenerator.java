@@ -25,11 +25,17 @@ import java.util.Set;
 import javax.annotation.Nullable;
 
 import com.symphony.oss.canon.json.model.JsonObject;
-import com.symphony.oss.canon2.core.GenerationException;
 import com.symphony.oss.canon2.core.INamedModelEntity;
+import com.symphony.oss.canon2.core.ResolvedBigDecimalSchema;
+import com.symphony.oss.canon2.core.ResolvedBigIntegerSchema;
+import com.symphony.oss.canon2.core.ResolvedBooleanSchema;
+import com.symphony.oss.canon2.core.ResolvedDoubleSchema;
+import com.symphony.oss.canon2.core.ResolvedFloatSchema;
+import com.symphony.oss.canon2.core.ResolvedIntegerSchema;
+import com.symphony.oss.canon2.core.ResolvedLongSchema;
 import com.symphony.oss.canon2.core.ResolvedOpenApiObject;
 import com.symphony.oss.canon2.core.ResolvedSchema;
-import com.symphony.oss.canon2.core.SchemaTemplateModelType;
+import com.symphony.oss.canon2.core.ResolvedStringSchema;
 import com.symphony.oss.canon2.core.SourceContext;
 import com.symphony.oss.canon2.model.CanonCardinality;
 import com.symphony.oss.canon2.model.CanonGeneratorConfig;
@@ -65,19 +71,17 @@ G extends IGroupSchemaTemplateModel<T,M,S>>
   
   // formally GeneratorModelContext:
   
-  M generateOpenApiObject(SourceContext modelContext, String name, ResolvedOpenApiObject resolvedOpenApiObject, String identifier) throws GenerationException;
+  M generateOpenApiObject(SourceContext modelContext, String name, ResolvedOpenApiObject resolvedOpenApiObject, String identifier);
 
-  A generateArraySchema(M model, ResolvedSchema resolvedSchema, String identifier, boolean isReference, CanonCardinality cardinality) throws GenerationException;
+  A generateArraySchema(M model, ResolvedSchema resolvedSchema, String identifier, CanonCardinality cardinality);
 
   IPathNameConstructor<T> createPathBuilder(SourceContext sourceContext);
 
   void populateTemplateModel(SourceContext sourceContext, Map<String, Object> map);
-
-  P generatePrimativeSchema(M model, ResolvedSchema resolvedSchema, String identifier, boolean isReference) throws GenerationException;
   
   F generateField(M model, String name, ResolvedSchema resolvedSchema, String identifier, S typeSchema, boolean required);
 
-  O generateObjectSchema(M model, ResolvedSchema resolvedSchema, String identifier, boolean isReference) throws GenerationException;
+  O generateObjectSchema(M model, ResolvedSchema resolvedSchema, String identifier);
 
   default @Nullable JsonObject getConfig(SourceContext sourceContext)
   {
@@ -96,14 +100,27 @@ G extends IGroupSchemaTemplateModel<T,M,S>>
     return null;
   }
   
-  G generateGroupSchema(M model, ResolvedSchema resolvedSchema, String identifier, boolean isReference,
-      SchemaTemplateModelType oneOf);
+  P generateBigDecimalSchema(M model, ResolvedBigDecimalSchema resolvedSchema, String identifier);
+
+  P generateBigIntegerSchema(M model, ResolvedBigIntegerSchema resolvedSchema, String identifier);
+
+  P generateDoubleSchema(M model, ResolvedDoubleSchema resolvedSchema, String identifier);
+
+  P generateFloatSchema(M model, ResolvedFloatSchema resolvedSchema, String identifier);
+
+  P generateIntegerSchema(M model, ResolvedIntegerSchema resolvedSchema, String identifier);
+
+  P generateLongSchema(M model, ResolvedLongSchema resolvedSchema, String identifier);
+
+  P generateStringSchema(M model, ResolvedStringSchema resolvedSchema, String identifier);
+
+  P generateBooleanSchema(M model, ResolvedBooleanSchema resolvedSchema, String identifier);
 
   // these things are really generate operations, maybe the things above should be renamed...
 //  M generateModel()
-//      throws GenerationException;
+//     ;
 
 //  moved to GeneratorContext
 //  S generateSchema(ResolvedSchema resolvedSchema, M model, String name,
-//      boolean isReference) throws GenerationException;
+//      boolean isReference);
 }

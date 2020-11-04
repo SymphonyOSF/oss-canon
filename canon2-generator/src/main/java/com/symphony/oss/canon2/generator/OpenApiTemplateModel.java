@@ -24,7 +24,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
-import com.symphony.oss.canon2.core.GenerationException;
+import com.symphony.oss.canon.json.ParserErrorException;
 import com.symphony.oss.canon2.core.ResolvedOpenApiObject;
 import com.symphony.oss.canon2.core.SourceContext;
 import com.symphony.oss.canon2.model.OpenApiObject;
@@ -114,11 +114,11 @@ S extends ISchemaTemplateModel<T,M,S>>
   }
 
   @Override
-  public void addSchema(S schema) throws GenerationException
+  public void addSchema(S schema)
   {
     if(schemaMap_.put(schema.getCamelName(), schema) != null)
     {
-      throw new GenerationException("Duplicate schema name \"" + schema.getCamelName() + "\"");
+      throw new ParserErrorException("Duplicate schema name \"" + schema.getCamelName() + "\"", schema);
     }
     schemas_.add(schema);
   }

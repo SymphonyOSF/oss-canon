@@ -175,7 +175,7 @@ public class JsonParser extends Parser
     }
     catch(IOException e)
     {
-      domBuilder_.withError(new ParserException("Unable to read input (" + e.getMessage() + ")", this, e));
+      domBuilder_.withError(new ParserErrorException("Unable to read input (" + e.getMessage() + ")", this, e));
     }
     catch (ParserException e)
     {
@@ -346,7 +346,7 @@ public class JsonParser extends Parser
     }
     catch(RuntimeException e)
     {
-      throw new ParserException(e.toString(), context, e);
+      throw new ParserErrorException(e.toString(), context, e);
     }
   }
 
@@ -365,7 +365,7 @@ public class JsonParser extends Parser
       
       if(c == EOF)
       {
-        throw new ParserException("Unexpected end of file", this);
+        throw new ParserErrorException("Unexpected end of file", this);
       }
       
       if(c < ' ')

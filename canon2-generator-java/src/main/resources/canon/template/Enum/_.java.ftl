@@ -5,7 +5,7 @@
   ]>
 package ${genPackage};
 
-<#list entity.sortImports(imports) as import>
+<#list entity.sortImports(imports, genPackage) as import>
 ${import}
 </#list>
 /**

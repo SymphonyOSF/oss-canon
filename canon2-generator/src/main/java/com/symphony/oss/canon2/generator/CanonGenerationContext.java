@@ -29,8 +29,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.google.common.collect.ImmutableList;
+import com.symphony.oss.canon.json.ParserResultException;
 import com.symphony.oss.canon2.core.CanonModelContext;
-import com.symphony.oss.canon2.core.GenerationException;
 import com.symphony.oss.canon2.core.SourceContext;
 
 /**
@@ -242,7 +242,7 @@ public class CanonGenerationContext extends CanonModelContext
   }
 
   @Override
-  protected void process(Deque<SourceContext> processQueue) throws GenerationException
+  protected void process(Deque<SourceContext> processQueue) throws ParserResultException
   {
     List<GeneratorTemplateProcessor<?,?,?,?,?,?,?,?>> templateProcessors = new ArrayList<>(generators_.size());
     

@@ -31,7 +31,7 @@ import javax.annotation.Nullable;
 import javax.annotation.concurrent.Immutable;
 
 import com.google.common.collect.ImmutableSet;
-import com.symphony.oss.canon.json.ParserException;
+import com.symphony.oss.canon.json.ParserErrorException;
 import com.symphony.oss.canon.json.model.JsonDomNode;
 import com.symphony.oss.canon.json.model.JsonNull;
 import com.symphony.oss.canon.json.model.JsonObject;
@@ -120,7 +120,7 @@ public abstract class ComponentsObjectEntity extends ObjectEntity
 
       if(!modelRegistry.getParserValidation().isIgnoreInvalidAttributes())
       {
-        throw new ParserException("ComponentsObject must be an Object node not " + node.getClass().getName(), node.getContext());
+        throw new ParserErrorException("ComponentsObject must be an Object node not " + node.getClass().getName(), node.getContext());
       }
       else
       {
