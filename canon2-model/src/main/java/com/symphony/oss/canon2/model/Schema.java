@@ -27,7 +27,6 @@
 
 package com.symphony.oss.canon2.model;
 
-import java.math.BigDecimal;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Map.Entry;
@@ -258,7 +257,7 @@ public class Schema extends SchemaEntity implements INamedModelEntity
     }
   }
   
-  private void linkNumber(ResolvedNumberSchema.AbstractBuilder<?,?> builder, Consumer<ResolvedSchema.AbstractBuilder<?,?>> builderConsumer)
+  private void linkNumber(ResolvedNumberSchema.AbstractBuilder<?,?,?> builder, Consumer<ResolvedSchema.AbstractBuilder<?,?>> builderConsumer)
   {
     builderConsumer.accept(builder);
     

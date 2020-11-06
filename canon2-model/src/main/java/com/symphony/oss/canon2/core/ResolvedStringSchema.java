@@ -142,6 +142,12 @@ public class ResolvedStringSchema extends ResolvedPrimitiveSchema
     
   }
 
+  @Override
+  public boolean hasLimits()
+  {
+    return minLength_ != null || maxLength_ != null || pattern_ != null;
+  }
+
   public Integer getMinLength()
   {
     return minLength_;

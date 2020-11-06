@@ -18,11 +18,13 @@
 
 package com.symphony.oss.canon2.generator.java;
 
+import java.util.List;
 import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.google.common.collect.ImmutableList;
 import com.symphony.oss.canon.json.model.JsonObject;
 import com.symphony.oss.canon2.core.INamedModelEntity;
 import com.symphony.oss.canon2.core.ResolvedBigDecimalSchema;
@@ -41,6 +43,7 @@ import com.symphony.oss.canon2.core.SourceContext;
 import com.symphony.oss.canon2.generator.CanonGenerator;
 import com.symphony.oss.canon2.generator.IGroupSchemaTemplateModel;
 import com.symphony.oss.canon2.generator.IPathNameConstructor;
+import com.symphony.oss.canon2.generator.java.JavaSchemaTemplateModel.IdentifierAndImport;
 import com.symphony.oss.canon2.model.CanonCardinality;
 import com.symphony.oss.canon2.model.OpenApiObject;
 
@@ -55,18 +58,25 @@ JavaFieldTemplateModel,
 IGroupSchemaTemplateModel<IJavaTemplateModel,JavaOpenApiTemplateModel,JavaSchemaTemplateModel>
 >
 {
-  private static Logger log_ = LoggerFactory.getLogger(JavaGenerator.class);
+  private static final List<String> EMPTY_TEMPLATES              = ImmutableList.of();
+  private static final List<String> TYPEDEF_TEMPLATES            = ImmutableList.of("TypeDef");
+  private static final List<String> ENUM_TEMPLATES               = ImmutableList.of("Enum");
+  private static final List<String> OBJECT_TEMPLATES             = ImmutableList.of("Object");
+  private static final List<String> ARRAY_TEMPLATES              = ImmutableList.of("Array");
+  private static final List<String> MODEL_TEMPLATES              = ImmutableList.of("Model");
+
+  private static Logger             log_                         = LoggerFactory.getLogger(JavaGenerator.class);
   
   // IDs in the model
-  private static final String          GEN_PACKAGE                  = "genPackage";
-  static final String LANGUAGE                       = "java";
+  private static final String       GEN_PACKAGE                  = "genPackage";
+  static final String               LANGUAGE                     = "java";
 
   // IDs of generated attributes
-  static final String PREFIX                       = "java";
-  static final String PACKAGE_NAME                 = PREFIX + "PackageName";
-  static final String IMPORTS                      = PREFIX + "Imports";
-  static final String CLASS_NAME                   = PREFIX + "ClassName";
-  static final String GENERATED_BUILDER_CLASS_NAME = PREFIX + "GeneratedBuilderClassName";
+  static final String               PREFIX                       = "java";
+  static final String               PACKAGE_NAME                 = PREFIX + "PackageName";
+  static final String               IMPORTS                      = PREFIX + "Imports";
+  static final String               CLASS_NAME                   = PREFIX + "ClassName";
+  static final String               GENERATED_BUILDER_CLASS_NAME = PREFIX + "GeneratedBuilderClassName";
 
   /**
    * Constructor.
@@ -141,9 +151,9 @@ IGroupSchemaTemplateModel<IJavaTemplateModel,JavaOpenApiTemplateModel,JavaSchema
     return defaultGenerationPackage;
   }
 
-  public String getJavaGenerationPackage(ResolvedEntity resolvedEntity)
+  private IdentifierAndImport getIdentifierAndImport(String identifier, ResolvedSchema resolvedEntity)
   {
-    return getJavaGenerationPackage(resolvedEntity.getResolvedOpenApiObject().getModel());
+    return new IdentifierAndImport(getJavaGenerationPackage(resolvedEntity.getResolvedOpenApiObject().getModel()), identifier, identifier, false);
   }
   
   @Override
@@ -244,113 +254,163 @@ IGroupSchemaTemplateModel<IJavaTemplateModel,JavaOpenApiTemplateModel,JavaSchema
   @Override
   public JavaOpenApiTemplateModel generateOpenApiObject(SourceContext context, String name, ResolvedOpenApiObject resolvedOpenApiObject, String identifier)
   {
-    return new JavaOpenApiTemplateModel(context, name, resolvedOpenApiObject, identifier, getJavaGenerationPackage(resolvedOpenApiObject), "Model");
+    return new JavaOpenApiTemplateModel(context, name, resolvedOpenApiObject, identifier, MODEL_TEMPLATES);
   }
 
   
   @Override
   public JavaObjectSchemaTemplateModel generateObjectSchema(JavaOpenApiTemplateModel model, ResolvedSchema resolvedSchema, String identifier)
   {
-    if(resolvedSchema.isInnerClass())
-      return new JavaObjectSchemaTemplateModel(resolvedSchema, identifier, getJavaGenerationPackage(resolvedSchema), model);
-    else
-      return new JavaObjectSchemaTemplateModel(resolvedSchema, identifier, getJavaGenerationPackage(resolvedSchema), model, "Object");
+    return new JavaObjectSchemaTemplateModel(resolvedSchema, getIdentifierAndImport(identifier, resolvedSchema), model, 
+        resolvedSchema.isInnerClass() ? EMPTY_TEMPLATES : OBJECT_TEMPLATES);
   }
 
   @Override
   public JavaArraySchemaTemplateModel generateArraySchema(JavaOpenApiTemplateModel model, ResolvedSchema resolvedSchema, String identifier, CanonCardinality cardinality)
   {
-    if(resolvedSchema.isInnerClass() || resolvedSchema.getResolvedOpenApiObject().isReferencedModel())
-      return new JavaArraySchemaTemplateModel(resolvedSchema, identifier, getJavaGenerationPackage(resolvedSchema), cardinality, model);
-    else
-      return new JavaArraySchemaTemplateModel(resolvedSchema, identifier, getJavaGenerationPackage(resolvedSchema), cardinality, model,  "Array");
+    return new JavaArraySchemaTemplateModel(resolvedSchema, getIdentifierAndImport(identifier, resolvedSchema), cardinality, model, 
+        resolvedSchema.isInnerClass() || resolvedSchema.getResolvedOpenApiObject().isReferencedModel() ? EMPTY_TEMPLATES : ARRAY_TEMPLATES);
   }
-
+  
+  
+  
+//  private JavaPrimitiveSchemaTemplateModel generatePrimitiveSchemaTemplateModel(JavaOpenApiTemplateModel model,
+//      ResolvedPrimitiveSchema resolvedSchema, String identifier, String externalPackage, String javaType)
+//  {
+//    IdentifierAndImport identifierAndImport = new IdentifierAndImport();
+//    List<String> templates;
+//    
+//    if(resolvedSchema.isInnerClass())
+//    {
+//      identifierAndImport.typedef_ = resolvedSchema.hasLimits();
+//    }
+//    else
+//    {
+//      identifierAndImport.typedef_ = true;
+//    }
+//    
+//    if(resolvedSchema.isInnerClass() || resolvedSchema.getResolvedOpenApiObject().isReferencedModel())
+//    {
+//      templates = EMPTY_TEMPLATES;
+//    }
+//    else if(!resolvedSchema.getSchema().isEnum())
+//    {
+//      templates = TYPEDEF_TEMPLATES;
+//    }
+//    else
+//    {
+//      templates = ENUM_TEMPLATES;
+//    }
+//    
+//    if(externalPackage == null)
+//    {
+//      identifierAndImport.package_ = null;
+//      identifierAndImport.add_ = false;
+//    }
+//  }
+  
+  
+  
   @Override
   public JavaPrimitiveSchemaTemplateModel generateBigDecimalSchema(JavaOpenApiTemplateModel model,
       ResolvedBigDecimalSchema resolvedSchema, String identifier)
   {
-    return generatePrimativeSchema(model, resolvedSchema, identifier);
+    return new JavaNumberSchemaTemplateModel(resolvedSchema, new IdentifierAndImport("java.math", identifier, "BigDecimal", true), model,
+         true, getJavaPrimitiveTemplates(resolvedSchema));
   }
 
   @Override
   public JavaPrimitiveSchemaTemplateModel generateBigIntegerSchema(JavaOpenApiTemplateModel model,
       ResolvedBigIntegerSchema resolvedSchema, String identifier)
   {
-    // TODO Auto-generated method stub
-    return generatePrimativeSchema(model, resolvedSchema, identifier);
+    return new JavaNumberSchemaTemplateModel(resolvedSchema, new IdentifierAndImport("java.math", identifier, "BigInteger", true), model,
+        true, getJavaPrimitiveTemplates(resolvedSchema));
   }
 
   @Override
   public JavaPrimitiveSchemaTemplateModel generateDoubleSchema(JavaOpenApiTemplateModel model,
       ResolvedDoubleSchema resolvedSchema, String identifier)
   {
-    // TODO Auto-generated method stub
-    return generatePrimativeSchema(model, resolvedSchema, identifier);
+    return new JavaNumberSchemaTemplateModel(resolvedSchema, new IdentifierAndImport(null, identifier, "Double", false), model,
+        false, getJavaPrimitiveTemplates(resolvedSchema));
   }
 
   @Override
   public JavaPrimitiveSchemaTemplateModel generateFloatSchema(JavaOpenApiTemplateModel model,
       ResolvedFloatSchema resolvedSchema, String identifier)
   {
-    // TODO Auto-generated method stub
-    return generatePrimativeSchema(model, resolvedSchema, identifier);
+    return new JavaNumberSchemaTemplateModel(resolvedSchema, new IdentifierAndImport(null, identifier, "Float", false), model,
+        false, getJavaPrimitiveTemplates(resolvedSchema));
   }
 
   @Override
   public JavaPrimitiveSchemaTemplateModel generateIntegerSchema(JavaOpenApiTemplateModel model,
       ResolvedIntegerSchema resolvedSchema, String identifier)
   {
-    // TODO Auto-generated method stub
-    return generatePrimativeSchema(model, resolvedSchema, identifier);
+    return new JavaNumberSchemaTemplateModel(resolvedSchema, new IdentifierAndImport(null, identifier, "Integer", false), model,
+       false, getJavaPrimitiveTemplates(resolvedSchema));
   }
 
   @Override
   public JavaPrimitiveSchemaTemplateModel generateLongSchema(JavaOpenApiTemplateModel model,
       ResolvedLongSchema resolvedSchema, String identifier)
   {
-    // TODO Auto-generated method stub
-    return generatePrimativeSchema(model, resolvedSchema, identifier);
+    return new JavaNumberSchemaTemplateModel(resolvedSchema, new IdentifierAndImport(null, identifier, "Long", false), model,
+        false, getJavaPrimitiveTemplates(resolvedSchema));
+  }
+
+  private List<String> getJavaPrimitiveTemplates(ResolvedSchema resolvedSchema)
+  {
+    if(resolvedSchema.isInnerClass() || resolvedSchema.getResolvedOpenApiObject().isReferencedModel())
+    {
+      return EMPTY_TEMPLATES;
+    }
+    else if(!resolvedSchema.getSchema().isEnum())
+    {
+      return TYPEDEF_TEMPLATES;
+    }
+    else
+    {
+      return ENUM_TEMPLATES;
+    }
   }
 
   @Override
   public JavaPrimitiveSchemaTemplateModel generateStringSchema(JavaOpenApiTemplateModel model,
       ResolvedStringSchema resolvedSchema, String identifier)
   {
-    // TODO Auto-generated method stub
-    return generatePrimativeSchema(model, resolvedSchema, identifier);
+    return new JavaStringSchemaTemplateModel(resolvedSchema, new IdentifierAndImport(null, identifier, "String", false), model, getJavaPrimitiveTemplates(resolvedSchema));
   }
 
   @Override
   public JavaPrimitiveSchemaTemplateModel generateBooleanSchema(JavaOpenApiTemplateModel model,
       ResolvedBooleanSchema resolvedSchema, String identifier)
   {
-    // TODO Auto-generated method stub
-    return generatePrimativeSchema(model, resolvedSchema, identifier);
+    return new JavaBooleanSchemaTemplateModel(resolvedSchema, new IdentifierAndImport(null, identifier, "Boolean", false), model, getJavaPrimitiveTemplates(resolvedSchema));
   }
 
-  public JavaPrimitiveSchemaTemplateModel generatePrimativeSchema(
-      JavaOpenApiTemplateModel model, ResolvedPrimitiveSchema resolvedSchema, String identifier)
-  {
-    //if(isReference || (!resolvedSchema.isGenerated() && !resolvedSchema.getSchema().isEnum()))
-    if(resolvedSchema.isInnerClass() || resolvedSchema.getResolvedOpenApiObject().isReferencedModel())
-    {
-      return new JavaPrimitiveSchemaTemplateModel(resolvedSchema, identifier, getJavaGenerationPackage(resolvedSchema), model);
-    }
-    else if(!resolvedSchema.getSchema().isEnum())
-    {
-      return new JavaPrimitiveSchemaTemplateModel(resolvedSchema, identifier, getJavaGenerationPackage(resolvedSchema), model, "TypeDef");
-    }
-    else
-    {
-      return new JavaPrimitiveSchemaTemplateModel(resolvedSchema, identifier, getJavaGenerationPackage(resolvedSchema), model, "Enum");
-    }
-  }
+//  public JavaPrimitiveSchemaTemplateModel generatePrimativeSchema(
+//      JavaOpenApiTemplateModel model, ResolvedPrimitiveSchema resolvedSchema, String identifier)
+//  {
+//    //if(isReference || (!resolvedSchema.isGenerated() && !resolvedSchema.getSchema().isEnum()))
+//    if(resolvedSchema.isInnerClass() || resolvedSchema.getResolvedOpenApiObject().isReferencedModel())
+//    {
+//      return new JavaPrimitiveSchemaTemplateModel(resolvedSchema, identifier, getJavaGenerationPackage(resolvedSchema), model);
+//    }
+//    else if(!resolvedSchema.getSchema().isEnum())
+//    {
+//      return new JavaPrimitiveSchemaTemplateModel(resolvedSchema, identifier, getJavaGenerationPackage(resolvedSchema), model, "TypeDef");
+//    }
+//    else
+//    {
+//      return new JavaPrimitiveSchemaTemplateModel(resolvedSchema, identifier, getJavaGenerationPackage(resolvedSchema), model, "Enum");
+//    }
+//  }
 
   @Override
   public JavaFieldTemplateModel generateField(JavaOpenApiTemplateModel model, String name, ResolvedSchema resolvedSchema, String identifier,
       JavaSchemaTemplateModel typeSchema, boolean required)
   {
-    return new JavaFieldTemplateModel(name, resolvedSchema, identifier, model, typeSchema, required);
+    return new JavaFieldTemplateModel(name, resolvedSchema, identifier, model, typeSchema, required, EMPTY_TEMPLATES);
   }
 }

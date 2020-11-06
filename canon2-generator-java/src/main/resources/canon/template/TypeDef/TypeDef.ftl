@@ -8,7 +8,11 @@
     "com.symphony.oss.canon.json.model.JsonDomNode",
     "${entity.fullyQualifiedJsonNodeType}"
   ]>
-
+<#if entity.hasLimits>
+  <#assign imports = imports + [
+    "com.symphony.oss.canon.json.ParserErrorException"
+  ]>
+</#if>
 package ${genPackage};
   
 <#list entity.sortImports(imports, genPackage) as import>
@@ -44,7 +48,7 @@ public ${classModifier}class ${className} extends TypeDef implements Comparable<
   public ${className}(@Nonnull ${entity.javaType} value)
   {
     value_ = Objects.requireNonNull(value);
-    <@checkLimits "    " entity "value" "value" "new new ParserException" ", value.getContext()"/>
+    <@checkLimits "    " entity "value" "value" "new IllegalArgumentException" ""/>
   }
 
   /**
@@ -59,7 +63,7 @@ public ${classModifier}class ${className} extends TypeDef implements Comparable<
     if(node instanceof ${entity.jsonNodeType})
     {
       value_ = ((${entity.jsonNodeType})node).as${entity.javaType}();
-      <@checkLimits "    " entity "value" "value_" "new new ParserException" ", node.getContext()"/>
+      <@checkLimits "    " entity "value" "value_" "new ParserErrorException" ", node.getContext()"/>
     }
     else
     {

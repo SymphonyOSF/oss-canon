@@ -20,10 +20,12 @@ package com.symphony.oss.canon2.generator.java;
 
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import com.symphony.oss.canon2.core.ResolvedSchema;
 import com.symphony.oss.canon2.generator.IObjectSchemaTemplateModel;
+import com.symphony.oss.canon2.generator.java.JavaSchemaTemplateModel.IdentifierAndImport;
 
 public class JavaObjectSchemaTemplateModel extends JavaSchemaTemplateModel
 implements IObjectSchemaTemplateModel<
@@ -57,10 +59,10 @@ JavaFieldTemplateModel
   private final boolean objectType_;
   
   
-  JavaObjectSchemaTemplateModel(ResolvedSchema resolvedSchema, String identifier, String packageName, JavaOpenApiTemplateModel model,
-      String... temaplates)
+  JavaObjectSchemaTemplateModel(ResolvedSchema resolvedSchema, IdentifierAndImport identifierAndImport, JavaOpenApiTemplateModel model,
+      List<String> temaplates)
   {
-    super(resolvedSchema, resolvedSchema.getSchemaType(), identifier, packageName, model, temaplates);
+    super(resolvedSchema, resolvedSchema.getSchemaType(), identifierAndImport, model, temaplates);
     
     type_ = resolvedSchema.getResolvedContainer() == null ? getCamelCapitalizedName() :
       capitalize(toCamelCase(resolvedSchema.getResolvedContainer().getName())) + "." + getCamelCapitalizedName();
@@ -119,7 +121,7 @@ JavaFieldTemplateModel
   {
     fieldMap_.put(name, field);
     
-    if(!getPackageName().equals(field.getTypeSchema().getPackageName()))
+    if(field.getTypeSchema().getPackageName() != null && !getPackageName().equals(field.getTypeSchema().getPackageName()))
       addImport(field.getTypeSchema().getImport());
     
     if(field.getHasLimits())

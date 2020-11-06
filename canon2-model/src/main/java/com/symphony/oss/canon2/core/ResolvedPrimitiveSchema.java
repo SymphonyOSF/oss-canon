@@ -34,4 +34,15 @@ public class ResolvedPrimitiveSchema extends ResolvedSchema
       super(type);
     }
   }
+  
+  /**
+   * Has constraints over valid values, for number types this means has min or max values, for strings it means has 
+   * min or max length or pattern.
+   * 
+   * @return True if this type has constraints over its value.
+   */
+  public boolean hasLimits()
+  {
+    return false;
+  }
 }

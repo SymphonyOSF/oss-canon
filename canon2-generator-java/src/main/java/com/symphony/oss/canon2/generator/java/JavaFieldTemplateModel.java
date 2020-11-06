@@ -6,6 +6,7 @@
 
 package com.symphony.oss.canon2.generator.java;
 
+import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
 
@@ -23,7 +24,7 @@ implements IJavaTemplateModel
   
   public JavaFieldTemplateModel(String name, ResolvedSchema resolvedSchema, String identifier, JavaOpenApiTemplateModel model,
       JavaSchemaTemplateModel typeSchema, boolean required,
-      String... temaplates)
+      List<String> temaplates)
   {
     super(name, resolvedSchema, identifier, model, typeSchema, required, temaplates);
     

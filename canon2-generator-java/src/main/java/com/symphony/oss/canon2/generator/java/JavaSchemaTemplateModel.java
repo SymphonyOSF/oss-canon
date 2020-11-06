@@ -18,7 +18,6 @@
 
 package com.symphony.oss.canon2.generator.java;
 
-import java.math.BigInteger;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -39,15 +38,7 @@ JavaOpenApiTemplateModel,
 JavaSchemaTemplateModel
 >
 implements IJavaTemplateModel
-{
-//  private static final String[] IMPORTS = new String[] 
-//      {
-//        "javax.annotation.concurrent.Immutable",
-//        "javax.annotation.Nullable",
-//        "com.symphony.oss.canon.json.model.JsonObject",
-//        "com.symphony.oss.canon.json.model.JsonDomNode"
-//      };
-  
+{ 
   private static final List<JavaSchemaTemplateModel> EMPTY_SCHEMAS = ImmutableList.of();
   private static final List<JavaFieldTemplateModel>   EMPTY_FIELDS = ImmutableList.of();
 
@@ -62,32 +53,49 @@ implements IJavaTemplateModel
   private final boolean generateFacade_;
   private final boolean generateBuilderFacade_;
   
-  JavaSchemaTemplateModel(ResolvedSchema resolvedSchema, SchemaTemplateModelType schemaType, String identifier, String packageName, JavaOpenApiTemplateModel model,
-      String... templates)
+  JavaSchemaTemplateModel(ResolvedSchema resolvedSchema, SchemaTemplateModelType schemaType, IdentifierAndImport identifierAndImport, JavaOpenApiTemplateModel model,
+      List<String> templates)
   {
-    super(resolvedSchema, schemaType, identifier, model, templates);
+    super(resolvedSchema, schemaType, identifierAndImport.identifier_, model, templates);
 
-    if(isExternal())
+    if(identifierAndImport.package_ != null)
     {
-      addImport(packageName + "." + getCamelCapitalizedName());
+      String fullyQualifiedImport = identifierAndImport.package_ + "." + identifierAndImport.type_;
+      
+      setImport(fullyQualifiedImport);
+      if(isExternal() || identifierAndImport.add_)
+      {
+        addImport(fullyQualifiedImport);
+      }
     }
-    
-    setImport(packageName,  getCamelCapitalizedName());
-    
-    
-//    for(String importString : IMPORTS )
-//    {
-//      imports_.add(importString);
-//    }
-//    
-//    for(String importString : imports )
-//    {
-//      imports_.add(importString);
-//    }
     
     generateFacade_ = resolvedSchema.getSchema().getXCanonFacade() == null ? false : resolvedSchema.getSchema().getXCanonFacade();
     generateBuilderFacade_ = resolvedSchema.getSchema().getXCanonBuilderFacade() == null ? false : resolvedSchema.getSchema().getXCanonBuilderFacade();
-}
+  }
+  
+  static class IdentifierAndImport
+  {
+    final String  package_;
+    final String  type_;
+    final String  identifier_;
+    final boolean add_;
+
+    IdentifierAndImport(String package1, String identifier, String type, boolean add)
+    {
+      package_ = package1;
+      identifier_ = capitalize(toCamelCase(identifier));
+      type_ = type;
+      add_ = add;
+    }
+    
+//    IdentifierAndImport(String package1, String identifier)
+//    {
+//      package_ = package1;
+//      identifier_ = capitalize(toCamelCase(identifier));
+//      type_ = identifier_;
+//      add_ = false;
+//    }
+  }
   
   void setAndAddImport(String packageName, String camelCapitalizedName)
   {
@@ -97,6 +105,9 @@ implements IJavaTemplateModel
   
   void setImport(String fullyQualifiedName)
   {
+    if(fullyQualifiedName == null)
+      return;
+      
     int i = fullyQualifiedName.lastIndexOf('.');
     
     setImport(fullyQualifiedName.substring(0, i), fullyQualifiedName.substring(i+1));
@@ -228,25 +239,25 @@ implements IJavaTemplateModel
     return "";
   }
 
-  public BigInteger getMinimum()
-  {
-    return null;
-  }
-  
-  public BigInteger getMaximum()
-  {
-    return null;
-  }
-  
-  public boolean getExclusiveMinimum()
-  {
-    return false;
-  }
-
-  public boolean getExclusiveMaximum()
-  {
-    return false;
-  }
+//  public BigInteger getMinimum()
+//  {
+//    return null;
+//  }
+//  
+//  public BigInteger getMaximum()
+//  {
+//    return null;
+//  }
+//  
+//  public boolean getExclusiveMinimum()
+//  {
+//    return false;
+//  }
+//
+//  public boolean getExclusiveMaximum()
+//  {
+//    return false;
+//  }
 
   public Collection<JavaSchemaTemplateModel> getInnerClasses()
   {

@@ -18,6 +18,8 @@
 
 package com.symphony.oss.canon2.generator;
 
+import java.util.List;
+
 import com.symphony.oss.canon2.core.ResolvedEntity;
 
 /**
@@ -38,7 +40,7 @@ S extends ISchemaTemplateModel<T,M,S>>
   
   public FieldTemplateModel(String name, ResolvedEntity resolvedEntity, String identifier, M model,
       S typeSchema, boolean required,
-      String[] temaplates)
+      List<String> temaplates)
   {
     super(name, resolvedEntity, identifier, model, temaplates);
     

@@ -18,6 +18,8 @@
 
 package com.symphony.oss.canon2.generator;
 
+import java.util.List;
+
 import javax.annotation.Nullable;
 
 import com.symphony.oss.canon2.core.ResolvedSchema;
@@ -39,7 +41,7 @@ S extends ISchemaTemplateModel<T,M,S>
 {
   private final SchemaTemplateModelType schemaType_;
     
-  public SchemaTemplateModel(ResolvedSchema resolvedSchema, @Nullable SchemaTemplateModelType schemaType, String identifier, M model, String... templates)
+  public SchemaTemplateModel(ResolvedSchema resolvedSchema, @Nullable SchemaTemplateModelType schemaType, String identifier, M model, List<String> templates)
   {
     super(resolvedSchema.getName(), resolvedSchema, identifier, model, templates);
     

@@ -244,8 +244,8 @@
           "int64Field": {
               "type": "integer",
               "format": "int64",
-              "minimum": 6,
-              "maximum": 8,
+              "minimum": 100,
+              "maximum": 124,
               "exclusiveMaximum": true
           },
           "int32Field": {

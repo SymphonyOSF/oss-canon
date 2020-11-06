@@ -18,6 +18,8 @@
 
 package com.symphony.oss.canon2.generator;
 
+import java.util.List;
+
 import com.symphony.oss.canon.json.model.JsonDomNode;
 import com.symphony.oss.canon2.core.ResolvedEntity;
 
@@ -39,17 +41,17 @@ S extends ISchemaTemplateModel<T,M,S>
 >
 implements ITemplateModel<T,M,S>
 {
-  private final String[] templates_;
-  private final String   name_;
-  private final String   quotedName_;
-  private final String   camelName_;
-  private final String   camelCapitalizedName_;
-  private final String   snakeName_;
-  private final String   snakeCapitalizedName_;
-  private final String   snakeUpperCaseName_;
-  private final M        model_;
-  private final boolean  external_;
-  private final JsonDomNode json_;
+  private final List<String> templates_;
+  private final String       name_;
+  private final String       quotedName_;
+  private final String       camelName_;
+  private final String       camelCapitalizedName_;
+  private final String       snakeName_;
+  private final String       snakeCapitalizedName_;
+  private final String       snakeUpperCaseName_;
+  private final M            model_;
+  private final boolean      external_;
+  private final JsonDomNode  json_;
 
   /**
    * Constructor.
@@ -63,7 +65,7 @@ implements ITemplateModel<T,M,S>
    * The reason we have name and identifier is that the name may be valid in general but a reserved word in the
    * generated language.
    */
-  public TemplateModel(String name, ResolvedEntity resolvedEntity, String identifier, M model, String ...templates)
+  public TemplateModel(String name, ResolvedEntity resolvedEntity, String identifier, M model, List<String> templates)
   {
     model_ = model ;
     name_ = name;
@@ -97,7 +99,7 @@ implements ITemplateModel<T,M,S>
   }
 
   @Override
-  public String[] getTemaplates()
+  public List<String> getTemaplates()
   {
     return templates_;
   }

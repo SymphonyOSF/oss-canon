@@ -148,8 +148,9 @@ UNEXPECTED SCHEMA TYPE ${schema.schemaType} in generateCreateFieldFromJsonDomNod
 <#macro generateCreatePrimitiveFieldFromJsonDomNode indent node schema name var ifValidation>
 ${indent}if(${node} instanceof ${schema.jsonNodeType})
 ${indent}{
+// schema.class ${schema.class} name ${schema.name} type ${schema.type} javaType ${schema.javaType}
 ${indent}  ${var} = ${schema.constructPrefix}((${schema.jsonNodeType})${node}).as${schema.javaType}()${schema.constructSuffix};
-      <@checkLimits "${indent}" schema name var "new new ParserErrorException" ", ${node}.getContext()"/>
+      <@checkLimits "${indent}" schema name var "new ParserErrorException" ", ${node}.getContext()"/>
 ${indent}}
 ${indent}else ${ifValidation}
 ${indent}{
@@ -165,7 +166,7 @@ ${indent}}
  # @param var       A java variable containing the value being checked
  #----------------------------------------------------------------------------------------------------->
 <#macro checkFieldLimits indent field var>
-  <@checkLimits indent field.typeSchema, field.name, var "new new IllegalArgumentException" ""/>
+  <@checkLimits indent field.typeSchema, field.name, var "new IllegalArgumentException" ""/>
   <#if field.required>
 ${indent}if(${var} == null)
 ${indent}  throw new IllegalArgumentException("${field.name} is required.");

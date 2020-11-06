@@ -7,6 +7,7 @@
 package com.symphony.oss.canon2.generator.java;
 
 import java.math.BigInteger;
+import java.util.List;
 
 import com.symphony.oss.canon2.core.ResolvedSchema;
 import com.symphony.oss.canon2.core.SchemaTemplateModelType;
@@ -35,10 +36,10 @@ JavaSchemaTemplateModel>
   private final BigInteger        maxItems_;
   private String            typeNew_;
   
-  JavaArraySchemaTemplateModel(ResolvedSchema resolvedSchema, String identifier, String packageName, CanonCardinality cardinality, JavaOpenApiTemplateModel model,
-      String ...templates)
+  JavaArraySchemaTemplateModel(ResolvedSchema resolvedSchema, IdentifierAndImport identifierAndImport, CanonCardinality cardinality, JavaOpenApiTemplateModel model,
+      List<String> templates)
   {
-    super(resolvedSchema, SchemaTemplateModelType.ARRAY, identifier, packageName, model, templates);
+    super(resolvedSchema, SchemaTemplateModelType.ARRAY, identifierAndImport, model, templates);
     
     cardinality_ = cardinality;
     
@@ -61,7 +62,7 @@ JavaSchemaTemplateModel>
     elementType_ = elementType;
     
     setImport(elementType.getImport());
-    if(!getPackageName().equals(elementType.getPackageName()))
+    if(elementType.getPackageName() != null && !getPackageName().equals(elementType.getPackageName()))
       addImport(elementType.getImport());
     
     switch(cardinality_)

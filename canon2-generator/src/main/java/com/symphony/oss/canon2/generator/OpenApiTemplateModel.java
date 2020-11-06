@@ -53,7 +53,7 @@ S extends ISchemaTemplateModel<T,M,S>>
 
   
   public OpenApiTemplateModel(SourceContext sourceContext, String name, ResolvedOpenApiObject resolvedOpenApiObject, String identifier,
-      String[] temaplates)
+      List<String> temaplates)
   {
     super(name, resolvedOpenApiObject, identifier, null, temaplates);
     

@@ -19,6 +19,7 @@
 package com.symphony.oss.canon2.generator;
 
 import java.util.Collection;
+import java.util.List;
 
 import com.symphony.oss.canon.json.model.IJsonDomNodeProvider;
 
@@ -93,7 +94,7 @@ extends IJsonDomNodeProvider
    * 
    * @return The list of template names which should be run against this model.
    */
-  String[] getTemaplates();
+  Collection<String> getTemaplates();
 
   /**
    * Return the OpenApiObject template model.

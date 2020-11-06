@@ -6,26 +6,16 @@
 
 package com.symphony.oss.canon2.generator.java;
 
-import java.math.BigInteger;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
+import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.google.common.collect.ImmutableMap;
-import com.google.common.collect.ImmutableSet;
-import com.symphony.oss.canon.json.SyntaxErrorException;
-import com.symphony.oss.canon.json.model.JsonDomNode;
-import com.symphony.oss.canon.json.model.JsonParsedNumber;
 import com.symphony.oss.canon2.core.ResolvedPrimitiveSchema;
 import com.symphony.oss.canon2.generator.IPrimitiveSchemaTemplateModel;
+import com.symphony.oss.canon2.generator.java.JavaSchemaTemplateModel.IdentifierAndImport;
 import com.symphony.oss.canon2.model.CanonAttributes;
 import com.symphony.oss.canon2.model.Schema;
-import com.symphony.oss.commons.fault.CodingFault;
-import com.symphony.oss.commons.type.provider.IBooleanProvider;
 
 /**
  * Java template model for primitive types number, integer, boolean, string.
@@ -33,7 +23,7 @@ import com.symphony.oss.commons.type.provider.IBooleanProvider;
  * @author Bruce Skingle
  *
  */
-public class JavaPrimitiveSchemaTemplateModel extends JavaSchemaTemplateModel
+public abstract class JavaPrimitiveSchemaTemplateModel extends JavaSchemaTemplateModel
 implements IPrimitiveSchemaTemplateModel<
 IJavaTemplateModel,
 JavaOpenApiTemplateModel,
@@ -49,114 +39,47 @@ JavaSchemaTemplateModel>
 
   private final String                       javaType_;
   private final String                       type_;
-  private final String                       primitiveType_;
-  private final BigInteger                   minimum_;
-  private final BigInteger                   maximum_;
-  private final boolean                      exclusiveMinimum_;
-  private final boolean                      exclusiveMaximum_;
-  private final String                       jsonNodeType_;
+//  private final BigInteger                   minimum_;
+//  private final BigInteger                   maximum_;
+//  private final boolean                      exclusiveMinimum_;
+//  private final boolean                      exclusiveMaximum_;
+//  private final String                       jsonNodeType_;
   private final String                       constructPrefix_;
   private final String                       constructSuffix_;
   private final String                       getValuePrefix_;
   private final String                       getValueSuffix_;
-  private final Set<String>                  quotedEnumValues_;
-  private final Set<String>                  enumValues_;
-  private final ImmutableMap<String, String> enumMap_;
   private final String                       externalPackage_;
   private final String                       externalType_;
 
-  JavaPrimitiveSchemaTemplateModel(ResolvedPrimitiveSchema resolvedSchema, String identifier, String packageName, JavaOpenApiTemplateModel model,
-       String... templates)
+  JavaPrimitiveSchemaTemplateModel(ResolvedPrimitiveSchema resolvedSchema, IdentifierAndImport identifierAndImport, JavaOpenApiTemplateModel model,
+      List<String> templates)
   { 
-    super(resolvedSchema, resolvedSchema.getSchemaType(), identifier, packageName, model, templates);
+    super(resolvedSchema, resolvedSchema.getSchemaType(), identifierAndImport, model, templates);
     
-    javaType_ = initType(resolvedSchema.getSchema());
+    javaType_ = identifierAndImport.type_;
 
     String constructPrefix = null;
     String getValuePrefix = "";
     String getValueSuffix = "";
     
-    Set<String> enumList = resolvedSchema.getSchema().getEnum();
-    
-    if(enumList==null || enumList.isEmpty())
-    {
-      enumValues_ = ImmutableSet.of();
-      quotedEnumValues_ = ImmutableSet.of();
-      enumMap_ = ImmutableMap.of();
-    }
-    else
-    {
-      Set<String> quotedValues = new HashSet<>(enumList.size());
-      Set<String> values = new HashSet<>(enumList.size());
-      Map<String, String> valueMap = new HashMap<>();
-      
-      for(Object v : enumList)
-      {
-        String value = toSnakeCase(v.toString()).toUpperCase();
-        String quotedValue;
-        
-        if("String".equals(javaType_))
-        {
-          quotedValue = "\"" + v + "\"";
-        }
-        else
-        {
-          quotedValue = v.toString();
-        }
-        
-        quotedValues.add(quotedValue);
-        values.add(value);
-        valueMap.put(value, quotedValue);
-      }
-      
-      enumValues_ = ImmutableSet.copyOf(values);
-      quotedEnumValues_ = ImmutableSet.copyOf(quotedValues);
-      enumMap_ = ImmutableMap.copyOf(valueMap);
-    }
+
     
 //    imports_.add("com.symphony.oss.commons.type.provider.I" + javaType_ + "Provider");
-    switch(resolvedSchema.getSchema().getType())
-    {
-      case "string":
-        jsonNodeType_ = "JsonString";
-        break;
-        
-      case "boolean":
-        jsonNodeType_ = "JsonBoolean";
-        break;
-        
-      default:
-        jsonNodeType_ = "JsonParsedNumber";
-    }
+//    switch(resolvedSchema.getSchema().getType())
+//    {
+//      case "string":
+//        jsonNodeType_ = "JsonString";
+//        break;
+//        
+//      case "boolean":
+//        jsonNodeType_ = "JsonBoolean";
+//        break;
+//        
+//      default:
+//        jsonNodeType_ = "JsonParsedNumber";
+//    }
+    type_ = resolvedSchema.isGenerated() ? getCamelCapitalizedName() : getJavaType();
     
-    if(enumValues_.isEmpty())
-    {
-      type_ = resolvedSchema.isGenerated() ? 
-          getCamelCapitalizedName() : 
-            javaType_;
-      primitiveType_ = resolvedSchema.isGenerated() ? javaType_ : null;
-      if(resolvedSchema.isGenerated())
-      {
-        constructPrefix = "new " + getType() + "(";
-        getValueSuffix = ".getValue()";
-      }
-      minimum_ = getBigInteger(resolvedSchema.getSchema(), "minimum");
-      maximum_ = getBigInteger(resolvedSchema.getSchema(), "maximum");
-      exclusiveMinimum_ = getBoolean(resolvedSchema.getSchema(), "exclusiveMinimum");
-      exclusiveMaximum_ = getBoolean(resolvedSchema.getSchema(), "exclusiveMaximum");
-      
-    }
-    else
-    {
-      type_ = resolvedSchema.isGenerated() ? getCamelCapitalizedName() : null;
-      primitiveType_ = javaType_;
-      constructPrefix = type_ + ".deserialize(";
-      getValueSuffix = ".getValue()";
-      minimum_ = null;
-      maximum_ = null;
-      exclusiveMinimum_ = false;
-      exclusiveMaximum_ = false;
-    }
     
     CanonAttributes attr = resolvedSchema.getSchema().getXCanonAttributes();
     
@@ -171,6 +94,11 @@ JavaSchemaTemplateModel>
     }
     else
     {
+      if(resolvedSchema.isGenerated())
+      {
+        constructPrefix = "new " + getType() + "(";
+        getValueSuffix = ".getValue()";
+      }
       externalPackage_ = "";
       externalType_ = null;
     }
@@ -209,167 +137,139 @@ JavaSchemaTemplateModel>
     return javaType_;
   }
   
-  public String getJavaType()
+  public final String getJavaType()
   {
     return javaType_;
-  }
-
-  public Set<?> getEnumValues()
-  {
-    return enumValues_;
-  }
-
-  public Set<String> getQuotedEnumValues()
-  {
-    return quotedEnumValues_;
-  }
-
-  public Map<String, String> getEnumMap()
-  {
-    return enumMap_;
-  }
-
-  @Override
-  public String getJsonNodeType()
-  {
-    return jsonNodeType_;
   }
 
   @Override
   public String getFullyQualifiedJsonNodeType()
   {
-    return "com.symphony.oss.canon.json.model." + jsonNodeType_;
+    return "com.symphony.oss.canon.json.model." + getJsonNodeType();
   }
 
-  @Override
-  public boolean getHasLimits()
+//  private String initType(Schema entity)
+//  {
+//
+//    switch(entity.getType())
+//    {
+//      case "number":
+//        
+//        if(entity.getFormat() != null)
+//        {
+//          switch(entity.getFormat())
+//          {
+//            case "int64":   return "Long";
+//            case "int32":   return "Integer";
+//            case "float":   return "Float";
+//            case "double":  return "Double";
+//           default:
+//              warnBadFormat(entity);
+//              return "Double";
+//          }
+//        }
+//        else
+//        {
+//          setAndAddImport("java.math", "BigDecimal");
+//
+//          return "BigDecimal";
+//        }
+//        
+//      case "integer":
+//        if(entity.getFormat() != null)
+//        {
+//          switch(entity.getFormat())
+//          {
+//            case "int64":   return "Long";
+//            case "int32":   return "Integer";
+//            default:
+//              warnBadFormat(entity);
+//              return "Long";
+//          }
+//        }
+//        else
+//        {
+//          setAndAddImport("java.math", "BigInteger");
+//
+//          return "BigInteger";
+//        }
+//        
+//      case "boolean":
+//        if(entity.getFormat() != null)
+//        {
+//          warnBadFormat(entity);
+//        }
+//        return "Boolean";
+//        
+//      case "string":
+//        if(entity.getFormat() != null)
+//        {
+//          switch(entity.getFormat())
+//          {
+//            case "byte":
+//              setAndAddImport("com.symphony.oss.commons.immutable", "ImmutableByteArray");
+//              return "ImmutableByteArray";
+//              
+//            default:
+//              warnBadFormat(entity);
+//              return "String";
+//          }
+//        }
+//        else
+//        {
+//          return "String";
+//        }
+//        
+//      default:
+//        //return null;
+//        throw new CodingFault("Unknown primative type " + entity.getType());
+//    }
+//  }
+//
+//  private BigInteger getBigInteger(Schema entity, String name)
+//  {
+//    switch(entity.getType())
+//    {
+//      case "number":
+//      case "integer":
+//        JsonDomNode node = entity.getJson().get(name);
+//      
+//        if(node == null)
+//        {
+//          return null;
+//        }
+//        else if(node instanceof JsonParsedNumber)
+//        {
+//          return null; //((JsonParsedNumber)node).asBigInteger();
+//        }
+//        else
+//        {
+//          throw new SyntaxErrorException("Invalid " + name + " value \"" + node + "\"", node.getContext());
+//        }
+//    }
+//    
+//    return null;
+//  }
+//  
+//  private boolean getBoolean(Schema entity, String name)
+//  {
+//    switch(entity.getType())
+//    {
+//      case "number":
+//      case "integer":
+//        JsonDomNode node = entity.getJson().get(name);
+//      
+//        if(node instanceof IBooleanProvider)
+//        {
+//          return ((IBooleanProvider)node).asBoolean();
+//        }
+//    }
+//    
+//    return false;
+//  }
+
+  static void warnBadFormat(Schema entity)
   {
-    return minimum_!=null || maximum_ != null;
-  }
-
-  private String initType(Schema entity)
-  {
-
-    switch(entity.getType())
-    {
-      case "number":
-        
-        if(entity.getFormat() != null)
-        {
-          switch(entity.getFormat())
-          {
-            case "int64":   return "Long";
-            case "int32":   return "Integer";
-            case "float":   return "Float";
-            case "double":  return "Double";
-           default:
-              warnBadFormat(entity);
-              return "Double";
-          }
-        }
-        else
-        {
-          setAndAddImport("java.math", "BigDecimal");
-
-          return "BigDecimal";
-        }
-        
-      case "integer":
-        if(entity.getFormat() != null)
-        {
-          switch(entity.getFormat())
-          {
-            case "int64":   return "Long";
-            case "int32":   return "Integer";
-            default:
-              warnBadFormat(entity);
-              return "Long";
-          }
-        }
-        else
-        {
-          setAndAddImport("java.math", "BigInteger");
-
-          return "BigInteger";
-        }
-        
-      case "boolean":
-        if(entity.getFormat() != null)
-        {
-          warnBadFormat(entity);
-        }
-        return "Boolean";
-        
-      case "string":
-        if(entity.getFormat() != null)
-        {
-          switch(entity.getFormat())
-          {
-            case "byte":
-              setAndAddImport("com.symphony.oss.commons.immutable", "ImmutableByteArray");
-              return "ImmutableByteArray";
-              
-            default:
-              warnBadFormat(entity);
-              return "String";
-          }
-        }
-        else
-        {
-          return "String";
-        }
-        
-      default:
-        //return null;
-        throw new CodingFault("Unknown primative type " + entity.getType());
-    }
-  }
-
-  private BigInteger getBigInteger(Schema entity, String name)
-  {
-    switch(entity.getType())
-    {
-      case "number":
-      case "integer":
-        JsonDomNode node = entity.getJson().get(name);
-      
-        if(node == null)
-        {
-          return null;
-        }
-        else if(node instanceof JsonParsedNumber)
-        {
-          return null; //((JsonParsedNumber)node).asBigInteger();
-        }
-        else
-        {
-          throw new SyntaxErrorException("Invalid " + name + " value \"" + node + "\"", node.getContext());
-        }
-    }
-    
-    return null;
-  }
-  
-  private boolean getBoolean(Schema entity, String name)
-  {
-    switch(entity.getType())
-    {
-      case "number":
-      case "integer":
-        JsonDomNode node = entity.getJson().get(name);
-      
-        if(node instanceof IBooleanProvider)
-        {
-          return ((IBooleanProvider)node).asBoolean();
-        }
-    }
-    
-    return false;
-  }
-
-  private void warnBadFormat(Schema entity)
-  {
-
     log_.warn("Unrecognized " + entity.getType() + " format \"" + entity.getFormat() + "\" ignored at " + entity.getSourceLocation());
   }
 
@@ -383,11 +283,6 @@ JavaSchemaTemplateModel>
   public IJavaTemplateModel asTemplateModel()
   {
     return this;
-  }
-
-  public String getPrimitiveType()
-  {
-    return primitiveType_;
   }
 
   @Override
@@ -430,29 +325,29 @@ JavaSchemaTemplateModel>
     return "";
   }
 
-  @Override
-  public BigInteger getMinimum()
-  {
-    return null; //minimum_;
-  }
-
-  @Override
-  public BigInteger getMaximum()
-  {
-    return maximum_;
-  }
-
-  @Override
-  public boolean getExclusiveMinimum()
-  {
-    return exclusiveMinimum_;
-  }
-
-  @Override
-  public boolean getExclusiveMaximum()
-  {
-    return exclusiveMaximum_;
-  }
+//  @Override
+//  public String getMinimum()
+//  {
+//    return null; //minimum_;
+//  }
+//
+//  @Override
+//  public BigInteger getMaximum()
+//  {
+//    return maximum_;
+//  }
+//
+//  @Override
+//  public boolean getExclusiveMinimum()
+//  {
+//    return exclusiveMinimum_;
+//  }
+//
+//  @Override
+//  public boolean getExclusiveMaximum()
+//  {
+//    return exclusiveMaximum_;
+//  }
 
   public String getExternalPackage()
   {
