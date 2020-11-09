@@ -58,6 +58,12 @@ public class ResolvedBigIntegerSchema extends ResolvedNumberSchema<BigInteger>
     }
 
     @Override
+    protected String getTypeName()
+    {
+      return "BigInteger";
+    }
+
+    @Override
     protected void validate(FaultAccumulator faultAccumulator)
     {
       super.validate(faultAccumulator);

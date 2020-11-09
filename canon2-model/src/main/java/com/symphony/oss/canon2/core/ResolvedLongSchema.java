@@ -56,6 +56,12 @@ public class ResolvedLongSchema extends ResolvedNumberSchema<Long>
     }
 
     @Override
+    protected String getTypeName()
+    {
+      return "Long";
+    }
+
+    @Override
     protected void validate(FaultAccumulator faultAccumulator)
     {
       super.validate(faultAccumulator);

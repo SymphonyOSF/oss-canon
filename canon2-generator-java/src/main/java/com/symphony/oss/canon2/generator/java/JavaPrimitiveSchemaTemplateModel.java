@@ -13,7 +13,6 @@ import org.slf4j.LoggerFactory;
 
 import com.symphony.oss.canon2.core.ResolvedPrimitiveSchema;
 import com.symphony.oss.canon2.generator.IPrimitiveSchemaTemplateModel;
-import com.symphony.oss.canon2.generator.java.JavaSchemaTemplateModel.IdentifierAndImport;
 import com.symphony.oss.canon2.model.CanonAttributes;
 import com.symphony.oss.canon2.model.Schema;
 
@@ -51,16 +50,45 @@ JavaSchemaTemplateModel>
   private final String                       externalPackage_;
   private final String                       externalType_;
 
-  JavaPrimitiveSchemaTemplateModel(ResolvedPrimitiveSchema resolvedSchema, IdentifierAndImport identifierAndImport, JavaOpenApiTemplateModel model,
+  private final boolean hasLimits_;
+
+  private final String primitiveType_;
+
+  JavaPrimitiveSchemaTemplateModel(ResolvedPrimitiveSchema resolvedSchema, String identifier, String packageName, String javaType, JavaOpenApiTemplateModel model,
       List<String> templates)
   { 
-    super(resolvedSchema, resolvedSchema.getSchemaType(), identifierAndImport, model, templates);
+    super(resolvedSchema, resolvedSchema.getSchemaType(), identifier, model, templates);
     
-    javaType_ = identifierAndImport.type_;
+    hasLimits_ = resolvedSchema.hasLimits();
+    javaType_ = javaType;
+    
 
     String constructPrefix = null;
     String getValuePrefix = "";
     String getValueSuffix = "";
+    
+    if(!resolvedSchema.isInnerClass() || hasLimits_ || resolvedSchema.getSchema().getEnum() != null) //resolvedSchema.isGenerated())
+    {
+      primitiveType_ = javaType_;
+      type_ = resolvedSchema.getResolvedContainer() == null ? getCamelCapitalizedName() :
+        capitalize(toCamelCase(resolvedSchema.getResolvedContainer().getName())) + "." + getCamelCapitalizedName();
+//      type_ = getCamelCapitalizedName();
+      
+//    if(isExternal())
+//    {
+//      addImport(packageName + "." + getCamelCapitalizedName());
+//    }
+    
+      setImport(packageName,  getCamelCapitalizedName());
+      
+      constructPrefix = "new " + getType() + "(";
+      getValueSuffix = ".getValue()";
+    }
+    else
+    {
+      primitiveType_ = null;
+      type_ = getJavaType();
+    }
     
 
     
@@ -78,7 +106,7 @@ JavaSchemaTemplateModel>
 //      default:
 //        jsonNodeType_ = "JsonParsedNumber";
 //    }
-    type_ = resolvedSchema.isGenerated() ? getCamelCapitalizedName() : getJavaType();
+    
     
     
     CanonAttributes attr = resolvedSchema.getSchema().getXCanonAttributes();
@@ -94,11 +122,6 @@ JavaSchemaTemplateModel>
     }
     else
     {
-      if(resolvedSchema.isGenerated())
-      {
-        constructPrefix = "new " + getType() + "(";
-        getValueSuffix = ".getValue()";
-      }
       externalPackage_ = "";
       externalType_ = null;
     }
@@ -137,9 +160,32 @@ JavaSchemaTemplateModel>
     return javaType_;
   }
   
+  @Override
+  public boolean getHasLimits()
+  {
+    return hasLimits_;
+  }
+
+  /**
+   * Return the Java type of this schema.
+   * 
+   * @return the Java type of this schema.
+   */
   public final String getJavaType()
   {
     return javaType_;
+  }
+
+  /**
+   * Return the primitive type.
+   * 
+   * The Primitive Type is the Java type if this is an inline checked type, otherwise it is null.
+   * 
+   * @return the primitive type.
+   */
+  public String getPrimitiveType()
+  {
+    return primitiveType_;
   }
 
   @Override
@@ -357,5 +403,28 @@ JavaSchemaTemplateModel>
   public String getExternalType()
   {
     return externalType_;
+  }
+  
+  /**
+   * Construct an instance of javaType from a string constant.
+   * 
+   * @param value a string constant.
+   * 
+   * @return The Java statement to construct an instance of javaType from the given string constant.
+   */
+  public String constructConstant(String value)
+  {
+    switch(javaType_)
+    {
+      case "BigInteger":
+      case "BigDecimal":
+        return "new " + javaType_ + "(\"" + value + "\")";
+      
+      case "Long":
+        return value + "L";
+      
+      default:
+        return value;
+    }
   }
 }

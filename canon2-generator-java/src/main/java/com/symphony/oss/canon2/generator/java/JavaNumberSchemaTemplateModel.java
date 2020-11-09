@@ -29,17 +29,34 @@ JavaSchemaTemplateModel>
   private final boolean exclusiveMaximum_;
   private final boolean isComparable_;
   
-  JavaNumberSchemaTemplateModel(ResolvedNumberSchema<?> resolvedSchema, IdentifierAndImport identifierAndImport, JavaOpenApiTemplateModel model,
+  JavaNumberSchemaTemplateModel(ResolvedNumberSchema<?> resolvedSchema, String identifier, String packageName,
+      String javaTypePackageName, String javaType, JavaOpenApiTemplateModel model,
       boolean isComparable,
       List<String> templates)
   { 
-    super(resolvedSchema, identifierAndImport, model, templates);
+    super(resolvedSchema, identifier, packageName, javaType, model, templates);
 
     minimum_ = resolvedSchema.getMinimum() == null ? null : resolvedSchema.getMinimum().toString();
     maximum_ = resolvedSchema.getMaximum() == null ? null : resolvedSchema.getMaximum().toString();
     exclusiveMinimum_ = resolvedSchema.isExclusiveMinimum();
     exclusiveMaximum_ = resolvedSchema.isExclusiveMaximum();
     isComparable_ = isComparable;
+    
+    if(javaTypePackageName != null)
+    {
+      setAndAddImport(javaTypePackageName, javaType);
+    }
+    else
+    {
+      setImport(packageName,  getCamelCapitalizedName());
+    }
+    
+
+//  if(isExternal())
+//  {
+//    addImport(packageName + "." + getCamelCapitalizedName());
+//  }
+  
   }
 
   @Override
@@ -54,7 +71,7 @@ JavaSchemaTemplateModel>
     return minimum_!=null || maximum_ != null;
   }
   
-  public String getGenerateComparason(String var, String value, String comparason)
+  public String generateComparason(String var, String value, String comparason)
   {
     if(isComparable_)
       return var + ".compareTo(" + value + ") " + comparason + " 0";

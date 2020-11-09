@@ -49,7 +49,6 @@ public class CanonGenerationContext extends CanonModelContext
   private final File                           targetDir_;
   private final File                           proformaDir_;
   private final File                           copyDir_;
-  private final boolean                        templateDebug_;
   private final String                         license_;
   private final String                         copyright_;
   private final ImmutableList<ICanonGenerator<?,?,?,?,?,?,?,?>> generators_;
@@ -64,7 +63,6 @@ public class CanonGenerationContext extends CanonModelContext
     proformaDir_    = builder.proformaDir_;
     copyDir_        = builder.copyDir_;
     generators_     = ImmutableList.copyOf(builder.generators_);
-    templateDebug_  = builder.templateDebug_;
     license_        = builder.license_;
     copyright_      = builder.copyright_;
   }
@@ -74,7 +72,6 @@ public class CanonGenerationContext extends CanonModelContext
     private File                                  targetDir_;
     private File                                  proformaDir_;
     private File                                  copyDir_;
-    private boolean                               templateDebug_;
     private String                                license_;
     private String                                copyright_;
     private List<ICanonGenerator<?,?,?,?,?,?,?,?>>  generators_ = new LinkedList<>();
@@ -136,13 +133,6 @@ public class CanonGenerationContext extends CanonModelContext
     public T withGenerator(ICanonGenerator<?,?,?,?,?,?,?,?> generator)
     {
       generators_.add(generator);
-      
-      return self();
-    }
-
-    public T withTemplateDebug(boolean templateDebug)
-    {
-      templateDebug_ = templateDebug;
       
       return self();
     }
@@ -214,12 +204,6 @@ public class CanonGenerationContext extends CanonModelContext
       return new CanonGenerationContext(this);
     }
   }
-  
-  public boolean getTemplateDebug()
-  {
-    return templateDebug_;
-  }
-
 
   public List<com.symphony.oss.canon2.generator.ICanonGenerator<?,?,?,?,?,?,?,?>> getGenerators()
   {

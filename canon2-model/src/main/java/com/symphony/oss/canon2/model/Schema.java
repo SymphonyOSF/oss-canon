@@ -351,12 +351,14 @@ public class Schema extends SchemaEntity implements INamedModelEntity
           ResolvedSchema.AbstractBuilder<?,?> resolvedProperty = modelContext.link(openApiObjectBuilder, sourceContext, entry.getKey(), uri + "/" + entry.getKey(), schema, isGenerated(schema.getType()), builder);
           resolvedPropertiesBuilder.with(entry.getKey(), resolvedProperty);
           
-          switch(schema.getType())
-          {
-            case "object":
+//          switch(schema.getType())
+//          {
+//            case "object":
               innerClassesBuilder.with(entry.getKey(), resolvedProperty);
-              break;
-          }
+//              break;
+//            default:
+//              System.err.println("IGNORE INNER " + entry.getKey() + " " + entry.getValue());
+//          }
         }
         else
         {

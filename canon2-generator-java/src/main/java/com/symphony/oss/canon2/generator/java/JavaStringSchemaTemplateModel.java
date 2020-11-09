@@ -33,14 +33,27 @@ JavaSchemaTemplateModel>
   private final Set<String>                  quotedEnumValues_;
   private final Set<String>                  enumValues_;
   private final ImmutableMap<String, String> enumMap_;
-  private final String                       primitiveType_;
   private final String                       constructPrefix_;
   private final String                       getValueSuffix_;
   
-  JavaStringSchemaTemplateModel(ResolvedStringSchema resolvedSchema, IdentifierAndImport identifierAndImport, JavaOpenApiTemplateModel model,
+  JavaStringSchemaTemplateModel(ResolvedStringSchema resolvedSchema, String identifier, String packageName, JavaOpenApiTemplateModel model,
        List<String> templates)
   { 
-    super(resolvedSchema, initIdentifierAndImport(identifierAndImport, resolvedSchema), model, templates);
+    super(resolvedSchema, identifier, packageName, initType(resolvedSchema), model, templates);
+    
+    Schema entity = resolvedSchema.getSchema();
+    if(entity.getFormat() != null)
+    {
+      switch(entity.getFormat())
+      {
+        case "byte":
+          setAndAddImport("com.symphony.oss.commons.immutable", "ImmutableByteArray");
+          break;
+          
+        default:
+          warnBadFormat(entity);
+      }
+    }
     
     Set<String> enumList = resolvedSchema.getSchema().getEnum();
     
@@ -49,7 +62,6 @@ JavaSchemaTemplateModel>
       enumValues_ = ImmutableSet.of();
       quotedEnumValues_ = ImmutableSet.of();
       enumMap_ = ImmutableMap.of();
-      primitiveType_ = resolvedSchema.isGenerated() ? getJavaType() : null;
       constructPrefix_ = super.getConstructPrefix();
       getValueSuffix_ = super.getGetValueSuffix();
     }
@@ -81,13 +93,12 @@ JavaSchemaTemplateModel>
       enumValues_ = ImmutableSet.copyOf(values);
       quotedEnumValues_ = ImmutableSet.copyOf(quotedValues);
       enumMap_ = ImmutableMap.copyOf(valueMap);
-      primitiveType_ = getJavaType();
       constructPrefix_ = getType() + ".deserialize(";
       getValueSuffix_ = ".getValue()";
     }
   }
 
-  private static IdentifierAndImport initIdentifierAndImport(IdentifierAndImport identifierAndImport, ResolvedStringSchema resolvedSchema)
+  private static String initType(ResolvedStringSchema resolvedSchema)
   {
     Schema entity = resolvedSchema.getSchema();
     if(entity.getFormat() != null)
@@ -95,14 +106,11 @@ JavaSchemaTemplateModel>
       switch(entity.getFormat())
       {
         case "byte":
-          return new IdentifierAndImport("com.symphony.oss.commons.immutable", identifierAndImport.identifier_, "ImmutableByteArray", true);
-          
-        default:
-          warnBadFormat(entity);
+          return "ImmutableByteArray";
       }
     }
       
-    return identifierAndImport;
+    return "String";
     
   }
 
@@ -143,10 +151,5 @@ JavaSchemaTemplateModel>
   public Map<String, String> getEnumMap()
   {
     return enumMap_;
-  }
-
-  public String getPrimitiveType()
-  {
-    return primitiveType_;
   }
 }

@@ -56,6 +56,12 @@ public class ResolvedIntegerSchema extends ResolvedNumberSchema<Integer>
     }
 
     @Override
+    protected String getTypeName()
+    {
+      return "Integer";
+    }
+
+    @Override
     protected void validate(FaultAccumulator faultAccumulator)
     {
       super.validate(faultAccumulator);

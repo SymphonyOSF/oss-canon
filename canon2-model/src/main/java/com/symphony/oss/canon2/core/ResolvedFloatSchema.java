@@ -56,6 +56,12 @@ public class ResolvedFloatSchema extends ResolvedNumberSchema<Float>
     }
 
     @Override
+    protected String getTypeName()
+    {
+      return "Float";
+    }
+
+    @Override
     protected void validate(FaultAccumulator faultAccumulator)
     {
       super.validate(faultAccumulator);

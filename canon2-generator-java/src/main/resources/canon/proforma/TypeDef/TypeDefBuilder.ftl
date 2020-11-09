@@ -12,32 +12,34 @@ package ${genPackage};
 ${import}
 </#list>
 
+// entity.class ${entity.class}
+// entity.name ${entity.name}
 /**
- * Builder helper function for the external type ${entity.type}.
+ * Builder helper function for the external type ${entity.externalType}.
  */
 @Immutable
-public class ${entity.type}Builder
+public class ${entity.externalType}Builder
 {
   /**
    * Constructor from a ${entity.javaType} value.
    *
    * @param value the value of the required instance.
    * 
-   * @return A ${entity.javaType} deserialized from the given ${entity.type} value.
+   * @return A ${entity.externalType} deserialized from the given ${entity.javaType} value.
    */
-  public static ${entity.type} build(@Nonnull ${entity.javaType} value)
+  public static ${entity.externalType} build(@Nonnull ${entity.javaType} value)
   {
-    return ${entity.type}.parse(value);
+    return ${entity.externalType}.parse(value);
   }
   
   /**
-   * Return the serialized form of the given ${entity.type} value.
+   * Return the serialized form of the given ${entity.externalType} value.
    * 
    * @param instance An Instant value.
    * 
-   * @return The serialized form of the given ${entity.type} value.
+   * @return The serialized form of the given ${entity.externalType} value.
    */
-  public static String to${entity.javaType}(${entity.type} instance)
+  public static String to${entity.javaType}(${entity.externalType} instance)
   {
     return instance.toString();
   }

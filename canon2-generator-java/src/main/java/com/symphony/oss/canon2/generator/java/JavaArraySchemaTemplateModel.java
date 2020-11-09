@@ -36,19 +36,25 @@ JavaSchemaTemplateModel>
   private final BigInteger        maxItems_;
   private String            typeNew_;
   
-  JavaArraySchemaTemplateModel(ResolvedSchema resolvedSchema, IdentifierAndImport identifierAndImport, CanonCardinality cardinality, JavaOpenApiTemplateModel model,
+  JavaArraySchemaTemplateModel(ResolvedSchema resolvedSchema, String identifier, String packageName, CanonCardinality cardinality, JavaOpenApiTemplateModel model,
       List<String> templates)
   {
-    super(resolvedSchema, SchemaTemplateModelType.ARRAY, identifierAndImport, model, templates);
+    super(resolvedSchema, SchemaTemplateModelType.ARRAY, identifier, model, templates);
     
     cardinality_ = cardinality;
     
-    //generator.generateSchema(resolvedItems, model, "items", resolvedSchema.getSchema().getItemsSchema() == null);
     
-
+//    if(isExternal())
+//    {
+//      addImport(packageName + "." + getCamelCapitalizedName());
+//    }
+    
+    setImport(packageName,  getCamelCapitalizedName());
     
     minItems_ = resolvedSchema.getSchema().getMinItems();
     maxItems_ = resolvedSchema.getSchema().getMaxItems();
+    
+    
   }
   
   public String getBaseSuperType()

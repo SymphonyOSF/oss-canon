@@ -31,19 +31,16 @@ import com.symphony.oss.canon2.core.ResolvedBigDecimalSchema;
 import com.symphony.oss.canon2.core.ResolvedBigIntegerSchema;
 import com.symphony.oss.canon2.core.ResolvedBooleanSchema;
 import com.symphony.oss.canon2.core.ResolvedDoubleSchema;
-import com.symphony.oss.canon2.core.ResolvedEntity;
 import com.symphony.oss.canon2.core.ResolvedFloatSchema;
 import com.symphony.oss.canon2.core.ResolvedIntegerSchema;
 import com.symphony.oss.canon2.core.ResolvedLongSchema;
 import com.symphony.oss.canon2.core.ResolvedOpenApiObject;
-import com.symphony.oss.canon2.core.ResolvedPrimitiveSchema;
 import com.symphony.oss.canon2.core.ResolvedSchema;
 import com.symphony.oss.canon2.core.ResolvedStringSchema;
 import com.symphony.oss.canon2.core.SourceContext;
 import com.symphony.oss.canon2.generator.CanonGenerator;
 import com.symphony.oss.canon2.generator.IGroupSchemaTemplateModel;
 import com.symphony.oss.canon2.generator.IPathNameConstructor;
-import com.symphony.oss.canon2.generator.java.JavaSchemaTemplateModel.IdentifierAndImport;
 import com.symphony.oss.canon2.model.CanonCardinality;
 import com.symphony.oss.canon2.model.OpenApiObject;
 
@@ -151,10 +148,10 @@ IGroupSchemaTemplateModel<IJavaTemplateModel,JavaOpenApiTemplateModel,JavaSchema
     return defaultGenerationPackage;
   }
 
-  private IdentifierAndImport getIdentifierAndImport(String identifier, ResolvedSchema resolvedEntity)
-  {
-    return new IdentifierAndImport(getJavaGenerationPackage(resolvedEntity.getResolvedOpenApiObject().getModel()), identifier, identifier, false);
-  }
+//  private IdentifierAndImport getIdentifierAndImport(String identifier, ResolvedSchema resolvedEntity)
+//  {
+//    return new IdentifierAndImport(getJavaGenerationPackage(resolvedEntity.getResolvedOpenApiObject().getModel()), identifier, identifier, false);
+//  }
   
   @Override
   public String getIdentifierName(String name, INamedModelEntity entity)
@@ -261,32 +258,38 @@ IGroupSchemaTemplateModel<IJavaTemplateModel,JavaOpenApiTemplateModel,JavaSchema
   @Override
   public JavaObjectSchemaTemplateModel generateObjectSchema(JavaOpenApiTemplateModel model, ResolvedSchema resolvedSchema, String identifier)
   {
-    return new JavaObjectSchemaTemplateModel(resolvedSchema, getIdentifierAndImport(identifier, resolvedSchema), model, 
+    return new JavaObjectSchemaTemplateModel(resolvedSchema, 
+
+        identifier, getJavaGenerationPackage(resolvedSchema.getResolvedOpenApiObject().getModel()),
+        model, 
         resolvedSchema.isInnerClass() ? EMPTY_TEMPLATES : OBJECT_TEMPLATES);
   }
 
   @Override
   public JavaArraySchemaTemplateModel generateArraySchema(JavaOpenApiTemplateModel model, ResolvedSchema resolvedSchema, String identifier, CanonCardinality cardinality)
   {
-    return new JavaArraySchemaTemplateModel(resolvedSchema, getIdentifierAndImport(identifier, resolvedSchema), cardinality, model, 
+    return new JavaArraySchemaTemplateModel(resolvedSchema,
+        identifier, getJavaGenerationPackage(resolvedSchema.getResolvedOpenApiObject().getModel()),
+        cardinality, model, 
         resolvedSchema.isInnerClass() || resolvedSchema.getResolvedOpenApiObject().isReferencedModel() ? EMPTY_TEMPLATES : ARRAY_TEMPLATES);
   }
   
   
   
 //  private JavaPrimitiveSchemaTemplateModel generatePrimitiveSchemaTemplateModel(JavaOpenApiTemplateModel model,
-//      ResolvedPrimitiveSchema resolvedSchema, String identifier, String externalPackage, String javaType)
+//      ResolvedPrimitiveSchema resolvedSchema, String identifier, String javaTypePackage, String javaType)
 //  {
-//    IdentifierAndImport identifierAndImport = new IdentifierAndImport();
+//    boolean typedef;
+//    
 //    List<String> templates;
 //    
 //    if(resolvedSchema.isInnerClass())
 //    {
-//      identifierAndImport.typedef_ = resolvedSchema.hasLimits();
+//      typedef = resolvedSchema.hasLimits();
 //    }
 //    else
 //    {
-//      identifierAndImport.typedef_ = true;
+//      typedef = true;
 //    }
 //    
 //    if(resolvedSchema.isInnerClass() || resolvedSchema.getResolvedOpenApiObject().isReferencedModel())
@@ -302,10 +305,13 @@ IGroupSchemaTemplateModel<IJavaTemplateModel,JavaOpenApiTemplateModel,JavaSchema
 //      templates = ENUM_TEMPLATES;
 //    }
 //    
-//    if(externalPackage == null)
+//    if(typedef)
 //    {
-//      identifierAndImport.package_ = null;
-//      identifierAndImport.add_ = false;
+//      return null;
+//    }
+//    else
+//    {
+//      return new JavaPrimitiveSchemaTemplateModel();
 //    }
 //  }
   
@@ -315,7 +321,8 @@ IGroupSchemaTemplateModel<IJavaTemplateModel,JavaOpenApiTemplateModel,JavaSchema
   public JavaPrimitiveSchemaTemplateModel generateBigDecimalSchema(JavaOpenApiTemplateModel model,
       ResolvedBigDecimalSchema resolvedSchema, String identifier)
   {
-    return new JavaNumberSchemaTemplateModel(resolvedSchema, new IdentifierAndImport("java.math", identifier, "BigDecimal", true), model,
+    return new JavaNumberSchemaTemplateModel(resolvedSchema,
+        identifier, getJavaGenerationPackage(resolvedSchema.getResolvedOpenApiObject().getModel()), "java.math", "BigDecimal",  model,
          true, getJavaPrimitiveTemplates(resolvedSchema));
   }
 
@@ -323,7 +330,8 @@ IGroupSchemaTemplateModel<IJavaTemplateModel,JavaOpenApiTemplateModel,JavaSchema
   public JavaPrimitiveSchemaTemplateModel generateBigIntegerSchema(JavaOpenApiTemplateModel model,
       ResolvedBigIntegerSchema resolvedSchema, String identifier)
   {
-    return new JavaNumberSchemaTemplateModel(resolvedSchema, new IdentifierAndImport("java.math", identifier, "BigInteger", true), model,
+    return new JavaNumberSchemaTemplateModel(resolvedSchema,
+        identifier, getJavaGenerationPackage(resolvedSchema.getResolvedOpenApiObject().getModel()), "java.math", "BigInteger",  model,
         true, getJavaPrimitiveTemplates(resolvedSchema));
   }
 
@@ -331,7 +339,8 @@ IGroupSchemaTemplateModel<IJavaTemplateModel,JavaOpenApiTemplateModel,JavaSchema
   public JavaPrimitiveSchemaTemplateModel generateDoubleSchema(JavaOpenApiTemplateModel model,
       ResolvedDoubleSchema resolvedSchema, String identifier)
   {
-    return new JavaNumberSchemaTemplateModel(resolvedSchema, new IdentifierAndImport(null, identifier, "Double", false), model,
+    return new JavaNumberSchemaTemplateModel(resolvedSchema,
+        identifier, getJavaGenerationPackage(resolvedSchema.getResolvedOpenApiObject().getModel()) ,null, "Double",  model,
         false, getJavaPrimitiveTemplates(resolvedSchema));
   }
 
@@ -339,7 +348,8 @@ IGroupSchemaTemplateModel<IJavaTemplateModel,JavaOpenApiTemplateModel,JavaSchema
   public JavaPrimitiveSchemaTemplateModel generateFloatSchema(JavaOpenApiTemplateModel model,
       ResolvedFloatSchema resolvedSchema, String identifier)
   {
-    return new JavaNumberSchemaTemplateModel(resolvedSchema, new IdentifierAndImport(null, identifier, "Float", false), model,
+    return new JavaNumberSchemaTemplateModel(resolvedSchema,
+        identifier, getJavaGenerationPackage(resolvedSchema.getResolvedOpenApiObject().getModel()), null, "Float", model,
         false, getJavaPrimitiveTemplates(resolvedSchema));
   }
 
@@ -347,7 +357,8 @@ IGroupSchemaTemplateModel<IJavaTemplateModel,JavaOpenApiTemplateModel,JavaSchema
   public JavaPrimitiveSchemaTemplateModel generateIntegerSchema(JavaOpenApiTemplateModel model,
       ResolvedIntegerSchema resolvedSchema, String identifier)
   {
-    return new JavaNumberSchemaTemplateModel(resolvedSchema, new IdentifierAndImport(null, identifier, "Integer", false), model,
+    return new JavaNumberSchemaTemplateModel(resolvedSchema,
+        identifier, getJavaGenerationPackage(resolvedSchema.getResolvedOpenApiObject().getModel()), null, "Integer", model,
        false, getJavaPrimitiveTemplates(resolvedSchema));
   }
 
@@ -355,7 +366,8 @@ IGroupSchemaTemplateModel<IJavaTemplateModel,JavaOpenApiTemplateModel,JavaSchema
   public JavaPrimitiveSchemaTemplateModel generateLongSchema(JavaOpenApiTemplateModel model,
       ResolvedLongSchema resolvedSchema, String identifier)
   {
-    return new JavaNumberSchemaTemplateModel(resolvedSchema, new IdentifierAndImport(null, identifier, "Long", false), model,
+    return new JavaNumberSchemaTemplateModel(resolvedSchema,
+        identifier, getJavaGenerationPackage(resolvedSchema.getResolvedOpenApiObject().getModel()), null, "Long",  model,
         false, getJavaPrimitiveTemplates(resolvedSchema));
   }
 
@@ -379,14 +391,18 @@ IGroupSchemaTemplateModel<IJavaTemplateModel,JavaOpenApiTemplateModel,JavaSchema
   public JavaPrimitiveSchemaTemplateModel generateStringSchema(JavaOpenApiTemplateModel model,
       ResolvedStringSchema resolvedSchema, String identifier)
   {
-    return new JavaStringSchemaTemplateModel(resolvedSchema, new IdentifierAndImport(null, identifier, "String", false), model, getJavaPrimitiveTemplates(resolvedSchema));
+    return new JavaStringSchemaTemplateModel(resolvedSchema,
+        identifier, getJavaGenerationPackage(resolvedSchema.getResolvedOpenApiObject().getModel()),
+        model, getJavaPrimitiveTemplates(resolvedSchema));
   }
 
   @Override
   public JavaPrimitiveSchemaTemplateModel generateBooleanSchema(JavaOpenApiTemplateModel model,
       ResolvedBooleanSchema resolvedSchema, String identifier)
   {
-    return new JavaBooleanSchemaTemplateModel(resolvedSchema, new IdentifierAndImport(null, identifier, "Boolean", false), model, getJavaPrimitiveTemplates(resolvedSchema));
+    return new JavaBooleanSchemaTemplateModel(resolvedSchema,
+        identifier, getJavaGenerationPackage(resolvedSchema.getResolvedOpenApiObject().getModel()),
+        model, getJavaPrimitiveTemplates(resolvedSchema));
   }
 
 //  public JavaPrimitiveSchemaTemplateModel generatePrimativeSchema(

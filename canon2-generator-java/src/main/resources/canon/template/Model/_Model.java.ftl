@@ -24,7 +24,9 @@ public class ${model.camelCapitalizedName}Model
   {
 <#macro generateFactories indent object prefix>
 <#t>${separator}${indent}${prefix}${object.camelCapitalizedName}.FACTORY<#assign separator = ",\n"/><#list object.innerClasses as innerClass>
-    <@generateFactories indent innerClass "${prefix}${object.camelCapitalizedName}."/>
+     <#if innerClass.schemaType.isObject>
+      <@generateFactories indent innerClass "${prefix}${object.camelCapitalizedName}."/>
+    </#if>
   </#list>
 </#macro>
 <#assign separator = ""/>

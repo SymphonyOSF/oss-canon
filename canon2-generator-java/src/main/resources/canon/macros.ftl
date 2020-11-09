@@ -150,7 +150,6 @@ ${indent}if(${node} instanceof ${schema.jsonNodeType})
 ${indent}{
 // schema.class ${schema.class} name ${schema.name} type ${schema.type} javaType ${schema.javaType}
 ${indent}  ${var} = ${schema.constructPrefix}((${schema.jsonNodeType})${node}).as${schema.javaType}()${schema.constructSuffix};
-      <@checkLimits "${indent}" schema name var "new ParserErrorException" ", ${node}.getContext()"/>
 ${indent}}
 ${indent}else ${ifValidation}
 ${indent}{
@@ -166,7 +165,7 @@ ${indent}}
  # @param var       A java variable containing the value being checked
  #----------------------------------------------------------------------------------------------------->
 <#macro checkFieldLimits indent field var>
-  <@checkLimits indent field.typeSchema, field.name, var "new IllegalArgumentException" ""/>
+  <#-- @checkLimits indent field.typeSchema, field.name, var "new IllegalArgumentException" ""/ -->
   <#if field.required>
 ${indent}if(${var} == null)
 ${indent}  throw new IllegalArgumentException("${field.name} is required.");
@@ -187,19 +186,19 @@ ${indent}  throw new IllegalArgumentException("${field.name} is required.");
 // name ${name}
   <#if schema.minimum??>
     <#if schema.exclusiveMinimum>
-${indent}if(${var} != null && ${var} <= ${schema.minimum})
+${indent}if(${schema.generateComparason(var, "MINIMUM", "<=")})
 ${indent}  throw ${exceptionPrefix}("Value " + ${var} + " of ${name} is less than or equal to the exclusive minimum allowed of ${schema.minimum}"${exceptionSuffix});
     <#else>
-${indent}if(${var} != null && ${var} < ${schema.minimum})
+${indent}if(${schema.generateComparason(var, "MINIMUM", "<")})
 ${indent}  throw ${exceptionPrefix}("Value " + ${var} + " of ${name} is less than the minimum allowed of ${schema.minimum}"${exceptionSuffix});
     </#if>
   </#if>
   <#if schema.maximum??>
     <#if schema.exclusiveMaximum>
-${indent}if(${var} != null && ${var} >= ${schema.maximum})
+${indent}if(${schema.generateComparason(var, "MAXIMUM", ">=")})
 ${indent}  throw ${exceptionPrefix}("Value " + ${var} + " of ${name} is greater than or equal to the exclusive maximum allowed of ${schema.maximum}"${exceptionSuffix});
     <#else>
-${indent}if(${var} != null && ${var} > ${schema.maximum})
+${indent}if(${schema.generateComparason(var, "MAXIMUM", ">")})
 ${indent}  throw ${exceptionPrefix}("Value " + ${var} + " of ${name} is greater than the maximum allowed of ${schema.maximum}"${exceptionSuffix});
     </#if>
   

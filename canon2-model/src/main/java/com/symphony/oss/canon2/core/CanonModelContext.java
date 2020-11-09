@@ -71,6 +71,7 @@ public abstract class CanonModelContext
       .build();
 
   private final ImmutableMap<String, String>   uriMap_;
+  private final boolean                        templateDebug_;
   
   private Map<URL, SourceContext>               generationContexts_ = new HashMap<>();
   private Map<URL, SourceContext>               referencedContexts_ = new HashMap<>();
@@ -85,11 +86,13 @@ public abstract class CanonModelContext
     log_.info("CanonModelContext created");
     
     uriMap_ = ImmutableMap.copyOf(builder.uriMap_);
+    templateDebug_  = builder.verbose_;
   }
   
   public static abstract class AbstractBuilder<T extends AbstractBuilder<T,B>, B extends CanonModelContext> extends BaseAbstractBuilder<T,B>
   {
-    private Map<String, String>   uriMap_     = new HashMap<>();
+    private Map<String, String> uriMap_ = new HashMap<>();
+    private boolean             verbose_;
     
     public AbstractBuilder(Class<T> type)
     {
@@ -117,6 +120,20 @@ public abstract class CanonModelContext
       
       return self();
     }
+
+    /**
+     * Set if verbose logging an error reporting is required.
+     * 
+     * @param verbose  true if verbose logging an error reporting is required.
+     * 
+     * @return This (fluent method).
+     */
+    public T withVerbose(boolean verbose)
+    {
+      verbose_ = verbose;
+      
+      return self();
+    }
   }
   
 // this class is abstract
@@ -133,6 +150,16 @@ public abstract class CanonModelContext
 //      return new CanonModelContext(this);
 //    }
 //  }
+  
+  /**
+   * Return true if verbose logging an error reporting is required.
+   * 
+   * @return true if verbose logging an error reporting is required.
+   */
+  public boolean isVerbose()
+  {
+    return templateDebug_;
+  }
 
   private class BuilderConsumer implements Consumer<ResolvedSchema.AbstractBuilder<?, ?>>
   {

@@ -58,6 +58,26 @@ public class ResolvedBigDecimalSchema extends ResolvedNumberSchema<BigDecimal>
     }
 
     @Override
+    protected String getTypeName()
+    {
+      return "BigDecimal";
+    }
+
+    @Override
+    boolean isBuilt()
+    {
+      // TODO Auto-generated method stub
+      return false;
+    }
+
+    @Override
+    protected B construct()
+    {
+      // TODO Auto-generated method stub
+      return null;
+    }
+
+    @Override
     protected void validate(FaultAccumulator faultAccumulator)
     {
       super.validate(faultAccumulator);

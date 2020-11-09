@@ -23,10 +23,10 @@ IJavaTemplateModel,
 JavaOpenApiTemplateModel,
 JavaSchemaTemplateModel>
 {  
-  JavaBooleanSchemaTemplateModel(ResolvedBooleanSchema resolvedSchema, IdentifierAndImport identifierAndImport, JavaOpenApiTemplateModel model,
+  JavaBooleanSchemaTemplateModel(ResolvedBooleanSchema resolvedSchema, String identifier, String packageName, JavaOpenApiTemplateModel model,
        List<String> templates)
   { 
-    super(resolvedSchema, identifierAndImport, model, templates);
+    super(resolvedSchema, identifier, packageName, "Boolean", model, templates);
   }
 
   @Override

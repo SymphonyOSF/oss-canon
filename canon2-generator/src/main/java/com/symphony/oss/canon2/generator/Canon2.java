@@ -400,7 +400,7 @@ public class Canon2
     
     if (verbose_)
     {
-      builder.withTemplateDebug(true);
+      builder.withVerbose(true);
     }
 
     

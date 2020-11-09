@@ -25,7 +25,6 @@ import java.util.Map;
 
 import com.symphony.oss.canon2.core.ResolvedSchema;
 import com.symphony.oss.canon2.generator.IObjectSchemaTemplateModel;
-import com.symphony.oss.canon2.generator.java.JavaSchemaTemplateModel.IdentifierAndImport;
 
 public class JavaObjectSchemaTemplateModel extends JavaSchemaTemplateModel
 implements IObjectSchemaTemplateModel<
@@ -59,13 +58,21 @@ JavaFieldTemplateModel
   private final boolean objectType_;
   
   
-  JavaObjectSchemaTemplateModel(ResolvedSchema resolvedSchema, IdentifierAndImport identifierAndImport, JavaOpenApiTemplateModel model,
+  JavaObjectSchemaTemplateModel(ResolvedSchema resolvedSchema, String identifier, String packageName, JavaOpenApiTemplateModel model,
       List<String> temaplates)
   {
-    super(resolvedSchema, resolvedSchema.getSchemaType(), identifierAndImport, model, temaplates);
+    super(resolvedSchema, resolvedSchema.getSchemaType(), identifier, model, temaplates);
     
     type_ = resolvedSchema.getResolvedContainer() == null ? getCamelCapitalizedName() :
       capitalize(toCamelCase(resolvedSchema.getResolvedContainer().getName())) + "." + getCamelCapitalizedName();
+    
+    
+//  if(isExternal())
+//  {
+//    addImport(packageName + "." + getCamelCapitalizedName());
+//  }
+  
+  setImport(packageName,  getCamelCapitalizedName());
     
     switch(resolvedSchema.getSchemaType())
     {

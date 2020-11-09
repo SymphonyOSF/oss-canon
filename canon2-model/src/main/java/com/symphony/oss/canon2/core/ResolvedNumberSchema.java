@@ -74,6 +74,7 @@ public abstract class ResolvedNumberSchema<V extends Number> extends ResolvedPri
     }
     
     protected abstract V parseValue(JsonParsedNumber json);
+    protected abstract String getTypeName();
 
     public T withMinimum(JsonDomNode json)
     {
@@ -89,7 +90,7 @@ public abstract class ResolvedNumberSchema<V extends Number> extends ResolvedPri
         }
         catch(NumberFormatException e)
         {
-           withError(new SyntaxErrorException("Invalid value for minimum" + json.getClass().getSimpleName(), json.getContext(), e));
+           withError(new SyntaxErrorException("Invalid " + getTypeName() + " value for minimum (" + e.getLocalizedMessage() + ")", json.getContext(), e));
         }
       }
       else
@@ -114,7 +115,7 @@ public abstract class ResolvedNumberSchema<V extends Number> extends ResolvedPri
         }
         catch(NumberFormatException e)
         {
-           withError(new SyntaxErrorException("Invalid value for maximum" + json.getClass().getSimpleName(), json.getContext(), e));
+           withError(new SyntaxErrorException("Invalid " + getTypeName() + " value for maximum (" + e.getLocalizedMessage() + ")", json.getContext(), e));
         }
       }
       else

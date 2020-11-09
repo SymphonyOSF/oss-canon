@@ -53,49 +53,38 @@ implements IJavaTemplateModel
   private final boolean generateFacade_;
   private final boolean generateBuilderFacade_;
   
-  JavaSchemaTemplateModel(ResolvedSchema resolvedSchema, SchemaTemplateModelType schemaType, IdentifierAndImport identifierAndImport, JavaOpenApiTemplateModel model,
+  JavaSchemaTemplateModel(ResolvedSchema resolvedSchema, SchemaTemplateModelType schemaType, String identifier, JavaOpenApiTemplateModel model,
       List<String> templates)
   {
-    super(resolvedSchema, schemaType, identifierAndImport.identifier_, model, templates);
-
-    if(identifierAndImport.package_ != null)
-    {
-      String fullyQualifiedImport = identifierAndImport.package_ + "." + identifierAndImport.type_;
-      
-      setImport(fullyQualifiedImport);
-      if(isExternal() || identifierAndImport.add_)
-      {
-        addImport(fullyQualifiedImport);
-      }
-    }
+    super(resolvedSchema, schemaType, identifier, model, templates);
     
     generateFacade_ = resolvedSchema.getSchema().getXCanonFacade() == null ? false : resolvedSchema.getSchema().getXCanonFacade();
     generateBuilderFacade_ = resolvedSchema.getSchema().getXCanonBuilderFacade() == null ? false : resolvedSchema.getSchema().getXCanonBuilderFacade();
   }
   
-  static class IdentifierAndImport
-  {
-    final String  package_;
-    final String  type_;
-    final String  identifier_;
-    final boolean add_;
-
-    IdentifierAndImport(String package1, String identifier, String type, boolean add)
-    {
-      package_ = package1;
-      identifier_ = capitalize(toCamelCase(identifier));
-      type_ = type;
-      add_ = add;
-    }
-    
-//    IdentifierAndImport(String package1, String identifier)
+//  static class IdentifierAndImport
+//  {
+//    final String  package_;
+//    final String  type_;
+//    final String  identifier_;
+//    final boolean add_;
+//
+//    IdentifierAndImport(String package1, String identifier, String type, boolean add)
 //    {
 //      package_ = package1;
 //      identifier_ = capitalize(toCamelCase(identifier));
-//      type_ = identifier_;
-//      add_ = false;
+//      type_ = type;
+//      add_ = add;
 //    }
-  }
+//    
+////    IdentifierAndImport(String package1, String identifier)
+////    {
+////      package_ = package1;
+////      identifier_ = capitalize(toCamelCase(identifier));
+////      type_ = identifier_;
+////      add_ = false;
+////    }
+//  }
   
   void setAndAddImport(String packageName, String camelCapitalizedName)
   {
@@ -121,7 +110,8 @@ implements IJavaTemplateModel
 
   void addImport(String fullyQualifiedImport)
   {
-    imports_.add(fullyQualifiedImport);
+    if(fullyQualifiedImport != null)
+      imports_.add(fullyQualifiedImport);
   }
 
   public String getPackageName()

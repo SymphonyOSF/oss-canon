@@ -56,6 +56,12 @@ public class ResolvedDoubleSchema extends ResolvedNumberSchema<Double>
     }
 
     @Override
+    protected String getTypeName()
+    {
+      return "Double";
+    }
+
+    @Override
     protected void validate(FaultAccumulator faultAccumulator)
     {
       super.validate(faultAccumulator);

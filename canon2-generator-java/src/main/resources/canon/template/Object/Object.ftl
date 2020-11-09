@@ -30,6 +30,7 @@
 </#switch>
 </#macro>
 <#macro importType schema>
+// importType ${schema.name}
   <#assign imports = imports + [
     "com.symphony.oss.canon.json.model.JsonDomNode",
     "com.symphony.oss.canon.json.model.JsonNull",
@@ -69,13 +70,16 @@
   </#switch>
 </#macro>
 <#macro importFields entity>
+// importFields
   <@importObject entity/>
   <#list entity.fields as field>
+// importField ${field.name} nullable is ${field.nullable}
     <#assign imports = imports + [
         "javax.annotation.${field.nullable}"
       ]>
     <@importType field.typeSchema />
-    <@importObject field.typeSchema/>
+// importType ${field.typeSchema.name}
+    <#--  @importObject field.typeSchema/ -->
     <#if field.typeSchema.schemaType == "ARRAY">
       <@importArrayJsonType field.typeSchema />
     </#if>
@@ -83,8 +87,28 @@
   <#list entity.innerClasses as innerClass>
   // innerClass ${innerClass.class}
   // innerClass ${innerClass.name}
+    <#if innerClass.schemaType.isObject>
+      <@importObject innerClass/>
+    </#if>
+         
+    <#if innerClass.schemaType.isPrimitive>
+    // innerClass ${innerClass.name} isPrimitive
+      <#assign imports = imports + [
+        "java.util.Objects",
+        "com.symphony.oss.canon2.runtime.java.TypeDef",
+        "javax.annotation.Nonnull"
+        ]>
+    </#if>
+        
+        
+        
     <#list innerClass.fields as field>
+    // innerClass.field ${field.name} nullable javax.annotation.${field.nullable}
+      <#assign imports = imports + [
+          "javax.annotation.${field.nullable}"
+        ]>
       <#if field.typeSchema.schemaType == "OBJECT">
+        //innerClass.field ${field.name} OBJECT
         <@importFields field.typeSchema/>
       <#else>
         <@importType field/>
@@ -99,6 +123,7 @@ package ${genPackage};
 <#list entity.sortImports(imports, genPackage) as import>
 ${import}
 </#list>
+<#include "../TypeDef/TypeDefMacro.ftl"/>
 <#macro generateObject indent entity className classModifier nested>
 <#if nested>
 <@generateInstanceOrBuilder "${indent}" entity/>
@@ -385,7 +410,7 @@ ${indent}     * @param value The value to be set.
 ${indent}     *
 ${indent}     * @return This (fluent method).
 ${indent}     */
-${indent}    public T with${field.camelCapitalizedName}(${field.typeSchema.type} value)
+${indent}    public T with${field.camelCapitalizedName}(${field.typeSchema.type} value) //main
 ${indent}    {
     <@checkFieldLimits "        " field "value"/>
 ${indent}      _${field.camelName}_ = ${field.typeSchema.copyPrefix}value${field.typeSchema.copySuffix};
@@ -410,7 +435,7 @@ ${indent}      return self();
 ${indent}    }
     </#if>
 
-    <#if field.typeSchema.schemaType == "PRIMITIVE" && field.typeSchema.primitiveType??>
+    <#if field.typeSchema.schemaType.isPrimitive && field.typeSchema.primitiveType??>
 ${indent}    /**
 ${indent}     * Set the value of the ${field.name} attribute.
 ${indent}     *
@@ -418,7 +443,7 @@ ${indent}     * @param value The value to be set.
 ${indent}     *
 ${indent}     * @return This (fluent method).
 ${indent}     */
-${indent}    public T with${field.camelCapitalizedName}(${field.typeSchema.primitiveType} value)
+${indent}    public T with${field.camelCapitalizedName}(${field.typeSchema.primitiveType} value) // primitive
 ${indent}    {
     <#if field.required>
 ${indent}      if(value == null)
@@ -594,6 +619,11 @@ ${indent}  }
         <#assign modifier = "static ${classModifier}"/>
       </#if>
       <@generateObject "  ${indent}" innerClass innerClass.camelCapitalizedName modifier true/>
+    <#elseif innerClass.schemaType.isPrimitive>
+      <#if innerClass.hasLimits>
+        // Primitive inner class ${innerClass.class}
+        <@generateTypeDef "  " model innerClass innerClass.camelCapitalizedName "static "/>
+      </#if>
     </#if>
   </#list>
 ${indent}}

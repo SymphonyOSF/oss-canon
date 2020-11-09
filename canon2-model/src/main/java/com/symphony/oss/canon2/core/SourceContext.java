@@ -269,7 +269,10 @@ public class SourceContext
     log_.error(errors_.size() + " errors encountered:");
     for(ParserException error : errors_)
     {
-      log_.error(error.toString());
+      if(generationContext_.isVerbose())
+        log_.error(error.toString(), error);
+      else
+        log_.error(error.toString());
       
       if(error.isFatal())
         hasErrors = true;

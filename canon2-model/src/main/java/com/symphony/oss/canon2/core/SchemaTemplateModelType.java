@@ -18,34 +18,36 @@ import com.symphony.oss.commons.fault.CodingFault;
 public enum SchemaTemplateModelType
 {
   /** STRING */
-  STRING("string", false, false),
+  STRING("string", false, false, true),
   /** NUMBER */
-  NUMBER("number", false, false),
+  NUMBER("number", false, false, true),
   /** ARRAY */
-  ARRAY("array", false, false),
+  ARRAY("array", false, false, false),
   /** OBJECT */
-  OBJECT("object", false, true),
+  OBJECT("object", false, true, false),
   /** BOOLEAN */
-  BOOLEAN("boolean", false, false),
+  BOOLEAN("boolean", false, false, true),
   /** INTEGER */
-  INTEGER("integer", false, false),
+  INTEGER("integer", false, false, true),
   /** ONE_OF */
-  ONE_OF("oneOf", true, true),
+  ONE_OF("oneOf", true, true, false),
   /** AALL_OF */
-  ALL_OF("allOf", true, true),
+  ALL_OF("allOf", true, true, false),
   /** ANY_OF */
-  ANY_OF("anyOf", true, true)
+  ANY_OF("anyOf", true, true, false)
   ;
   
   private final String value_;
   private final boolean composite_;
   private final boolean object_;
+  private final boolean primitive_;
   
-  private SchemaTemplateModelType(String value, boolean composite, boolean object)
+  private SchemaTemplateModelType(String value, boolean composite, boolean object, boolean primitive)
   {
     value_ = value;
     composite_ = composite;
     object_ = object;
+    primitive_ = primitive;
   }
   
   /**
@@ -76,6 +78,16 @@ public enum SchemaTemplateModelType
   public boolean getIsObject()
   {
     return object_;
+  }
+
+  /**
+   * Return true if this schema type is a primitive.
+   * 
+   * @return true if this schema type is a primitive.
+   */
+  public boolean getIsPrimitive()
+  {
+    return primitive_;
   }
 
   /**
