@@ -77,18 +77,24 @@ UNEXPECTED SCHEMA TYPE ${schema.schemaType} in generateCreateJsonDomNodeFromFiel
  # @param ifValidation  If set then an if statement which guards validation checks
  # @param modelRegistry an expression to return a ModelRegistry.
  #----------------------------------------------------------------------------------------------------->
-<#macro generateCreateFieldFromJsonDomNode indent node schema name var ifValidation modelRegistry>
-<@generateCreateFieldFromJsonDomNodePrivate indent 0 node schema name var ifValidation modelRegistry/>
+<#macro generateCreateFieldFromJsonDomNode indent node objectSchemaType schema name var ifValidation modelRegistry>
+<@generateCreateFieldFromJsonDomNodePrivate indent 0 node objectSchemaType schema name var ifValidation modelRegistry/>
 </#macro>
 
-<#macro generateCreateFieldFromJsonDomNodePrivate indent cnt node schema name var ifValidation modelRegistry>
+<#macro generateCreateFieldFromJsonDomNodePrivate indent cnt node objectSchemaType schema name var ifValidation modelRegistry>
   <#switch schema.schemaType>
     <#case "OBJECT">
     <#case "ALL_OF">
     <#case "ANY_OF">
     <#case "ONE_OF">
-    
+      <#switch objectSchemaType>
+        <#case "ONE_OF">
+${indent}${var} = ${schema.type}.FACTORY.newInstanceOrNull(${node}, ${modelRegistry});
+           <#break>
+          <#default>
 ${indent}${var} = ${schema.type}.FACTORY.newInstance(${node}, ${modelRegistry});
+           <#break>
+       </#switch>
     <#break>
     
     <#case "ARRAY">
@@ -99,7 +105,7 @@ ${indent}  ${schema.type} itemList${cnt} = new LinkedList<>();
 ${indent}  for(JsonDomNode item${cnt} : (JsonArray)${node})
 ${indent}  {
 ${indent}    ${schema.elementType.type} itemValue${cnt} = null;
-        <@generateCreateFieldFromJsonDomNodePrivate "${indent}    " cnt+1 "item${cnt}" schema.elementType "${name} items" "itemValue${cnt}" ifValidation modelRegistry/>
+        <@generateCreateFieldFromJsonDomNodePrivate "${indent}    " cnt+1 "item${cnt}" objectSchemaType schema.elementType "${name} items" "itemValue${cnt}" ifValidation modelRegistry/>
 ${indent}    itemList${cnt}.add(itemValue${cnt});
 ${indent}  }
 ${indent}  ${var} = ImmutableList.copyOf(itemList${cnt});
@@ -108,7 +114,7 @@ ${indent}  Set<${schema.elementType.type}> itemSet${cnt} = new HashSet<>();
 ${indent}  for(JsonDomNode item${cnt} : (JsonArray)${node})
 ${indent}  {
 ${indent}    ${schema.elementType.type} itemValue${cnt} = null;
-        <@generateCreateFieldFromJsonDomNode "${indent}    " "item${cnt}" schema.elementType "${name} items" "itemValue${cnt}" ifValidation modelRegistry/>
+        <@generateCreateFieldFromJsonDomNode "${indent}    " "item${cnt}" objectSchemaType schema.elementType "${name} items" "itemValue${cnt}" ifValidation modelRegistry/>
 ${indent}    itemSet${cnt}.add(itemValue${cnt});
 ${indent}  }
 ${indent}  ${var} = ImmutableSet.copyOf(itemSet${cnt});
@@ -125,7 +131,7 @@ ${indent}}
     <#case "NUMBER">
     <#case "INTEGER">
     <#case "BOOLEAN">
-      <@generateCreatePrimitiveFieldFromJsonDomNode  indent node schema name var ifValidation/>
+      <@generateCreatePrimitiveFieldFromJsonDomNode  indent node objectSchemaType schema name var ifValidation/>
     <#break>
     
     <#default>
@@ -145,7 +151,7 @@ UNEXPECTED SCHEMA TYPE ${schema.schemaType} in generateCreateFieldFromJsonDomNod
  # @param var           The name of a variable to which the extracted value will be assigned 
  # @param ifValidation  If set then an if statement which guards validation checks
  #----------------------------------------------------------------------------------------------------->
-<#macro generateCreatePrimitiveFieldFromJsonDomNode indent node schema name var ifValidation>
+<#macro generateCreatePrimitiveFieldFromJsonDomNode indent node objectSchemaType schema name var ifValidation>
 ${indent}if(${node} instanceof ${schema.jsonNodeType})
 ${indent}{
 // schema.class ${schema.class} name ${schema.name} type ${schema.type} javaType ${schema.javaType}
@@ -153,7 +159,14 @@ ${indent}  ${var} = ${schema.constructPrefix}((${schema.jsonNodeType})${node}).a
 ${indent}}
 ${indent}else ${ifValidation}
 ${indent}{
+      <#switch objectSchemaType>
+        <#case "ONE_OF">
+${indent}  ${var} = null;
+           <#break>
+          <#default>
 ${indent}  throw new ParserErrorException("${name} must be an instance of ${schema.jsonNodeType} not " + ${node}.getClass().getName(), ${node}.getContext());
+           <#break>
+       </#switch>
 ${indent}}
 </#macro>
 

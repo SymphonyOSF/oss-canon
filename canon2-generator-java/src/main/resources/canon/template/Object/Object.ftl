@@ -178,18 +178,13 @@ ${indent}      Json${entity.initialiserType} jsonInitialiser = (Json${entity.ini
 ${indent}      JsonDomNode  node = jsonInitialiser.getJson();
 ${indent}      int          valueCnt = 0;
   <#list entity.fields as field>
+    <@generateCreateFieldFromJsonDomNode "${indent}       " "node" entity.schemaType field.typeSchema field.quotedName "_${field.camelName}_" "" "jsonInitialiser.getModelRegistry()"/>
+${indent}      if(_${field.camelName}_ != null)
+${indent}        valueCnt++;
 
-<#-- 
-${indent}      if(node instanceof ${entity.jsonNodeType})
-${indent}      {
-${indent}        return ${entity.constructPrefix}((${entity.jsonNodeType})node).as${entity.javaType}()${entity.constructSuffix};
-      <@checkLimits "${indent}      " entity name var "new new ParserErrorException" ", node.getContext()"/>
-${indent}      }
-*/ -->
-
-//START
-    <@generateCreateFieldFromJsonDomNode "${indent}        " "node" field.typeSchema field.quotedName "_${field.camelName}_" "" "jsonInitialiser.getModelRegistry()"/>
-  </#list>
+    </#list>
+${indent}      if(valueCnt != 1)
+${indent}        throw new ParserErrorException("Exactly one value must be present", jsonInitialiser.getJson().getContext());
       <#break>
     <#case "OBJECT">
 
@@ -208,7 +203,7 @@ ${indent}        _${field.camelName}_ = null;
 ${indent}      }
 ${indent}      else
 ${indent}      {
-    <@generateCreateFieldFromJsonDomNode "${indent}        " "node" field.typeSchema field.quotedName "_${field.camelName}_" "" "jsonInitialiser.getModelRegistry()"/>
+    <@generateCreateFieldFromJsonDomNode "${indent}        " "node" entity.schemaType field.typeSchema field.quotedName "_${field.camelName}_" "" "jsonInitialiser.getModelRegistry()"/>
 ${indent}      }
   </#list>
 </#if>
@@ -367,7 +362,7 @@ ${indent}      super.withValues(jsonObject, ignoreValidation);
 ${indent}      if(jsonObject.containsKey("${field.quotedName}"))
 ${indent}      {
 ${indent}        JsonDomNode  node = jsonObject.get("${field.quotedName}");
-  <@generateCreateFieldFromJsonDomNode "        " "node" field.typeSchema field.quotedName "_${field.camelName}_" "if(!modelRegistry.getParserValidation().isIgnoreInvalidAttributes())" "modelRegistry"/>
+  <@generateCreateFieldFromJsonDomNode "        " "node" entity.schemaType field.typeSchema field.quotedName "_${field.camelName}_" "if(!modelRegistry.getParserValidation().isIgnoreInvalidAttributes())" "modelRegistry"/>
 ${indent}      }
 </#list>
 ${indent}      return super.withValues(jsonObject, modelRegistry);
@@ -471,7 +466,7 @@ ${indent}      populateJson(builder);
 
 ${indent}      return builder.build();
 ${indent}    }
-//T1 entity ${entity.name} ${entity.schemaType}
+
 ${indent}    @Override
 ${indent}    public void populateJson(JsonObject.Builder builder)
 ${indent}    {
@@ -480,16 +475,28 @@ ${indent}      super.populateJson(builder);
 
 ${indent}      if(get${field.camelCapitalizedName}() != null)
 ${indent}      {
-        <@generateCreateJsonDomNodeFromField "          " field.typeSchema field.quotedName "get${field.camelCapitalizedName}()" "builder"/>
+        <@generateCreateJsonDomNodeFromField "${indent}        " field.typeSchema field.quotedName "get${field.camelCapitalizedName}()" "builder"/>
 ${indent}      }
   </#list>
 ${indent}    }
-      <#break>
+       <#break>
     <#case "ONE_OF">
 ${indent}    @Override
 ${indent}    public JsonDomNode getJson()
 ${indent}    {
-${indent}      return null; // TODO: implement
+  <#list entity.fields as field>
+
+${indent}      if(get${field.camelCapitalizedName}() != null)
+${indent}      {
+    <#if field.typeSchema.schemaType.isPrimitive>
+${indent}        return JsonDomNode.newInstance(get${field.camelCapitalizedName}());
+    <#else>
+${indent}        return get${field.camelCapitalizedName}().getJson();
+    </#if>
+${indent}      }
+  </#list>
+  
+${indent}      throw new IllegalStateException("No value present in OneOf instance");
 ${indent}    }
       <#break>
   </#switch>
@@ -498,11 +505,22 @@ ${indent}    @Override
 ${indent}    public void validate(FaultAccumulator faultAccumulator)
 ${indent}    {
 ${indent}      super.validate(faultAccumulator);
+  <#switch entity.schemaType>
+    <#case "OBJECT">
   <#list entity.fields as field>
     <#if field.required>
 ${indent}      faultAccumulator.checkNotNull(_${field.camelName}_, "${field.name}");
     </#if>
   </#list>
+       <#break>
+    <#case "ONE_OF">
+${indent}      faultAccumulator.checkValueCount("fields", 1, 1,
+  <#list entity.fields as field>
+${indent}        _${field.camelName}_<#sep>,</#sep>
+  </#list>
+${indent}      );
+      <#break>
+  </#switch>
 ${indent}    }
 ${indent}  }
 

@@ -20,6 +20,7 @@ import static org.junit.Assert.assertEquals;
 
 import org.junit.Test;
 
+import com.symphony.oss.canon.json.ParserErrorException;
 import com.symphony.oss.canon.json.ParserResultException;
 import com.symphony.oss.canon2.runtime.java.Entity;
 import com.symphony.oss.canon2.runtime.java.ModelRegistry;
@@ -44,16 +45,6 @@ public class TestPet
         "  \"hunts\":\"Mice\"\n" + 
         "}\n";
     
-    String petJson = "{\n" + 
-        "  \"Cat\":{\n" + 
-        "    \"_type\":\"com.symphony.oss.canon2.test.oneOf.Cat\",\n" + 
-        "    \"_version\":\"1.0\",\n" + 
-        "    \"hunts\":\"Mice\"\n" + 
-        "  },\n" + 
-        "  \"_type\":\"com.symphony.oss.canon2.test.oneOf.Pet\",\n" + 
-        "  \"_version\":\"1.0\"\n" + 
-        "}\n";
-    
     Dog dog = new Dog.Builder()
         .withBark("Loud")
         .build();
@@ -66,26 +57,61 @@ public class TestPet
     
     assertEquals(catJson, cat.toString());
     
-//    Pet pet = new Pet.Builder()
-//        .withCat(cat)
-//        .build();
-//    
-//    assertEquals(petJson, pet.toString());
-//    assertEquals(cat, pet.getCat());
-//    assertEquals(null, pet.getDog());
-//    
-//    Entity parsedDog = modelRegistry_.parseOne(dogJson);
-//    
-//    assertEquals(parsedDog, dog);
-//    
-//    Entity parsedCat = modelRegistry_.parseOne(catJson);
-//    
-//    assertEquals(parsedCat, cat);
-//    
-//    Entity parsedPet = modelRegistry_.parseOne(petJson);
-//    
-//    assertEquals(parsedPet, pet);
+    Pet pet = new Pet.Builder()
+        .withCat(cat)
+        .build();
+    
+    assertEquals(catJson, pet.toString());
+    assertEquals(cat, pet.getCat());
+    assertEquals(null, pet.getDog());
+    
+    Entity parsedDog = modelRegistry_.parseOne(dogJson);
+    
+    assertEquals(parsedDog, dog);
+    
+    Entity parsedCat = modelRegistry_.parseOne(catJson);
+    
+    assertEquals(parsedCat, cat);
   }
-  
+
+  @Test(expected=IllegalStateException.class)
+  public void testBuildMultipleOneOf()
+  {
+    Dog dog = new Dog.Builder()
+        .withBark("Loud")
+        .build();
+    
+    Cat cat = new Cat.Builder()
+        .withHunts("Mice")
+        .build();
+    
+    Pet pet = new Pet.Builder()
+        .withCat(cat)
+        .withDog(dog)
+        .build();
+  }
+
+  @Test(expected=ParserErrorException.class)
+  public void testParseMultipleOneOf() throws ParserErrorException, ParserResultException
+  {
+    String petJson = "{\n" + 
+        "  \"Cat\":{\n" + 
+        "    \"_type\":\"com.symphony.oss.canon2.test.oneOf.Cat\",\n" + 
+        "    \"_version\":\"1.0\",\n" + 
+        "    \"hunts\":\"Mice\"\n" + 
+        "  },\n" + 
+        "  \"Dog\":{\n" + 
+        "    \"_type\":\"com.symphony.oss.canon2.test.oneOf.Dog\",\n" + 
+        "    \"_version\":\"1.0\",\n" + 
+        "    \"bark\":\"Loud\"\n" + 
+        "  },\n" + 
+        "  \"_type\":\"com.symphony.oss.canon2.test.oneOf.Pet\",\n" + 
+        "  \"_version\":\"1.0\"\n" + 
+        "}\n";
+    
+    Entity parsedPet = modelRegistry_.parseOne(petJson);
+    
+    System.out.println(parsedPet);
+  }
   
 }

@@ -82,6 +82,77 @@
             }
           }
         ]
+      },
+      
+      "Schema": {
+        "description": "A data type definition.",
+        "type": "object",
+        "required": [
+          "type"
+        ],
+        "properties": {
+          "type": {
+            "type": "string"
+          },
+          "format": {
+            "type": "string"
+          }
+        }
+      },
+      "ReferenceObject": {
+        "description": "A reference.",
+        "type": "object",
+        "required": [
+          "$ref"
+        ],
+        "properties": {
+          "$ref": {
+              "type": "string",
+              "format": "uri"
+          }
+        }
+      },
+      "SchemaOrRef": {
+        "description": "A schema or a schema reference.",
+        "oneOf": [
+          {
+            "$ref": "#/components/schemas/Schema"
+          },
+          {
+            "$ref": "#/components/schemas/ReferenceObject"
+          }
+        ]
+      },
+      "ObjectOrString": {
+        "oneOf": [
+          {
+            "type": "string"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "name": {
+                  "type": "string"
+              }
+            }
+          }
+        ]
+      },
+      "OneOfObject": {
+        "type": "object",
+        "properties": {
+          "objectOrString": {
+            "$ref": "#/components/schemas/ObjectOrString"
+          }
+        }
+      },
+      
+      "OneOfArray": {
+        "type": "array",
+        "x-canon-cardinality": "LIST",
+        "items": {
+          "$ref": "#/components/schemas/ObjectOrString"
+        }
       }
     }
   }

@@ -18,12 +18,18 @@
 
 package com.symphony.oss.canon.json.model;
 
+import java.math.BigDecimal;
+import java.math.BigInteger;
+
 import javax.annotation.Nullable;
 import javax.annotation.concurrent.Immutable;
+
+import org.apache.commons.codec.binary.Base64;
 
 import com.symphony.oss.canon.json.IParserContext;
 import com.symphony.oss.commons.fault.FaultAccumulator;
 import com.symphony.oss.commons.fluent.BaseAbstractBuilder;
+import com.symphony.oss.commons.immutable.ImmutableByteArray;
 
 /**
  * A node in a JSON DOM.
@@ -44,6 +50,116 @@ public abstract class JsonDomNode implements Comparable<JsonDomNode>
   {
     context_ = builder.context_;
     canonicalize_ = builder.canonicalize_;
+  }
+
+  /**
+   * Create a JsonDomNode for the given value.
+   * 
+   * @param value The value.
+   * 
+   * @return a JsonDomNode for the given value.
+   */
+  public static JsonDomNode newInstance(String value)
+  {
+    return Base64.isBase64(value) ?
+        new JsonBase64String.Builder().withValue(value).build() :
+        new JsonString.Builder().withValue(value).build();
+  }
+
+  /**
+   * Create a JsonDomNode for the given value.
+   * 
+   * @param value The value.
+   * 
+   * @return a JsonDomNode for the given value.
+   */
+  public static JsonDomNode newInstance(Boolean value)
+  {
+    return new JsonBoolean.Builder().withValue(value).build();
+  }
+
+  /**
+   * Create a JsonDomNode for the given value.
+   * 
+   * @param value The value.
+   * 
+   * @return a JsonDomNode for the given value.
+   */
+  public static JsonDomNode newInstance(ImmutableByteArray value)
+  {
+    return new JsonBase64String.Builder().withValue(value).build();
+  }
+
+  /**
+   * Create a JsonDomNode for the given value.
+   * 
+   * @param value The value.
+   * 
+   * @return a JsonDomNode for the given value.
+   */
+  public static JsonDomNode newInstance(BigDecimal value)
+  {
+    return new JsonBigDecimal.Builder().withValue(value).build();
+  }
+
+  /**
+   * Create a JsonDomNode for the given value.
+   * 
+   * @param value The value.
+   * 
+   * @return a JsonDomNode for the given value.
+   */
+  public static JsonDomNode newInstance(BigInteger value)
+  {
+    return new JsonBigInteger.Builder().withValue(value).build();
+  }
+
+  /**
+   * Create a JsonDomNode for the given value.
+   * 
+   * @param value The value.
+   * 
+   * @return a JsonDomNode for the given value.
+   */
+  public static JsonDomNode newInstance(Double value)
+  {
+    return new JsonDouble.Builder().withValue(value).build();
+  }
+
+  /**
+   * Create a JsonDomNode for the given value.
+   * 
+   * @param value The value.
+   * 
+   * @return a JsonDomNode for the given value.
+   */
+  public static JsonDomNode newInstance(Float value)
+  {
+    return new JsonFloat.Builder().withValue(value).build();
+  }
+
+  /**
+   * Create a JsonDomNode for the given value.
+   * 
+   * @param value The value.
+   * 
+   * @return a JsonDomNode for the given value.
+   */
+  public static JsonDomNode newInstance(Long value)
+  {
+    return new JsonLong.Builder().withValue(value).build();
+  }
+
+  /**
+   * Create a JsonDomNode for the given value.
+   * 
+   * @param value The value.
+   * 
+   * @return a JsonDomNode for the given value.
+   */
+  public static JsonDomNode newInstance(Integer value)
+  {
+    return new JsonInteger.Builder().withValue(value).build();
   }
   
   @Override

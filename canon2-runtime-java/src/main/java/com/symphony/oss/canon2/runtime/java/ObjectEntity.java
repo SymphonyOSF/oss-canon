@@ -176,16 +176,16 @@ public abstract class ObjectEntity extends Entity implements IJsonObjectProvider
 //    @Override
 //    public abstract JsonObject getJsonObject();
 
-    /**
-     * Populate the given JsonObject.Builder with all attributes.
-     * 
-     * This method is called from generated code by super.populateJson(builder).
-     * 
-     * @param builder a JsonObject.Builder.
-     */
-    protected void populateJson(JsonObject.Builder builder)
-    {
-    }
+//    /**
+//     * Populate the given JsonObject.Builder with all attributes.
+//     * 
+//     * This method is called from generated code by super.populateJson(builder).
+//     * 
+//     * @param builder a JsonObject.Builder.
+//     */
+//    protected void populateJson(JsonObject.Builder builder)
+//    {
+//    }
     
     /**
      * Initialize this builder with the values from the given serialized form.

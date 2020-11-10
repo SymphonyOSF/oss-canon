@@ -140,6 +140,37 @@ public class JsonParser extends Parser
       throw new IllegalStateException("Expected a JSON Object but read a " + dom.getClass().getName());
     }
   }
+  
+  /**
+   * Convenience method to parse an Object from a Reader.
+   * 
+   * This method does not do a partial read, it is expected that the contents of the Reader
+   * are a single object.
+   * 
+   * @param json The input JSON.
+   * 
+   * @throws IllegalStateException If the input is invalid or does not contain a single object.
+   * 
+   * @return A JsonDom representing the given input.
+   * 
+   * @throws ParserResultException If there are errors in the input.
+   */
+  public static JsonDomNode parseDomNode(Reader json) throws ParserResultException
+  {
+    JsonDom dom = parseDom(json);
+    
+    if(dom.getErrors().size() != 0)
+      throw new ParserResultException(dom.getErrors());
+    
+    if(dom instanceof JsonObjectDom)
+    {
+      return ((JsonObjectDom)dom).getObject();
+    }
+    else
+    {
+      throw new IllegalStateException("Expected a JSON Object but read a " + dom.getClass().getName());
+    }
+  }
 
   /**
    * The main method to parse the input.
