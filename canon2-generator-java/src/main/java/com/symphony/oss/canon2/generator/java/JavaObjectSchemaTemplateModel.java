@@ -23,7 +23,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.symphony.oss.canon2.core.ResolvedSchema;
+import com.symphony.oss.canon2.core.ResolvedPropertyContainerSchema;
 import com.symphony.oss.canon2.generator.IObjectSchemaTemplateModel;
 
 public class JavaObjectSchemaTemplateModel extends JavaSchemaTemplateModel
@@ -58,7 +58,7 @@ JavaFieldTemplateModel
   private final boolean objectType_;
   
   
-  JavaObjectSchemaTemplateModel(ResolvedSchema resolvedSchema, String identifier, String packageName, JavaOpenApiTemplateModel model,
+  JavaObjectSchemaTemplateModel(ResolvedPropertyContainerSchema<?> resolvedSchema, String identifier, String packageName, JavaOpenApiTemplateModel model,
       List<String> temaplates)
   {
     super(resolvedSchema, resolvedSchema.getSchemaType(), identifier, model, temaplates);

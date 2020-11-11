@@ -30,7 +30,6 @@
 </#switch>
 </#macro>
 <#macro importType schema>
-// importType ${schema.name}
   <#assign imports = imports + [
     "com.symphony.oss.canon.json.model.JsonDomNode",
     "com.symphony.oss.canon.json.model.JsonNull",
@@ -70,45 +69,33 @@
   </#switch>
 </#macro>
 <#macro importFields entity>
-// importFields
   <@importObject entity/>
   <#list entity.fields as field>
-// importField ${field.name} nullable is ${field.nullable}
     <#assign imports = imports + [
         "javax.annotation.${field.nullable}"
       ]>
     <@importType field.typeSchema />
-// importType ${field.typeSchema.name}
     <#--  @importObject field.typeSchema/ -->
     <#if field.typeSchema.schemaType == "ARRAY">
       <@importArrayJsonType field.typeSchema />
     </#if>
   </#list>
   <#list entity.innerClasses as innerClass>
-  // innerClass ${innerClass.class}
-  // innerClass ${innerClass.name}
     <#if innerClass.schemaType.isObject>
       <@importObject innerClass/>
     </#if>
-         
     <#if innerClass.schemaType.isPrimitive>
-    // innerClass ${innerClass.name} isPrimitive
       <#assign imports = imports + [
         "java.util.Objects",
         "com.symphony.oss.canon2.runtime.java.TypeDef",
         "javax.annotation.Nonnull"
         ]>
     </#if>
-        
-        
-        
     <#list innerClass.fields as field>
-    // innerClass.field ${field.name} nullable javax.annotation.${field.nullable}
       <#assign imports = imports + [
           "javax.annotation.${field.nullable}"
         ]>
       <#if field.typeSchema.schemaType == "OBJECT">
-        //innerClass.field ${field.name} OBJECT
         <@importFields field.typeSchema/>
       <#else>
         <@importType field/>
@@ -124,6 +111,7 @@ package ${genPackage};
 ${import}
 </#list>
 <#include "../TypeDef/TypeDefMacro.ftl"/>
+<#include "../Enum/EnumMacro.ftl"/>
 <#macro generateObject indent entity className classModifier nested>
 <#if nested>
 <@generateInstanceOrBuilder "${indent}" entity/>
@@ -324,7 +312,6 @@ ${indent}   * @param <T> The concrete type of the builder, used for fluent metho
 ${indent}   * @param <B> The concrete type of the built object.
 ${indent}   */
 ${indent}  public static abstract class AbstractBuilder<T extends AbstractBuilder<T,B>, B extends ${className}>
-// super class name
 ${indent}    extends ${entity.superTypeName}.AbstractBuilder<T,B>
 ${indent}    implements I${entity.camelCapitalizedName}InstanceOrBuilder, Initialiser
 ${indent}  {
@@ -405,7 +392,7 @@ ${indent}     * @param value The value to be set.
 ${indent}     *
 ${indent}     * @return This (fluent method).
 ${indent}     */
-${indent}    public T with${field.camelCapitalizedName}(${field.typeSchema.type} value) //main
+${indent}    public T with${field.camelCapitalizedName}(${field.typeSchema.type} value)
 ${indent}    {
     <@checkFieldLimits "        " field "value"/>
 ${indent}      _${field.camelName}_ = ${field.typeSchema.copyPrefix}value${field.typeSchema.copySuffix};
@@ -438,7 +425,7 @@ ${indent}     * @param value The value to be set.
 ${indent}     *
 ${indent}     * @return This (fluent method).
 ${indent}     */
-${indent}    public T with${field.camelCapitalizedName}(${field.typeSchema.primitiveType} value) // primitive
+${indent}    public T with${field.camelCapitalizedName}(${field.typeSchema.primitiveType} value)
 ${indent}    {
     <#if field.required>
 ${indent}      if(value == null)
@@ -623,13 +610,9 @@ ${indent}    return null;
 ${indent}  }
       <#break>
 </#switch>
-// entity.additionalProperties??
 <#if entity.additionalProperties??>
-// entity.additionalProperties ${entity.additionalProperties.name}
 </#if>
-// innerClasses
   <#list entity.innerClasses as innerClass>
-  // innerClass ${innerClass.name} ${innerClass.schemaType} ${innerClass.schemaType.class}
     <#if innerClass.schemaType.isObject>
       <#if nested>
         <#assign modifier = classModifier/>
@@ -638,8 +621,9 @@ ${indent}  }
       </#if>
       <@generateObject "  ${indent}" innerClass innerClass.camelCapitalizedName modifier true/>
     <#elseif innerClass.schemaType.isPrimitive>
-      <#if innerClass.hasLimits>
-        // Primitive inner class ${innerClass.class}
+      <#if innerClass.isEnum>
+        <@generateEnum "  " model innerClass innerClass.camelCapitalizedName "static "/>
+      <#elseif innerClass.hasLimits>
         <@generateTypeDef "  " model innerClass innerClass.camelCapitalizedName "static "/>
       </#if>
     </#if>

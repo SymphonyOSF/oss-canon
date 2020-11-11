@@ -21,10 +21,9 @@
  *    Generator groupId    org.symphonyoss.s2.canon
  *              artifactId canon2-generator-java
  *    Template name        template/TypeDef/_.java.ftl
- *    At                   2020-10-28 18:16:15 GMT
+ *    At                   2020-11-10 17:41:51 GMT
  *----------------------------------------------------------------------------------------------------
  */
-
 package com.symphony.oss.canon2.model;
   
 import java.util.Objects;
@@ -56,6 +55,8 @@ public class SemanticVersion extends TypeDef implements Comparable<SemanticVersi
   public SemanticVersion(@Nonnull String value)
   {
     value_ = Objects.requireNonNull(value);
+// schema.class class com.symphony.oss.canon2.generator.java.JavaStringSchemaTemplateModel
+// name value
   }
 
   /**
@@ -70,6 +71,8 @@ public class SemanticVersion extends TypeDef implements Comparable<SemanticVersi
     if(node instanceof JsonString)
     {
       value_ = ((JsonString)node).asString();
+// schema.class class com.symphony.oss.canon2.generator.java.JavaStringSchemaTemplateModel
+// name value
     }
     else
     {

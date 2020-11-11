@@ -21,9 +21,13 @@
  *    Generator groupId    org.symphonyoss.s2.canon
  *              artifactId canon2-generator-java
  *    Template name        template/Object/_Entity.java.ftl
- *    At                   2020-10-28 18:16:15 GMT
+ *    At                   2020-11-10 17:41:52 GMT
  *----------------------------------------------------------------------------------------------------
  */
+// importFields
+// importField schemas nullable is Nullable
+// importType SchemasObject
+// importType SchemasObject
 
 package com.symphony.oss.canon2.model;
 
@@ -80,7 +84,6 @@ public abstract class ComponentsObjectEntity extends ObjectEntity
       }
       else
       {
-    
         _schemas_ = SchemasObject.FACTORY.newInstance(node, jsonInitialiser.getModelRegistry());
       }
       unknownKeys_ = jsonInitialiser.getCanonUnknownKeys();
@@ -202,7 +205,6 @@ public abstract class ComponentsObjectEntity extends ObjectEntity
       if(jsonObject.containsKey("schemas"))
       {
         JsonDomNode  node = jsonObject.get("schemas");
-    
         _schemas_ = SchemasObject.FACTORY.newInstance(node, modelRegistry);
       }
       return super.withValues(jsonObject, modelRegistry);
@@ -231,7 +233,7 @@ public abstract class ComponentsObjectEntity extends ObjectEntity
      *
      * @return This (fluent method).
      */
-    public T withSchemas(SchemasObject value)
+    public T withSchemas(SchemasObject value) //main
     {
       _schemas_ = value;
       return self();
@@ -250,7 +252,7 @@ public abstract class ComponentsObjectEntity extends ObjectEntity
 
       return builder.build();
     }
-//T1 entity ComponentsObject OBJECT
+
     @Override
     public void populateJson(JsonObject.Builder builder)
     {
@@ -258,7 +260,7 @@ public abstract class ComponentsObjectEntity extends ObjectEntity
 
       if(getSchemas() != null)
       {
-          builder.addIfNotNull("schemas", getSchemas().getJson());
+        builder.addIfNotNull("schemas", getSchemas().getJson());
       }
     }
 

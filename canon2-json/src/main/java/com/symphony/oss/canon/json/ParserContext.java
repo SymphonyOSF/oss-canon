@@ -28,9 +28,10 @@ import javax.annotation.Nullable;
  */
 public class ParserContext implements IParserContext
 {
-  private final String            inputSource_;
-  private final int               line_;
-  private final int               col_;
+  private final String inputSource_;
+  private final int    line_;
+  private final int    col_;
+  private final String sourceLocation_;
 
   /**
    * Constructor.
@@ -44,6 +45,21 @@ public class ParserContext implements IParserContext
     inputSource_ = inputSource;
     line_ = line;
     col_ = col;
+    
+    StringBuilder s = new StringBuilder("in ");
+    
+    if(inputSource_ == null)
+      s.append("unknonwn input source");
+    else
+      s.append(inputSource_);
+
+    s.append(" at line ");
+    s.append(line_);
+
+    s.append(", col ");
+    s.append(col_);
+    
+    sourceLocation_ = s.toString();
   }
 
   /**
@@ -56,6 +72,11 @@ public class ParserContext implements IParserContext
     inputSource_ = inputSource;
     line_ = 0;
     col_ = 0;
+    
+    if(inputSource_ == null)
+      sourceLocation_ = "in unknonwn input source";
+    else
+      sourceLocation_ = "in " + inputSource_;
   }
 
   /**
@@ -68,6 +89,7 @@ public class ParserContext implements IParserContext
     inputSource_ = other.getInputSource();
     line_ = other.getLine();
     col_ = other.getCol();
+    sourceLocation_ = other.getSourceLocation();
   }
 
   @Override
@@ -86,5 +108,11 @@ public class ParserContext implements IParserContext
   public int getCol()
   {
     return col_;
+  }
+  
+  @Override
+  public String getSourceLocation()
+  {
+    return sourceLocation_;
   }
 }

@@ -225,8 +225,9 @@ public class Entity implements IJsonDomNodeProvider
       {
          return newInstance(jsonObject, modelRegistry);
       }
-      catch(ParserErrorException e)
+      catch(IllegalArgumentException | ParserErrorException e)
       {
+       System.err.println("Not valid: " + e);
        return null;
       }
     }

@@ -22,9 +22,10 @@ import java.util.HashSet;
 import java.util.Set;
 
 import com.google.common.collect.ImmutableSet;
+import com.symphony.oss.canon2.model.StringSchema;
 import com.symphony.oss.commons.fault.FaultAccumulator;
 
-public class ResolvedStringSchema extends ResolvedPrimitiveSchema
+public class ResolvedStringSchema extends ResolvedPrimitiveSchema<StringSchema>
 {
   private final Integer              minLength_;
   private final Integer              maxLength_;
@@ -41,7 +42,7 @@ public class ResolvedStringSchema extends ResolvedPrimitiveSchema
     enum_      = ImmutableSet.copyOf(builder.enum_);
   }
   
-  public abstract static class AbstractBuilder<T extends AbstractBuilder<T, B>, B extends ResolvedStringSchema> extends ResolvedPrimitiveSchema.AbstractBuilder<T,B>
+  public abstract static class AbstractBuilder<T extends AbstractBuilder<T, B>, B extends ResolvedStringSchema> extends ResolvedPrimitiveSchema.AbstractBuilder<StringSchema,T,B>
   {
     private Integer minLength_;
     private Integer maxLength_;

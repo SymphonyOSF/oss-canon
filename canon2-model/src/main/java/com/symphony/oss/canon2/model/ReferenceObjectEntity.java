@@ -21,11 +21,24 @@
  *    Generator groupId    org.symphonyoss.s2.canon
  *              artifactId canon2-generator-java
  *    Template name        template/Object/_Entity.java.ftl
- *    At                   2020-10-28 18:16:15 GMT
+ *    At                   2020-11-10 17:41:51 GMT
  *----------------------------------------------------------------------------------------------------
  */
+// importFields
+// importField $ref nullable is Nonnull
+// importType $ref
+// importType $ref
+  // innerClass class com.symphony.oss.canon2.generator.java.JavaStringSchemaTemplateModel
+  // innerClass $ref
+         
+    // innerClass $ref isPrimitive
+        
+        
+        
 
 package com.symphony.oss.canon2.model;
+
+import java.util.Objects;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -41,6 +54,7 @@ import com.symphony.oss.canon2.runtime.java.IObjectEntityInitialiser;
 import com.symphony.oss.canon2.runtime.java.JsonObjectEntityInitialiser;
 import com.symphony.oss.canon2.runtime.java.ModelRegistry;
 import com.symphony.oss.canon2.runtime.java.ObjectEntity;
+import com.symphony.oss.canon2.runtime.java.TypeDef;
 import com.symphony.oss.commons.fault.FaultAccumulator;
 
 /**
@@ -84,6 +98,7 @@ public abstract class ReferenceObjectEntity extends ObjectEntity
       {
         if(node instanceof JsonString)
         {
+// schema.class class com.symphony.oss.canon2.generator.java.JavaStringSchemaTemplateModel name $ref type String javaType String
           _$ref_ = ((JsonString)node).asString();
         }
         else 
@@ -215,6 +230,7 @@ public abstract class ReferenceObjectEntity extends ObjectEntity
         JsonDomNode  node = jsonObject.get("$ref");
         if(node instanceof JsonString)
         {
+// schema.class class com.symphony.oss.canon2.generator.java.JavaStringSchemaTemplateModel name $ref type String javaType String
           _$ref_ = ((JsonString)node).asString();
         }
         else if(!modelRegistry.getParserValidation().isIgnoreInvalidAttributes())
@@ -250,7 +266,7 @@ public abstract class ReferenceObjectEntity extends ObjectEntity
      *
      * @return This (fluent method).
      */
-    public T with$ref(String value)
+    public T with$ref(String value) //main
     {
         if(value == null)
           throw new IllegalArgumentException("$ref is required.");
@@ -272,7 +288,7 @@ public abstract class ReferenceObjectEntity extends ObjectEntity
 
       return builder.build();
     }
-//T1 entity ReferenceObject OBJECT
+
     @Override
     public void populateJson(JsonObject.Builder builder)
     {
@@ -280,7 +296,7 @@ public abstract class ReferenceObjectEntity extends ObjectEntity
 
       if(get$ref() != null)
       {
-          builder.addIfNotNull("$ref", get$ref());
+        builder.addIfNotNull("$ref", get$ref());
       }
     }
 
@@ -356,6 +372,7 @@ public abstract class ReferenceObjectEntity extends ObjectEntity
 
 // entity.additionalProperties??
 // innerClasses
+  // innerClass $ref STRING class com.symphony.oss.canon2.core.SchemaTemplateModelType
 }
 
 /*----------------------------------------------------------------------------------------------------

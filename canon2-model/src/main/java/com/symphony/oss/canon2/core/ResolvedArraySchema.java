@@ -18,9 +18,12 @@
 
 package com.symphony.oss.canon2.core;
 
-public class ResolvedArraySchema extends ResolvedObjectOrArraySchema
+import com.symphony.oss.canon2.model.ArraySchema;
+import com.symphony.oss.canon2.model.ISchemaInstance;
+
+public class ResolvedArraySchema extends ResolvedObjectOrArraySchema<ArraySchema>
 {
-  private final ResolvedSchema.AbstractBuilder<?,?> resolvedItemsBuilder_;
+  private final ResolvedSchema.AbstractBuilder<? extends ISchemaInstance,?,?> resolvedItemsBuilder_;
 
   ResolvedArraySchema(AbstractBuilder<?,?> builder)
   {
@@ -29,16 +32,16 @@ public class ResolvedArraySchema extends ResolvedObjectOrArraySchema
     resolvedItemsBuilder_                 = builder.resolvedItemsBuilder_;
   }
   
-  public abstract static class AbstractBuilder<T extends AbstractBuilder<T, B>, B extends ResolvedArraySchema> extends ResolvedObjectOrArraySchema.AbstractBuilder<T,B>
+  public abstract static class AbstractBuilder<T extends AbstractBuilder<T,B>, B extends ResolvedArraySchema> extends ResolvedObjectOrArraySchema.AbstractBuilder<ArraySchema,T,B>
   {
-    ResolvedSchema.AbstractBuilder<?,?>          resolvedItemsBuilder_;
+    ResolvedSchema.AbstractBuilder<? extends ISchemaInstance,?,?>          resolvedItemsBuilder_;
     
     AbstractBuilder(Class<T> type)
     {
       super(type);
     }
     
-    public T withResolvedItems(ResolvedSchema.AbstractBuilder<?,?> resolvedItemsBuilder)
+    public T withResolvedItems(ResolvedSchema.AbstractBuilder<? extends ISchemaInstance,?,?> resolvedItemsBuilder)
     {
       if(isBuilt())
         throw new IllegalStateException("SingletonBuilder has already been built");
@@ -80,10 +83,17 @@ public class ResolvedArraySchema extends ResolvedObjectOrArraySchema
       
       return built_;
     }
+
+    @Override
+    public SingletonBuilder withSchema(ArraySchema schema)
+    {
+      // TODO Auto-generated method stub
+      return super.withSchema(schema);
+    }
     
   }
 
-  public ResolvedSchema getResolvedItems()
+  public ResolvedSchema<?> getResolvedItems()
   {
     if(resolvedItemsBuilder_ == null)
       return null;

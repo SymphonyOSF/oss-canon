@@ -31,7 +31,6 @@ import java.util.Deque;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Map;
-import java.util.Objects;
 import java.util.function.Consumer;
 
 import org.slf4j.Logger;
@@ -44,8 +43,8 @@ import com.symphony.oss.canon.json.ParserException;
 import com.symphony.oss.canon.json.ParserResultException;
 import com.symphony.oss.canon2.core.ResolvedOpenApiObject.SingletonBuilder;
 import com.symphony.oss.canon2.model.CanonModel;
+import com.symphony.oss.canon2.model.ISchemaInstance;
 import com.symphony.oss.canon2.model.OpenApiObject;
-import com.symphony.oss.canon2.model.Schema;
 import com.symphony.oss.canon2.runtime.java.ModelRegistry;
 import com.symphony.oss.commons.fluent.BaseAbstractBuilder;
 
@@ -79,7 +78,7 @@ public abstract class CanonModelContext
   private Deque<SourceContext>                  validateQueue_      = new LinkedList<>();
   private Deque<SourceContext>                  generateQueue_      = new LinkedList<>();
   private Map<URL, OpenApiObject>              modelMap_           = new HashMap<>();
-  private Map<String, ResolvedSchema.AbstractBuilder<?,?>>  schemaMap_          = new HashMap<>();
+  private Map<String, ResolvedSchema.AbstractBuilder<?,?,?>>  schemaMap_          = new HashMap<>();
   
   protected CanonModelContext(AbstractBuilder<?,?> builder)
   {
@@ -161,57 +160,51 @@ public abstract class CanonModelContext
     return templateDebug_;
   }
 
-  private class BuilderConsumer implements Consumer<ResolvedSchema.AbstractBuilder<?, ?>>
+  private class BuilderConsumer implements Consumer<ResolvedSchema.AbstractBuilder<?,?,?>>
   {
     private final String                                            name_;
     private final SingletonBuilder                                  openApiObjectBuilder_;
     private final String                                            uri_;
-    private final Schema                                            schema_;
-    private final boolean                                           generated_;
-    private final ResolvedObjectOrArraySchema.AbstractBuilder<?, ?> outerClassBuilder_;
-    private ResolvedSchema.AbstractBuilder<?, ?>                    builder_;
+    private final ResolvedObjectOrArraySchema.AbstractBuilder<?,?,?> outerClassBuilder_;
+    private ResolvedSchema.AbstractBuilder<?,?,?>                    builder_;
 
     BuilderConsumer(ResolvedOpenApiObject.SingletonBuilder openApiObjectBuilder,
-      String name, String uri, Schema schema, boolean generated, ResolvedObjectOrArraySchema.AbstractBuilder<?,?> outerClassBuilder)
+      String name, String uri,  ResolvedObjectOrArraySchema.AbstractBuilder<?,?,?> outerClassBuilder)
     {
       openApiObjectBuilder_ = openApiObjectBuilder;
       name_ = name;
       uri_ = uri;
-      schema_ = schema;
-      generated_ = generated;
       outerClassBuilder_ = outerClassBuilder;
     }
     
     @Override
-    public void accept(ResolvedSchema.AbstractBuilder<?, ?> builder)
+    public void accept(ResolvedSchema.AbstractBuilder<?,?,?> builder)
     {
       builder_ = builder;
       
       builder
         .withName(name_)
         .withUri(uri_)
-        .withGenerated(generated_)
         .withResolvedContainer(outerClassBuilder_)
         .withResolvedOpenApiObject(openApiObjectBuilder_)
-        .withSchema(schema_)
         ;
   
       schemaMap_.put(uri_, builder);   
     }
   }
 
-  public synchronized ResolvedSchema.AbstractBuilder<?,?> link(ResolvedOpenApiObject.SingletonBuilder openApiObjectBuilder, SourceContext sourceContext,
-      String name, String uri, Schema schema, boolean generated, ResolvedObjectOrArraySchema.AbstractBuilder<?,?> outerClassBuilder)
+  public synchronized ResolvedSchema.AbstractBuilder<?,?,?> link(ResolvedOpenApiObject.SingletonBuilder openApiObjectBuilder, SourceContext sourceContext,
+      String name, String uri, ISchemaInstance schema, ResolvedObjectOrArraySchema.AbstractBuilder<?,?,?> outerClassBuilder)
   {
-    ResolvedSchema.AbstractBuilder<?,?> builder = schemaMap_.get(uri);
+    ResolvedSchema.AbstractBuilder<?,?,?> builder = schemaMap_.get(uri);
     
     if(builder == null)
     {
-      BuilderConsumer c = new BuilderConsumer(openApiObjectBuilder, name, uri, schema, generated, outerClassBuilder);
+      BuilderConsumer c = new BuilderConsumer(openApiObjectBuilder, name, uri, outerClassBuilder);
       
       schema.link(openApiObjectBuilder, this, sourceContext,
           c,
-          uri, generated);
+          uri);
       
       builder = c.builder_;
     }
@@ -227,7 +220,7 @@ public abstract class CanonModelContext
 //    }
 //  }
   
-  public ResolvedSchema.AbstractBuilder<?,?> getSchemaInfo(String absoluteUri)
+  public ResolvedSchema.AbstractBuilder<?,?,?> getSchemaInfo(String absoluteUri)
   {
     return schemaMap_.get(absoluteUri);
   }

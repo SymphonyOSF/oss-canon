@@ -21,6 +21,7 @@ package com.symphony.oss.canon2.generator;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Set;
 
 import com.symphony.oss.canon.json.ParserResultException;
 import com.symphony.oss.canon.json.SyntaxErrorException;
@@ -33,12 +34,15 @@ import com.symphony.oss.canon2.core.ResolvedFloatSchema;
 import com.symphony.oss.canon2.core.ResolvedIntegerSchema;
 import com.symphony.oss.canon2.core.ResolvedLongSchema;
 import com.symphony.oss.canon2.core.ResolvedObjectSchema;
+import com.symphony.oss.canon2.core.ResolvedOneOfSchema;
 import com.symphony.oss.canon2.core.ResolvedPrimitiveSchema;
+import com.symphony.oss.canon2.core.ResolvedPropertyContainerSchema;
 import com.symphony.oss.canon2.core.ResolvedSchema;
 import com.symphony.oss.canon2.core.ResolvedStringSchema;
 import com.symphony.oss.canon2.core.SourceContext;
+import com.symphony.oss.canon2.model.ArraySchema;
 import com.symphony.oss.canon2.model.CanonCardinality;
-import com.symphony.oss.canon2.model.Schema;
+import com.symphony.oss.canon2.model.ObjectSchema;
 import com.symphony.oss.commons.fault.CodingFault;
 
 /**
@@ -100,31 +104,33 @@ G extends IGroupSchemaTemplateModel<T,M,S>>
     return sourceContext_;
   }
   
-  S generateSchema(ResolvedSchema resolvedSchema, M model)
+  S generateSchema(ResolvedSchema<?> resolvedSchema, M model)
   {
     S existingSchema = schemaModelMap_.get(resolvedSchema.getUri());
     
     if(existingSchema != null)
       return existingSchema;
     
-    Schema schema = resolvedSchema.getSchema();
-    String identifier = generator_.getIdentifierName(resolvedSchema.getName(), schema);
-    
-    System.out.println("SCHEMA " + resolvedSchema.getName());
+    String identifier = generator_.getIdentifierName(resolvedSchema.getName(), resolvedSchema.getSchema());
     
     if(resolvedSchema instanceof ResolvedObjectSchema)
     {
       return generateObjectSchema((ResolvedObjectSchema)resolvedSchema, model,
-          schema, identifier);
+          identifier);
+    }
+    if(resolvedSchema instanceof ResolvedOneOfSchema)
+    {
+      return generateOneOfSchema((ResolvedOneOfSchema)resolvedSchema, model,
+          identifier);
     }
     if(resolvedSchema instanceof ResolvedArraySchema)
     {
       return generateArraySchema((ResolvedArraySchema)resolvedSchema, model,
-          schema, identifier);
+          identifier);
     }
     if(resolvedSchema instanceof ResolvedPrimitiveSchema)
     {
-      return generatePrimitiveSchema((ResolvedPrimitiveSchema)resolvedSchema, model,
+      return generatePrimitiveSchema((ResolvedPrimitiveSchema<?>)resolvedSchema, model,
           identifier);
     }
     throw new SyntaxErrorException("Invalid schema", resolvedSchema.getSchema().getJson().getContext());
@@ -198,7 +204,7 @@ G extends IGroupSchemaTemplateModel<T,M,S>>
 //    }
   }
 
-  private S generatePrimitiveSchema(ResolvedPrimitiveSchema resolvedSchema, M model,
+  private S generatePrimitiveSchema(ResolvedPrimitiveSchema<?> resolvedSchema, M model,
       String identifier)
   {
     S primitiveSchema = doGeneratePrimativeSchema(model, resolvedSchema, identifier).asSchemaTemplateModel();
@@ -208,7 +214,7 @@ G extends IGroupSchemaTemplateModel<T,M,S>>
   }
 
   private P doGeneratePrimativeSchema(M model,
-      ResolvedPrimitiveSchema resolvedSchema, String identifier)
+      ResolvedPrimitiveSchema<?> resolvedSchema, String identifier)
   {
     if(resolvedSchema instanceof ResolvedBigDecimalSchema)
       return generator_.generateBigDecimalSchema(model, (ResolvedBigDecimalSchema)resolvedSchema, identifier);
@@ -230,9 +236,10 @@ G extends IGroupSchemaTemplateModel<T,M,S>>
     throw new CodingFault("Unknown ResolvedPrimitiveSchema subtype " + resolvedSchema.getClass());
   }
 
-  private S generateArraySchema(ResolvedArraySchema resolvedSchema, M model, Schema schema,
+  private S generateArraySchema(ResolvedArraySchema resolvedSchema, M model,
       String identifier)
   {
+    ArraySchema schema = resolvedSchema.getSchema();
     CanonCardinality cardinality = schema.getXCanonCardinality();
     if(cardinality == null)
     {
@@ -250,16 +257,11 @@ G extends IGroupSchemaTemplateModel<T,M,S>>
     return arraySchema.asSchemaTemplateModel();
   }
 
-  private S generateObjectSchema(ResolvedObjectSchema resolvedSchema, M model, Schema schema,
-      String identifier)
+  private O generatePropertyContainerSchema(ResolvedPropertyContainerSchema<?> resolvedSchema, M model,
+      String identifier, Set<String> requiredSet)
   {
     O entity = generator_.generateObjectSchema(model, resolvedSchema, identifier);
     schemaModelMap_.put(resolvedSchema.getUri(), entity.asSchemaTemplateModel());
-
-    if(schema.getXCanonExtends() != null)
-    {
-      entity.setExtends(generateSchema(resolvedSchema.getResolvedExtends(), model));
-    }
     
     if(!resolvedSchema.getResolvedProperties().isEmpty())
     {
@@ -268,25 +270,47 @@ G extends IGroupSchemaTemplateModel<T,M,S>>
       
       ncd.logCollisions(sourceContext_, resolvedSchema);
       
-      for(Entry<String, ResolvedSchema> propertyEntry : resolvedSchema.getResolvedProperties().entrySet())
+      for(Entry<String, ResolvedSchema<?>> propertyEntry : resolvedSchema.getResolvedProperties().entrySet())
       {
         String propertyIdentifier = generator_.getIdentifierName(propertyEntry.getKey(), propertyEntry.getValue().getSchema());
 //          String typeIdentifier = modelContext.getGenerator().getIdentifierName(entry.getValue().getName(), entry.getValue());
-        ResolvedSchema resolvedPropertySchema = propertyEntry.getValue();
+        ResolvedSchema<?> resolvedPropertySchema = propertyEntry.getValue();
         
         S typeSchema = generateSchema(resolvedPropertySchema, model);
-        boolean required = schema.getRequired() != null && schema.getRequired().contains(propertyEntry.getKey());
+        boolean required = requiredSet != null && requiredSet.contains(propertyEntry.getKey());
       
         entity.addField(propertyEntry.getKey(),
             generator_.generateField(model, propertyEntry.getKey(), propertyEntry.getValue(), propertyIdentifier, typeSchema, required));
         
       }
       
-      for(Entry<String, ResolvedSchema> innerClassEntry : resolvedSchema.getInnerClasses().getResolvedProperties().entrySet())
+      for(Entry<String, ResolvedSchema<?>> innerClassEntry : resolvedSchema.getInnerClasses().getResolvedProperties().entrySet())
       {
         S innerClass = generateSchema(innerClassEntry.getValue(), model);
         entity.addInnerClass(innerClassEntry.getKey(), innerClass);
       }
+    }
+    
+    return entity;
+  }
+
+  private S generateOneOfSchema(ResolvedOneOfSchema resolvedSchema, M model,
+      String identifier)
+  {
+    O entity = generatePropertyContainerSchema(resolvedSchema, model, identifier, null);
+    
+    return entity.asSchemaTemplateModel();
+  }
+
+  private S generateObjectSchema(ResolvedObjectSchema resolvedSchema, M model,
+      String identifier)
+  {
+    ObjectSchema schema = resolvedSchema.getSchema();
+    O entity = generatePropertyContainerSchema(resolvedSchema, model, identifier, schema.getRequired());
+
+    if(schema.getXCanonExtends() != null)
+    {
+      entity.setExtends(generateSchema(resolvedSchema.getResolvedExtends(), model));
     }
     
     if(resolvedSchema.getResolvedAdditionalProperties() != null)
@@ -314,7 +338,7 @@ G extends IGroupSchemaTemplateModel<T,M,S>>
     
     ncd.logCollisions(sourceContext_, sourceContext_.getResolvedOpenApiObject());
     
-    for(ResolvedSchema resolvedSchema : sourceContext_.getSchemas().values())
+    for(ResolvedSchema<?> resolvedSchema : sourceContext_.getSchemas().values())
     {
       S model = generateSchema(resolvedSchema, parentModel);
       

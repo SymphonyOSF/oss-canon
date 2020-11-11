@@ -32,10 +32,10 @@ import javax.annotation.concurrent.Immutable;
 
 import com.google.common.collect.ImmutableMap;
 import com.symphony.oss.canon2.core.CanonModelContext;
+import com.symphony.oss.canon2.core.ICanonModelEntity;
 import com.symphony.oss.canon2.core.INamedModelEntity;
 import com.symphony.oss.canon2.core.ResolvedOpenApiObject;
 import com.symphony.oss.canon2.core.SourceContext;
-import com.symphony.oss.canon2.runtime.java.Entity;
 
 
 /**
@@ -62,9 +62,9 @@ public class OpenApiObject extends OpenApiObjectEntity implements INamedModelEnt
     return getJson().getString("x-canon-" + language + "-identifier", null);
   }
 
-  public <T extends Entity> T get(String fragment, Class<T> type)
+  public <T extends ICanonModelEntity> T get(String fragment, Class<T> type)
   {
-    Entity entity = get(fragment.split("/"), 1);
+    ICanonModelEntity entity = get(fragment.split("/"), 1);
     
     if(type.isInstance(entity))
       return type.cast(entity);
@@ -72,7 +72,7 @@ public class OpenApiObject extends OpenApiObjectEntity implements INamedModelEnt
     throw new IllegalArgumentException("Expected " + type + " but found " + entity.getClass());
   }
   
-  public Entity get(String[] parts, int index)
+  public ICanonModelEntity get(String[] parts, int index)
   {
     switch(parts[index])
     {
@@ -87,7 +87,7 @@ public class OpenApiObject extends OpenApiObjectEntity implements INamedModelEnt
   {
     SchemasObject schemas = getComponents().getSchemas();
     
-    for(Schema schema : schemas.getSchemas().values())
+    for(ISchema schema : schemas.getSchemas().values())
     {
       schema.fetchReferences(generationContext, sourceContext);
     }
@@ -136,7 +136,7 @@ public class OpenApiObject extends OpenApiObjectEntity implements INamedModelEnt
 //  }
 
 
-  public ImmutableMap<String, Schema> getSchemas()
+  public ImmutableMap<String, ? extends ISchema> getSchemas()
   {
     return getComponents().getSchemas().getSchemas();
   }

@@ -30,10 +30,10 @@ package com.symphony.oss.canon2.model;
 import javax.annotation.concurrent.Immutable;
 
 import com.symphony.oss.canon2.core.CanonModelContext;
+import com.symphony.oss.canon2.core.ICanonModelEntity;
 import com.symphony.oss.canon2.core.ResolvedComponentsObject;
 import com.symphony.oss.canon2.core.ResolvedOpenApiObject;
 import com.symphony.oss.canon2.core.SourceContext;
-import com.symphony.oss.canon2.runtime.java.Entity;
 
 
 /**
@@ -54,7 +54,7 @@ public class ComponentsObject extends ComponentsObjectEntity
     super(initialiser);
   }
   
-  public Entity get(String[] parts, int index)
+  public ICanonModelEntity get(String[] parts, int index)
   {
     switch(parts[index])
     {

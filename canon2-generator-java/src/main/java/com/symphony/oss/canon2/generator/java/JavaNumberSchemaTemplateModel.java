@@ -34,7 +34,7 @@ JavaSchemaTemplateModel>
       boolean isComparable,
       List<String> templates)
   { 
-    super(resolvedSchema, identifier, packageName, javaType, model, templates);
+    super(resolvedSchema, false, identifier, packageName, javaType, model, templates);
 
     minimum_ = resolvedSchema.getMinimum() == null ? null : resolvedSchema.getMinimum().toString();
     maximum_ = resolvedSchema.getMaximum() == null ? null : resolvedSchema.getMaximum().toString();

@@ -9,9 +9,12 @@ package com.symphony.oss.canon2.generator.java;
 import java.math.BigInteger;
 import java.util.List;
 
+import com.symphony.oss.canon2.core.ResolvedArraySchema;
 import com.symphony.oss.canon2.core.ResolvedSchema;
 import com.symphony.oss.canon2.core.SchemaTemplateModelType;
 import com.symphony.oss.canon2.generator.IArraySchemaTemplateModel;
+import com.symphony.oss.canon2.model.ArraySchemaEntity.MaxItems;
+import com.symphony.oss.canon2.model.ArraySchemaEntity.MinItems;
 import com.symphony.oss.canon2.model.CanonCardinality;
 import com.symphony.oss.commons.fault.CodingFault;
 
@@ -32,11 +35,11 @@ JavaSchemaTemplateModel>
   
   private String            type_;
   private String            copyPrefix_;
-  private final BigInteger        minItems_;
-  private final BigInteger        maxItems_;
+  private final MinItems        minItems_;
+  private final MaxItems        maxItems_;
   private String            typeNew_;
   
-  JavaArraySchemaTemplateModel(ResolvedSchema resolvedSchema, String identifier, String packageName, CanonCardinality cardinality, JavaOpenApiTemplateModel model,
+  JavaArraySchemaTemplateModel(ResolvedArraySchema resolvedSchema, String identifier, String packageName, CanonCardinality cardinality, JavaOpenApiTemplateModel model,
       List<String> templates)
   {
     super(resolvedSchema, SchemaTemplateModelType.ARRAY, identifier, model, templates);
@@ -122,12 +125,18 @@ JavaSchemaTemplateModel>
 
   public BigInteger getMinItems()
   {
-    return minItems_;
+    if(minItems_ == null)
+      return null;
+    
+    return minItems_.asBigInteger();
   }
 
   public BigInteger getMaxItems()
   {
-    return maxItems_;
+    if(maxItems_ == null)
+      return null;
+    
+    return maxItems_.asBigInteger();
   }
 
   @Override

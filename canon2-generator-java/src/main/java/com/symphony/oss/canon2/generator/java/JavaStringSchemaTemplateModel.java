@@ -12,11 +12,14 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 import com.symphony.oss.canon2.core.ResolvedStringSchema;
 import com.symphony.oss.canon2.generator.IPrimitiveSchemaTemplateModel;
-import com.symphony.oss.canon2.model.Schema;
+import com.symphony.oss.canon2.model.StringSchema;
 
 /**
  * Java template model for number and integer.
@@ -30,6 +33,8 @@ IJavaTemplateModel,
 JavaOpenApiTemplateModel,
 JavaSchemaTemplateModel>
 {  
+  private static final Logger log_ = LoggerFactory.getLogger(JavaStringSchemaTemplateModel.class);
+  
   private final Set<String>                  quotedEnumValues_;
   private final Set<String>                  enumValues_;
   private final ImmutableMap<String, String> enumMap_;
@@ -39,9 +44,9 @@ JavaSchemaTemplateModel>
   JavaStringSchemaTemplateModel(ResolvedStringSchema resolvedSchema, String identifier, String packageName, JavaOpenApiTemplateModel model,
        List<String> templates)
   { 
-    super(resolvedSchema, identifier, packageName, initType(resolvedSchema), model, templates);
+    super(resolvedSchema, !resolvedSchema.getEnum().isEmpty(), identifier, packageName, initType(resolvedSchema), model, templates);
     
-    Schema entity = resolvedSchema.getSchema();
+    StringSchema entity = resolvedSchema.getSchema();
     if(entity.getFormat() != null)
     {
       switch(entity.getFormat())
@@ -51,7 +56,7 @@ JavaSchemaTemplateModel>
           break;
           
         default:
-          warnBadFormat(entity);
+          log_.warn("Unrecognized " + entity.getType() + " format \"" + entity.getFormat() + "\" ignored at " + entity.getJson().getContext().getSourceLocation());
       }
     }
     
@@ -67,6 +72,7 @@ JavaSchemaTemplateModel>
     }
     else
     {
+      int debig=1;
       Set<String> quotedValues = new HashSet<>(enumList.size());
       Set<String> values = new HashSet<>(enumList.size());
       Map<String, String> valueMap = new HashMap<>();
@@ -100,7 +106,7 @@ JavaSchemaTemplateModel>
 
   private static String initType(ResolvedStringSchema resolvedSchema)
   {
-    Schema entity = resolvedSchema.getSchema();
+    StringSchema entity = resolvedSchema.getSchema();
     if(entity.getFormat() != null)
     {
       switch(entity.getFormat())
@@ -151,5 +157,11 @@ JavaSchemaTemplateModel>
   public Map<String, String> getEnumMap()
   {
     return enumMap_;
+  }
+  
+  @Override
+  public boolean getIsEnum()
+  {
+    return !enumMap_.isEmpty();
   }
 }

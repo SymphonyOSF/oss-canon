@@ -21,12 +21,26 @@
  *    Generator groupId    org.symphonyoss.s2.canon
  *              artifactId canon2-generator-java
  *    Template name        template/Object/_.java.ftl
- *    At                   2020-10-28 18:16:15 GMT
+ *    At                   2020-11-10 17:41:51 GMT
  *----------------------------------------------------------------------------------------------------
  */
+// importFields
+// importField propertyName nullable is Nullable
+// importType propertyName
+// importType propertyName
+  // innerClass class com.symphony.oss.canon2.generator.java.JavaStringSchemaTemplateModel
+  // innerClass propertyName
+         
+    // innerClass propertyName isPrimitive
+        
+        
+        
 
 package com.symphony.oss.canon2.model;
 
+import java.util.Objects;
+
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.annotation.concurrent.Immutable;
 
@@ -40,6 +54,7 @@ import com.symphony.oss.canon2.runtime.java.IObjectEntityInitialiser;
 import com.symphony.oss.canon2.runtime.java.JsonObjectEntityInitialiser;
 import com.symphony.oss.canon2.runtime.java.ModelRegistry;
 import com.symphony.oss.canon2.runtime.java.ObjectEntity;
+import com.symphony.oss.canon2.runtime.java.TypeDef;
 import com.symphony.oss.commons.fault.FaultAccumulator;
 
 /**
@@ -83,6 +98,7 @@ public class DiscriminatorObject extends ObjectEntity
       {
         if(node instanceof JsonString)
         {
+// schema.class class com.symphony.oss.canon2.generator.java.JavaStringSchemaTemplateModel name propertyName type String javaType String
           _propertyName_ = ((JsonString)node).asString();
         }
         else 
@@ -211,6 +227,7 @@ public class DiscriminatorObject extends ObjectEntity
         JsonDomNode  node = jsonObject.get("propertyName");
         if(node instanceof JsonString)
         {
+// schema.class class com.symphony.oss.canon2.generator.java.JavaStringSchemaTemplateModel name propertyName type String javaType String
           _propertyName_ = ((JsonString)node).asString();
         }
         else if(!modelRegistry.getParserValidation().isIgnoreInvalidAttributes())
@@ -244,7 +261,7 @@ public class DiscriminatorObject extends ObjectEntity
      *
      * @return This (fluent method).
      */
-    public T withPropertyName(String value)
+    public T withPropertyName(String value) //main
     {
       _propertyName_ = value;
       return self();
@@ -263,7 +280,7 @@ public class DiscriminatorObject extends ObjectEntity
 
       return builder.build();
     }
-//T1 entity DiscriminatorObject OBJECT
+
     @Override
     public void populateJson(JsonObject.Builder builder)
     {
@@ -271,7 +288,7 @@ public class DiscriminatorObject extends ObjectEntity
 
       if(getPropertyName() != null)
       {
-          builder.addIfNotNull("propertyName", getPropertyName());
+        builder.addIfNotNull("propertyName", getPropertyName());
       }
     }
 
@@ -346,6 +363,7 @@ public class DiscriminatorObject extends ObjectEntity
 
 // entity.additionalProperties??
 // innerClasses
+  // innerClass propertyName STRING class com.symphony.oss.canon2.core.SchemaTemplateModelType
 }
 
 /*----------------------------------------------------------------------------------------------------

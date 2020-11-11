@@ -26,6 +26,7 @@ import javax.annotation.Nullable;
 
 import com.symphony.oss.canon.json.model.JsonObject;
 import com.symphony.oss.canon2.core.INamedModelEntity;
+import com.symphony.oss.canon2.core.ResolvedArraySchema;
 import com.symphony.oss.canon2.core.ResolvedBigDecimalSchema;
 import com.symphony.oss.canon2.core.ResolvedBigIntegerSchema;
 import com.symphony.oss.canon2.core.ResolvedBooleanSchema;
@@ -34,6 +35,7 @@ import com.symphony.oss.canon2.core.ResolvedFloatSchema;
 import com.symphony.oss.canon2.core.ResolvedIntegerSchema;
 import com.symphony.oss.canon2.core.ResolvedLongSchema;
 import com.symphony.oss.canon2.core.ResolvedOpenApiObject;
+import com.symphony.oss.canon2.core.ResolvedPropertyContainerSchema;
 import com.symphony.oss.canon2.core.ResolvedSchema;
 import com.symphony.oss.canon2.core.ResolvedStringSchema;
 import com.symphony.oss.canon2.core.SourceContext;
@@ -73,15 +75,15 @@ G extends IGroupSchemaTemplateModel<T,M,S>>
   
   M generateOpenApiObject(SourceContext modelContext, String name, ResolvedOpenApiObject resolvedOpenApiObject, String identifier);
 
-  A generateArraySchema(M model, ResolvedSchema resolvedSchema, String identifier, CanonCardinality cardinality);
+  A generateArraySchema(M model, ResolvedArraySchema resolvedSchema, String identifier, CanonCardinality cardinality);
 
   IPathNameConstructor<T> createPathBuilder(SourceContext sourceContext);
 
   void populateTemplateModel(SourceContext sourceContext, Map<String, Object> map);
   
-  F generateField(M model, String name, ResolvedSchema resolvedSchema, String identifier, S typeSchema, boolean required);
+  F generateField(M model, String name, ResolvedSchema<?> resolvedSchema, String identifier, S typeSchema, boolean required);
 
-  O generateObjectSchema(M model, ResolvedSchema resolvedSchema, String identifier);
+  O generateObjectSchema(M model, ResolvedPropertyContainerSchema<?> resolvedSchema, String identifier);
 
   default @Nullable JsonObject getConfig(SourceContext sourceContext)
   {

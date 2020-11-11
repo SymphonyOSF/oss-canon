@@ -24,14 +24,9 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.io.StringReader;
-import java.math.BigDecimal;
 import java.nio.charset.StandardCharsets;
 
 import com.symphony.oss.canon.json.model.JsonDomNode;
-import com.symphony.oss.canon.json.model.JsonDouble;
-import com.symphony.oss.canon.json.model.JsonFloat;
-import com.symphony.oss.canon.json.model.JsonInteger;
-import com.symphony.oss.canon.json.model.JsonLong;
 import com.symphony.oss.canon.json.model.JsonParsedNumber;
 import com.symphony.oss.commons.fault.CodingFault;
 import com.symphony.oss.commons.fluent.BaseAbstractBuilder;
@@ -154,6 +149,28 @@ public class Parser implements IParserContext
     return col_;
   }
   
+  @Override
+  public String getSourceLocation()
+  {
+    StringBuilder s = new StringBuilder();
+    
+    if(inputSource_ != null)
+    {
+      s.append("in ");
+      s.append(inputSource_);
+      s.append(" ");
+      
+    }
+    
+    s.append("at line ");
+    s.append(line_);
+
+    s.append(", col ");
+    s.append(col_);
+    
+    return s.toString();
+  }
+
   boolean isAtEof() throws IOException
   {
     if(!atEof_ && (lineBuffer_ == null || col_ >= lineBuffer_.length()))

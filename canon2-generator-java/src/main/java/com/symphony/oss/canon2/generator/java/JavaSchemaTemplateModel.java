@@ -53,7 +53,7 @@ implements IJavaTemplateModel
   private final boolean generateFacade_;
   private final boolean generateBuilderFacade_;
   
-  JavaSchemaTemplateModel(ResolvedSchema resolvedSchema, SchemaTemplateModelType schemaType, String identifier, JavaOpenApiTemplateModel model,
+  JavaSchemaTemplateModel(ResolvedSchema<?> resolvedSchema, SchemaTemplateModelType schemaType, String identifier, JavaOpenApiTemplateModel model,
       List<String> templates)
   {
     super(resolvedSchema, schemaType, identifier, model, templates);
@@ -257,5 +257,10 @@ implements IJavaTemplateModel
   public Collection<JavaFieldTemplateModel> getFields()
   {
     return EMPTY_FIELDS;
+  }
+  
+  public boolean getIsEnum()
+  {
+    return false;
   }
 }

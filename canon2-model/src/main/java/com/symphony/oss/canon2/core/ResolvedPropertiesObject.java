@@ -25,16 +25,17 @@ import java.util.Map.Entry;
 import javax.annotation.Nonnull;
 
 import com.google.common.collect.ImmutableMap;
+import com.symphony.oss.canon2.model.ISchemaInstance;
 
 public class ResolvedPropertiesObject
 {
-  private final Map<String, ResolvedSchema> properties_;
+  private final Map<String, ResolvedSchema<?>> properties_;
   
   private ResolvedPropertiesObject(SingletonBuilder builder)
   {
-    ImmutableMap.Builder<String, ResolvedSchema> b = new ImmutableMap.Builder<String, ResolvedSchema>();
+    ImmutableMap.Builder<String, ResolvedSchema<?>> b = new ImmutableMap.Builder<String, ResolvedSchema<?>>();
     
-    for(Entry<String, ResolvedSchema.AbstractBuilder<?,?>> entry : builder.propertyBuilders_.entrySet())
+    for(Entry<String, ResolvedSchema.AbstractBuilder<? extends ISchemaInstance,?,?>> entry : builder.propertyBuilders_.entrySet())
     {
       b.put(entry.getKey(), entry.getValue().build());
     }
@@ -43,10 +44,10 @@ public class ResolvedPropertiesObject
   
   public static class SingletonBuilder
   {
-    Map<String, ResolvedSchema.AbstractBuilder<?,?>> propertyBuilders_ = new HashMap<>();
+    Map<String, ResolvedSchema.AbstractBuilder<? extends ISchemaInstance,?,?>> propertyBuilders_ = new HashMap<>();
     ResolvedPropertiesObject built_;
     
-    public SingletonBuilder with(String name, ResolvedSchema.AbstractBuilder<?,?> property)
+    public SingletonBuilder with(String name, ResolvedSchema.AbstractBuilder<? extends ISchemaInstance,?,?> property)
     {
       if(built_ != null)
         throw new IllegalStateException("SingletonBuilder has already been built");
@@ -67,13 +68,13 @@ public class ResolvedPropertiesObject
 
   public void validate(SourceContext context)
   {
-    for(ResolvedSchema schema : properties_.values())
+    for(ResolvedSchema<?> schema : properties_.values())
     {
       schema.validate(context);
     }
   }
 
-  public @Nonnull Map<String, ResolvedSchema> getResolvedProperties()
+  public @Nonnull Map<String, ResolvedSchema<?>> getResolvedProperties()
   {
     return properties_;
   }

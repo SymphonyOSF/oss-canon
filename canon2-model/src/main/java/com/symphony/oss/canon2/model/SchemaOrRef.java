@@ -27,15 +27,10 @@
 
 package com.symphony.oss.canon2.model;
 
-import java.net.MalformedURLException;
-import java.net.URL;
-
 import javax.annotation.concurrent.Immutable;
 
-import com.symphony.oss.canon.json.IParserContext;
-import com.symphony.oss.canon.json.ParserErrorException;
 import com.symphony.oss.canon2.core.CanonModelContext;
-import com.symphony.oss.canon2.core.ResolvedObjectSchema;
+import com.symphony.oss.canon2.core.ResolvedObjectOrArraySchema;
 import com.symphony.oss.canon2.core.ResolvedOpenApiObject;
 import com.symphony.oss.canon2.core.ResolvedSchema;
 import com.symphony.oss.canon2.core.SourceContext;
@@ -49,9 +44,6 @@ import com.symphony.oss.canon2.core.SourceContext;
 @Immutable
 public class SchemaOrRef extends SchemaOrRefEntity
 {
-  private final Schema schema_;
-  private final ReferenceObject ref_;
-
   /**
    * Constructor.
    * 
@@ -60,107 +52,36 @@ public class SchemaOrRef extends SchemaOrRefEntity
   protected SchemaOrRef(Initialiser initialiser)
   {
     super(initialiser);
-    
-    if(getJson().get("$ref") == null)
-    {
-      schema_ = Schema.FACTORY.newInstance(getJson(), initialiser.getModelRegistry());
-      ref_ = null;
-    }
-    else
-    {
-      schema_ = null;
-      ref_ = ReferenceObject.FACTORY.newInstance(getJson(), initialiser.getModelRegistry());
-    }
   }
 
-  public Schema getSchema()
-  {
-    return schema_;
-  }
-
+  @Deprecated
   public ReferenceObject getRef()
   {
-    return ref_;
+    return getReferenceObject();
   }
 
   public boolean isReference()
   {
-    return ref_ != null;
+    return getReferenceObject() != null;
   }
 
-  public ResolvedSchema.AbstractBuilder<?,?> link(ResolvedOpenApiObject.SingletonBuilder openApiObjectBuilder, CanonModelContext modelContext, SourceContext sourceContext,
-      String name, String parentUri, ResolvedObjectSchema.SingletonBuilder outerClassBuilder)
+  public ResolvedSchema.AbstractBuilder<? extends ISchemaInstance,?,?> link(ResolvedOpenApiObject.SingletonBuilder openApiObjectBuilder, CanonModelContext modelContext, SourceContext sourceContext,
+      String name, String parentUri, ResolvedObjectOrArraySchema.AbstractBuilder<?,?,?> outerClassBuilder)
   {
-    if(schema_ != null)
+    if(getSchema() != null)
     {
-      return modelContext.link(openApiObjectBuilder, sourceContext, name, parentUri + "/" + name, schema_, isGenerated(schema_.getType()), outerClassBuilder);
+      return modelContext.link(openApiObjectBuilder, sourceContext, name, parentUri + "/" + name, getSchema(), outerClassBuilder);
     }
     else
     {
-      return fetchSchema(openApiObjectBuilder, modelContext, sourceContext, ref_, true);
+      return fetchSchema(openApiObjectBuilder, modelContext, sourceContext, getReferenceObject());
     }
   }
-  
-
-
-//  private String getSourceLocation()
-//  {
-//    IParserContext context = getJsonDomNode().getContext();
-//    
-//    if(context == null)
-//      return "unknown location";
-//    
-//    return context.toString();
-//  }
 
   // Duplicated in Schema - THIS is the correct place for this
-  private ResolvedSchema.AbstractBuilder<?,?> fetchSchema(ResolvedOpenApiObject.SingletonBuilder openApiObjectBuilder, CanonModelContext modelContext, SourceContext sourceContext, ReferenceObject ref,
-      boolean generated)
+  static ResolvedSchema.AbstractBuilder<? extends ISchemaInstance,?,?> fetchSchema(ResolvedOpenApiObject.SingletonBuilder openApiObjectBuilder, CanonModelContext modelContext, SourceContext sourceContext, ReferenceObject ref)
   {
-    Schema schema;
-    String uri;
-    
-    if(ref.getBaseUri() == null)
-    {
-      try
-      {
-        schema = sourceContext.getModel().get(ref.getFragment(), Schema.class);
-      }
-      catch(IllegalArgumentException e)
-      {
-        throw new ParserErrorException("No such schema \"" + ref.getFragment() + "\"", ref);
-      }
-      uri = sourceContext.getUrl() + ref.getFragment();
-    }
-    else
-    {
-      try
-      {
-        URL url = new URL(sourceContext.getUrl(), ref.getBaseUri().toString());
-        
-        sourceContext = modelContext.getReferencedModel(url);
-        schema = sourceContext.getModel().get(ref.getFragment(), Schema.class);
-        uri = ref.get$ref();
-        openApiObjectBuilder = sourceContext.getResolvedOpenApiObjectBuilder();
-      }
-      catch (MalformedURLException e)
-      {
-        throw new ParserErrorException("Invalid URL", ref, e);
-      }
-    }
-    
-    return modelContext.link(openApiObjectBuilder, sourceContext, ref.getName(), uri, schema, generated, null);
-  }
-  
-  private boolean isGenerated(String type)
-  {
-    // TODO: replace with type enum
-    
-    if("array".equals(type))
-      System.err.println("HERE");
-    
-    return "object".equals(type); // || "array".equals(type);
-    
+    return ref.fetchSchema(openApiObjectBuilder, modelContext, sourceContext);
   }
 }
 /*----------------------------------------------------------------------------------------------------

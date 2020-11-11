@@ -49,4 +49,11 @@ public interface IParserContext
    */
   int getCol();
 
+  /**
+   * Return the source location as a string for printing as an error message.
+   * 
+   * @return the source location as a string for printing as an error message.
+   */
+  String getSourceLocation();
+
 }

@@ -72,6 +72,11 @@ public class TestPet
     Entity parsedCat = modelRegistry_.parseOne(catJson);
     
     assertEquals(parsedCat, cat);
+    
+//    DiscriminatorPet discriminatorPet = new DiscriminatorPet.Builder()
+//        .withCat(cat)
+//        .with
+//        .build();
   }
 
   @Test(expected=IllegalStateException.class)

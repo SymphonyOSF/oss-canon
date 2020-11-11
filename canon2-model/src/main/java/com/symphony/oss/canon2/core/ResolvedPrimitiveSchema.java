@@ -18,16 +18,18 @@
 
 package com.symphony.oss.canon2.core;
 
-public class ResolvedPrimitiveSchema extends ResolvedSchema
+import com.symphony.oss.canon2.model.IPrimitiveSchema;
+
+public class ResolvedPrimitiveSchema<S extends IPrimitiveSchema> extends ResolvedSchema<S>
 {
-  ResolvedPrimitiveSchema(AbstractBuilder<?,?> builder)
+  ResolvedPrimitiveSchema(AbstractBuilder<S,?,?> builder)
   {
     super(builder);
   }
   
-  public abstract static class AbstractBuilder<T extends AbstractBuilder<T, B>, B extends ResolvedPrimitiveSchema> extends ResolvedSchema.AbstractBuilder<T,B>
+  public abstract static class AbstractBuilder<S extends IPrimitiveSchema, T extends AbstractBuilder<S,T,B>, B extends ResolvedPrimitiveSchema<S>> extends ResolvedSchema.AbstractBuilder<S,T,B>
   {
-    ResolvedSchema.AbstractBuilder<?,?>          resolvedItemsBuilder_;
+    ResolvedSchema.AbstractBuilder<? extends IPrimitiveSchema,?,?>          resolvedItemsBuilder_;
     
     AbstractBuilder(Class<T> type)
     {

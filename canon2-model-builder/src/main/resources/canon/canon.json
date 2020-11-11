@@ -95,6 +95,8 @@
         "description": "An element to hold various schemas for the specification.",
         "type": "object",
         "x-canon-facade": true,
+        "properties": {
+        },
         "XXadditionalProperties": {
           "$ref": "#/components/schemas/Schema"
         }
@@ -145,10 +147,13 @@
         },
         "ZZZadditionalProperties": true
       },
-      "Schema": {
-        "description": "A data type definition.",
+      "OneOfSchema": {
+        "description": "A oneOf type definition.",
         "type": "object",
         "x-canon-facade": true,
+        "required": [
+          "oneOf"
+        ],
         "properties": {
           "oneOf": {
             "type": "array",
@@ -157,26 +162,79 @@
               "$ref": "#/components/schemas/SchemaOrRef"
             }
           },
+          "discriminator": {
+            "$ref": "#/components/schemas/DiscriminatorObject"
+          },
+          "x-canon-identifier": {
+            "type": "string"
+          },
+          "x-canon-facade": {
+            "type": "boolean"
+          },
+          "x-canon-builderFacade": {
+            "type": "boolean"
+          }
+        }
+      },
+      
+      "ArraySchema": {
+        "description": "An array definition.",
+        "type": "object",
+        "x-canon-facade": true,
+        "required": [
+          "type",
+          "items"
+        ],
+        "properties": {
           "type": {
+            "type": "string",
+            "enum": [
+              "array"
+            ]
+          },
+          "items": {
+            "$ref": "#/components/schemas/SchemaOrRef"
+          },
+          "discriminator": {
+            "$ref": "#/components/schemas/DiscriminatorObject"
+          },
+          "x-canon-cardinality": {
+            "$ref": "#/components/schemas/CanonCardinality"
+          },
+          "x-canon-identifier": {
             "type": "string"
           },
-          "pattern": {
-            "type": "string"
+          "x-canon-facade": {
+            "type": "boolean"
           },
-          "minLength": {
-            "type": "integer"
+          "x-canon-builderFacade": {
+            "type": "boolean"
           },
-          "maxLength": {
-            "type": "integer"
+          "minItems": {
+              "type": "integer",
+              "minimum": 0
           },
-          "format": {
-            "type": "string"
-          },
-          "minimum": {
-            "type": "number"
-          },
-          "maximum": {
-            "type": "number"
+          "maxItems": {
+              "type": "integer",
+              "minimum": 0
+          }
+        }
+      },
+      
+      "ObjectSchema": {
+        "description": "An object definition.",
+        "type": "object",
+        "x-canon-facade": true,
+        "required": [
+          "type",
+          "properties"
+        ],
+        "properties": {
+          "type": {
+            "type": "string",
+            "enum": [
+              "object"
+            ]
           },
           "discriminator": {
             "$ref": "#/components/schemas/DiscriminatorObject"
@@ -189,12 +247,6 @@
           },
           "x-canon-extends": {
             "$ref": "#/components/schemas/ReferenceObject"
-          },
-          "x-canon-attributes": {
-            "$ref": "#/components/schemas/CanonAttributes"
-          },
-          "x-canon-cardinality": {
-            "$ref": "#/components/schemas/CanonCardinality"
           },
           "x-canon-identifier": {
             "type": "string"
@@ -211,6 +263,47 @@
             "items": {
               "type": "string"
             }
+          }
+        }
+      },
+      
+      "StringSchema": {
+        "description": "A string type definition.",
+        "type": "object",
+        "x-canon-facade": true,
+        "required": [
+          "type"
+        ],
+        "properties": {
+          "type": {
+            "type": "string",
+            "enum": [
+              "string"
+            ]
+          },
+          "minLength": {
+            "type": "integer"
+          },
+          "maxLength": {
+            "type": "integer"
+          },
+          "pattern": {
+            "type": "string"
+          },
+          "format": {
+            "type": "string"
+          },
+          "x-canon-attributes": {
+            "$ref": "#/components/schemas/CanonAttributes"
+          },
+          "x-canon-identifier": {
+            "type": "string"
+          },
+          "x-canon-facade": {
+            "type": "boolean"
+          },
+          "x-canon-builderFacade": {
+            "type": "boolean"
           },
           "enum": {
             "type": "array",
@@ -218,23 +311,113 @@
             "items": {
               "type": "string"
             }
-          },
-          "minItems": {
-              "type": "integer",
-              "minimum": 0
-          },
-          "maxItems": {
-              "type": "integer",
-              "minimum": 0
           }
         }
       },
       
+      "NumberSchema": {
+        "description": "A numeric type definition.",
+        "type": "object",
+        "x-canon-facade": true,
+        "required": [
+          "type"
+        ],
+        "properties": {
+          "type": {
+            "type": "string",
+            "enum": [
+              "number",
+              "integer"
+            ]
+          },
+          "format": {
+            "type": "string"
+          },
+          "minimum": {
+            "type": "number"
+          },
+          "maximum": {
+            "type": "number"
+          },
+          "x-canon-attributes": {
+            "$ref": "#/components/schemas/CanonAttributes"
+          },
+          "x-canon-identifier": {
+            "type": "string"
+          },
+          "x-canon-facade": {
+            "type": "boolean"
+          },
+          "x-canon-builderFacade": {
+            "type": "boolean"
+          }
+        }
+      },
+      
+      "BooleanSchema": {
+        "description": "A boolean type definition.",
+        "type": "object",
+        "x-canon-facade": true,
+        "required": [
+          "type"
+        ],
+        "properties": {
+          "type": {
+            "type": "string",
+            "enum": [
+              "boolean"
+            ]
+          },
+          "x-canon-attributes": {
+            "$ref": "#/components/schemas/CanonAttributes"
+          },
+          "x-canon-identifier": {
+            "type": "string"
+          },
+          "x-canon-facade": {
+            "type": "boolean"
+          },
+          "x-canon-builderFacade": {
+            "type": "boolean"
+          }
+        }
+      },
+      "Schema": {
+        "oneOf": [
+          {
+            "$ref": "#/components/schemas/OneOfSchema"
+          },
+          {
+            "$ref": "#/components/schemas/ArraySchema"
+          },
+          {
+            "$ref": "#/components/schemas/ObjectSchema"
+          },
+          {
+            "$ref": "#/components/schemas/StringSchema"
+          },
+          {
+            "$ref": "#/components/schemas/NumberSchema"
+          },
+          {
+            "$ref": "#/components/schemas/BooleanSchema"
+          }
+        ],
+        "x-canon-facade": true
+      },  
       "SchemaOrRef": {
         "description": "A schema or a schema reference.",
-        "type": "object",
+        
+        "oneOf": [
+          {
+            "$ref": "#/components/schemas/Schema"
+          },
+          {
+            "$ref": "#/components/schemas/ReferenceObject"
+          }
+        ],
         "x-canon-facade": true
-      },
+      },  
       
       "CanonAttributes": {
         "description": "A collection of canon generation attributes.",
@@ -247,6 +430,8 @@
         "description": "A collection of schema properties (fields).",
         "type": "object",
         "x-canon-facade": true,
+        "properties": {
+        },
         "XXadditionalProperties": {
           "$ref": "#/components/schemas/Schema"
         }

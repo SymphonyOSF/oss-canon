@@ -21,9 +21,16 @@
  *    Generator groupId    org.symphonyoss.s2.canon
  *              artifactId canon2-generator-java
  *    Template name        template/Object/_.java.ftl
- *    At                   2020-10-28 18:16:15 GMT
+ *    At                   2020-11-10 17:41:51 GMT
  *----------------------------------------------------------------------------------------------------
  */
+// importFields
+// importField SchemaOrRef nullable is Nullable
+// importType SchemaOrRef
+// importType SchemaOrRef
+// importField $1 nullable is Nullable
+// importType $1
+// importType $1
 
 package com.symphony.oss.canon2.model;
 
@@ -38,11 +45,8 @@ import com.symphony.oss.canon.json.model.JsonNull;
 import com.symphony.oss.canon.json.model.JsonObject;
 import com.symphony.oss.canon2.runtime.java.Entity;
 import com.symphony.oss.canon2.runtime.java.IEntityInitialiser;
-import com.symphony.oss.canon2.runtime.java.IObjectEntityInitialiser;
 import com.symphony.oss.canon2.runtime.java.JsonEntityInitialiser;
-import com.symphony.oss.canon2.runtime.java.JsonObjectEntityInitialiser;
 import com.symphony.oss.canon2.runtime.java.ModelRegistry;
-import com.symphony.oss.canon2.runtime.java.ObjectEntity;
 import com.symphony.oss.commons.fault.FaultAccumulator;
 
 /**
@@ -77,22 +81,24 @@ public class AdditionalProperties extends Entity
 
       JsonDomNode  node = jsonInitialiser.getJson();
       int          valueCnt = 0;
+       _schemaOrRef_ = SchemaOrRef.FACTORY.newInstanceOrNull(node, jsonInitialiser.getModelRegistry());
+      if(_schemaOrRef_ != null)
+        valueCnt++;
 
+       if(node instanceof JsonBoolean)
+       {
+// schema.class class com.symphony.oss.canon2.generator.java.JavaBooleanSchemaTemplateModel name $1 type Boolean javaType Boolean
+         _$1_ = ((JsonBoolean)node).asBoolean();
+       }
+       else 
+       {
+         _$1_ = null;
+       }
+      if(_$1_ != null)
+        valueCnt++;
 
-//START
-    
-        _schemaOrRef_ = SchemaOrRef.FACTORY.newInstance(node, jsonInitialiser.getModelRegistry());
-
-
-//START
-        if(node instanceof JsonBoolean)
-        {
-          _$1_ = ((JsonBoolean)node).asBoolean();
-        }
-        else 
-        {
-          throw new ParserErrorException("$1 must be an instance of JsonBoolean not " + node.getClass().getName(), node.getContext());
-        }
+      if(valueCnt != 1)
+        throw new ParserErrorException("Exactly one value must be present", jsonInitialiser.getJson().getContext());
     }
     else
     {
@@ -201,19 +207,19 @@ public class AdditionalProperties extends Entity
       if(jsonObject.containsKey("SchemaOrRef"))
       {
         JsonDomNode  node = jsonObject.get("SchemaOrRef");
-    
-        _schemaOrRef_ = SchemaOrRef.FACTORY.newInstance(node, modelRegistry);
+        _schemaOrRef_ = SchemaOrRef.FACTORY.newInstanceOrNull(node, modelRegistry);
       }
       if(jsonObject.containsKey("$1"))
       {
         JsonDomNode  node = jsonObject.get("$1");
         if(node instanceof JsonBoolean)
         {
+// schema.class class com.symphony.oss.canon2.generator.java.JavaBooleanSchemaTemplateModel name $1 type Boolean javaType Boolean
           _$1_ = ((JsonBoolean)node).asBoolean();
         }
         else if(!modelRegistry.getParserValidation().isIgnoreInvalidAttributes())
         {
-          throw new ParserErrorException("$1 must be an instance of JsonBoolean not " + node.getClass().getName(), node.getContext());
+          _$1_ = null;
         }
       }
       return super.withValues(jsonObject, modelRegistry);
@@ -243,7 +249,7 @@ public class AdditionalProperties extends Entity
      *
      * @return This (fluent method).
      */
-    public T withSchemaOrRef(SchemaOrRef value)
+    public T withSchemaOrRef(SchemaOrRef value) //main
     {
       _schemaOrRef_ = value;
       return self();
@@ -267,7 +273,7 @@ public class AdditionalProperties extends Entity
      *
      * @return This (fluent method).
      */
-    public T with$1(Boolean value)
+    public T with$1(Boolean value) //main
     {
       _$1_ = value;
       return self();
@@ -277,13 +283,28 @@ public class AdditionalProperties extends Entity
     @Override
     public JsonDomNode getJson()
     {
-      return null; // TODO: implement
+
+      if(getSchemaOrRef() != null)
+      {
+        return getSchemaOrRef().getJson();
+      }
+
+      if(get$1() != null)
+      {
+        return JsonDomNode.newInstance(get$1());
+      }
+  
+      throw new IllegalStateException("No value present in OneOf instance");
     }
 
     @Override
     public void validate(FaultAccumulator faultAccumulator)
     {
       super.validate(faultAccumulator);
+      faultAccumulator.checkValueCount("fields", 1, 1,
+        _schemaOrRef_,
+        _$1_
+      );
     }
   }
 

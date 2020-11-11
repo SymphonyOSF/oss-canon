@@ -326,6 +326,16 @@
           },
           "enumsField": {
               "$ref": "#/components/schemas/Colour"
+          },
+          "inlineEenumField": {
+              "type": "string",
+              "enum": [
+                "int",
+                "long",
+                "float",
+                "double",
+                "String"
+              ]
           }
         }
       },

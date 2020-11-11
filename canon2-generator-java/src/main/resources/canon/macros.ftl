@@ -154,7 +154,6 @@ UNEXPECTED SCHEMA TYPE ${schema.schemaType} in generateCreateFieldFromJsonDomNod
 <#macro generateCreatePrimitiveFieldFromJsonDomNode indent node objectSchemaType schema name var ifValidation>
 ${indent}if(${node} instanceof ${schema.jsonNodeType})
 ${indent}{
-// schema.class ${schema.class} name ${schema.name} type ${schema.type} javaType ${schema.javaType}
 ${indent}  ${var} = ${schema.constructPrefix}((${schema.jsonNodeType})${node}).as${schema.javaType}()${schema.constructSuffix};
 ${indent}}
 ${indent}else ${ifValidation}
@@ -195,8 +194,6 @@ ${indent}  throw new IllegalArgumentException("${field.name} is required.");
  # @param var       A java variable containing the value being checked
  #----------------------------------------------------------------------------------------------------->
 <#macro checkLimits indent schema name var exceptionPrefix exceptionSuffix>
-// schema.class ${schema.class}
-// name ${name}
   <#if schema.minimum??>
     <#if schema.exclusiveMinimum>
 ${indent}if(${schema.generateComparason(var, "MINIMUM", "<=")})

@@ -18,24 +18,26 @@
 
 package com.symphony.oss.canon2.core;
 
+import com.symphony.oss.canon2.model.ISchemaInstance;
+
 /**
  * A resolved object or array schema.
  * 
  * @author Bruce Skingle
  *
  */
-public class ResolvedObjectOrArraySchema extends ResolvedSchema
+public abstract class ResolvedObjectOrArraySchema<S extends ISchemaInstance> extends ResolvedSchema<S>
 {
   private final ResolvedPropertiesObject.SingletonBuilder innerClassesBuilder_;
   
-  ResolvedObjectOrArraySchema(AbstractBuilder<?,?> builder)
+  ResolvedObjectOrArraySchema(AbstractBuilder<S,?,?> builder)
   {
     super(builder);
 
     innerClassesBuilder_                  = builder.innerClassesBuilder_;
   }
   
-  abstract static class AbstractBuilder<T extends AbstractBuilder<T, B>, B extends ResolvedObjectOrArraySchema> extends ResolvedSchema.AbstractBuilder<T,B>
+  public abstract static class AbstractBuilder<S extends ISchemaInstance, T extends AbstractBuilder<S,T,B>, B extends ResolvedObjectOrArraySchema<S>> extends ResolvedSchema.AbstractBuilder<S,T,B>
   {
     private ResolvedPropertiesObject.SingletonBuilder innerClassesBuilder_;
     

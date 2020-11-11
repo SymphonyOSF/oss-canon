@@ -21,36 +21,43 @@
  *    Generator groupId    org.symphonyoss.s2.canon
  *              artifactId canon2-generator-java
  *    Template name        template/Object/_Entity.java.ftl
- *    At                   2020-10-28 18:16:15 GMT
+ *    At                   2020-11-10 17:41:52 GMT
  *----------------------------------------------------------------------------------------------------
  */
+// importFields
+// importField BooleanSchema nullable is Nullable
+// importType BooleanSchema
+// importType BooleanSchema
+// importField ArraySchema nullable is Nullable
+// importType ArraySchema
+// importType ArraySchema
+// importField ObjectSchema nullable is Nullable
+// importType ObjectSchema
+// importType ObjectSchema
+// importField StringSchema nullable is Nullable
+// importType StringSchema
+// importType StringSchema
+// importField NumberSchema nullable is Nullable
+// importType NumberSchema
+// importType NumberSchema
+// importField OneOfSchema nullable is Nullable
+// importType OneOfSchema
+// importType OneOfSchema
 
 package com.symphony.oss.canon2.model;
-
-import java.math.BigDecimal;
-import java.math.BigInteger;
-import java.util.HashSet;
-import java.util.Set;
 
 import javax.annotation.Nullable;
 import javax.annotation.concurrent.Immutable;
 
 import com.google.common.collect.ImmutableSet;
 import com.symphony.oss.canon.json.ParserErrorException;
-import com.symphony.oss.canon.json.model.JsonArray;
-import com.symphony.oss.canon.json.model.JsonBoolean;
 import com.symphony.oss.canon.json.model.JsonDomNode;
 import com.symphony.oss.canon.json.model.JsonNull;
 import com.symphony.oss.canon.json.model.JsonObject;
-import com.symphony.oss.canon.json.model.JsonParsedNumber;
-import com.symphony.oss.canon.json.model.JsonString;
 import com.symphony.oss.canon2.runtime.java.Entity;
 import com.symphony.oss.canon2.runtime.java.IEntityInitialiser;
-import com.symphony.oss.canon2.runtime.java.IObjectEntityInitialiser;
 import com.symphony.oss.canon2.runtime.java.JsonEntityInitialiser;
-import com.symphony.oss.canon2.runtime.java.JsonObjectEntityInitialiser;
 import com.symphony.oss.canon2.runtime.java.ModelRegistry;
-import com.symphony.oss.canon2.runtime.java.ObjectEntity;
 import com.symphony.oss.commons.fault.FaultAccumulator;
 
 /**
@@ -58,7 +65,7 @@ import com.symphony.oss.commons.fault.FaultAccumulator;
  * Generated from Schema at {entity.context.path}
  */
 @Immutable
-public abstract class SchemaEntity extends ObjectEntity
+public abstract class SchemaEntity extends Entity
 {
   /** Type ID */
   public static final String  TYPE_ID = "com.symphony.oss.canon2.model.Schema";
@@ -67,25 +74,12 @@ public abstract class SchemaEntity extends ObjectEntity
   /** Factory instance */
   public static final Factory FACTORY = new Factory();
 
-  private final ImmutableSet<String>        unknownKeys_;
-  private final BigInteger                 _maxItems_;
-  private final Boolean                    _xCanonBuilderFacade_;
-  private final AdditionalProperties       _xXXadditionalProperties_;
-  private final String                     _format_;
-  private final CanonCardinality           _xCanonCardinality_;
-  private final String                     _xCanonIdentifier_;
-  private final String                     _type_;
-  private final Boolean                    _xCanonFacade_;
-  private final Set<String>                _enum_;
-  private final Set<String>                _required_;
-  private final DiscriminatorObject        _discriminator_;
-  private final BigInteger                 _minItems_;
-  private final Set<SchemaOrRef>           _oneOf_;
-  private final CanonAttributes            _xCanonAttributes_;
-  private final BigDecimal                 _maximum_;
-  private final BigDecimal                 _minimum_;
-  private final PropertiesObject           _properties_;
-  private final ReferenceObject            _xCanonExtends_;
+  private final BooleanSchema              _booleanSchema_;
+  private final ArraySchema                _arraySchema_;
+  private final ObjectSchema               _objectSchema_;
+  private final StringSchema               _stringSchema_;
+  private final NumberSchema               _numberSchema_;
+  private final OneOfSchema                _oneOfSchema_;
 
   /**
    * Constructor.
@@ -95,325 +89,40 @@ public abstract class SchemaEntity extends ObjectEntity
   public SchemaEntity(Initialiser initialiser)
   {
     super(initialiser);
+    int debug=0;
 
-    if(initialiser instanceof JsonObjectEntityInitialiser)
+    if(initialiser instanceof JsonEntityInitialiser)
     {
-      JsonObjectEntityInitialiser jsonInitialiser = (JsonObjectEntityInitialiser)initialiser;
+      JsonEntityInitialiser jsonInitialiser = (JsonEntityInitialiser)initialiser;
 
-      JsonDomNode  node;
+      JsonDomNode  node = jsonInitialiser.getJson();
+      int          valueCnt = 0;
+       _booleanSchema_ = BooleanSchema.FACTORY.newInstanceOrNull(node, jsonInitialiser.getModelRegistry());
+      if(_booleanSchema_ != null)
+        valueCnt++;
 
-      node = jsonInitialiser.get("maxItems");
-      if(node == null || node instanceof JsonNull)
-      {
-        _maxItems_ = null;
-      }
-      else
-      {
-        if(node instanceof JsonParsedNumber)
-        {
-          _maxItems_ = ((JsonParsedNumber)node).asBigInteger();
-        }
-        else 
-        {
-          throw new ParserErrorException("maxItems must be an instance of JsonParsedNumber not " + node.getClass().getName(), node.getContext());
-        }
-      }
+       _arraySchema_ = ArraySchema.FACTORY.newInstanceOrNull(node, jsonInitialiser.getModelRegistry());
+      if(_arraySchema_ != null)
+        valueCnt++;
 
-      node = jsonInitialiser.get("x-canon-builderFacade");
-      if(node == null || node instanceof JsonNull)
-      {
-        _xCanonBuilderFacade_ = null;
-      }
-      else
-      {
-        if(node instanceof JsonBoolean)
-        {
-          _xCanonBuilderFacade_ = ((JsonBoolean)node).asBoolean();
-        }
-        else 
-        {
-          throw new ParserErrorException("x-canon-builderFacade must be an instance of JsonBoolean not " + node.getClass().getName(), node.getContext());
-        }
-      }
+       _objectSchema_ = ObjectSchema.FACTORY.newInstanceOrNull(node, jsonInitialiser.getModelRegistry());
+      if(_objectSchema_ != null)
+        valueCnt++;
 
-      node = jsonInitialiser.get("additionalProperties");
-      if(node == null || node instanceof JsonNull)
-      {
-        _xXXadditionalProperties_ = null;
-      }
-      else
-      {
-    
-        _xXXadditionalProperties_ = AdditionalProperties.FACTORY.newInstance(node, jsonInitialiser.getModelRegistry());
-      }
+       _stringSchema_ = StringSchema.FACTORY.newInstanceOrNull(node, jsonInitialiser.getModelRegistry());
+      if(_stringSchema_ != null)
+        valueCnt++;
 
-      node = jsonInitialiser.get("format");
-      if(node == null || node instanceof JsonNull)
-      {
-        _format_ = null;
-      }
-      else
-      {
-        if(node instanceof JsonString)
-        {
-          _format_ = ((JsonString)node).asString();
-        }
-        else 
-        {
-          throw new ParserErrorException("format must be an instance of JsonString not " + node.getClass().getName(), node.getContext());
-        }
-      }
+       _numberSchema_ = NumberSchema.FACTORY.newInstanceOrNull(node, jsonInitialiser.getModelRegistry());
+      if(_numberSchema_ != null)
+        valueCnt++;
 
-      node = jsonInitialiser.get("x-canon-cardinality");
-      if(node == null || node instanceof JsonNull)
-      {
-        _xCanonCardinality_ = null;
-      }
-      else
-      {
-        if(node instanceof JsonString)
-        {
-          _xCanonCardinality_ = CanonCardinality.deserialize(((JsonString)node).asString());
-        }
-        else 
-        {
-          throw new ParserErrorException("x-canon-cardinality must be an instance of JsonString not " + node.getClass().getName(), node.getContext());
-        }
-      }
+       _oneOfSchema_ = OneOfSchema.FACTORY.newInstanceOrNull(node, jsonInitialiser.getModelRegistry());
+      if(_oneOfSchema_ != null)
+        valueCnt++;
 
-      node = jsonInitialiser.get("x-canon-identifier");
-      if(node == null || node instanceof JsonNull)
-      {
-        _xCanonIdentifier_ = null;
-      }
-      else
-      {
-        if(node instanceof JsonString)
-        {
-          _xCanonIdentifier_ = ((JsonString)node).asString();
-        }
-        else 
-        {
-          throw new ParserErrorException("x-canon-identifier must be an instance of JsonString not " + node.getClass().getName(), node.getContext());
-        }
-      }
-
-      node = jsonInitialiser.get("type");
-      if(node == null || node instanceof JsonNull)
-      {
-        _type_ = null;
-      }
-      else
-      {
-        if(node instanceof JsonString)
-        {
-          _type_ = ((JsonString)node).asString();
-        }
-        else 
-        {
-          throw new ParserErrorException("type must be an instance of JsonString not " + node.getClass().getName(), node.getContext());
-        }
-      }
-
-      node = jsonInitialiser.get("x-canon-facade");
-      if(node == null || node instanceof JsonNull)
-      {
-        _xCanonFacade_ = null;
-      }
-      else
-      {
-        if(node instanceof JsonBoolean)
-        {
-          _xCanonFacade_ = ((JsonBoolean)node).asBoolean();
-        }
-        else 
-        {
-          throw new ParserErrorException("x-canon-facade must be an instance of JsonBoolean not " + node.getClass().getName(), node.getContext());
-        }
-      }
-
-      node = jsonInitialiser.get("enum");
-      if(node == null || node instanceof JsonNull)
-      {
-        _enum_ = null;
-      }
-      else
-      {
-        if(node instanceof JsonArray)
-        {
-          Set<String> itemSet0 = new HashSet<>();
-          for(JsonDomNode item0 : (JsonArray)node)
-          {
-            String itemValue0 = null;
-            if(item0 instanceof JsonString)
-            {
-              itemValue0 = ((JsonString)item0).asString();
-            }
-            else 
-            {
-              throw new ParserErrorException("enum items must be an instance of JsonString not " + item0.getClass().getName(), item0.getContext());
-            }
-            itemSet0.add(itemValue0);
-          }
-          _enum_ = ImmutableSet.copyOf(itemSet0);
-        }
-        else 
-        {
-          throw new ParserErrorException("enum must be a JsonArray node not " + node.getClass().getName(), node.getContext());
-        }
-      }
-
-      node = jsonInitialiser.get("required");
-      if(node == null || node instanceof JsonNull)
-      {
-        _required_ = null;
-      }
-      else
-      {
-        if(node instanceof JsonArray)
-        {
-          Set<String> itemSet0 = new HashSet<>();
-          for(JsonDomNode item0 : (JsonArray)node)
-          {
-            String itemValue0 = null;
-            if(item0 instanceof JsonString)
-            {
-              itemValue0 = ((JsonString)item0).asString();
-            }
-            else 
-            {
-              throw new ParserErrorException("required items must be an instance of JsonString not " + item0.getClass().getName(), item0.getContext());
-            }
-            itemSet0.add(itemValue0);
-          }
-          _required_ = ImmutableSet.copyOf(itemSet0);
-        }
-        else 
-        {
-          throw new ParserErrorException("required must be a JsonArray node not " + node.getClass().getName(), node.getContext());
-        }
-      }
-
-      node = jsonInitialiser.get("discriminator");
-      if(node == null || node instanceof JsonNull)
-      {
-        _discriminator_ = null;
-      }
-      else
-      {
-    
-        _discriminator_ = DiscriminatorObject.FACTORY.newInstance(node, jsonInitialiser.getModelRegistry());
-      }
-
-      node = jsonInitialiser.get("minItems");
-      if(node == null || node instanceof JsonNull)
-      {
-        _minItems_ = null;
-      }
-      else
-      {
-        if(node instanceof JsonParsedNumber)
-        {
-          _minItems_ = ((JsonParsedNumber)node).asBigInteger();
-        }
-        else 
-        {
-          throw new ParserErrorException("minItems must be an instance of JsonParsedNumber not " + node.getClass().getName(), node.getContext());
-        }
-      }
-
-      node = jsonInitialiser.get("oneOf");
-      if(node == null || node instanceof JsonNull)
-      {
-        _oneOf_ = null;
-      }
-      else
-      {
-        if(node instanceof JsonArray)
-        {
-          Set<SchemaOrRef> itemSet0 = new HashSet<>();
-          for(JsonDomNode item0 : (JsonArray)node)
-          {
-            SchemaOrRef itemValue0 = null;
-    
-            itemValue0 = SchemaOrRef.FACTORY.newInstance(item0, jsonInitialiser.getModelRegistry());
-            itemSet0.add(itemValue0);
-          }
-          _oneOf_ = ImmutableSet.copyOf(itemSet0);
-        }
-        else 
-        {
-          throw new ParserErrorException("oneOf must be a JsonArray node not " + node.getClass().getName(), node.getContext());
-        }
-      }
-
-      node = jsonInitialiser.get("x-canon-attributes");
-      if(node == null || node instanceof JsonNull)
-      {
-        _xCanonAttributes_ = null;
-      }
-      else
-      {
-    
-        _xCanonAttributes_ = CanonAttributes.FACTORY.newInstance(node, jsonInitialiser.getModelRegistry());
-      }
-
-      node = jsonInitialiser.get("maximum");
-      if(node == null || node instanceof JsonNull)
-      {
-        _maximum_ = null;
-      }
-      else
-      {
-        if(node instanceof JsonParsedNumber)
-        {
-          _maximum_ = ((JsonParsedNumber)node).asBigDecimal();
-        }
-        else 
-        {
-          throw new ParserErrorException("maximum must be an instance of JsonParsedNumber not " + node.getClass().getName(), node.getContext());
-        }
-      }
-
-      node = jsonInitialiser.get("minimum");
-      if(node == null || node instanceof JsonNull)
-      {
-        _minimum_ = null;
-      }
-      else
-      {
-        if(node instanceof JsonParsedNumber)
-        {
-          _minimum_ = ((JsonParsedNumber)node).asBigDecimal();
-        }
-        else 
-        {
-          throw new ParserErrorException("minimum must be an instance of JsonParsedNumber not " + node.getClass().getName(), node.getContext());
-        }
-      }
-
-      node = jsonInitialiser.get("properties");
-      if(node == null || node instanceof JsonNull)
-      {
-        _properties_ = null;
-      }
-      else
-      {
-    
-        _properties_ = PropertiesObject.FACTORY.newInstance(node, jsonInitialiser.getModelRegistry());
-      }
-
-      node = jsonInitialiser.get("x-canon-extends");
-      if(node == null || node instanceof JsonNull)
-      {
-        _xCanonExtends_ = null;
-      }
-      else
-      {
-    
-        _xCanonExtends_ = ReferenceObject.FACTORY.newInstance(node, jsonInitialiser.getModelRegistry());
-      }
-      unknownKeys_ = jsonInitialiser.getCanonUnknownKeys();
+      if(valueCnt != 1)
+        throw new ParserErrorException("Exactly one value must be present", jsonInitialiser.getJson().getContext());
     }
     else
     {
@@ -423,25 +132,12 @@ public abstract class SchemaEntity extends ObjectEntity
       {
         throw new IllegalArgumentException("Initializer is not an JsonObjectEntityInitialiser but getInstanceOrBuilder() returns null");
       }
-      _maxItems_ = builder.getMaxItems();
-      _xCanonBuilderFacade_ = builder.getXCanonBuilderFacade();
-      _xXXadditionalProperties_ = builder.getXXXadditionalProperties();
-      _format_ = builder.getFormat();
-      _xCanonCardinality_ = builder.getXCanonCardinality();
-      _xCanonIdentifier_ = builder.getXCanonIdentifier();
-      _type_ = builder.getType();
-      _xCanonFacade_ = builder.getXCanonFacade();
-      _enum_ = ImmutableSet.copyOf(builder.getEnum());
-      _required_ = ImmutableSet.copyOf(builder.getRequired());
-      _discriminator_ = builder.getDiscriminator();
-      _minItems_ = builder.getMinItems();
-      _oneOf_ = ImmutableSet.copyOf(builder.getOneOf());
-      _xCanonAttributes_ = builder.getXCanonAttributes();
-      _maximum_ = builder.getMaximum();
-      _minimum_ = builder.getMinimum();
-      _properties_ = builder.getProperties();
-      _xCanonExtends_ = builder.getXCanonExtends();
-      unknownKeys_ = builder.getCanonUnknownKeys();
+      _booleanSchema_ = builder.getBooleanSchema();
+      _arraySchema_ = builder.getArraySchema();
+      _objectSchema_ = builder.getObjectSchema();
+      _stringSchema_ = builder.getStringSchema();
+      _numberSchema_ = builder.getNumberSchema();
+      _oneOfSchema_ = builder.getOneOfSchema();
     }
   }
 
@@ -449,7 +145,7 @@ public abstract class SchemaEntity extends ObjectEntity
   /**
    * Factory class for Schema.
    */
-  public static class Factory extends ObjectEntity.Factory<Schema>
+  public static class Factory extends Entity.Factory<Schema>
   {
     @Override
     public String getCanonType()
@@ -460,26 +156,14 @@ public abstract class SchemaEntity extends ObjectEntity
     @Override
     public Schema newInstance(JsonDomNode node, ModelRegistry modelRegistry)
     {
-      if(node instanceof JsonObject)
-      {
-        return new Schema(new JsonInitialiser((JsonObject)node, modelRegistry));
-      }
-
-      if(!modelRegistry.getParserValidation().isIgnoreInvalidAttributes())
-      {
-        throw new ParserErrorException("Schema must be an Object node not " + node.getClass().getName(), node.getContext());
-      }
-      else
-      {
-        return null;
-      }
+      return new Schema(new JsonInitialiser(node, modelRegistry));
     }
   }
 
   /**
    * Abstract Initialiser for Schema
    */
-  public interface Initialiser extends IObjectEntityInitialiser
+  public interface Initialiser extends IEntityInitialiser
   {
     /**
      * Return an instance or builder containing the values for a new instance.
@@ -492,7 +176,7 @@ public abstract class SchemaEntity extends ObjectEntity
   /**
    * JSON Initialiser for Schema
    */
-  public static class JsonInitialiser extends JsonObjectEntityInitialiser implements Initialiser
+  public static class JsonInitialiser extends JsonEntityInitialiser implements Initialiser
   {
       /**
        * Constructor.
@@ -500,7 +184,7 @@ public abstract class SchemaEntity extends ObjectEntity
        * @param json            JSON serialised form.
        * @param modelRegistry   A parser context for deserialisation.
        */
-    public JsonInitialiser(JsonObject json, ModelRegistry modelRegistry)
+    public JsonInitialiser(JsonDomNode json, ModelRegistry modelRegistry)
     {
       super(json, modelRegistry);
     }
@@ -520,27 +204,15 @@ public abstract class SchemaEntity extends ObjectEntity
    */
   public static abstract class AbstractBuilder<T extends AbstractBuilder<T,B>, B extends SchemaEntity>
 // super class name
-    extends ObjectEntity.AbstractBuilder<T,B>
+    extends Entity.AbstractBuilder<T,B>
     implements ISchemaInstanceOrBuilder, Initialiser
   {
-    protected BigInteger                 _maxItems_;
-    protected Boolean                    _xCanonBuilderFacade_;
-    protected AdditionalProperties       _xXXadditionalProperties_;
-    protected String                     _format_;
-    protected CanonCardinality           _xCanonCardinality_;
-    protected String                     _xCanonIdentifier_;
-    protected String                     _type_;
-    protected Boolean                    _xCanonFacade_;
-    protected Set<String>                _enum_ = new HashSet<String>();
-    protected Set<String>                _required_ = new HashSet<String>();
-    protected DiscriminatorObject        _discriminator_;
-    protected BigInteger                 _minItems_;
-    protected Set<SchemaOrRef>           _oneOf_ = new HashSet<SchemaOrRef>();
-    protected CanonAttributes            _xCanonAttributes_;
-    protected BigDecimal                 _maximum_;
-    protected BigDecimal                 _minimum_;
-    protected PropertiesObject           _properties_;
-    protected ReferenceObject            _xCanonExtends_;
+    protected BooleanSchema              _booleanSchema_;
+    protected ArraySchema                _arraySchema_;
+    protected ObjectSchema               _objectSchema_;
+    protected StringSchema               _stringSchema_;
+    protected NumberSchema               _numberSchema_;
+    protected OneOfSchema                _oneOfSchema_;
 
     protected AbstractBuilder(Class<T> type)
     {
@@ -557,845 +229,257 @@ public abstract class SchemaEntity extends ObjectEntity
     {
       super(type, initial);
 
-      _maxItems_ = initial.getMaxItems();
-      _xCanonBuilderFacade_ = initial.getXCanonBuilderFacade();
-      _xXXadditionalProperties_ = initial.getXXXadditionalProperties();
-      _format_ = initial.getFormat();
-      _xCanonCardinality_ = initial.getXCanonCardinality();
-      _xCanonIdentifier_ = initial.getXCanonIdentifier();
-      _type_ = initial.getType();
-      _xCanonFacade_ = initial.getXCanonFacade();
-      _enum_ = ImmutableSet.copyOf(initial.getEnum());
-      _required_ = ImmutableSet.copyOf(initial.getRequired());
-      _discriminator_ = initial.getDiscriminator();
-      _minItems_ = initial.getMinItems();
-      _oneOf_ = ImmutableSet.copyOf(initial.getOneOf());
-      _xCanonAttributes_ = initial.getXCanonAttributes();
-      _maximum_ = initial.getMaximum();
-      _minimum_ = initial.getMinimum();
-      _properties_ = initial.getProperties();
-      _xCanonExtends_ = initial.getXCanonExtends();
+      _booleanSchema_ = initial.getBooleanSchema();
+      _arraySchema_ = initial.getArraySchema();
+      _objectSchema_ = initial.getObjectSchema();
+      _stringSchema_ = initial.getStringSchema();
+      _numberSchema_ = initial.getNumberSchema();
+      _oneOfSchema_ = initial.getOneOfSchema();
     }
 
     @Override
     public T withValues(JsonObject jsonObject, ModelRegistry modelRegistry)
     {
-      if(jsonObject.containsKey("maxItems"))
+      if(jsonObject.containsKey("BooleanSchema"))
       {
-        JsonDomNode  node = jsonObject.get("maxItems");
-        if(node instanceof JsonParsedNumber)
-        {
-          _maxItems_ = ((JsonParsedNumber)node).asBigInteger();
-        }
-        else if(!modelRegistry.getParserValidation().isIgnoreInvalidAttributes())
-        {
-          throw new ParserErrorException("maxItems must be an instance of JsonParsedNumber not " + node.getClass().getName(), node.getContext());
-        }
+        JsonDomNode  node = jsonObject.get("BooleanSchema");
+        _booleanSchema_ = BooleanSchema.FACTORY.newInstanceOrNull(node, modelRegistry);
       }
-      if(jsonObject.containsKey("x-canon-builderFacade"))
+      if(jsonObject.containsKey("ArraySchema"))
       {
-        JsonDomNode  node = jsonObject.get("x-canon-builderFacade");
-        if(node instanceof JsonBoolean)
-        {
-          _xCanonBuilderFacade_ = ((JsonBoolean)node).asBoolean();
-        }
-        else if(!modelRegistry.getParserValidation().isIgnoreInvalidAttributes())
-        {
-          throw new ParserErrorException("x-canon-builderFacade must be an instance of JsonBoolean not " + node.getClass().getName(), node.getContext());
-        }
+        JsonDomNode  node = jsonObject.get("ArraySchema");
+        _arraySchema_ = ArraySchema.FACTORY.newInstanceOrNull(node, modelRegistry);
       }
-      if(jsonObject.containsKey("XXXadditionalProperties"))
+      if(jsonObject.containsKey("ObjectSchema"))
       {
-        JsonDomNode  node = jsonObject.get("XXXadditionalProperties");
-    
-        _xXXadditionalProperties_ = AdditionalProperties.FACTORY.newInstance(node, modelRegistry);
+        JsonDomNode  node = jsonObject.get("ObjectSchema");
+        _objectSchema_ = ObjectSchema.FACTORY.newInstanceOrNull(node, modelRegistry);
       }
-      if(jsonObject.containsKey("format"))
+      if(jsonObject.containsKey("StringSchema"))
       {
-        JsonDomNode  node = jsonObject.get("format");
-        if(node instanceof JsonString)
-        {
-          _format_ = ((JsonString)node).asString();
-        }
-        else if(!modelRegistry.getParserValidation().isIgnoreInvalidAttributes())
-        {
-          throw new ParserErrorException("format must be an instance of JsonString not " + node.getClass().getName(), node.getContext());
-        }
+        JsonDomNode  node = jsonObject.get("StringSchema");
+        _stringSchema_ = StringSchema.FACTORY.newInstanceOrNull(node, modelRegistry);
       }
-      if(jsonObject.containsKey("x-canon-cardinality"))
+      if(jsonObject.containsKey("NumberSchema"))
       {
-        JsonDomNode  node = jsonObject.get("x-canon-cardinality");
-        if(node instanceof JsonString)
-        {
-          _xCanonCardinality_ = CanonCardinality.deserialize(((JsonString)node).asString());
-        }
-        else if(!modelRegistry.getParserValidation().isIgnoreInvalidAttributes())
-        {
-          throw new ParserErrorException("x-canon-cardinality must be an instance of JsonString not " + node.getClass().getName(), node.getContext());
-        }
+        JsonDomNode  node = jsonObject.get("NumberSchema");
+        _numberSchema_ = NumberSchema.FACTORY.newInstanceOrNull(node, modelRegistry);
       }
-      if(jsonObject.containsKey("x-canon-identifier"))
+      if(jsonObject.containsKey("OneOfSchema"))
       {
-        JsonDomNode  node = jsonObject.get("x-canon-identifier");
-        if(node instanceof JsonString)
-        {
-          _xCanonIdentifier_ = ((JsonString)node).asString();
-        }
-        else if(!modelRegistry.getParserValidation().isIgnoreInvalidAttributes())
-        {
-          throw new ParserErrorException("x-canon-identifier must be an instance of JsonString not " + node.getClass().getName(), node.getContext());
-        }
-      }
-      if(jsonObject.containsKey("type"))
-      {
-        JsonDomNode  node = jsonObject.get("type");
-        if(node instanceof JsonString)
-        {
-          _type_ = ((JsonString)node).asString();
-        }
-        else if(!modelRegistry.getParserValidation().isIgnoreInvalidAttributes())
-        {
-          throw new ParserErrorException("type must be an instance of JsonString not " + node.getClass().getName(), node.getContext());
-        }
-      }
-      if(jsonObject.containsKey("x-canon-facade"))
-      {
-        JsonDomNode  node = jsonObject.get("x-canon-facade");
-        if(node instanceof JsonBoolean)
-        {
-          _xCanonFacade_ = ((JsonBoolean)node).asBoolean();
-        }
-        else if(!modelRegistry.getParserValidation().isIgnoreInvalidAttributes())
-        {
-          throw new ParserErrorException("x-canon-facade must be an instance of JsonBoolean not " + node.getClass().getName(), node.getContext());
-        }
-      }
-      if(jsonObject.containsKey("enum"))
-      {
-        JsonDomNode  node = jsonObject.get("enum");
-        if(node instanceof JsonArray)
-        {
-          Set<String> itemSet0 = new HashSet<>();
-          for(JsonDomNode item0 : (JsonArray)node)
-          {
-            String itemValue0 = null;
-            if(item0 instanceof JsonString)
-            {
-              itemValue0 = ((JsonString)item0).asString();
-            }
-            else if(!modelRegistry.getParserValidation().isIgnoreInvalidAttributes())
-            {
-              throw new ParserErrorException("enum items must be an instance of JsonString not " + item0.getClass().getName(), item0.getContext());
-            }
-            itemSet0.add(itemValue0);
-          }
-          _enum_ = ImmutableSet.copyOf(itemSet0);
-        }
-        else if(!modelRegistry.getParserValidation().isIgnoreInvalidAttributes())
-        {
-          throw new ParserErrorException("enum must be a JsonArray node not " + node.getClass().getName(), node.getContext());
-        }
-      }
-      if(jsonObject.containsKey("required"))
-      {
-        JsonDomNode  node = jsonObject.get("required");
-        if(node instanceof JsonArray)
-        {
-          Set<String> itemSet0 = new HashSet<>();
-          for(JsonDomNode item0 : (JsonArray)node)
-          {
-            String itemValue0 = null;
-            if(item0 instanceof JsonString)
-            {
-              itemValue0 = ((JsonString)item0).asString();
-            }
-            else if(!modelRegistry.getParserValidation().isIgnoreInvalidAttributes())
-            {
-              throw new ParserErrorException("required items must be an instance of JsonString not " + item0.getClass().getName(), item0.getContext());
-            }
-            itemSet0.add(itemValue0);
-          }
-          _required_ = ImmutableSet.copyOf(itemSet0);
-        }
-        else if(!modelRegistry.getParserValidation().isIgnoreInvalidAttributes())
-        {
-          throw new ParserErrorException("required must be a JsonArray node not " + node.getClass().getName(), node.getContext());
-        }
-      }
-      if(jsonObject.containsKey("discriminator"))
-      {
-        JsonDomNode  node = jsonObject.get("discriminator");
-    
-        _discriminator_ = DiscriminatorObject.FACTORY.newInstance(node, modelRegistry);
-      }
-      if(jsonObject.containsKey("minItems"))
-      {
-        JsonDomNode  node = jsonObject.get("minItems");
-        if(node instanceof JsonParsedNumber)
-        {
-          _minItems_ = ((JsonParsedNumber)node).asBigInteger();
-        }
-        else if(!modelRegistry.getParserValidation().isIgnoreInvalidAttributes())
-        {
-          throw new ParserErrorException("minItems must be an instance of JsonParsedNumber not " + node.getClass().getName(), node.getContext());
-        }
-      }
-      if(jsonObject.containsKey("oneOf"))
-      {
-        JsonDomNode  node = jsonObject.get("oneOf");
-        if(node instanceof JsonArray)
-        {
-          Set<SchemaOrRef> itemSet0 = new HashSet<>();
-          for(JsonDomNode item0 : (JsonArray)node)
-          {
-            SchemaOrRef itemValue0 = null;
-    
-            itemValue0 = SchemaOrRef.FACTORY.newInstance(item0, modelRegistry);
-            itemSet0.add(itemValue0);
-          }
-          _oneOf_ = ImmutableSet.copyOf(itemSet0);
-        }
-        else if(!modelRegistry.getParserValidation().isIgnoreInvalidAttributes())
-        {
-          throw new ParserErrorException("oneOf must be a JsonArray node not " + node.getClass().getName(), node.getContext());
-        }
-      }
-      if(jsonObject.containsKey("x-canon-attributes"))
-      {
-        JsonDomNode  node = jsonObject.get("x-canon-attributes");
-    
-        _xCanonAttributes_ = CanonAttributes.FACTORY.newInstance(node, modelRegistry);
-      }
-      if(jsonObject.containsKey("maximum"))
-      {
-        JsonDomNode  node = jsonObject.get("maximum");
-        if(node instanceof JsonParsedNumber)
-        {
-          _maximum_ = ((JsonParsedNumber)node).asBigDecimal();
-        }
-        else if(!modelRegistry.getParserValidation().isIgnoreInvalidAttributes())
-        {
-          throw new ParserErrorException("maximum must be an instance of JsonParsedNumber not " + node.getClass().getName(), node.getContext());
-        }
-      }
-      if(jsonObject.containsKey("minimum"))
-      {
-        JsonDomNode  node = jsonObject.get("minimum");
-        if(node instanceof JsonParsedNumber)
-        {
-          _minimum_ = ((JsonParsedNumber)node).asBigDecimal();
-        }
-        else if(!modelRegistry.getParserValidation().isIgnoreInvalidAttributes())
-        {
-          throw new ParserErrorException("minimum must be an instance of JsonParsedNumber not " + node.getClass().getName(), node.getContext());
-        }
-      }
-      if(jsonObject.containsKey("properties"))
-      {
-        JsonDomNode  node = jsonObject.get("properties");
-    
-        _properties_ = PropertiesObject.FACTORY.newInstance(node, modelRegistry);
-      }
-      if(jsonObject.containsKey("x-canon-extends"))
-      {
-        JsonDomNode  node = jsonObject.get("x-canon-extends");
-    
-        _xCanonExtends_ = ReferenceObject.FACTORY.newInstance(node, modelRegistry);
+        JsonDomNode  node = jsonObject.get("OneOfSchema");
+        _oneOfSchema_ = OneOfSchema.FACTORY.newInstanceOrNull(node, modelRegistry);
       }
       return super.withValues(jsonObject, modelRegistry);
     }
 
     /* void populateAllFields(List<Object> result)
     {
-      result.add(_maxItems_);
-      result.add(_xCanonBuilderFacade_);
-      result.add(_xXXadditionalProperties_);
-      result.add(_format_);
-      result.add(_xCanonCardinality_);
-      result.add(_xCanonIdentifier_);
-      result.add(_type_);
-      result.add(_xCanonFacade_);
-      result.add(_enum_);
-      result.add(_required_);
-      result.add(_discriminator_);
-      result.add(_minItems_);
-      result.add(_oneOf_);
-      result.add(_xCanonAttributes_);
-      result.add(_maximum_);
-      result.add(_minimum_);
-      result.add(_properties_);
-      result.add(_xCanonExtends_);
+      result.add(_booleanSchema_);
+      result.add(_arraySchema_);
+      result.add(_objectSchema_);
+      result.add(_stringSchema_);
+      result.add(_numberSchema_);
+      result.add(_oneOfSchema_);
     }*/
 
     /**
-     * Return the value of the maxItems attribute.
+     * Return the value of the BooleanSchema attribute.
      *
-     * @return the value of the maxItems attribute.
+     * @return the value of the BooleanSchema attribute.
      */
     @Override
-    public @Nullable BigInteger getMaxItems()
+    public @Nullable BooleanSchema getBooleanSchema()
     {
-      return _maxItems_;
+      return _booleanSchema_;
     }
 
     /**
-     * Set the value of the maxItems attribute.
+     * Set the value of the BooleanSchema attribute.
      *
      * @param value The value to be set.
      *
      * @return This (fluent method).
      */
-    public T withMaxItems(BigInteger value)
+    public T withBooleanSchema(BooleanSchema value) //main
     {
-      _maxItems_ = value;
+      _booleanSchema_ = value;
       return self();
     }
 
     /**
-     * Return the value of the x-canon-builderFacade attribute.
+     * Return the value of the ArraySchema attribute.
      *
-     * @return the value of the x-canon-builderFacade attribute.
+     * @return the value of the ArraySchema attribute.
      */
     @Override
-    public @Nullable Boolean getXCanonBuilderFacade()
+    public @Nullable ArraySchema getArraySchema()
     {
-      return _xCanonBuilderFacade_;
+      return _arraySchema_;
     }
 
     /**
-     * Set the value of the x-canon-builderFacade attribute.
+     * Set the value of the ArraySchema attribute.
      *
      * @param value The value to be set.
      *
      * @return This (fluent method).
      */
-    public T withXCanonBuilderFacade(Boolean value)
+    public T withArraySchema(ArraySchema value) //main
     {
-      _xCanonBuilderFacade_ = value;
+      _arraySchema_ = value;
       return self();
     }
 
     /**
-     * Return the value of the XXXadditionalProperties attribute.
+     * Return the value of the ObjectSchema attribute.
      *
-     * @return the value of the XXXadditionalProperties attribute.
+     * @return the value of the ObjectSchema attribute.
      */
     @Override
-    public @Nullable AdditionalProperties getXXXadditionalProperties()
+    public @Nullable ObjectSchema getObjectSchema()
     {
-      return _xXXadditionalProperties_;
+      return _objectSchema_;
     }
 
     /**
-     * Set the value of the XXXadditionalProperties attribute.
+     * Set the value of the ObjectSchema attribute.
      *
      * @param value The value to be set.
      *
      * @return This (fluent method).
      */
-    public T withXXXadditionalProperties(AdditionalProperties value)
+    public T withObjectSchema(ObjectSchema value) //main
     {
-      _xXXadditionalProperties_ = value;
+      _objectSchema_ = value;
       return self();
     }
 
     /**
-     * Return the value of the format attribute.
+     * Return the value of the StringSchema attribute.
      *
-     * @return the value of the format attribute.
+     * @return the value of the StringSchema attribute.
      */
     @Override
-    public @Nullable String getFormat()
+    public @Nullable StringSchema getStringSchema()
     {
-      return _format_;
+      return _stringSchema_;
     }
 
     /**
-     * Set the value of the format attribute.
+     * Set the value of the StringSchema attribute.
      *
      * @param value The value to be set.
      *
      * @return This (fluent method).
      */
-    public T withFormat(String value)
+    public T withStringSchema(StringSchema value) //main
     {
-      _format_ = value;
+      _stringSchema_ = value;
       return self();
     }
 
     /**
-     * Return the value of the x-canon-cardinality attribute.
+     * Return the value of the NumberSchema attribute.
      *
-     * @return the value of the x-canon-cardinality attribute.
+     * @return the value of the NumberSchema attribute.
      */
     @Override
-    public @Nullable CanonCardinality getXCanonCardinality()
+    public @Nullable NumberSchema getNumberSchema()
     {
-      return _xCanonCardinality_;
+      return _numberSchema_;
     }
 
     /**
-     * Set the value of the x-canon-cardinality attribute.
+     * Set the value of the NumberSchema attribute.
      *
      * @param value The value to be set.
      *
      * @return This (fluent method).
      */
-    public T withXCanonCardinality(CanonCardinality value)
+    public T withNumberSchema(NumberSchema value) //main
     {
-      _xCanonCardinality_ = value;
+      _numberSchema_ = value;
       return self();
     }
 
     /**
-     * Return the value of the x-canon-identifier attribute.
+     * Return the value of the OneOfSchema attribute.
      *
-     * @return the value of the x-canon-identifier attribute.
+     * @return the value of the OneOfSchema attribute.
      */
     @Override
-    public @Nullable String getXCanonIdentifier()
+    public @Nullable OneOfSchema getOneOfSchema()
     {
-      return _xCanonIdentifier_;
+      return _oneOfSchema_;
     }
 
     /**
-     * Set the value of the x-canon-identifier attribute.
+     * Set the value of the OneOfSchema attribute.
      *
      * @param value The value to be set.
      *
      * @return This (fluent method).
      */
-    public T withXCanonIdentifier(String value)
+    public T withOneOfSchema(OneOfSchema value) //main
     {
-      _xCanonIdentifier_ = value;
-      return self();
-    }
-
-    /**
-     * Return the value of the type attribute.
-     *
-     * @return the value of the type attribute.
-     */
-    @Override
-    public @Nullable String getType()
-    {
-      return _type_;
-    }
-
-    /**
-     * Set the value of the type attribute.
-     *
-     * @param value The value to be set.
-     *
-     * @return This (fluent method).
-     */
-    public T withType(String value)
-    {
-      _type_ = value;
-      return self();
-    }
-
-    /**
-     * Return the value of the x-canon-facade attribute.
-     *
-     * @return the value of the x-canon-facade attribute.
-     */
-    @Override
-    public @Nullable Boolean getXCanonFacade()
-    {
-      return _xCanonFacade_;
-    }
-
-    /**
-     * Set the value of the x-canon-facade attribute.
-     *
-     * @param value The value to be set.
-     *
-     * @return This (fluent method).
-     */
-    public T withXCanonFacade(Boolean value)
-    {
-      _xCanonFacade_ = value;
-      return self();
-    }
-
-    /**
-     * Return the value of the enum attribute.
-     *
-     * @return the value of the enum attribute.
-     */
-    @Override
-    public @Nullable Set<String> getEnum()
-    {
-      return _enum_;
-    }
-
-    /**
-     * Set the value of the enum attribute.
-     *
-     * @param value The value to be set.
-     *
-     * @return This (fluent method).
-     */
-    public T withEnum(Set<String> value)
-    {
-      _enum_ = ImmutableSet.copyOf(value);
-      return self();
-    }
-
-    /**
-     * Return the value of the required attribute.
-     *
-     * @return the value of the required attribute.
-     */
-    @Override
-    public @Nullable Set<String> getRequired()
-    {
-      return _required_;
-    }
-
-    /**
-     * Set the value of the required attribute.
-     *
-     * @param value The value to be set.
-     *
-     * @return This (fluent method).
-     */
-    public T withRequired(Set<String> value)
-    {
-      _required_ = ImmutableSet.copyOf(value);
-      return self();
-    }
-
-    /**
-     * Return the value of the discriminator attribute.
-     *
-     * @return the value of the discriminator attribute.
-     */
-    @Override
-    public @Nullable DiscriminatorObject getDiscriminator()
-    {
-      return _discriminator_;
-    }
-
-    /**
-     * Set the value of the discriminator attribute.
-     *
-     * @param value The value to be set.
-     *
-     * @return This (fluent method).
-     */
-    public T withDiscriminator(DiscriminatorObject value)
-    {
-      _discriminator_ = value;
-      return self();
-    }
-
-    /**
-     * Return the value of the minItems attribute.
-     *
-     * @return the value of the minItems attribute.
-     */
-    @Override
-    public @Nullable BigInteger getMinItems()
-    {
-      return _minItems_;
-    }
-
-    /**
-     * Set the value of the minItems attribute.
-     *
-     * @param value The value to be set.
-     *
-     * @return This (fluent method).
-     */
-    public T withMinItems(BigInteger value)
-    {
-      _minItems_ = value;
-      return self();
-    }
-
-    /**
-     * Return the value of the oneOf attribute.
-     *
-     * @return the value of the oneOf attribute.
-     */
-    @Override
-    public @Nullable Set<SchemaOrRef> getOneOf()
-    {
-      return _oneOf_;
-    }
-
-    /**
-     * Set the value of the oneOf attribute.
-     *
-     * @param value The value to be set.
-     *
-     * @return This (fluent method).
-     */
-    public T withOneOf(Set<SchemaOrRef> value)
-    {
-      _oneOf_ = ImmutableSet.copyOf(value);
-      return self();
-    }
-
-    /**
-     * Return the value of the x-canon-attributes attribute.
-     *
-     * @return the value of the x-canon-attributes attribute.
-     */
-    @Override
-    public @Nullable CanonAttributes getXCanonAttributes()
-    {
-      return _xCanonAttributes_;
-    }
-
-    /**
-     * Set the value of the x-canon-attributes attribute.
-     *
-     * @param value The value to be set.
-     *
-     * @return This (fluent method).
-     */
-    public T withXCanonAttributes(CanonAttributes value)
-    {
-      _xCanonAttributes_ = value;
-      return self();
-    }
-
-    /**
-     * Return the value of the maximum attribute.
-     *
-     * @return the value of the maximum attribute.
-     */
-    @Override
-    public @Nullable BigDecimal getMaximum()
-    {
-      return _maximum_;
-    }
-
-    /**
-     * Set the value of the maximum attribute.
-     *
-     * @param value The value to be set.
-     *
-     * @return This (fluent method).
-     */
-    public T withMaximum(BigDecimal value)
-    {
-      _maximum_ = value;
-      return self();
-    }
-
-    /**
-     * Return the value of the minimum attribute.
-     *
-     * @return the value of the minimum attribute.
-     */
-    @Override
-    public @Nullable BigDecimal getMinimum()
-    {
-      return _minimum_;
-    }
-
-    /**
-     * Set the value of the minimum attribute.
-     *
-     * @param value The value to be set.
-     *
-     * @return This (fluent method).
-     */
-    public T withMinimum(BigDecimal value)
-    {
-      _minimum_ = value;
-      return self();
-    }
-
-    /**
-     * Return the value of the properties attribute.
-     *
-     * @return the value of the properties attribute.
-     */
-    @Override
-    public @Nullable PropertiesObject getProperties()
-    {
-      return _properties_;
-    }
-
-    /**
-     * Set the value of the properties attribute.
-     *
-     * @param value The value to be set.
-     *
-     * @return This (fluent method).
-     */
-    public T withProperties(PropertiesObject value)
-    {
-      _properties_ = value;
-      return self();
-    }
-
-    /**
-     * Return the value of the x-canon-extends attribute.
-     *
-     * @return the value of the x-canon-extends attribute.
-     */
-    @Override
-    public @Nullable ReferenceObject getXCanonExtends()
-    {
-      return _xCanonExtends_;
-    }
-
-    /**
-     * Set the value of the x-canon-extends attribute.
-     *
-     * @param value The value to be set.
-     *
-     * @return This (fluent method).
-     */
-    public T withXCanonExtends(ReferenceObject value)
-    {
-      _xCanonExtends_ = value;
+      _oneOfSchema_ = value;
       return self();
     }
 
 
     @Override
-    public JsonObject getJson()
+    public JsonDomNode getJson()
     {
-      JsonObject.Builder builder = new JsonObject.Builder();
 
-      builder.addIfNotNull(JSON_TYPE, SchemaEntity.TYPE_ID);
-      builder.addIfNotNull(JSON_VERSION, SchemaEntity.TYPE_VERSION);
-
-      populateJson(builder);
-
-      return builder.build();
-    }
-//T1 entity Schema OBJECT
-    @Override
-    public void populateJson(JsonObject.Builder builder)
-    {
-      super.populateJson(builder);
-
-      if(getMaxItems() != null)
+      if(getBooleanSchema() != null)
       {
-          builder.addIfNotNull("maxItems", getMaxItems());
+        return getBooleanSchema().getJson();
       }
 
-      if(getXCanonBuilderFacade() != null)
+      if(getArraySchema() != null)
       {
-          builder.addIfNotNull("x-canon-builderFacade", getXCanonBuilderFacade());
+        return getArraySchema().getJson();
       }
 
-      if(getXXXadditionalProperties() != null)
+      if(getObjectSchema() != null)
       {
-          builder.addIfNotNull("XXXadditionalProperties", getXXXadditionalProperties().getJson());
+        return getObjectSchema().getJson();
       }
 
-      if(getFormat() != null)
+      if(getStringSchema() != null)
       {
-          builder.addIfNotNull("format", getFormat());
+        return getStringSchema().getJson();
       }
 
-      if(getXCanonCardinality() != null)
+      if(getNumberSchema() != null)
       {
-          builder.addIfNotNull("x-canon-cardinality", getXCanonCardinality().getValue());
+        return getNumberSchema().getJson();
       }
 
-      if(getXCanonIdentifier() != null)
+      if(getOneOfSchema() != null)
       {
-          builder.addIfNotNull("x-canon-identifier", getXCanonIdentifier());
+        return getOneOfSchema().getJson();
       }
-
-      if(getType() != null)
-      {
-          builder.addIfNotNull("type", getType());
-      }
-
-      if(getXCanonFacade() != null)
-      {
-          builder.addIfNotNull("x-canon-facade", getXCanonFacade());
-      }
-
-      if(getEnum() != null)
-      {
-          JsonArray.Builder arrayBuilder = new JsonArray.Builder();
-          for(String item : getEnum())
-          {
-            arrayBuilder.with(item);
-          }
-          builder.with("enum", arrayBuilder.build());
-      }
-
-      if(getRequired() != null)
-      {
-          JsonArray.Builder arrayBuilder = new JsonArray.Builder();
-          for(String item : getRequired())
-          {
-            arrayBuilder.with(item);
-          }
-          builder.with("required", arrayBuilder.build());
-      }
-
-      if(getDiscriminator() != null)
-      {
-          builder.addIfNotNull("discriminator", getDiscriminator().getJson());
-      }
-
-      if(getMinItems() != null)
-      {
-          builder.addIfNotNull("minItems", getMinItems());
-      }
-
-      if(getOneOf() != null)
-      {
-          JsonArray.Builder arrayBuilder = new JsonArray.Builder();
-          for(SchemaOrRef item : getOneOf())
-          {
-            arrayBuilder.with(item.getJson());
-          }
-          builder.with("oneOf", arrayBuilder.build());
-      }
-
-      if(getXCanonAttributes() != null)
-      {
-          builder.addIfNotNull("x-canon-attributes", getXCanonAttributes().getJson());
-      }
-
-      if(getMaximum() != null)
-      {
-          builder.addIfNotNull("maximum", getMaximum());
-      }
-
-      if(getMinimum() != null)
-      {
-          builder.addIfNotNull("minimum", getMinimum());
-      }
-
-      if(getProperties() != null)
-      {
-          builder.addIfNotNull("properties", getProperties().getJson());
-      }
-
-      if(getXCanonExtends() != null)
-      {
-          builder.addIfNotNull("x-canon-extends", getXCanonExtends().getJson());
-      }
+  
+      throw new IllegalStateException("No value present in OneOf instance");
     }
 
     @Override
     public void validate(FaultAccumulator faultAccumulator)
     {
       super.validate(faultAccumulator);
+      faultAccumulator.checkValueCount("fields", 1, 1,
+        _booleanSchema_,
+        _arraySchema_,
+        _objectSchema_,
+        _stringSchema_,
+        _numberSchema_,
+        _oneOfSchema_
+      );
     }
   }
 
-  @Override
-  public ImmutableSet<String> getCanonUnknownKeys()
-  {
-    return unknownKeys_;
-  }
 
   /**
    * Builder for Schema
@@ -1429,183 +513,63 @@ public abstract class SchemaEntity extends ObjectEntity
 
 
   /**
-   * Return the value of the maxItems attribute.
+   * Return the value of the BooleanSchema attribute.
    *
-   * @return the value of the maxItems attribute.
+   * @return the value of the BooleanSchema attribute.
    */
-  public @Nullable BigInteger getMaxItems()
+  public @Nullable BooleanSchema getBooleanSchema()
   {
-    return _maxItems_;
+    return _booleanSchema_;
   }
 
   /**
-   * Return the value of the x-canon-builderFacade attribute.
+   * Return the value of the ArraySchema attribute.
    *
-   * @return the value of the x-canon-builderFacade attribute.
+   * @return the value of the ArraySchema attribute.
    */
-  public @Nullable Boolean getXCanonBuilderFacade()
+  public @Nullable ArraySchema getArraySchema()
   {
-    return _xCanonBuilderFacade_;
+    return _arraySchema_;
   }
 
   /**
-   * Return the value of the XXXadditionalProperties attribute.
+   * Return the value of the ObjectSchema attribute.
    *
-   * @return the value of the XXXadditionalProperties attribute.
+   * @return the value of the ObjectSchema attribute.
    */
-  public @Nullable AdditionalProperties getXXXadditionalProperties()
+  public @Nullable ObjectSchema getObjectSchema()
   {
-    return _xXXadditionalProperties_;
+    return _objectSchema_;
   }
 
   /**
-   * Return the value of the format attribute.
+   * Return the value of the StringSchema attribute.
    *
-   * @return the value of the format attribute.
+   * @return the value of the StringSchema attribute.
    */
-  public @Nullable String getFormat()
+  public @Nullable StringSchema getStringSchema()
   {
-    return _format_;
+    return _stringSchema_;
   }
 
   /**
-   * Return the value of the x-canon-cardinality attribute.
+   * Return the value of the NumberSchema attribute.
    *
-   * @return the value of the x-canon-cardinality attribute.
+   * @return the value of the NumberSchema attribute.
    */
-  public @Nullable CanonCardinality getXCanonCardinality()
+  public @Nullable NumberSchema getNumberSchema()
   {
-    return _xCanonCardinality_;
+    return _numberSchema_;
   }
 
   /**
-   * Return the value of the x-canon-identifier attribute.
+   * Return the value of the OneOfSchema attribute.
    *
-   * @return the value of the x-canon-identifier attribute.
+   * @return the value of the OneOfSchema attribute.
    */
-  public @Nullable String getXCanonIdentifier()
+  public @Nullable OneOfSchema getOneOfSchema()
   {
-    return _xCanonIdentifier_;
-  }
-
-  /**
-   * Return the value of the type attribute.
-   *
-   * @return the value of the type attribute.
-   */
-  public @Nullable String getType()
-  {
-    return _type_;
-  }
-
-  /**
-   * Return the value of the x-canon-facade attribute.
-   *
-   * @return the value of the x-canon-facade attribute.
-   */
-  public @Nullable Boolean getXCanonFacade()
-  {
-    return _xCanonFacade_;
-  }
-
-  /**
-   * Return the value of the enum attribute.
-   *
-   * @return the value of the enum attribute.
-   */
-  public @Nullable Set<String> getEnum()
-  {
-    return _enum_;
-  }
-
-  /**
-   * Return the value of the required attribute.
-   *
-   * @return the value of the required attribute.
-   */
-  public @Nullable Set<String> getRequired()
-  {
-    return _required_;
-  }
-
-  /**
-   * Return the value of the discriminator attribute.
-   *
-   * @return the value of the discriminator attribute.
-   */
-  public @Nullable DiscriminatorObject getDiscriminator()
-  {
-    return _discriminator_;
-  }
-
-  /**
-   * Return the value of the minItems attribute.
-   *
-   * @return the value of the minItems attribute.
-   */
-  public @Nullable BigInteger getMinItems()
-  {
-    return _minItems_;
-  }
-
-  /**
-   * Return the value of the oneOf attribute.
-   *
-   * @return the value of the oneOf attribute.
-   */
-  public @Nullable Set<SchemaOrRef> getOneOf()
-  {
-    return _oneOf_;
-  }
-
-  /**
-   * Return the value of the x-canon-attributes attribute.
-   *
-   * @return the value of the x-canon-attributes attribute.
-   */
-  public @Nullable CanonAttributes getXCanonAttributes()
-  {
-    return _xCanonAttributes_;
-  }
-
-  /**
-   * Return the value of the maximum attribute.
-   *
-   * @return the value of the maximum attribute.
-   */
-  public @Nullable BigDecimal getMaximum()
-  {
-    return _maximum_;
-  }
-
-  /**
-   * Return the value of the minimum attribute.
-   *
-   * @return the value of the minimum attribute.
-   */
-  public @Nullable BigDecimal getMinimum()
-  {
-    return _minimum_;
-  }
-
-  /**
-   * Return the value of the properties attribute.
-   *
-   * @return the value of the properties attribute.
-   */
-  public @Nullable PropertiesObject getProperties()
-  {
-    return _properties_;
-  }
-
-  /**
-   * Return the value of the x-canon-extends attribute.
-   *
-   * @return the value of the x-canon-extends attribute.
-   */
-  public @Nullable ReferenceObject getXCanonExtends()
-  {
-    return _xCanonExtends_;
+    return _oneOfSchema_;
   }
 
   @Override
@@ -1623,6 +587,34 @@ public abstract class SchemaEntity extends ObjectEntity
     return toString().hashCode();
   }
 
+
+  /**
+   * Return the value of this OneOf entity.
+   *
+   * @return the value of this OneOf entity.
+   */
+  public Object canonGetValue()
+  {
+    if(_booleanSchema_ != null)
+      return _booleanSchema_;
+
+    if(_arraySchema_ != null)
+      return _arraySchema_;
+
+    if(_objectSchema_ != null)
+      return _objectSchema_;
+
+    if(_stringSchema_ != null)
+      return _stringSchema_;
+
+    if(_numberSchema_ != null)
+      return _numberSchema_;
+
+    if(_oneOfSchema_ != null)
+      return _oneOfSchema_;
+
+    return null;
+  }
 // entity.additionalProperties??
 // innerClasses
 }

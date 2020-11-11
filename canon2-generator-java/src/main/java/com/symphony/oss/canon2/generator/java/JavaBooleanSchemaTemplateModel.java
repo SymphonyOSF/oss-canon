@@ -26,7 +26,7 @@ JavaSchemaTemplateModel>
   JavaBooleanSchemaTemplateModel(ResolvedBooleanSchema resolvedSchema, String identifier, String packageName, JavaOpenApiTemplateModel model,
        List<String> templates)
   { 
-    super(resolvedSchema, identifier, packageName, "Boolean", model, templates);
+    super(resolvedSchema, false, identifier, packageName, "Boolean", model, templates);
   }
 
   @Override

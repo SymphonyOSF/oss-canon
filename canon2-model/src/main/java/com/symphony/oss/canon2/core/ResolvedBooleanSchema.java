@@ -18,16 +18,19 @@
 
 package com.symphony.oss.canon2.core;
 
-public class ResolvedBooleanSchema extends ResolvedPrimitiveSchema
+import com.symphony.oss.canon2.model.BooleanSchema;
+import com.symphony.oss.canon2.model.ISchema;
+
+public class ResolvedBooleanSchema extends ResolvedPrimitiveSchema<BooleanSchema>
 {
   ResolvedBooleanSchema(AbstractBuilder<?,?> builder)
   {
     super(builder);
   }
   
-  public abstract static class AbstractBuilder<T extends AbstractBuilder<T, B>, B extends ResolvedBooleanSchema> extends ResolvedPrimitiveSchema.AbstractBuilder<T,B>
+  public abstract static class AbstractBuilder<T extends AbstractBuilder<T, B>, B extends ResolvedBooleanSchema> extends ResolvedPrimitiveSchema.AbstractBuilder<BooleanSchema,T,B>
   {
-    ResolvedSchema.AbstractBuilder<?,?>          resolvedItemsBuilder_;
+    ResolvedSchema.AbstractBuilder<? extends ISchema,?,?>          resolvedItemsBuilder_;
     
     AbstractBuilder(Class<T> type)
     {

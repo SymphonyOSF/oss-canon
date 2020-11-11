@@ -8,13 +8,9 @@ package com.symphony.oss.canon2.generator.java;
 
 import java.util.List;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.symphony.oss.canon2.core.ResolvedPrimitiveSchema;
 import com.symphony.oss.canon2.generator.IPrimitiveSchemaTemplateModel;
 import com.symphony.oss.canon2.model.CanonAttributes;
-import com.symphony.oss.canon2.model.Schema;
 
 /**
  * Java template model for primitive types number, integer, boolean, string.
@@ -28,14 +24,6 @@ IJavaTemplateModel,
 JavaOpenApiTemplateModel,
 JavaSchemaTemplateModel>
 {
-  private static final Logger log_ = LoggerFactory.getLogger(JavaPrimitiveSchemaTemplateModel.class);
-//  private static final String[] IMPORTS = new String[] 
-//  {
-//      "javax.annotation.Nonnull",
-//      "java.util.Objects",
-//      "com.symphony.oss.commons.type.provider.IValueProvider"
-//  };
-
   private final String                       javaType_;
   private final String                       type_;
 //  private final BigInteger                   minimum_;
@@ -54,7 +42,7 @@ JavaSchemaTemplateModel>
 
   private final String primitiveType_;
 
-  JavaPrimitiveSchemaTemplateModel(ResolvedPrimitiveSchema resolvedSchema, String identifier, String packageName, String javaType, JavaOpenApiTemplateModel model,
+  JavaPrimitiveSchemaTemplateModel(ResolvedPrimitiveSchema<?> resolvedSchema, boolean requiresGeneration, String identifier, String packageName, String javaType, JavaOpenApiTemplateModel model,
       List<String> templates)
   { 
     super(resolvedSchema, resolvedSchema.getSchemaType(), identifier, model, templates);
@@ -67,7 +55,7 @@ JavaSchemaTemplateModel>
     String getValuePrefix = "";
     String getValueSuffix = "";
     
-    if(!resolvedSchema.isInnerClass() || hasLimits_ || resolvedSchema.getSchema().getEnum() != null) //resolvedSchema.isGenerated())
+    if(!resolvedSchema.isInnerClass() || hasLimits_ || requiresGeneration) //resolvedSchema.isGenerated())
     {
       primitiveType_ = javaType_;
       type_ = resolvedSchema.getResolvedContainer() == null ? getCamelCapitalizedName() :
@@ -313,11 +301,6 @@ JavaSchemaTemplateModel>
 //    
 //    return false;
 //  }
-
-  static void warnBadFormat(Schema entity)
-  {
-    log_.warn("Unrecognized " + entity.getType() + " format \"" + entity.getFormat() + "\" ignored at " + entity.getSourceLocation());
-  }
 
   @Override
   public String getType()

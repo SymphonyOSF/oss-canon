@@ -26,7 +26,7 @@ import javax.annotation.Nullable;
  * @author Bruce Skingle
  *
  */
-public interface INamedModelEntity
+public interface INamedModelEntity extends ICanonModelEntity
 {
   /**
    * Return the x-canon-identifier attribute.

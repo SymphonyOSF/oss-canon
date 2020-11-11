@@ -19,38 +19,34 @@
 package com.symphony.oss.canon2.core;
 
 import com.symphony.oss.canon.json.model.JsonDomNode;
-import com.symphony.oss.canon2.model.Schema;
-import com.symphony.oss.canon2.model.SchemaType;
+import com.symphony.oss.canon2.model.ISchemaInstance;
 
-public class ResolvedSchema extends ResolvedEntity
+public abstract class ResolvedSchema<S extends ISchemaInstance> extends ResolvedEntity
 {
   private final String                                            name_;
   private final String                                            uri_;
-  private final Schema                                            schema_;
-  private final boolean                                           generated_;
+  private final S                                                 schema_;
   private final ResolvedOpenApiObject.SingletonBuilder            openApiObjectBuilder_;
-  private final ResolvedObjectOrArraySchema.AbstractBuilder<?, ?> outerClassBuilder_;
+  private final ResolvedObjectOrArraySchema.AbstractBuilder<?,?,?> outerClassBuilder_;
   
-  ResolvedSchema(AbstractBuilder<?,?> builder)
+  ResolvedSchema(AbstractBuilder<S,?,?> builder)
   {
     super(builder);
     
     name_                                 = builder.name_;
     uri_                                  = builder.uri_;
     schema_                               = builder.schema_;
-    generated_                            = builder.generated_;
     openApiObjectBuilder_                 = builder.openApiObjectBuilder_;
     outerClassBuilder_                    = builder.outerClassBuilder_;
   }
   
-  public abstract static class AbstractBuilder<T extends AbstractBuilder<T, B>, B extends ResolvedSchema> extends ResolvedEntity.AbstractBuilder<T,B>
+  public abstract static class AbstractBuilder<S extends ISchemaInstance, T extends AbstractBuilder<S,T,B>, B extends ResolvedSchema<S>> extends ResolvedEntity.AbstractBuilder<T,B>
   {
     private String                                            name_;
     private String                                            uri_;
-    private Schema                                            schema_;
-    private boolean                                           generated_;
+    private S                                                 schema_;
     private ResolvedOpenApiObject.SingletonBuilder            openApiObjectBuilder_;
-    private ResolvedObjectOrArraySchema.AbstractBuilder<?, ?> outerClassBuilder_;
+    private ResolvedObjectOrArraySchema.AbstractBuilder<?,?,?> outerClassBuilder_;
     
     AbstractBuilder(Class<T> type)
     {
@@ -87,7 +83,7 @@ public class ResolvedSchema extends ResolvedEntity
       return self();
     }
     
-    public T withResolvedContainer(ResolvedObjectOrArraySchema.AbstractBuilder<?,?> outerClassBuilder)
+    public T withResolvedContainer(ResolvedObjectOrArraySchema.AbstractBuilder<?,?,?> outerClassBuilder)
     {
       if(isBuilt())
         throw new IllegalStateException("SingletonBuilder has already been built");
@@ -120,16 +116,9 @@ public class ResolvedSchema extends ResolvedEntity
 //      return built_;
 //    }
 
-    public T withSchema(Schema schema)
+    public T withSchema(S schema)
     {
       schema_ = schema;
-      
-      return self();
-    }
-
-    public T withGenerated(boolean generated)
-    {
-      generated_ = generated;
       
       return self();
     }
@@ -151,21 +140,10 @@ public class ResolvedSchema extends ResolvedEntity
     return uri_;
   }
 
-  public Schema getSchema()
+  public S getSchema()
   {
     return schema_;
   }
-
-  public boolean isGenerated()
-  {
-    if(generated_)
-      System.out.println("generated");
-    else
-      System.out.println("NOT generated");
-    return generated_;
-  }
-  
-
   
   public boolean isInnerClass()
   {
@@ -189,7 +167,7 @@ public class ResolvedSchema extends ResolvedEntity
     return openApiObjectBuilder_.build();
   }
 
-  public ResolvedSchema getResolvedContainer()
+  public ResolvedSchema<?> getResolvedContainer()
   {
     if(outerClassBuilder_ == null)
       return null;
@@ -199,15 +177,6 @@ public class ResolvedSchema extends ResolvedEntity
   
   public SchemaTemplateModelType getSchemaType()
   {
-    if(getSchema().getOneOf() != null)
-      return SchemaTemplateModelType.ONE_OF;
-    
-//    if(getSchema().getAnyOf() != null)
-//      return SchemaTemplateModelType.ANY_OF;
-//    
-//    if(getSchema().getAllOf() != null)
-//      return SchemaTemplateModelType.ALL_OF;
-    
-    return SchemaTemplateModelType.valueOf(SchemaType.valueOf(getSchema().getType().toUpperCase()));
+    return getSchema().getSchemaType();
   }
 }

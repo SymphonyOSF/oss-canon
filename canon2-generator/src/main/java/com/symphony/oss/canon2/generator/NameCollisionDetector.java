@@ -28,7 +28,6 @@ import java.util.Set;
 
 import com.symphony.oss.canon.json.ParserErrorException;
 import com.symphony.oss.canon.json.model.IJsonDomNodeProvider;
-import com.symphony.oss.canon2.core.ResolvedObjectSchema;
 import com.symphony.oss.canon2.core.ResolvedSchema;
 import com.symphony.oss.canon2.core.SourceContext;
 
@@ -69,11 +68,11 @@ class NameCollisionDetector
 //    return new NameCollisionDetector(generator, schemas, isSchema);
 //  }
   
-  NameCollisionDetector(ICanonGenerator<?,?,?,?,?,?,?,?> generator, Map<String, ResolvedSchema> schemas, boolean isSchema)
+  NameCollisionDetector(ICanonGenerator<?,?,?,?,?,?,?,?> generator, Map<String, ResolvedSchema<?>> schemas, boolean isSchema)
   {
     Map<String, List<String>>   camelMap  = new HashMap<>();
     
-    for(Entry<String, ResolvedSchema> entry : schemas.entrySet())
+    for(Entry<String, ResolvedSchema<?>> entry : schemas.entrySet())
     {
       boolean initial   = isSchema;
       String  name      = generator.getIdentifierName(entry.getKey(), entry.getValue().getSchema());
@@ -85,7 +84,7 @@ class NameCollisionDetector
         list = new LinkedList<>();
         camelMap.put(name, list);
       }
-      list.add("\"" + entry.getKey() + "\" at " + entry.getValue().getSchema().getSourceLocation());
+      list.add("\"" + entry.getKey() + "\" at " + entry.getValue().getSchema().getJson().getContext());
       
       for(char c : name.toCharArray())
       {

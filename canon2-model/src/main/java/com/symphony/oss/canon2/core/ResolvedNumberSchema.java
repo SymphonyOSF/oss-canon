@@ -23,6 +23,7 @@ import java.math.BigDecimal;
 import com.symphony.oss.canon.json.SyntaxErrorException;
 import com.symphony.oss.canon.json.model.JsonDomNode;
 import com.symphony.oss.canon.json.model.JsonParsedNumber;
+import com.symphony.oss.canon2.model.NumberSchema;
 import com.symphony.oss.commons.fault.FaultAccumulator;
 
 /**
@@ -33,7 +34,7 @@ import com.symphony.oss.commons.fault.FaultAccumulator;
  * @param <V> The numeric type of this schema.
  *
  */
-public abstract class ResolvedNumberSchema<V extends Number> extends ResolvedPrimitiveSchema
+public abstract class ResolvedNumberSchema<V extends Number> extends ResolvedPrimitiveSchema<NumberSchema>
 {
   private final V minimum_;
   private final V maximum_;
@@ -61,7 +62,7 @@ public abstract class ResolvedNumberSchema<V extends Number> extends ResolvedPri
    * @param <B> Concrete type of built schema.
    * @param <V> The numeric type of this schema.
    */
-  public abstract static class AbstractBuilder<T extends AbstractBuilder<T,B,V>, B extends ResolvedNumberSchema<V>, V extends Number> extends ResolvedPrimitiveSchema.AbstractBuilder<T,B>
+  public abstract static class AbstractBuilder<T extends AbstractBuilder<T,B,V>, B extends ResolvedNumberSchema<V>, V extends Number> extends ResolvedPrimitiveSchema.AbstractBuilder<NumberSchema,T,B>
   {
     V minimum_;
     V maximum_;

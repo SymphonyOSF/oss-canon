@@ -38,7 +38,6 @@ import com.symphony.oss.canon2.core.CanonModelContext;
 import com.symphony.oss.canon2.core.ResolvedOpenApiObject;
 import com.symphony.oss.canon2.core.ResolvedPropertiesObject;
 import com.symphony.oss.canon2.core.SourceContext;
-import com.symphony.oss.canon2.runtime.java.Entity;
 
 
 /**
@@ -49,7 +48,7 @@ import com.symphony.oss.canon2.runtime.java.Entity;
 @Immutable
 public class SchemasObject extends SchemasObjectEntity
 {
-  private final ImmutableMap<String, Schema> schemas_;
+  private final ImmutableMap<String, ? extends ISchema> schemas_;
   
   /**
    * Constructor.
@@ -70,14 +69,14 @@ public class SchemasObject extends SchemasObjectEntity
     schemas_ = ImmutableMap.copyOf(schemas);
   }
 
-  public ImmutableMap<String, Schema> getSchemas()
+  public ImmutableMap<String, ? extends ISchema> getSchemas()
   {
     return schemas_;
   }
   
-  public Entity get(String[] parts, int index)
+  public ISchema get(String[] parts, int index)
   {
-    Schema schema = schemas_.get(parts[index]);
+    ISchema schema = schemas_.get(parts[index]);
     
     if(schema == null)
       throw new IllegalArgumentException("No path element " + parts[index]);
@@ -89,10 +88,10 @@ public class SchemasObject extends SchemasObjectEntity
   {
     ResolvedPropertiesObject.SingletonBuilder builder = new ResolvedPropertiesObject.SingletonBuilder();
     
-    for(Entry<String, Schema> entry : getSchemas().entrySet())
+    for(Entry<String, ? extends ISchema> entry : getSchemas().entrySet())
     {
       builder.with(entry.getKey(),
-          modelContext.link(openApiObjectBuilder, sourceContext, entry.getKey(), uri + "/" + entry.getKey(), entry.getValue(), true, null));
+          modelContext.link(openApiObjectBuilder, sourceContext, entry.getKey(), uri + "/" + entry.getKey(), entry.getValue(), null));
     }
     
     return builder;

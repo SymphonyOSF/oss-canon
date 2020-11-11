@@ -21,9 +21,10 @@
  *    Generator groupId    org.symphonyoss.s2.canon
  *              artifactId canon2-generator-java
  *    Template name        template/Object/_Entity.java.ftl
- *    At                   2020-10-28 18:16:15 GMT
+ *    At                   2020-11-10 17:41:51 GMT
  *----------------------------------------------------------------------------------------------------
  */
+// importFields
 
 package com.symphony.oss.canon2.model;
 
@@ -202,7 +203,7 @@ public abstract class SchemasObjectEntity extends ObjectEntity
 
       return builder.build();
     }
-//T1 entity SchemasObject OBJECT
+
     @Override
     public void populateJson(JsonObject.Builder builder)
     {

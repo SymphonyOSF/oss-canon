@@ -18,16 +18,12 @@
 
 package com.symphony.oss.canon2.core;
 
-import java.util.Map;
-
-import javax.annotation.Nonnull;
-
+import com.symphony.oss.canon2.model.ObjectSchema;
 import com.symphony.oss.commons.fault.FaultAccumulator;
 
-public class ResolvedObjectSchema extends ResolvedObjectOrArraySchema
+public class ResolvedObjectSchema extends ResolvedPropertyContainerSchema<ObjectSchema>
 {
   private final ResolvedObjectSchema.SingletonBuilder     resolvedExtendsBuilder_;
-  private final ResolvedPropertiesObject.SingletonBuilder resolvedPropertiesBuilder_;
   private final ResolvedObjectSchema.SingletonBuilder     resolvedAdditionalPropertiesBuilder_;
   private final boolean                                   additionalPropertiesAllowed_;
   
@@ -36,17 +32,17 @@ public class ResolvedObjectSchema extends ResolvedObjectOrArraySchema
     super(builder);
 
     resolvedExtendsBuilder_               = builder.resolvedExtendsBuilder_;
-    resolvedPropertiesBuilder_            = builder.resolvedPropertiesBuilder_;
     resolvedAdditionalPropertiesBuilder_  = builder.resolvedAdditionalPropertiesBuilder_;
     additionalPropertiesAllowed_          = builder.additionalPropertiesAllowed_;
+    
+    
   }
   
-  abstract static class AbstractBuilder<T extends AbstractBuilder<T, B>, B extends ResolvedObjectSchema> extends ResolvedObjectOrArraySchema.AbstractBuilder<T,B>
+  abstract static class AbstractBuilder<T extends AbstractBuilder<T,B>, B extends ResolvedObjectSchema> extends ResolvedPropertyContainerSchema.AbstractBuilder<ObjectSchema,T,B>
   {
     private ResolvedObjectSchema.SingletonBuilder     resolvedExtendsBuilder_;
     private ResolvedObjectSchema.SingletonBuilder     resolvedAdditionalPropertiesBuilder_;
     private boolean                                   additionalPropertiesAllowed_;
-    private ResolvedPropertiesObject.SingletonBuilder resolvedPropertiesBuilder_;
     
     AbstractBuilder(Class<T> type)
     {
@@ -59,16 +55,6 @@ public class ResolvedObjectSchema extends ResolvedObjectOrArraySchema
         throw new IllegalStateException("SingletonBuilder has already been built");
       
       resolvedExtendsBuilder_ = resolvedExtendsBuilder;
-      
-      return self();
-    }
-    
-    public T withResolvedProperties(ResolvedPropertiesObject.SingletonBuilder resolvedPropertiesBuilder)
-    {
-      if(isBuilt())
-        throw new IllegalStateException("SingletonBuilder has already been built");
-      
-      resolvedPropertiesBuilder_ = resolvedPropertiesBuilder;
       
       return self();
     }
@@ -99,8 +85,16 @@ public class ResolvedObjectSchema extends ResolvedObjectOrArraySchema
     {
       super.validate(faultAccumulator);
       
-      if(resolvedPropertiesBuilder_ == null)
-        throw new IllegalStateException("resolvedPropertiesBuilder is required");
+//      if(getSchema().getDiscriminator() != null)
+//      {
+//        String          propertyName = getSchema().getDiscriminator().getPropertyName();
+//        ResolvedSchema  property = getResolvedProperties().get(propertyName);
+//        
+//        if(property == null)
+//        {
+//          withE
+//        }
+//      }
     }
   }
   
@@ -132,7 +126,7 @@ public class ResolvedObjectSchema extends ResolvedObjectOrArraySchema
     
   }
 
-  public ResolvedSchema getResolvedExtends()
+  public ResolvedObjectSchema getResolvedExtends()
   {
     if(resolvedExtendsBuilder_ == null)
       return null;
@@ -140,15 +134,7 @@ public class ResolvedObjectSchema extends ResolvedObjectOrArraySchema
     return resolvedExtendsBuilder_.build();
   }
 
-  public @Nonnull Map<String, ResolvedSchema> getResolvedProperties()
-  {
-    if(resolvedPropertiesBuilder_ == null)
-      return null;
-    
-    return resolvedPropertiesBuilder_.build().getResolvedProperties();
-  }
-
-  public ResolvedSchema getResolvedAdditionalProperties()
+  public ResolvedObjectSchema getResolvedAdditionalProperties()
   {
     if(resolvedAdditionalPropertiesBuilder_ == null)
       return null;

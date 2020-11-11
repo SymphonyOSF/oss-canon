@@ -27,6 +27,7 @@ import org.slf4j.LoggerFactory;
 import com.google.common.collect.ImmutableList;
 import com.symphony.oss.canon.json.model.JsonObject;
 import com.symphony.oss.canon2.core.INamedModelEntity;
+import com.symphony.oss.canon2.core.ResolvedArraySchema;
 import com.symphony.oss.canon2.core.ResolvedBigDecimalSchema;
 import com.symphony.oss.canon2.core.ResolvedBigIntegerSchema;
 import com.symphony.oss.canon2.core.ResolvedBooleanSchema;
@@ -34,7 +35,10 @@ import com.symphony.oss.canon2.core.ResolvedDoubleSchema;
 import com.symphony.oss.canon2.core.ResolvedFloatSchema;
 import com.symphony.oss.canon2.core.ResolvedIntegerSchema;
 import com.symphony.oss.canon2.core.ResolvedLongSchema;
+import com.symphony.oss.canon2.core.ResolvedObjectSchema;
 import com.symphony.oss.canon2.core.ResolvedOpenApiObject;
+import com.symphony.oss.canon2.core.ResolvedPrimitiveSchema;
+import com.symphony.oss.canon2.core.ResolvedPropertyContainerSchema;
 import com.symphony.oss.canon2.core.ResolvedSchema;
 import com.symphony.oss.canon2.core.ResolvedStringSchema;
 import com.symphony.oss.canon2.core.SourceContext;
@@ -256,7 +260,7 @@ IGroupSchemaTemplateModel<IJavaTemplateModel,JavaOpenApiTemplateModel,JavaSchema
 
   
   @Override
-  public JavaObjectSchemaTemplateModel generateObjectSchema(JavaOpenApiTemplateModel model, ResolvedSchema resolvedSchema, String identifier)
+  public JavaObjectSchemaTemplateModel generateObjectSchema(JavaOpenApiTemplateModel model, ResolvedPropertyContainerSchema<?> resolvedSchema, String identifier)
   {
     return new JavaObjectSchemaTemplateModel(resolvedSchema, 
 
@@ -266,7 +270,7 @@ IGroupSchemaTemplateModel<IJavaTemplateModel,JavaOpenApiTemplateModel,JavaSchema
   }
 
   @Override
-  public JavaArraySchemaTemplateModel generateArraySchema(JavaOpenApiTemplateModel model, ResolvedSchema resolvedSchema, String identifier, CanonCardinality cardinality)
+  public JavaArraySchemaTemplateModel generateArraySchema(JavaOpenApiTemplateModel model, ResolvedArraySchema resolvedSchema, String identifier, CanonCardinality cardinality)
   {
     return new JavaArraySchemaTemplateModel(resolvedSchema,
         identifier, getJavaGenerationPackage(resolvedSchema.getResolvedOpenApiObject().getModel()),
@@ -371,7 +375,19 @@ IGroupSchemaTemplateModel<IJavaTemplateModel,JavaOpenApiTemplateModel,JavaSchema
         false, getJavaPrimitiveTemplates(resolvedSchema));
   }
 
-  private List<String> getJavaPrimitiveTemplates(ResolvedSchema resolvedSchema)
+  private List<String> getJavaPrimitiveTemplates(ResolvedPrimitiveSchema<?> resolvedSchema)
+  {
+    if(resolvedSchema.isInnerClass() || resolvedSchema.getResolvedOpenApiObject().isReferencedModel())
+    {
+      return EMPTY_TEMPLATES;
+    }
+    else
+    {
+      return TYPEDEF_TEMPLATES;
+    }
+  }
+
+  private List<String> getJavaStringTemplates(ResolvedStringSchema resolvedSchema)
   {
     if(resolvedSchema.isInnerClass() || resolvedSchema.getResolvedOpenApiObject().isReferencedModel())
     {
@@ -393,7 +409,7 @@ IGroupSchemaTemplateModel<IJavaTemplateModel,JavaOpenApiTemplateModel,JavaSchema
   {
     return new JavaStringSchemaTemplateModel(resolvedSchema,
         identifier, getJavaGenerationPackage(resolvedSchema.getResolvedOpenApiObject().getModel()),
-        model, getJavaPrimitiveTemplates(resolvedSchema));
+        model, getJavaStringTemplates(resolvedSchema));
   }
 
   @Override

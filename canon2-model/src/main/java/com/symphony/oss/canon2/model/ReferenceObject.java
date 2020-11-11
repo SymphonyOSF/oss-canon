@@ -34,6 +34,12 @@ import java.net.URL;
 
 import javax.annotation.concurrent.Immutable;
 
+import com.symphony.oss.canon.json.ParserErrorException;
+import com.symphony.oss.canon2.core.CanonModelContext;
+import com.symphony.oss.canon2.core.ResolvedOpenApiObject;
+import com.symphony.oss.canon2.core.ResolvedSchema;
+import com.symphony.oss.canon2.core.SourceContext;
+
 
 /**
  * Facade for Object  ReferenceObject canon
@@ -153,6 +159,44 @@ public class ReferenceObject extends ReferenceObjectEntity
     
     return new URL(context, getBaseUri().toString());
   }
+  
+//Duplicated in Schema - THIS is the correct place for this
+ ResolvedSchema.AbstractBuilder<? extends ISchemaInstance,?,?> fetchSchema(ResolvedOpenApiObject.SingletonBuilder openApiObjectBuilder, CanonModelContext modelContext, SourceContext sourceContext)
+ {
+   Schema schema;
+   String uri;
+   
+   if(getBaseUri() == null)
+   {
+     try
+     {
+       schema = sourceContext.getModel().get(getFragment(), Schema.class);
+     }
+     catch(IllegalArgumentException e)
+     {
+       throw new ParserErrorException("No such schema \"" + getFragment() + "\"", this);
+     }
+     uri = sourceContext.getUrl() + getFragment();
+   }
+   else
+   {
+     try
+     {
+       URL url = new URL(sourceContext.getUrl(), getBaseUri().toString());
+       
+       sourceContext = modelContext.getReferencedModel(url);
+       schema = sourceContext.getModel().get(getFragment(), Schema.class);
+       uri = get$ref();
+       openApiObjectBuilder = sourceContext.getResolvedOpenApiObjectBuilder();
+     }
+     catch (MalformedURLException e)
+     {
+       throw new ParserErrorException("Invalid URL", this, e);
+     }
+   }
+   
+   return modelContext.link(openApiObjectBuilder, sourceContext, getName(), uri, schema, null);
+ }
 }
 /*----------------------------------------------------------------------------------------------------
  * End of template proforma/Object/_.java.ftl

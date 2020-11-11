@@ -334,7 +334,7 @@ public class SourceContext
     return resolvedOpenApiObjectBuilder_;
   }
 
-  public Map<String, ResolvedSchema> getSchemas()
+  public Map<String, ResolvedSchema<?>> getSchemas()
   {
     return getResolvedOpenApiObject().getComponents().getSchemas().getResolvedProperties();
   }
