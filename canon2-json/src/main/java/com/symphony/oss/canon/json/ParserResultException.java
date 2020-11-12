@@ -28,9 +28,10 @@ import java.util.Collection;
  * @author Bruce Skingle
  *
  */
-public class ParserResultException extends Exception
+public class ParserResultException extends Exception implements IParserException
 {
   private static final long serialVersionUID = 1L;
+  private static final String CAUSED_BY = "Caused by:";
   
   private final Collection<ParserException> parserExceptions_;
 
@@ -47,5 +48,33 @@ public class ParserResultException extends Exception
   public Collection<ParserException> getParserExceptions()
   {
     return parserExceptions_;
+  }
+
+  @Override
+  public void populateString(String indent, StringBuilder builder)
+  {
+    builder.append(indent);
+    builder.append(super.toString());
+    
+    if(!getParserExceptions().isEmpty())
+    {
+      indent = indent.length()==0 ? "\n  " : indent + "  ";
+      builder.append(indent);
+      builder.append(CAUSED_BY);
+     
+      for(ParserException cause : getParserExceptions())
+      {
+        cause.populateString(indent, builder);
+      }
+    }
+    
+    if(getCause() instanceof IParserException)
+    {
+      indent = indent.length()==0 ? "\n  " : indent + "  ";
+      builder.append(indent);
+      builder.append(CAUSED_BY);
+     
+      ((IParserException)getCause()).populateString(indent, builder);
+    }
   }
 }

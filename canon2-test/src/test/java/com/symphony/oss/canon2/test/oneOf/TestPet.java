@@ -22,7 +22,6 @@ import org.junit.Test;
 
 import com.symphony.oss.canon.json.ParserErrorException;
 import com.symphony.oss.canon.json.ParserResultException;
-import com.symphony.oss.canon2.runtime.java.Entity;
 import com.symphony.oss.canon2.runtime.java.ModelRegistry;
 
 @SuppressWarnings("javadoc")
@@ -65,11 +64,11 @@ public class TestPet
     assertEquals(cat, pet.getCat());
     assertEquals(null, pet.getDog());
     
-    Entity parsedDog = modelRegistry_.parseOne(dogJson);
+    Dog parsedDog = Dog.FACTORY.newInstance(dogJson, modelRegistry_);
     
     assertEquals(parsedDog, dog);
     
-    Entity parsedCat = modelRegistry_.parseOne(catJson);
+    Cat parsedCat = Cat.FACTORY.newInstance(catJson, modelRegistry_);
     
     assertEquals(parsedCat, cat);
     
@@ -114,7 +113,7 @@ public class TestPet
         "  \"_version\":\"1.0\"\n" + 
         "}\n";
     
-    Entity parsedPet = modelRegistry_.parseOne(petJson);
+    Pet parsedPet = Pet.FACTORY.newInstance(petJson, modelRegistry_);
     
     System.out.println(parsedPet);
   }

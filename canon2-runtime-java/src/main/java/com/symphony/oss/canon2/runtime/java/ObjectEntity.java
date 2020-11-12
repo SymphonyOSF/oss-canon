@@ -187,18 +187,18 @@ public abstract class ObjectEntity extends Entity implements IJsonObjectProvider
 //    {
 //    }
     
-    /**
-     * Initialize this builder with the values from the given serialized form.
-     * 
-     * @param jsonObject    The serialized form of an instance of the built type.
-     * @param modelRegistry A model registry.
-     * 
-     * @return This (fluent method).
-     */
-    @Override
-    public T withValues(JsonObject jsonObject, ModelRegistry modelRegistry)
-    {
-      return super.withValues(jsonObject, modelRegistry);
-    }
+//    /**
+//     * Initialize this builder with the values from the given serialized form.
+//     * 
+//     * @param jsonObject    The serialized form of an instance of the built type.
+//     * @param modelRegistry A model registry.
+//     * 
+//     * @return This (fluent method).
+//     */
+//    @Override
+//    public T withValues(JsonObject jsonObject, ModelRegistry modelRegistry)
+//    {
+//      return super.withValues(jsonObject, modelRegistry);
+//    }
   }
 }

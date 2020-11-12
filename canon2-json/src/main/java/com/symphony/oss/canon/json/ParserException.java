@@ -26,10 +26,11 @@ import com.symphony.oss.canon.json.model.IJsonDomNodeProvider;
  * @author Bruce Skingle
  *
  */
-public abstract class ParserException extends RuntimeException
+public abstract class ParserException extends RuntimeException implements IParserException
 {
   private static final long    serialVersionUID = 1L;
   private static final ParserContext UNKNOWN_LOCATION = new ParserContext("Unknown location");
+  private static final String CAUSED_BY = "Caused by:";
 
   private final IParserContext context_;
   private final boolean fatal_;
@@ -172,5 +173,31 @@ public abstract class ParserException extends RuntimeException
     }
     
     return s.toString();
+  }
+
+  @Override
+  public String toString()
+  {
+    StringBuilder builder = new StringBuilder();
+    
+    populateString("", builder);
+    
+    return builder.toString();
+  }
+
+  @Override
+  public void populateString(String indent, StringBuilder builder)
+  {
+    builder.append(indent);
+    builder.append(super.toString());
+    
+    if(getCause() instanceof IParserException)
+    {
+      indent = indent.length()==0 ? "\n  " : indent + "  ";
+      builder.append(indent);
+      builder.append(CAUSED_BY);
+     
+      ((IParserException)getCause()).populateString(indent, builder);
+    }
   }
 }

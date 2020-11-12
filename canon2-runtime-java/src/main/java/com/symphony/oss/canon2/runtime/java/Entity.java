@@ -24,6 +24,7 @@
 package com.symphony.oss.canon2.runtime.java;
 
 import java.io.StringReader;
+import java.util.List;
 import java.util.Objects;
 
 import javax.annotation.Nonnull;
@@ -33,6 +34,7 @@ import com.symphony.oss.canon.json.JsonParser;
 import com.symphony.oss.canon.json.ParserErrorException;
 import com.symphony.oss.canon.json.ParserException;
 import com.symphony.oss.canon.json.ParserResultException;
+import com.symphony.oss.canon.json.ParserWarningException;
 import com.symphony.oss.canon.json.model.IJsonDomNodeProvider;
 import com.symphony.oss.canon.json.model.JsonDomNode;
 import com.symphony.oss.canon.json.model.JsonObject;
@@ -149,19 +151,19 @@ public class Entity implements IJsonDomNodeProvider
     {
       return modelRegistry_;
     }
-    
-    /**
-     * Initialize this builder with the values from the given serialized form.
-     * 
-     * @param jsonObject    The serialized form of an instance of the built type.
-     * @param modelRegistry A model registry.
-     * 
-     * @return This (fluent method).
-     */
-    public T withValues(JsonObject jsonObject, ModelRegistry modelRegistry)
-    {
-      return self();
-    }
+//    
+//    /**
+//     * Initialize this builder with the values from the given serialized form.
+//     * 
+//     * @param jsonObject    The serialized form of an instance of the built type.
+//     * @param modelRegistry A model registry.
+//     * 
+//     * @return This (fluent method).
+//     */
+//    public T withValues(JsonObject jsonObject, ModelRegistry modelRegistry)
+//    {
+//      return self();
+//    }
 
 //    @Override
 //    @Deprecated
@@ -214,11 +216,26 @@ public class Entity implements IJsonDomNodeProvider
     /**
      * a new entity instance created from the given JSON serialization, or null if the given KSON is invalid.
      * 
-     * @param jsonObject    The JSON serialized form of the required entity.
-     * @param modelRegistry A context which controls validation behaviour and provides factories for deserialization.
+     * @param parserExceptions  A list to which exceptions which would have been thrown if we did not ask for "or null"
+     *                          will be added.
+     * @param jsonObject        The JSON serialized form of the required entity.
+     * @param modelRegistry     A context which controls validation behaviour and provides factories for deserialization.
      * 
      * @return An instance of the entity represented by the given serialized form.
      */
+    public @Nullable B newInstanceOrNull(List<ParserException> parserExceptions, JsonDomNode jsonObject, ModelRegistry modelRegistry)
+    {
+      try
+      {
+         return newInstance(jsonObject, modelRegistry);
+      }
+      catch(IllegalArgumentException | ParserErrorException e)
+      {
+       parserExceptions.add(new ParserWarningException("Failed to match " + getCanonType(), jsonObject.getContext(), e));
+       return null;
+      }
+    }
+    
     public @Nullable B newInstanceOrNull(JsonDomNode jsonObject, ModelRegistry modelRegistry)
     {
       try
@@ -271,7 +288,11 @@ public class Entity implements IJsonDomNodeProvider
     public B newInstance(StringReader reader, ModelRegistry modelRegistry) throws ParserResultException
     {
 
-      return newInstance(JsonParser.parseObject(reader), modelRegistry);
+      return newInstance(new JsonParser.Builder()
+                            .withInput(reader)
+                            .build()
+                            .parseObject()
+                          , modelRegistry);
     }
     
 //    /**

@@ -277,6 +277,7 @@ public abstract class CanonModelContext
     while((sourceContext = parseQueue_.pollFirst()) != null)
     {
       model = sourceContext.parse(modelRegistry_);
+     
 //      catch(IllegalStateException e)
 //      {
 //        throw new ParserErrorException("Failed to parse model", e);

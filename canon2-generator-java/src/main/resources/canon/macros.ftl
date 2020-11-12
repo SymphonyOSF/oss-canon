@@ -89,7 +89,7 @@ UNEXPECTED SCHEMA TYPE ${schema.schemaType} in generateCreateJsonDomNodeFromFiel
     <#case "ONE_OF">
       <#switch objectSchemaType>
         <#case "ONE_OF">
-${indent}${var} = ${schema.type}.FACTORY.newInstanceOrNull(${node}, ${modelRegistry});
+${indent}${var} = ${schema.type}.FACTORY.newInstanceOrNull(parserExceptions, ${node}, ${modelRegistry});
            <#break>
           <#default>
 ${indent}${var} = ${schema.type}.FACTORY.newInstance(${node}, ${modelRegistry});

@@ -24,7 +24,6 @@ import java.util.List;
 import org.junit.Test;
 
 import com.google.common.collect.ImmutableList;
-import com.symphony.oss.canon.json.JsonParser;
 import com.symphony.oss.canon.json.ParserResultException;
 import com.symphony.oss.canon2.runtime.java.ModelRegistry;
 
@@ -62,7 +61,7 @@ public class TestFundamentalObject
     assertEquals(storedFundamentalObject, builtObject.toString());
     
     
-    FundamentalObject deserialisedObject = FundamentalObject.FACTORY.newInstance(JsonParser.parseObject(storedFundamentalObject), modelRegistry_);
+    FundamentalObject deserialisedObject = FundamentalObject.FACTORY.newInstance(storedFundamentalObject, modelRegistry_);
     
     assertEquals(deserialisedObject, builtObject);
   }

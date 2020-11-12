@@ -21,36 +21,21 @@
  *    Generator groupId    org.symphonyoss.s2.canon
  *              artifactId canon2-generator-java
  *    Template name        template/Object/_Entity.java.ftl
- *    At                   2020-11-10 17:41:52 GMT
+ *    At                   2020-11-12 10:04:36 GMT
  *----------------------------------------------------------------------------------------------------
  */
-// importFields
-// importField BooleanSchema nullable is Nullable
-// importType BooleanSchema
-// importType BooleanSchema
-// importField ArraySchema nullable is Nullable
-// importType ArraySchema
-// importType ArraySchema
-// importField ObjectSchema nullable is Nullable
-// importType ObjectSchema
-// importType ObjectSchema
-// importField StringSchema nullable is Nullable
-// importType StringSchema
-// importType StringSchema
-// importField NumberSchema nullable is Nullable
-// importType NumberSchema
-// importType NumberSchema
-// importField OneOfSchema nullable is Nullable
-// importType OneOfSchema
-// importType OneOfSchema
 
 package com.symphony.oss.canon2.model;
+
+import java.util.LinkedList;
+import java.util.List;
 
 import javax.annotation.Nullable;
 import javax.annotation.concurrent.Immutable;
 
-import com.google.common.collect.ImmutableSet;
 import com.symphony.oss.canon.json.ParserErrorException;
+import com.symphony.oss.canon.json.ParserException;
+import com.symphony.oss.canon.json.ParserResultException;
 import com.symphony.oss.canon.json.model.JsonDomNode;
 import com.symphony.oss.canon.json.model.JsonNull;
 import com.symphony.oss.canon.json.model.JsonObject;
@@ -89,40 +74,59 @@ public abstract class SchemaEntity extends Entity
   public SchemaEntity(Initialiser initialiser)
   {
     super(initialiser);
-    int debug=0;
 
     if(initialiser instanceof JsonEntityInitialiser)
     {
       JsonEntityInitialiser jsonInitialiser = (JsonEntityInitialiser)initialiser;
-
-      JsonDomNode  node = jsonInitialiser.getJson();
-      int          valueCnt = 0;
-       _booleanSchema_ = BooleanSchema.FACTORY.newInstanceOrNull(node, jsonInitialiser.getModelRegistry());
+      List<ParserException> parserExceptions = new LinkedList<>();
+      List<String>          matches = new LinkedList<>();
+      JsonDomNode           node = jsonInitialiser.getJson();
+       _booleanSchema_ = BooleanSchema.FACTORY.newInstanceOrNull(parserExceptions, node, jsonInitialiser.getModelRegistry());
       if(_booleanSchema_ != null)
-        valueCnt++;
+      {
+        matches.add("BooleanSchema");
+      }
 
-       _arraySchema_ = ArraySchema.FACTORY.newInstanceOrNull(node, jsonInitialiser.getModelRegistry());
+       _arraySchema_ = ArraySchema.FACTORY.newInstanceOrNull(parserExceptions, node, jsonInitialiser.getModelRegistry());
       if(_arraySchema_ != null)
-        valueCnt++;
+      {
+        matches.add("ArraySchema");
+      }
 
-       _objectSchema_ = ObjectSchema.FACTORY.newInstanceOrNull(node, jsonInitialiser.getModelRegistry());
+       _objectSchema_ = ObjectSchema.FACTORY.newInstanceOrNull(parserExceptions, node, jsonInitialiser.getModelRegistry());
       if(_objectSchema_ != null)
-        valueCnt++;
+      {
+        matches.add("ObjectSchema");
+      }
 
-       _stringSchema_ = StringSchema.FACTORY.newInstanceOrNull(node, jsonInitialiser.getModelRegistry());
+       _stringSchema_ = StringSchema.FACTORY.newInstanceOrNull(parserExceptions, node, jsonInitialiser.getModelRegistry());
       if(_stringSchema_ != null)
-        valueCnt++;
+      {
+        matches.add("StringSchema");
+      }
 
-       _numberSchema_ = NumberSchema.FACTORY.newInstanceOrNull(node, jsonInitialiser.getModelRegistry());
+       _numberSchema_ = NumberSchema.FACTORY.newInstanceOrNull(parserExceptions, node, jsonInitialiser.getModelRegistry());
       if(_numberSchema_ != null)
-        valueCnt++;
+      {
+        matches.add("NumberSchema");
+      }
 
-       _oneOfSchema_ = OneOfSchema.FACTORY.newInstanceOrNull(node, jsonInitialiser.getModelRegistry());
+       _oneOfSchema_ = OneOfSchema.FACTORY.newInstanceOrNull(parserExceptions, node, jsonInitialiser.getModelRegistry());
       if(_oneOfSchema_ != null)
-        valueCnt++;
+      {
+        matches.add("OneOfSchema");
+      }
 
-      if(valueCnt != 1)
-        throw new ParserErrorException("Exactly one value must be present", jsonInitialiser.getJson().getContext());
+      if(matches.size() != 1)
+      {
+        throw new ParserErrorException("Exactly one of BooleanSchema,\n" +
+          "ArraySchema,\n" +
+          "ObjectSchema,\n" +
+          "StringSchema,\n" +
+          "NumberSchema,\n" +
+          "OneOfSchema must be present but " + matches + " were encountered", jsonInitialiser.getJson().getContext(),
+                   new ParserResultException(parserExceptions));
+      }
     }
     else
     {
@@ -203,7 +207,6 @@ public abstract class SchemaEntity extends Entity
    * @param <B> The concrete type of the built object.
    */
   public static abstract class AbstractBuilder<T extends AbstractBuilder<T,B>, B extends SchemaEntity>
-// super class name
     extends Entity.AbstractBuilder<T,B>
     implements ISchemaInstanceOrBuilder, Initialiser
   {
@@ -237,40 +240,65 @@ public abstract class SchemaEntity extends Entity
       _oneOfSchema_ = initial.getOneOfSchema();
     }
 
-    @Override
-    public T withValues(JsonObject jsonObject, ModelRegistry modelRegistry)
+    /**
+     * Initialize this builder with the values from the given serialized form.
+     * 
+     * @param json          The serialized form of an instance of the built type.
+     * @param modelRegistry A model registry.
+     * 
+     * @return This (fluent method).
+     */
+    public T withValues(JsonDomNode json, ModelRegistry modelRegistry)
     {
-      if(jsonObject.containsKey("BooleanSchema"))
+      List<ParserException> parserExceptions = new LinkedList<>();
+      List<String>          matches = new LinkedList<>();
+       _booleanSchema_ = BooleanSchema.FACTORY.newInstanceOrNull(parserExceptions, json, modelRegistry);
+      if(_booleanSchema_ != null)
       {
-        JsonDomNode  node = jsonObject.get("BooleanSchema");
-        _booleanSchema_ = BooleanSchema.FACTORY.newInstanceOrNull(node, modelRegistry);
+        matches.add("BooleanSchema");
       }
-      if(jsonObject.containsKey("ArraySchema"))
+
+       _arraySchema_ = ArraySchema.FACTORY.newInstanceOrNull(parserExceptions, json, modelRegistry);
+      if(_arraySchema_ != null)
       {
-        JsonDomNode  node = jsonObject.get("ArraySchema");
-        _arraySchema_ = ArraySchema.FACTORY.newInstanceOrNull(node, modelRegistry);
+        matches.add("ArraySchema");
       }
-      if(jsonObject.containsKey("ObjectSchema"))
+
+       _objectSchema_ = ObjectSchema.FACTORY.newInstanceOrNull(parserExceptions, json, modelRegistry);
+      if(_objectSchema_ != null)
       {
-        JsonDomNode  node = jsonObject.get("ObjectSchema");
-        _objectSchema_ = ObjectSchema.FACTORY.newInstanceOrNull(node, modelRegistry);
+        matches.add("ObjectSchema");
       }
-      if(jsonObject.containsKey("StringSchema"))
+
+       _stringSchema_ = StringSchema.FACTORY.newInstanceOrNull(parserExceptions, json, modelRegistry);
+      if(_stringSchema_ != null)
       {
-        JsonDomNode  node = jsonObject.get("StringSchema");
-        _stringSchema_ = StringSchema.FACTORY.newInstanceOrNull(node, modelRegistry);
+        matches.add("StringSchema");
       }
-      if(jsonObject.containsKey("NumberSchema"))
+
+       _numberSchema_ = NumberSchema.FACTORY.newInstanceOrNull(parserExceptions, json, modelRegistry);
+      if(_numberSchema_ != null)
       {
-        JsonDomNode  node = jsonObject.get("NumberSchema");
-        _numberSchema_ = NumberSchema.FACTORY.newInstanceOrNull(node, modelRegistry);
+        matches.add("NumberSchema");
       }
-      if(jsonObject.containsKey("OneOfSchema"))
+
+       _oneOfSchema_ = OneOfSchema.FACTORY.newInstanceOrNull(parserExceptions, json, modelRegistry);
+      if(_oneOfSchema_ != null)
       {
-        JsonDomNode  node = jsonObject.get("OneOfSchema");
-        _oneOfSchema_ = OneOfSchema.FACTORY.newInstanceOrNull(node, modelRegistry);
+        matches.add("OneOfSchema");
       }
-      return super.withValues(jsonObject, modelRegistry);
+
+      if(matches.size() != 1)
+      {
+        throw new IllegalArgumentException("Exactly one of BooleanSchema,\n" +
+          "ArraySchema,\n" +
+          "ObjectSchema,\n" +
+          "StringSchema,\n" +
+          "NumberSchema,\n" +
+          "OneOfSchema must be present but " + matches + " were encountered at " + json.getContext(),
+                   new ParserResultException(parserExceptions));
+      }
+      return self();
     }
 
     /* void populateAllFields(List<Object> result)
@@ -301,7 +329,7 @@ public abstract class SchemaEntity extends Entity
      *
      * @return This (fluent method).
      */
-    public T withBooleanSchema(BooleanSchema value) //main
+    public T withBooleanSchema(BooleanSchema value)
     {
       _booleanSchema_ = value;
       return self();
@@ -325,7 +353,7 @@ public abstract class SchemaEntity extends Entity
      *
      * @return This (fluent method).
      */
-    public T withArraySchema(ArraySchema value) //main
+    public T withArraySchema(ArraySchema value)
     {
       _arraySchema_ = value;
       return self();
@@ -349,7 +377,7 @@ public abstract class SchemaEntity extends Entity
      *
      * @return This (fluent method).
      */
-    public T withObjectSchema(ObjectSchema value) //main
+    public T withObjectSchema(ObjectSchema value)
     {
       _objectSchema_ = value;
       return self();
@@ -373,7 +401,7 @@ public abstract class SchemaEntity extends Entity
      *
      * @return This (fluent method).
      */
-    public T withStringSchema(StringSchema value) //main
+    public T withStringSchema(StringSchema value)
     {
       _stringSchema_ = value;
       return self();
@@ -397,7 +425,7 @@ public abstract class SchemaEntity extends Entity
      *
      * @return This (fluent method).
      */
-    public T withNumberSchema(NumberSchema value) //main
+    public T withNumberSchema(NumberSchema value)
     {
       _numberSchema_ = value;
       return self();
@@ -421,7 +449,7 @@ public abstract class SchemaEntity extends Entity
      *
      * @return This (fluent method).
      */
-    public T withOneOfSchema(OneOfSchema value) //main
+    public T withOneOfSchema(OneOfSchema value)
     {
       _oneOfSchema_ = value;
       return self();
@@ -615,8 +643,6 @@ public abstract class SchemaEntity extends Entity
 
     return null;
   }
-// entity.additionalProperties??
-// innerClasses
 }
 
 /*----------------------------------------------------------------------------------------------------

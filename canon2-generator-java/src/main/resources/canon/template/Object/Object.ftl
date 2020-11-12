@@ -1,7 +1,6 @@
 <#assign imports = entity.imports + [
   "javax.annotation.concurrent.Immutable",
   "javax.annotation.Nullable",
-  "com.google.common.collect.ImmutableSet",
   "com.symphony.oss.canon2.runtime.java.ModelRegistry",
   "com.symphony.oss.canon.json.model.JsonObject",
   "com.symphony.oss.canon.json.model.JsonDomNode",
@@ -15,6 +14,7 @@
 <#switch schema.schemaType>
     <#case "OBJECT">
       <#assign imports = imports + [
+      "com.google.common.collect.ImmutableSet",
       "com.symphony.oss.canon2.runtime.java.IObjectEntityInitialiser",
       "com.symphony.oss.canon2.runtime.java.JsonObjectEntityInitialiser",
       "${schema.fullyQualifiedSuperTypeName}"
@@ -24,6 +24,10 @@
       <#assign imports = imports + [
       "com.symphony.oss.canon2.runtime.java.IEntityInitialiser",
       "com.symphony.oss.canon2.runtime.java.JsonEntityInitialiser",
+      "java.util.List",
+      "java.util.LinkedList",
+      "com.symphony.oss.canon.json.ParserException",
+      "com.symphony.oss.canon.json.ParserResultException",
       "${schema.fullyQualifiedSuperTypeName}"
       ]>
       <#break>
@@ -162,17 +166,23 @@ ${indent}    {
 ${indent}      Json${entity.initialiserType} jsonInitialiser = (Json${entity.initialiserType})initialiser;
 <#switch entity.schemaType>
     <#case "ONE_OF">
-
-${indent}      JsonDomNode  node = jsonInitialiser.getJson();
-${indent}      int          valueCnt = 0;
+${indent}      List<ParserException> parserExceptions = new LinkedList<>();
+${indent}      List<String>          matches = new LinkedList<>();
+${indent}      JsonDomNode           node = jsonInitialiser.getJson();
   <#list entity.fields as field>
     <@generateCreateFieldFromJsonDomNode "${indent}       " "node" entity.schemaType field.typeSchema field.quotedName "_${field.camelName}_" "" "jsonInitialiser.getModelRegistry()"/>
 ${indent}      if(_${field.camelName}_ != null)
-${indent}        valueCnt++;
+${indent}      {
+${indent}        matches.add("${field.typeSchema.name}");
+${indent}      }
 
     </#list>
-${indent}      if(valueCnt != 1)
-${indent}        throw new ParserErrorException("Exactly one value must be present", jsonInitialiser.getJson().getContext());
+${indent}      if(matches.size() != 1)
+${indent}      {
+${indent}        throw new ParserErrorException("Exactly one of <#list entity.fields as field>${field.typeSchema.name}<#sep>,\n" +
+${indent}          "</#sep></#list> must be present but " + matches + " were encountered", jsonInitialiser.getJson().getContext(),
+                   new ParserResultException(parserExceptions));
+${indent}      }
       <#break>
     <#case "OBJECT">
 
@@ -339,20 +349,52 @@ ${indent}      _${field.camelName}_ = ${field.typeSchema.copyPrefix}initial.get$
   </#list>
 ${indent}    }
 
-${indent}    @Override
-${indent}    public T withValues(JsonObject jsonObject, ModelRegistry modelRegistry)
+${indent}    /**
+${indent}     * Initialize this builder with the values from the given serialized form.
+${indent}     * 
+${indent}     * @param json          The serialized form of an instance of the built type.
+${indent}     * @param modelRegistry A model registry.
+${indent}     * 
+${indent}     * @return This (fluent method).
+${indent}     */
+<#switch entity.schemaType>
+    <#case "ONE_OF">
+${indent}    public T withValues(JsonDomNode json, ModelRegistry modelRegistry)
 ${indent}    {
-<#if entity.superSchema??>
-${indent}      super.withValues(jsonObject, ignoreValidation);
-</#if>
-<#list entity.fields as field>
-${indent}      if(jsonObject.containsKey("${field.quotedName}"))
+${indent}      List<ParserException> parserExceptions = new LinkedList<>();
+${indent}      List<String>          matches = new LinkedList<>();
+  <#list entity.fields as field>
+    <@generateCreateFieldFromJsonDomNode "${indent}       " "json" entity.schemaType field.typeSchema field.quotedName "_${field.camelName}_" "if(!modelRegistry.getParserValidation().isIgnoreInvalidAttributes())" "modelRegistry"/>
+${indent}      if(_${field.camelName}_ != null)
 ${indent}      {
-${indent}        JsonDomNode  node = jsonObject.get("${field.quotedName}");
+${indent}        matches.add("${field.typeSchema.name}");
+${indent}      }
+
+    </#list>
+${indent}      if(matches.size() != 1)
+${indent}      {
+${indent}        throw new IllegalArgumentException("Exactly one of <#list entity.fields as field>${field.typeSchema.name}<#sep>,\n" +
+${indent}          "</#sep></#list> must be present but " + matches + " were encountered at " + json.getContext(),
+                   new ParserResultException(parserExceptions));
+${indent}      }
+      <#break>
+    <#case "OBJECT">
+${indent}    public T withValues(JsonObject json, ModelRegistry modelRegistry)
+${indent}    {
+    <#list entity.fields as field>
+${indent}      if(json.containsKey("${field.quotedName}"))
+${indent}      {
+${indent}        JsonDomNode  node = json.get("${field.quotedName}");
   <@generateCreateFieldFromJsonDomNode "        " "node" entity.schemaType field.typeSchema field.quotedName "_${field.camelName}_" "if(!modelRegistry.getParserValidation().isIgnoreInvalidAttributes())" "modelRegistry"/>
 ${indent}      }
 </#list>
-${indent}      return super.withValues(jsonObject, modelRegistry);
+      <#break>
+</#switch>
+<#if entity.superSchema??>
+${indent}      return super.withValues(json, modelRegistry);
+<#else>
+${indent}      return self();
+</#if>
 ${indent}    }
 
 ${indent}    /* void populateAllFields(List<Object> result)

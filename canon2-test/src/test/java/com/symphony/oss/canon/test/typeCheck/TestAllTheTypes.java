@@ -23,7 +23,6 @@ import java.math.BigInteger;
 
 import org.junit.Test;
 
-import com.symphony.oss.canon.json.JsonParser;
 import com.symphony.oss.canon.json.ParserResultException;
 import com.symphony.oss.canon.test.typeCheck.AllTheTypes.InlineObjectField;
 import com.symphony.oss.canon.test.typeCheck.AllTheTypes.InlineObjectField.NestedObjectField;
@@ -116,9 +115,7 @@ public class TestAllTheTypes
     if(!storedAllTheTypes.equals(builtObject.toString()))
       org.junit.Assert.fail("Expected serialized form to be \"" + storedAllTheTypes + "\" but received \"" + builtObject.toString() + "\"");
 
-    
-    
-    AllTheTypes deserialisedObject = AllTheTypes.FACTORY.newInstance(JsonParser.parseObject(storedAllTheTypes), modelRegistry_);
+    AllTheTypes deserialisedObject = AllTheTypes.FACTORY.newInstance(storedAllTheTypes, modelRegistry_);
     
     assertEquals(deserialisedObject, builtObject);
   }

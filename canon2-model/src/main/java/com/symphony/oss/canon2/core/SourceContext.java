@@ -39,10 +39,12 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.symphony.oss.canon.json.IParserContext;
+import com.symphony.oss.canon.json.JsonParser;
 import com.symphony.oss.canon.json.ParserContext;
 import com.symphony.oss.canon.json.ParserErrorException;
 import com.symphony.oss.canon.json.ParserException;
 import com.symphony.oss.canon.json.ParserResultException;
+import com.symphony.oss.canon.json.model.JsonDomNode;
 import com.symphony.oss.canon2.model.OpenApiObject;
 import com.symphony.oss.canon2.runtime.java.ModelRegistry;
 
@@ -161,16 +163,45 @@ public class SourceContext
   {
     log_.info("Parsing {}...", getInputSource());
     
-    model_ = modelRegistry.parseOne(getReader(), OpenApiObject.TYPE_ID, OpenApiObject.class);
-    
-//    if(errorCnt_ == 0)
-      log_.info("Parsing of {} completed OK.", getInputSource());
-//    else
-//      log_.errorf("%s of %s completed with %d errors.", action, getInputSource(), errorCnt_);
-    
-    System.out.println(model_);
-    
-    return model_;
+    try
+    {
+      JsonDomNode node = new JsonParser.Builder().withInput(getReader()).withInputSource(inputSourceFileName_).build().parseDomNode();
+      
+      model_ = OpenApiObject.FACTORY.newInstance(node, modelRegistry);
+          
+          
+         // modelRegistry.parseOne(getReader(), inputSourceFileName_, OpenApiObject.TYPE_ID, OpenApiObject.class);
+      
+  //    if(errorCnt_ == 0)
+        log_.info("Parsing of {} completed OK.", getInputSource());
+  //    else
+  //      log_.errorf("%s of %s completed with %d errors.", action, getInputSource(), errorCnt_);
+      
+      System.out.println(model_);
+      
+      return model_;
+    }
+    catch(ParserException e)
+    {
+      error(e);
+//      if(e.getCause() instanceof ParserResultException)
+//      {
+//        for(ParserException pe : ((ParserResultException)e.getCause()).getParserExceptions())
+//        {
+//          error(pe);
+//        }
+//      }
+      throw e;
+    }
+    catch (ParserResultException e)
+    {
+      error(e);
+//      for(ParserException pe : e.getParserExceptions())
+//      {
+//        error(pe);
+//      }
+      throw e;
+    }
   }
   
   public OpenApiObject getModel()
@@ -287,6 +318,16 @@ public class SourceContext
   {
     log_.error(error.toString());
     errors_.add(error);
+  }
+
+  public void error(ParserResultException error)
+  {
+    log_.error(error.toString());
+    
+    for(ParserException cause : error.getParserExceptions())
+    {
+      errors_.add(cause);
+    }
   }
   
   public List<ParserException> getErrors()

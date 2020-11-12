@@ -21,20 +21,9 @@
  *    Generator groupId    org.symphonyoss.s2.canon
  *              artifactId canon2-generator-java
  *    Template name        template/Object/_.java.ftl
- *    At                   2020-11-10 17:41:51 GMT
+ *    At                   2020-11-12 10:04:36 GMT
  *----------------------------------------------------------------------------------------------------
  */
-// importFields
-// importField propertyName nullable is Nullable
-// importType propertyName
-// importType propertyName
-  // innerClass class com.symphony.oss.canon2.generator.java.JavaStringSchemaTemplateModel
-  // innerClass propertyName
-         
-    // innerClass propertyName isPrimitive
-        
-        
-        
 
 package com.symphony.oss.canon2.model;
 
@@ -98,7 +87,6 @@ public class DiscriminatorObject extends ObjectEntity
       {
         if(node instanceof JsonString)
         {
-// schema.class class com.symphony.oss.canon2.generator.java.JavaStringSchemaTemplateModel name propertyName type String javaType String
           _propertyName_ = ((JsonString)node).asString();
         }
         else 
@@ -195,7 +183,6 @@ public class DiscriminatorObject extends ObjectEntity
    * @param <B> The concrete type of the built object.
    */
   public static abstract class AbstractBuilder<T extends AbstractBuilder<T,B>, B extends DiscriminatorObject>
-// super class name
     extends ObjectEntity.AbstractBuilder<T,B>
     implements IDiscriminatorObjectInstanceOrBuilder, Initialiser
   {
@@ -219,15 +206,21 @@ public class DiscriminatorObject extends ObjectEntity
       _propertyName_ = initial.getPropertyName();
     }
 
-    @Override
-    public T withValues(JsonObject jsonObject, ModelRegistry modelRegistry)
+    /**
+     * Initialize this builder with the values from the given serialized form.
+     * 
+     * @param json          The serialized form of an instance of the built type.
+     * @param modelRegistry A model registry.
+     * 
+     * @return This (fluent method).
+     */
+    public T withValues(JsonObject json, ModelRegistry modelRegistry)
     {
-      if(jsonObject.containsKey("propertyName"))
+      if(json.containsKey("propertyName"))
       {
-        JsonDomNode  node = jsonObject.get("propertyName");
+        JsonDomNode  node = json.get("propertyName");
         if(node instanceof JsonString)
         {
-// schema.class class com.symphony.oss.canon2.generator.java.JavaStringSchemaTemplateModel name propertyName type String javaType String
           _propertyName_ = ((JsonString)node).asString();
         }
         else if(!modelRegistry.getParserValidation().isIgnoreInvalidAttributes())
@@ -235,7 +228,7 @@ public class DiscriminatorObject extends ObjectEntity
           throw new ParserErrorException("propertyName must be an instance of JsonString not " + node.getClass().getName(), node.getContext());
         }
       }
-      return super.withValues(jsonObject, modelRegistry);
+      return self();
     }
 
     /* void populateAllFields(List<Object> result)
@@ -261,7 +254,7 @@ public class DiscriminatorObject extends ObjectEntity
      *
      * @return This (fluent method).
      */
-    public T withPropertyName(String value) //main
+    public T withPropertyName(String value)
     {
       _propertyName_ = value;
       return self();
@@ -361,9 +354,6 @@ public class DiscriminatorObject extends ObjectEntity
     return toString().hashCode();
   }
 
-// entity.additionalProperties??
-// innerClasses
-  // innerClass propertyName STRING class com.symphony.oss.canon2.core.SchemaTemplateModelType
 }
 
 /*----------------------------------------------------------------------------------------------------

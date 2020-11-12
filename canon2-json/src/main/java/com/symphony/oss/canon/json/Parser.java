@@ -43,7 +43,7 @@ public class Parser implements IParserContext
 
   private final BufferedReader in_;
   final boolean                canonicalize_;
-  String                       inputSource_;
+  final String                 inputSource_;
   int                          line_;
   int                          col_;
   String                       lineBuffer_;
@@ -52,8 +52,9 @@ public class Parser implements IParserContext
   
   Parser(AbstractBuilder<?,?> builder)
   {
-    in_ = builder.in_;
+    in_           = builder.in_;
     canonicalize_ = builder.canonicalize_;
+    inputSource_  = builder.inputSource_;
   }
 
   /**
@@ -68,6 +69,7 @@ public class Parser implements IParserContext
   {
     BufferedReader    in_;
     boolean           canonicalize_ = true;
+    String                       inputSource_;
     
     AbstractBuilder(Class<T> type)
     {
@@ -84,6 +86,20 @@ public class Parser implements IParserContext
     public T withCanonicalize(boolean canonicalize)
     {
       canonicalize_ = canonicalize;
+      
+      return self();
+    }
+    
+    /**
+     * Set the name of the input for the parser.
+     * 
+     * @param inputSource The name of the input for the parser.
+     * 
+     * @return This (fluent method).
+     */
+    public T withInputSource(String inputSource)
+    {
+      inputSource_ = inputSource;
       
       return self();
     }

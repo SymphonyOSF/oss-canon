@@ -21,83 +21,9 @@
  *    Generator groupId    org.symphonyoss.s2.canon
  *              artifactId canon2-generator-java
  *    Template name        template/Object/_Entity.java.ftl
- *    At                   2020-11-10 17:41:51 GMT
+ *    At                   2020-11-12 10:04:36 GMT
  *----------------------------------------------------------------------------------------------------
  */
-// importFields
-// importField x-canon-attributes nullable is Nullable
-// importType CanonAttributes
-// importType CanonAttributes
-// importField x-canon-builderFacade nullable is Nullable
-// importType x-canon-builderFacade
-// importType x-canon-builderFacade
-// importField format nullable is Nullable
-// importType format
-// importType format
-// importField maximum nullable is Nullable
-// importType maximum
-// importType maximum
-// importField x-canon-identifier nullable is Nullable
-// importType x-canon-identifier
-// importType x-canon-identifier
-// importField type nullable is Nonnull
-// importType type
-// importType type
-// importField x-canon-facade nullable is Nullable
-// importType x-canon-facade
-// importType x-canon-facade
-// importField minimum nullable is Nullable
-// importType minimum
-// importType minimum
-  // innerClass class com.symphony.oss.canon2.generator.java.JavaBooleanSchemaTemplateModel
-  // innerClass x-canon-builderFacade
-         
-    // innerClass x-canon-builderFacade isPrimitive
-        
-        
-        
-  // innerClass class com.symphony.oss.canon2.generator.java.JavaStringSchemaTemplateModel
-  // innerClass format
-         
-    // innerClass format isPrimitive
-        
-        
-        
-  // innerClass class com.symphony.oss.canon2.generator.java.JavaNumberSchemaTemplateModel
-  // innerClass maximum
-         
-    // innerClass maximum isPrimitive
-        
-        
-        
-  // innerClass class com.symphony.oss.canon2.generator.java.JavaStringSchemaTemplateModel
-  // innerClass x-canon-identifier
-         
-    // innerClass x-canon-identifier isPrimitive
-        
-        
-        
-  // innerClass class com.symphony.oss.canon2.generator.java.JavaStringSchemaTemplateModel
-  // innerClass type
-         
-    // innerClass type isPrimitive
-        
-        
-        
-  // innerClass class com.symphony.oss.canon2.generator.java.JavaBooleanSchemaTemplateModel
-  // innerClass x-canon-facade
-         
-    // innerClass x-canon-facade isPrimitive
-        
-        
-        
-  // innerClass class com.symphony.oss.canon2.generator.java.JavaNumberSchemaTemplateModel
-  // innerClass minimum
-         
-    // innerClass minimum isPrimitive
-        
-        
-        
 
 package com.symphony.oss.canon2.model;
 
@@ -181,7 +107,6 @@ public abstract class NumberSchemaEntity extends ObjectEntity
       {
         if(node instanceof JsonBoolean)
         {
-// schema.class class com.symphony.oss.canon2.generator.java.JavaBooleanSchemaTemplateModel name x-canon-builderFacade type Boolean javaType Boolean
           _xCanonBuilderFacade_ = ((JsonBoolean)node).asBoolean();
         }
         else 
@@ -199,7 +124,6 @@ public abstract class NumberSchemaEntity extends ObjectEntity
       {
         if(node instanceof JsonString)
         {
-// schema.class class com.symphony.oss.canon2.generator.java.JavaStringSchemaTemplateModel name format type String javaType String
           _format_ = ((JsonString)node).asString();
         }
         else 
@@ -217,7 +141,6 @@ public abstract class NumberSchemaEntity extends ObjectEntity
       {
         if(node instanceof JsonParsedNumber)
         {
-// schema.class class com.symphony.oss.canon2.generator.java.JavaNumberSchemaTemplateModel name maximum type BigDecimal javaType BigDecimal
           _maximum_ = ((JsonParsedNumber)node).asBigDecimal();
         }
         else 
@@ -235,7 +158,6 @@ public abstract class NumberSchemaEntity extends ObjectEntity
       {
         if(node instanceof JsonString)
         {
-// schema.class class com.symphony.oss.canon2.generator.java.JavaStringSchemaTemplateModel name x-canon-identifier type String javaType String
           _xCanonIdentifier_ = ((JsonString)node).asString();
         }
         else 
@@ -253,7 +175,6 @@ public abstract class NumberSchemaEntity extends ObjectEntity
       {
         if(node instanceof JsonString)
         {
-// schema.class class com.symphony.oss.canon2.generator.java.JavaStringSchemaTemplateModel name type type NumberSchema.Type javaType String
           _type_ = NumberSchema.Type.deserialize(((JsonString)node).asString());
         }
         else 
@@ -271,7 +192,6 @@ public abstract class NumberSchemaEntity extends ObjectEntity
       {
         if(node instanceof JsonBoolean)
         {
-// schema.class class com.symphony.oss.canon2.generator.java.JavaBooleanSchemaTemplateModel name x-canon-facade type Boolean javaType Boolean
           _xCanonFacade_ = ((JsonBoolean)node).asBoolean();
         }
         else 
@@ -289,7 +209,6 @@ public abstract class NumberSchemaEntity extends ObjectEntity
       {
         if(node instanceof JsonParsedNumber)
         {
-// schema.class class com.symphony.oss.canon2.generator.java.JavaNumberSchemaTemplateModel name minimum type BigDecimal javaType BigDecimal
           _minimum_ = ((JsonParsedNumber)node).asBigDecimal();
         }
         else 
@@ -396,7 +315,6 @@ public abstract class NumberSchemaEntity extends ObjectEntity
    * @param <B> The concrete type of the built object.
    */
   public static abstract class AbstractBuilder<T extends AbstractBuilder<T,B>, B extends NumberSchemaEntity>
-// super class name
     extends ObjectEntity.AbstractBuilder<T,B>
     implements INumberSchemaInstanceOrBuilder, Initialiser
   {
@@ -434,20 +352,26 @@ public abstract class NumberSchemaEntity extends ObjectEntity
       _minimum_ = initial.getMinimum();
     }
 
-    @Override
-    public T withValues(JsonObject jsonObject, ModelRegistry modelRegistry)
+    /**
+     * Initialize this builder with the values from the given serialized form.
+     * 
+     * @param json          The serialized form of an instance of the built type.
+     * @param modelRegistry A model registry.
+     * 
+     * @return This (fluent method).
+     */
+    public T withValues(JsonObject json, ModelRegistry modelRegistry)
     {
-      if(jsonObject.containsKey("x-canon-attributes"))
+      if(json.containsKey("x-canon-attributes"))
       {
-        JsonDomNode  node = jsonObject.get("x-canon-attributes");
+        JsonDomNode  node = json.get("x-canon-attributes");
         _xCanonAttributes_ = CanonAttributes.FACTORY.newInstance(node, modelRegistry);
       }
-      if(jsonObject.containsKey("x-canon-builderFacade"))
+      if(json.containsKey("x-canon-builderFacade"))
       {
-        JsonDomNode  node = jsonObject.get("x-canon-builderFacade");
+        JsonDomNode  node = json.get("x-canon-builderFacade");
         if(node instanceof JsonBoolean)
         {
-// schema.class class com.symphony.oss.canon2.generator.java.JavaBooleanSchemaTemplateModel name x-canon-builderFacade type Boolean javaType Boolean
           _xCanonBuilderFacade_ = ((JsonBoolean)node).asBoolean();
         }
         else if(!modelRegistry.getParserValidation().isIgnoreInvalidAttributes())
@@ -455,12 +379,11 @@ public abstract class NumberSchemaEntity extends ObjectEntity
           throw new ParserErrorException("x-canon-builderFacade must be an instance of JsonBoolean not " + node.getClass().getName(), node.getContext());
         }
       }
-      if(jsonObject.containsKey("format"))
+      if(json.containsKey("format"))
       {
-        JsonDomNode  node = jsonObject.get("format");
+        JsonDomNode  node = json.get("format");
         if(node instanceof JsonString)
         {
-// schema.class class com.symphony.oss.canon2.generator.java.JavaStringSchemaTemplateModel name format type String javaType String
           _format_ = ((JsonString)node).asString();
         }
         else if(!modelRegistry.getParserValidation().isIgnoreInvalidAttributes())
@@ -468,12 +391,11 @@ public abstract class NumberSchemaEntity extends ObjectEntity
           throw new ParserErrorException("format must be an instance of JsonString not " + node.getClass().getName(), node.getContext());
         }
       }
-      if(jsonObject.containsKey("maximum"))
+      if(json.containsKey("maximum"))
       {
-        JsonDomNode  node = jsonObject.get("maximum");
+        JsonDomNode  node = json.get("maximum");
         if(node instanceof JsonParsedNumber)
         {
-// schema.class class com.symphony.oss.canon2.generator.java.JavaNumberSchemaTemplateModel name maximum type BigDecimal javaType BigDecimal
           _maximum_ = ((JsonParsedNumber)node).asBigDecimal();
         }
         else if(!modelRegistry.getParserValidation().isIgnoreInvalidAttributes())
@@ -481,12 +403,11 @@ public abstract class NumberSchemaEntity extends ObjectEntity
           throw new ParserErrorException("maximum must be an instance of JsonParsedNumber not " + node.getClass().getName(), node.getContext());
         }
       }
-      if(jsonObject.containsKey("x-canon-identifier"))
+      if(json.containsKey("x-canon-identifier"))
       {
-        JsonDomNode  node = jsonObject.get("x-canon-identifier");
+        JsonDomNode  node = json.get("x-canon-identifier");
         if(node instanceof JsonString)
         {
-// schema.class class com.symphony.oss.canon2.generator.java.JavaStringSchemaTemplateModel name x-canon-identifier type String javaType String
           _xCanonIdentifier_ = ((JsonString)node).asString();
         }
         else if(!modelRegistry.getParserValidation().isIgnoreInvalidAttributes())
@@ -494,12 +415,11 @@ public abstract class NumberSchemaEntity extends ObjectEntity
           throw new ParserErrorException("x-canon-identifier must be an instance of JsonString not " + node.getClass().getName(), node.getContext());
         }
       }
-      if(jsonObject.containsKey("type"))
+      if(json.containsKey("type"))
       {
-        JsonDomNode  node = jsonObject.get("type");
+        JsonDomNode  node = json.get("type");
         if(node instanceof JsonString)
         {
-// schema.class class com.symphony.oss.canon2.generator.java.JavaStringSchemaTemplateModel name type type NumberSchema.Type javaType String
           _type_ = NumberSchema.Type.deserialize(((JsonString)node).asString());
         }
         else if(!modelRegistry.getParserValidation().isIgnoreInvalidAttributes())
@@ -507,12 +427,11 @@ public abstract class NumberSchemaEntity extends ObjectEntity
           throw new ParserErrorException("type must be an instance of JsonString not " + node.getClass().getName(), node.getContext());
         }
       }
-      if(jsonObject.containsKey("x-canon-facade"))
+      if(json.containsKey("x-canon-facade"))
       {
-        JsonDomNode  node = jsonObject.get("x-canon-facade");
+        JsonDomNode  node = json.get("x-canon-facade");
         if(node instanceof JsonBoolean)
         {
-// schema.class class com.symphony.oss.canon2.generator.java.JavaBooleanSchemaTemplateModel name x-canon-facade type Boolean javaType Boolean
           _xCanonFacade_ = ((JsonBoolean)node).asBoolean();
         }
         else if(!modelRegistry.getParserValidation().isIgnoreInvalidAttributes())
@@ -520,12 +439,11 @@ public abstract class NumberSchemaEntity extends ObjectEntity
           throw new ParserErrorException("x-canon-facade must be an instance of JsonBoolean not " + node.getClass().getName(), node.getContext());
         }
       }
-      if(jsonObject.containsKey("minimum"))
+      if(json.containsKey("minimum"))
       {
-        JsonDomNode  node = jsonObject.get("minimum");
+        JsonDomNode  node = json.get("minimum");
         if(node instanceof JsonParsedNumber)
         {
-// schema.class class com.symphony.oss.canon2.generator.java.JavaNumberSchemaTemplateModel name minimum type BigDecimal javaType BigDecimal
           _minimum_ = ((JsonParsedNumber)node).asBigDecimal();
         }
         else if(!modelRegistry.getParserValidation().isIgnoreInvalidAttributes())
@@ -533,7 +451,7 @@ public abstract class NumberSchemaEntity extends ObjectEntity
           throw new ParserErrorException("minimum must be an instance of JsonParsedNumber not " + node.getClass().getName(), node.getContext());
         }
       }
-      return super.withValues(jsonObject, modelRegistry);
+      return self();
     }
 
     /* void populateAllFields(List<Object> result)
@@ -566,7 +484,7 @@ public abstract class NumberSchemaEntity extends ObjectEntity
      *
      * @return This (fluent method).
      */
-    public T withXCanonAttributes(CanonAttributes value) //main
+    public T withXCanonAttributes(CanonAttributes value)
     {
       _xCanonAttributes_ = value;
       return self();
@@ -590,7 +508,7 @@ public abstract class NumberSchemaEntity extends ObjectEntity
      *
      * @return This (fluent method).
      */
-    public T withXCanonBuilderFacade(Boolean value) //main
+    public T withXCanonBuilderFacade(Boolean value)
     {
       _xCanonBuilderFacade_ = value;
       return self();
@@ -614,7 +532,7 @@ public abstract class NumberSchemaEntity extends ObjectEntity
      *
      * @return This (fluent method).
      */
-    public T withFormat(String value) //main
+    public T withFormat(String value)
     {
       _format_ = value;
       return self();
@@ -638,7 +556,7 @@ public abstract class NumberSchemaEntity extends ObjectEntity
      *
      * @return This (fluent method).
      */
-    public T withMaximum(BigDecimal value) //main
+    public T withMaximum(BigDecimal value)
     {
       _maximum_ = value;
       return self();
@@ -662,7 +580,7 @@ public abstract class NumberSchemaEntity extends ObjectEntity
      *
      * @return This (fluent method).
      */
-    public T withXCanonIdentifier(String value) //main
+    public T withXCanonIdentifier(String value)
     {
       _xCanonIdentifier_ = value;
       return self();
@@ -688,7 +606,7 @@ public abstract class NumberSchemaEntity extends ObjectEntity
      *
      * @return This (fluent method).
      */
-    public T withType(NumberSchema.Type value) //main
+    public T withType(NumberSchema.Type value)
     {
         if(value == null)
           throw new IllegalArgumentException("type is required.");
@@ -704,7 +622,7 @@ public abstract class NumberSchemaEntity extends ObjectEntity
      *
      * @return This (fluent method).
      */
-    public T withType(String value) // primitive
+    public T withType(String value)
     {
       if(value == null)
         throw new IllegalArgumentException("type is required.");
@@ -731,7 +649,7 @@ public abstract class NumberSchemaEntity extends ObjectEntity
      *
      * @return This (fluent method).
      */
-    public T withXCanonFacade(Boolean value) //main
+    public T withXCanonFacade(Boolean value)
     {
       _xCanonFacade_ = value;
       return self();
@@ -755,7 +673,7 @@ public abstract class NumberSchemaEntity extends ObjectEntity
      *
      * @return This (fluent method).
      */
-    public T withMinimum(BigDecimal value) //main
+    public T withMinimum(BigDecimal value)
     {
       _minimum_ = value;
       return self();
@@ -961,13 +879,6 @@ public abstract class NumberSchemaEntity extends ObjectEntity
     return toString().hashCode();
   }
 
-// entity.additionalProperties??
-// innerClasses
-  // innerClass x-canon-builderFacade BOOLEAN class com.symphony.oss.canon2.core.SchemaTemplateModelType
-  // innerClass format STRING class com.symphony.oss.canon2.core.SchemaTemplateModelType
-  // innerClass maximum NUMBER class com.symphony.oss.canon2.core.SchemaTemplateModelType
-  // innerClass x-canon-identifier STRING class com.symphony.oss.canon2.core.SchemaTemplateModelType
-  // innerClass type STRING class com.symphony.oss.canon2.core.SchemaTemplateModelType
   /**
    * Enum  type canon
    * Model canon
@@ -1023,8 +934,6 @@ public abstract class NumberSchemaEntity extends ObjectEntity
       }
     }
   }
-  // innerClass x-canon-facade BOOLEAN class com.symphony.oss.canon2.core.SchemaTemplateModelType
-  // innerClass minimum NUMBER class com.symphony.oss.canon2.core.SchemaTemplateModelType
 }
 
 /*----------------------------------------------------------------------------------------------------

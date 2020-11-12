@@ -19,13 +19,12 @@
 package com.symphony.oss.canon.json;
 
 import java.io.IOException;
-import java.io.Reader;
-import java.io.StringReader;
 import java.util.function.Consumer;
 
 import org.apache.commons.codec.binary.Base64;
 
 import com.symphony.oss.canon.json.model.JsonArray;
+import com.symphony.oss.canon.json.model.JsonArrayDom;
 import com.symphony.oss.canon.json.model.JsonBase64String;
 import com.symphony.oss.canon.json.model.JsonBoolean;
 import com.symphony.oss.canon.json.model.JsonDom;
@@ -64,69 +63,17 @@ public class JsonParser extends Parser
   }
   
   /**
-   * Convenience method to parse a Dom from a Reader.
+   * Convenience method to parse a DomNode.
    * 
-   * @param json The input JSON.
+   * @throws IllegalStateException If the input is invalid.
    * 
-   * If the input is invalid the return value will be an instance of JsonInvalidDom.
-   * 
-   * @return A JsonDom representing the given input.
-   */
-  public static JsonDom parseDom(Reader json)
-  {
-    return new JsonParser.Builder().withInput(json).build().parse();
-  }
-  
-  /**
-   * Convenience method to parse a Dom from a String.
-   * 
-   * @param json The input JSON.
-   * 
-   * If the input is invalid the return value will be an instance of JsonInvalidDom.
-   * 
-   * @return A JsonDom representing the given input.
-   */
-  public static JsonDom parseDom(String json)
-  {
-    return new JsonParser.Builder().withInput(json).build().parse();
-  }
-  
-  /**
-   * Convenience method to parse an Object from a String.
-   * 
-   * This method does not do a partial read, it is expected that the contents of the String
-   * are a single object.
-   * 
-   * @param json The input JSON.
-   * 
-   * @throws IllegalStateException If the input is invalid or does not contain a single object.
-   * 
-   * @return A JsonDom representing the given input.
+   * @return A JsonObject representing the given input.
    * 
    * @throws ParserResultException If there are errors in the input.
    */
-  public static JsonObject parseObject(String json) throws ParserResultException
+  public JsonObject parseObject() throws ParserResultException
   {
-    return parseObject(new StringReader(json));
-  }
-  
-  /**
-   * Convenience method to parse an Object from a Reader.
-   * 
-   * This method does not do a partial read, it is expected that the contents of the Reader
-   * are a single object.
-   * 
-   * @param json The input JSON.
-   * 
-   * @throws IllegalStateException If the input is invalid or does not contain a single object.
-   * 
-   * @return A JsonDom representing the given input.
-   * 
-   * @throws ParserResultException If there are errors in the input.
-   */
-  public static JsonObject parseObject(Reader json) throws ParserResultException
-  {
-    JsonDom dom = parseDom(json);
+    JsonDom dom = parse();
     
     if(dom.getErrors().size() != 0)
       throw new ParserResultException(dom.getErrors());
@@ -142,12 +89,33 @@ public class JsonParser extends Parser
   }
   
   /**
-   * Convenience method to parse an Object from a Reader.
+   * Convenience method to parse an Array.
    * 
-   * This method does not do a partial read, it is expected that the contents of the Reader
-   * are a single object.
+   * @throws IllegalStateException If the input is invalid or does not contain a single array.
    * 
-   * @param json The input JSON.
+   * @return A JsonDom representing the given input.
+   * 
+   * @throws ParserResultException If there are errors in the input.
+   */
+  public JsonArray parseArray() throws ParserResultException
+  {
+    JsonDom dom = parse();
+    
+    if(dom.getErrors().size() != 0)
+      throw new ParserResultException(dom.getErrors());
+    
+    if(dom instanceof JsonArrayDom)
+    {
+      return ((JsonArrayDom)dom).getArray();
+    }
+    else
+    {
+      throw new IllegalStateException("Expected a JSON DomNode but read a " + dom.getClass().getName());
+    }
+  }
+  
+  /**
+   * Convenience method to parse an Object.
    * 
    * @throws IllegalStateException If the input is invalid or does not contain a single object.
    * 
@@ -155,9 +123,9 @@ public class JsonParser extends Parser
    * 
    * @throws ParserResultException If there are errors in the input.
    */
-  public static JsonDomNode parseDomNode(Reader json) throws ParserResultException
+  public JsonDomNode parseDomNode() throws ParserResultException
   {
-    JsonDom dom = parseDom(json);
+    JsonDom dom = parse();
     
     if(dom.getErrors().size() != 0)
       throw new ParserResultException(dom.getErrors());
@@ -166,9 +134,13 @@ public class JsonParser extends Parser
     {
       return ((JsonObjectDom)dom).getObject();
     }
+    else if(dom instanceof JsonArrayDom)
+    {
+      return ((JsonArrayDom)dom).getArray();
+    }
     else
     {
-      throw new IllegalStateException("Expected a JSON Object but read a " + dom.getClass().getName());
+      throw new IllegalStateException("Expected a JSON DomNode but read a " + dom.getClass().getName());
     }
   }
 

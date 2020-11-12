@@ -22,7 +22,6 @@ import java.time.Instant;
 
 import org.junit.Test;
 
-import com.symphony.oss.canon.json.JsonParser;
 import com.symphony.oss.canon.json.ParserResultException;
 import com.symphony.oss.canon2.runtime.java.ModelRegistry;
 
@@ -50,7 +49,7 @@ public class TestVersionedObject
     assertEquals(storedVersionedObject, builtObject.toString());
     
     
-    VersionedObject deserialisedObject = VersionedObject.FACTORY.newInstance(JsonParser.parseObject(storedVersionedObject), modelRegistry_);
+    VersionedObject deserialisedObject = VersionedObject.FACTORY.newInstance(storedVersionedObject, modelRegistry_);
     
     assertEquals(deserialisedObject, builtObject);
   }

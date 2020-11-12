@@ -21,10 +21,9 @@
  *    Generator groupId    org.symphonyoss.s2.canon
  *              artifactId canon2-generator-java
  *    Template name        template/Object/_.java.ftl
- *    At                   2020-11-10 17:41:51 GMT
+ *    At                   2020-11-12 10:04:36 GMT
  *----------------------------------------------------------------------------------------------------
  */
-// importFields
 
 package com.symphony.oss.canon2.model;
 
@@ -158,7 +157,6 @@ public class CanonAttributes extends ObjectEntity
    * @param <B> The concrete type of the built object.
    */
   public static abstract class AbstractBuilder<T extends AbstractBuilder<T,B>, B extends CanonAttributes>
-// super class name
     extends ObjectEntity.AbstractBuilder<T,B>
     implements ICanonAttributesInstanceOrBuilder, Initialiser
   {
@@ -180,10 +178,17 @@ public class CanonAttributes extends ObjectEntity
 
     }
 
-    @Override
-    public T withValues(JsonObject jsonObject, ModelRegistry modelRegistry)
+    /**
+     * Initialize this builder with the values from the given serialized form.
+     * 
+     * @param json          The serialized form of an instance of the built type.
+     * @param modelRegistry A model registry.
+     * 
+     * @return This (fluent method).
+     */
+    public T withValues(JsonObject json, ModelRegistry modelRegistry)
     {
-      return super.withValues(jsonObject, modelRegistry);
+      return self();
     }
 
     /* void populateAllFields(List<Object> result)
@@ -269,8 +274,6 @@ public class CanonAttributes extends ObjectEntity
     return toString().hashCode();
   }
 
-// entity.additionalProperties??
-// innerClasses
 }
 
 /*----------------------------------------------------------------------------------------------------

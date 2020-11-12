@@ -21,65 +21,9 @@
  *    Generator groupId    org.symphonyoss.s2.canon
  *              artifactId canon2-generator-java
  *    Template name        template/Object/_Entity.java.ftl
- *    At                   2020-11-10 17:41:52 GMT
+ *    At                   2020-11-12 10:04:36 GMT
  *----------------------------------------------------------------------------------------------------
  */
-// importFields
-// importField components nullable is Nullable
-// importType ComponentsObject
-// importType ComponentsObject
-// importField x-canon-generators nullable is Nullable
-// importType CanonGeneratorConfig
-// importType CanonGeneratorConfig
-// importField openapi nullable is Nullable
-// importType openapi
-// importType openapi
-// importField paths nullable is Nullable
-// importType PathsObject
-// importType PathsObject
-// importField x-canon-id nullable is Nullable
-// importType x-canon-id
-// importType x-canon-id
-// importField x-canon-version nullable is Nullable
-// importType SemanticVersion
-// importType SemanticVersion
-// importField x-canon-identifier nullable is Nullable
-// importType x-canon-identifier
-// importType x-canon-identifier
-// importField canon nullable is Nullable
-// importType canon
-// importType canon
-// importField info nullable is Nonnull
-// importType InfoObject
-// importType InfoObject
-  // innerClass class com.symphony.oss.canon2.generator.java.JavaStringSchemaTemplateModel
-  // innerClass openapi
-         
-    // innerClass openapi isPrimitive
-        
-        
-        
-  // innerClass class com.symphony.oss.canon2.generator.java.JavaStringSchemaTemplateModel
-  // innerClass x-canon-id
-         
-    // innerClass x-canon-id isPrimitive
-        
-        
-        
-  // innerClass class com.symphony.oss.canon2.generator.java.JavaStringSchemaTemplateModel
-  // innerClass x-canon-identifier
-         
-    // innerClass x-canon-identifier isPrimitive
-        
-        
-        
-  // innerClass class com.symphony.oss.canon2.generator.java.JavaStringSchemaTemplateModel
-  // innerClass canon
-         
-    // innerClass canon isPrimitive
-        
-        
-        
 
 package com.symphony.oss.canon2.model;
 
@@ -171,7 +115,6 @@ public abstract class OpenApiObjectEntity extends ObjectEntity
       {
         if(node instanceof JsonString)
         {
-// schema.class class com.symphony.oss.canon2.generator.java.JavaStringSchemaTemplateModel name openapi type String javaType String
           _openapi_ = ((JsonString)node).asString();
         }
         else 
@@ -199,7 +142,6 @@ public abstract class OpenApiObjectEntity extends ObjectEntity
       {
         if(node instanceof JsonString)
         {
-// schema.class class com.symphony.oss.canon2.generator.java.JavaStringSchemaTemplateModel name x-canon-id type String javaType String
           _xCanonId_ = ((JsonString)node).asString();
         }
         else 
@@ -217,7 +159,6 @@ public abstract class OpenApiObjectEntity extends ObjectEntity
       {
         if(node instanceof JsonString)
         {
-// schema.class class com.symphony.oss.canon2.generator.java.JavaStringSchemaTemplateModel name SemanticVersion type SemanticVersion javaType String
           _xCanonVersion_ = new SemanticVersion(((JsonString)node).asString());
         }
         else 
@@ -235,7 +176,6 @@ public abstract class OpenApiObjectEntity extends ObjectEntity
       {
         if(node instanceof JsonString)
         {
-// schema.class class com.symphony.oss.canon2.generator.java.JavaStringSchemaTemplateModel name x-canon-identifier type String javaType String
           _xCanonIdentifier_ = ((JsonString)node).asString();
         }
         else 
@@ -253,7 +193,6 @@ public abstract class OpenApiObjectEntity extends ObjectEntity
       {
         if(node instanceof JsonString)
         {
-// schema.class class com.symphony.oss.canon2.generator.java.JavaStringSchemaTemplateModel name canon type String javaType String
           _canon_ = ((JsonString)node).asString();
         }
         else 
@@ -371,7 +310,6 @@ public abstract class OpenApiObjectEntity extends ObjectEntity
    * @param <B> The concrete type of the built object.
    */
   public static abstract class AbstractBuilder<T extends AbstractBuilder<T,B>, B extends OpenApiObjectEntity>
-// super class name
     extends ObjectEntity.AbstractBuilder<T,B>
     implements IOpenApiObjectInstanceOrBuilder, Initialiser
   {
@@ -411,25 +349,31 @@ public abstract class OpenApiObjectEntity extends ObjectEntity
       _info_ = initial.getInfo();
     }
 
-    @Override
-    public T withValues(JsonObject jsonObject, ModelRegistry modelRegistry)
+    /**
+     * Initialize this builder with the values from the given serialized form.
+     * 
+     * @param json          The serialized form of an instance of the built type.
+     * @param modelRegistry A model registry.
+     * 
+     * @return This (fluent method).
+     */
+    public T withValues(JsonObject json, ModelRegistry modelRegistry)
     {
-      if(jsonObject.containsKey("components"))
+      if(json.containsKey("components"))
       {
-        JsonDomNode  node = jsonObject.get("components");
+        JsonDomNode  node = json.get("components");
         _components_ = ComponentsObject.FACTORY.newInstance(node, modelRegistry);
       }
-      if(jsonObject.containsKey("x-canon-generators"))
+      if(json.containsKey("x-canon-generators"))
       {
-        JsonDomNode  node = jsonObject.get("x-canon-generators");
+        JsonDomNode  node = json.get("x-canon-generators");
         _xCanonGenerators_ = CanonGeneratorConfig.FACTORY.newInstance(node, modelRegistry);
       }
-      if(jsonObject.containsKey("openapi"))
+      if(json.containsKey("openapi"))
       {
-        JsonDomNode  node = jsonObject.get("openapi");
+        JsonDomNode  node = json.get("openapi");
         if(node instanceof JsonString)
         {
-// schema.class class com.symphony.oss.canon2.generator.java.JavaStringSchemaTemplateModel name openapi type String javaType String
           _openapi_ = ((JsonString)node).asString();
         }
         else if(!modelRegistry.getParserValidation().isIgnoreInvalidAttributes())
@@ -437,17 +381,16 @@ public abstract class OpenApiObjectEntity extends ObjectEntity
           throw new ParserErrorException("openapi must be an instance of JsonString not " + node.getClass().getName(), node.getContext());
         }
       }
-      if(jsonObject.containsKey("paths"))
+      if(json.containsKey("paths"))
       {
-        JsonDomNode  node = jsonObject.get("paths");
+        JsonDomNode  node = json.get("paths");
         _paths_ = PathsObject.FACTORY.newInstance(node, modelRegistry);
       }
-      if(jsonObject.containsKey("x-canon-id"))
+      if(json.containsKey("x-canon-id"))
       {
-        JsonDomNode  node = jsonObject.get("x-canon-id");
+        JsonDomNode  node = json.get("x-canon-id");
         if(node instanceof JsonString)
         {
-// schema.class class com.symphony.oss.canon2.generator.java.JavaStringSchemaTemplateModel name x-canon-id type String javaType String
           _xCanonId_ = ((JsonString)node).asString();
         }
         else if(!modelRegistry.getParserValidation().isIgnoreInvalidAttributes())
@@ -455,12 +398,11 @@ public abstract class OpenApiObjectEntity extends ObjectEntity
           throw new ParserErrorException("x-canon-id must be an instance of JsonString not " + node.getClass().getName(), node.getContext());
         }
       }
-      if(jsonObject.containsKey("x-canon-version"))
+      if(json.containsKey("x-canon-version"))
       {
-        JsonDomNode  node = jsonObject.get("x-canon-version");
+        JsonDomNode  node = json.get("x-canon-version");
         if(node instanceof JsonString)
         {
-// schema.class class com.symphony.oss.canon2.generator.java.JavaStringSchemaTemplateModel name SemanticVersion type SemanticVersion javaType String
           _xCanonVersion_ = new SemanticVersion(((JsonString)node).asString());
         }
         else if(!modelRegistry.getParserValidation().isIgnoreInvalidAttributes())
@@ -468,12 +410,11 @@ public abstract class OpenApiObjectEntity extends ObjectEntity
           throw new ParserErrorException("x-canon-version must be an instance of JsonString not " + node.getClass().getName(), node.getContext());
         }
       }
-      if(jsonObject.containsKey("x-canon-identifier"))
+      if(json.containsKey("x-canon-identifier"))
       {
-        JsonDomNode  node = jsonObject.get("x-canon-identifier");
+        JsonDomNode  node = json.get("x-canon-identifier");
         if(node instanceof JsonString)
         {
-// schema.class class com.symphony.oss.canon2.generator.java.JavaStringSchemaTemplateModel name x-canon-identifier type String javaType String
           _xCanonIdentifier_ = ((JsonString)node).asString();
         }
         else if(!modelRegistry.getParserValidation().isIgnoreInvalidAttributes())
@@ -481,12 +422,11 @@ public abstract class OpenApiObjectEntity extends ObjectEntity
           throw new ParserErrorException("x-canon-identifier must be an instance of JsonString not " + node.getClass().getName(), node.getContext());
         }
       }
-      if(jsonObject.containsKey("canon"))
+      if(json.containsKey("canon"))
       {
-        JsonDomNode  node = jsonObject.get("canon");
+        JsonDomNode  node = json.get("canon");
         if(node instanceof JsonString)
         {
-// schema.class class com.symphony.oss.canon2.generator.java.JavaStringSchemaTemplateModel name canon type String javaType String
           _canon_ = ((JsonString)node).asString();
         }
         else if(!modelRegistry.getParserValidation().isIgnoreInvalidAttributes())
@@ -494,12 +434,12 @@ public abstract class OpenApiObjectEntity extends ObjectEntity
           throw new ParserErrorException("canon must be an instance of JsonString not " + node.getClass().getName(), node.getContext());
         }
       }
-      if(jsonObject.containsKey("info"))
+      if(json.containsKey("info"))
       {
-        JsonDomNode  node = jsonObject.get("info");
+        JsonDomNode  node = json.get("info");
         _info_ = InfoObject.FACTORY.newInstance(node, modelRegistry);
       }
-      return super.withValues(jsonObject, modelRegistry);
+      return self();
     }
 
     /* void populateAllFields(List<Object> result)
@@ -533,7 +473,7 @@ public abstract class OpenApiObjectEntity extends ObjectEntity
      *
      * @return This (fluent method).
      */
-    public T withComponents(ComponentsObject value) //main
+    public T withComponents(ComponentsObject value)
     {
       _components_ = value;
       return self();
@@ -557,7 +497,7 @@ public abstract class OpenApiObjectEntity extends ObjectEntity
      *
      * @return This (fluent method).
      */
-    public T withXCanonGenerators(CanonGeneratorConfig value) //main
+    public T withXCanonGenerators(CanonGeneratorConfig value)
     {
       _xCanonGenerators_ = value;
       return self();
@@ -581,7 +521,7 @@ public abstract class OpenApiObjectEntity extends ObjectEntity
      *
      * @return This (fluent method).
      */
-    public T withOpenapi(String value) //main
+    public T withOpenapi(String value)
     {
       _openapi_ = value;
       return self();
@@ -605,7 +545,7 @@ public abstract class OpenApiObjectEntity extends ObjectEntity
      *
      * @return This (fluent method).
      */
-    public T withPaths(PathsObject value) //main
+    public T withPaths(PathsObject value)
     {
       _paths_ = value;
       return self();
@@ -629,7 +569,7 @@ public abstract class OpenApiObjectEntity extends ObjectEntity
      *
      * @return This (fluent method).
      */
-    public T withXCanonId(String value) //main
+    public T withXCanonId(String value)
     {
       _xCanonId_ = value;
       return self();
@@ -653,7 +593,7 @@ public abstract class OpenApiObjectEntity extends ObjectEntity
      *
      * @return This (fluent method).
      */
-    public T withXCanonVersion(SemanticVersion value) //main
+    public T withXCanonVersion(SemanticVersion value)
     {
       _xCanonVersion_ = value;
       return self();
@@ -666,7 +606,7 @@ public abstract class OpenApiObjectEntity extends ObjectEntity
      *
      * @return This (fluent method).
      */
-    public T withXCanonVersion(String value) // primitive
+    public T withXCanonVersion(String value)
     {
       _xCanonVersion_ = new SemanticVersion(value);
       return self();
@@ -690,7 +630,7 @@ public abstract class OpenApiObjectEntity extends ObjectEntity
      *
      * @return This (fluent method).
      */
-    public T withXCanonIdentifier(String value) //main
+    public T withXCanonIdentifier(String value)
     {
       _xCanonIdentifier_ = value;
       return self();
@@ -714,7 +654,7 @@ public abstract class OpenApiObjectEntity extends ObjectEntity
      *
      * @return This (fluent method).
      */
-    public T withCanon(String value) //main
+    public T withCanon(String value)
     {
       _canon_ = value;
       return self();
@@ -740,7 +680,7 @@ public abstract class OpenApiObjectEntity extends ObjectEntity
      *
      * @return This (fluent method).
      */
-    public T withInfo(InfoObject value) //main
+    public T withInfo(InfoObject value)
     {
         if(value == null)
           throw new IllegalArgumentException("info is required.");
@@ -964,12 +904,6 @@ public abstract class OpenApiObjectEntity extends ObjectEntity
     return toString().hashCode();
   }
 
-// entity.additionalProperties??
-// innerClasses
-  // innerClass openapi STRING class com.symphony.oss.canon2.core.SchemaTemplateModelType
-  // innerClass x-canon-id STRING class com.symphony.oss.canon2.core.SchemaTemplateModelType
-  // innerClass x-canon-identifier STRING class com.symphony.oss.canon2.core.SchemaTemplateModelType
-  // innerClass canon STRING class com.symphony.oss.canon2.core.SchemaTemplateModelType
 }
 
 /*----------------------------------------------------------------------------------------------------

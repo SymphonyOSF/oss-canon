@@ -24,7 +24,6 @@
 package com.symphony.oss.canon2.runtime.java;
 
 import java.io.Reader;
-import java.io.StringReader;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -33,7 +32,6 @@ import java.util.Map;
 import com.google.common.collect.ImmutableMap;
 import com.symphony.oss.canon.json.JsonParser;
 import com.symphony.oss.canon.json.ParserErrorException;
-import com.symphony.oss.canon.json.ParserResultException;
 import com.symphony.oss.canon.json.model.JsonArray;
 import com.symphony.oss.canon.json.model.JsonArrayDom;
 import com.symphony.oss.canon.json.model.JsonDom;
@@ -269,30 +267,30 @@ public class ModelRegistry
 //    }
 //  }
   
-  /**
-   * Return a new entity instance of the given type, parsed from the given input.
-   * 
-   * The returned entity will be an instance of the given type, but may be a sub-class. The defaultTypeId is only used
-   * in cases where there is no type information in the serialised JSON. This enables canon generated client stubs
-   * to be used with non-canon server implementations. 
-   * 
-   * @param reader A Reader containing the serialized form of an entity.
-   * @param defaultTypeId The type ID of the expected type.
-   * @param type The expected type of the entity.
-   * 
-   * @return The deserialized entity.
-   * 
-   * @throws NullPointerException if the value is null.
-   * 
-   * @throws ParserResultException If the value cannot be parsed.
-   * @throws ParserErrorException if the value is not of the expected type or is otherwise invalid.
-   * This may be the case if the schema defines limits on the magnitude of the value, or if a facade
-   * has been written for the type.
-   */
-  public <E extends Entity> E parseOne(Reader reader, String defaultTypeId, Class<E> type) throws ParserResultException
-  {
-    return newInstance(JsonParser.parseObject(reader), defaultTypeId, type);
-  }
+//  /**
+//   * Return a new entity instance of the given type, parsed from the given input.
+//   * 
+//   * The returned entity will be an instance of the given type, but may be a sub-class. The defaultTypeId is only used
+//   * in cases where there is no type information in the serialised JSON. This enables canon generated client stubs
+//   * to be used with non-canon server implementations. 
+//   * 
+//   * @param reader A Reader containing the serialized form of an entity.
+//   * @param defaultTypeId The type ID of the expected type.
+//   * @param type The expected type of the entity.
+//   * 
+//   * @return The deserialized entity.
+//   * 
+//   * @throws NullPointerException if the value is null.
+//   * 
+//   * @throws ParserResultException If the value cannot be parsed.
+//   * @throws ParserErrorException if the value is not of the expected type or is otherwise invalid.
+//   * This may be the case if the schema defines limits on the magnitude of the value, or if a facade
+//   * has been written for the type.
+//   */
+//  public <E extends Entity> E parseOne(Reader reader, String inputSourceName, String defaultTypeId, Class<E> type) throws ParserResultException
+//  {
+//    return newInstance(JsonParser.parseObject(reader, inputSourceName), defaultTypeId, type);
+//  }
 
   /**
    * Parse a list of JSON objects from the given Reader.
@@ -415,42 +413,42 @@ public class ModelRegistry
 //    }
 //  }
   
-  /**
-   * Return a new entity instance parsed from the given input.
-   * 
-   * @param reader A Reader containing the serialized form of an entity.
-   * 
-   * @return The deserialized entity.
-   * 
-   * @throws ParserResultException If the value cannot be parsed.
-   * @throws NullPointerException if the value is null.
-   * @throws ParserErrorException if the value is not of the expected type or is otherwise invalid.
-   * This may be the case if the schema defines limits on the magnitude of the value, or if a facade
-   * has been written for the type.
-   */
-  public Entity parseOne(Reader reader) throws ParserResultException, ParserErrorException
-  {
-    return newInstance(JsonParser.parseObject(reader));
-  }
+//  /**
+//   * Return a new entity instance parsed from the given input.
+//   * 
+//   * @param reader A Reader containing the serialized form of an entity.
+//   * 
+//   * @return The deserialized entity.
+//   * 
+//   * @throws ParserResultException If the value cannot be parsed.
+//   * @throws NullPointerException if the value is null.
+//   * @throws ParserErrorException if the value is not of the expected type or is otherwise invalid.
+//   * This may be the case if the schema defines limits on the magnitude of the value, or if a facade
+//   * has been written for the type.
+//   */
+//  public Entity parseOne(Reader reader) throws ParserResultException, ParserErrorException
+//  {
+//    return newInstance(JsonParser.parseObject(reader));
+//  }
   
 
-  /**
-   * Return a new entity instance parsed from the given input.
-   * 
-   * @param input A String containing the serialized form of an entity.
-   * 
-   * @return The deserialized entity.
-   * 
-   * @throws ParserResultException If the value cannot be parsed.
-   * @throws NullPointerException if the value is null.
-   * @throws ParserErrorException if the value is not of the expected type or is otherwise invalid.
-   * This may be the case if the schema defines limits on the magnitude of the value, or if a facade
-   * has been written for the type.
-   */
-  public Entity parseOne(String input) throws ParserResultException, ParserErrorException
-  {
-    return newInstance(JsonParser.parseObject(new StringReader(input)));
-  }
+//  /**
+//   * Return a new entity instance parsed from the given input.
+//   * 
+//   * @param input A String containing the serialized form of an entity.
+//   * 
+//   * @return The deserialized entity.
+//   * 
+//   * @throws ParserResultException If the value cannot be parsed.
+//   * @throws NullPointerException if the value is null.
+//   * @throws ParserErrorException if the value is not of the expected type or is otherwise invalid.
+//   * This may be the case if the schema defines limits on the magnitude of the value, or if a facade
+//   * has been written for the type.
+//   */
+//  public Entity parseOne(String input) throws ParserResultException, ParserErrorException
+//  {
+//    return newInstance(JsonParser.parseObject(new StringReader(input)));
+//  }
 
 //  /**
 //   * Parse a stream of entities from the given input and pass them to the given consumer.

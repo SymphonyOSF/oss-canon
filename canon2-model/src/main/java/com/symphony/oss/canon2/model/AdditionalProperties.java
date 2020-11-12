@@ -21,24 +21,21 @@
  *    Generator groupId    org.symphonyoss.s2.canon
  *              artifactId canon2-generator-java
  *    Template name        template/Object/_.java.ftl
- *    At                   2020-11-10 17:41:51 GMT
+ *    At                   2020-11-12 10:04:36 GMT
  *----------------------------------------------------------------------------------------------------
  */
-// importFields
-// importField SchemaOrRef nullable is Nullable
-// importType SchemaOrRef
-// importType SchemaOrRef
-// importField $1 nullable is Nullable
-// importType $1
-// importType $1
 
 package com.symphony.oss.canon2.model;
+
+import java.util.LinkedList;
+import java.util.List;
 
 import javax.annotation.Nullable;
 import javax.annotation.concurrent.Immutable;
 
-import com.google.common.collect.ImmutableSet;
 import com.symphony.oss.canon.json.ParserErrorException;
+import com.symphony.oss.canon.json.ParserException;
+import com.symphony.oss.canon.json.ParserResultException;
 import com.symphony.oss.canon.json.model.JsonBoolean;
 import com.symphony.oss.canon.json.model.JsonDomNode;
 import com.symphony.oss.canon.json.model.JsonNull;
@@ -78,16 +75,17 @@ public class AdditionalProperties extends Entity
     if(initialiser instanceof JsonEntityInitialiser)
     {
       JsonEntityInitialiser jsonInitialiser = (JsonEntityInitialiser)initialiser;
-
-      JsonDomNode  node = jsonInitialiser.getJson();
-      int          valueCnt = 0;
-       _schemaOrRef_ = SchemaOrRef.FACTORY.newInstanceOrNull(node, jsonInitialiser.getModelRegistry());
+      List<ParserException> parserExceptions = new LinkedList<>();
+      List<String>          matches = new LinkedList<>();
+      JsonDomNode           node = jsonInitialiser.getJson();
+       _schemaOrRef_ = SchemaOrRef.FACTORY.newInstanceOrNull(parserExceptions, node, jsonInitialiser.getModelRegistry());
       if(_schemaOrRef_ != null)
-        valueCnt++;
+      {
+        matches.add("SchemaOrRef");
+      }
 
        if(node instanceof JsonBoolean)
        {
-// schema.class class com.symphony.oss.canon2.generator.java.JavaBooleanSchemaTemplateModel name $1 type Boolean javaType Boolean
          _$1_ = ((JsonBoolean)node).asBoolean();
        }
        else 
@@ -95,10 +93,16 @@ public class AdditionalProperties extends Entity
          _$1_ = null;
        }
       if(_$1_ != null)
-        valueCnt++;
+      {
+        matches.add("$1");
+      }
 
-      if(valueCnt != 1)
-        throw new ParserErrorException("Exactly one value must be present", jsonInitialiser.getJson().getContext());
+      if(matches.size() != 1)
+      {
+        throw new ParserErrorException("Exactly one of SchemaOrRef,\n" +
+          "$1 must be present but " + matches + " were encountered", jsonInitialiser.getJson().getContext(),
+                   new ParserResultException(parserExceptions));
+      }
     }
     else
     {
@@ -175,7 +179,6 @@ public class AdditionalProperties extends Entity
    * @param <B> The concrete type of the built object.
    */
   public static abstract class AbstractBuilder<T extends AbstractBuilder<T,B>, B extends AdditionalProperties>
-// super class name
     extends Entity.AbstractBuilder<T,B>
     implements IAdditionalPropertiesInstanceOrBuilder, Initialiser
   {
@@ -201,28 +204,44 @@ public class AdditionalProperties extends Entity
       _$1_ = initial.get$1();
     }
 
-    @Override
-    public T withValues(JsonObject jsonObject, ModelRegistry modelRegistry)
+    /**
+     * Initialize this builder with the values from the given serialized form.
+     * 
+     * @param json          The serialized form of an instance of the built type.
+     * @param modelRegistry A model registry.
+     * 
+     * @return This (fluent method).
+     */
+    public T withValues(JsonDomNode json, ModelRegistry modelRegistry)
     {
-      if(jsonObject.containsKey("SchemaOrRef"))
+      List<ParserException> parserExceptions = new LinkedList<>();
+      List<String>          matches = new LinkedList<>();
+       _schemaOrRef_ = SchemaOrRef.FACTORY.newInstanceOrNull(parserExceptions, json, modelRegistry);
+      if(_schemaOrRef_ != null)
       {
-        JsonDomNode  node = jsonObject.get("SchemaOrRef");
-        _schemaOrRef_ = SchemaOrRef.FACTORY.newInstanceOrNull(node, modelRegistry);
+        matches.add("SchemaOrRef");
       }
-      if(jsonObject.containsKey("$1"))
+
+       if(json instanceof JsonBoolean)
+       {
+         _$1_ = ((JsonBoolean)json).asBoolean();
+       }
+       else if(!modelRegistry.getParserValidation().isIgnoreInvalidAttributes())
+       {
+         _$1_ = null;
+       }
+      if(_$1_ != null)
       {
-        JsonDomNode  node = jsonObject.get("$1");
-        if(node instanceof JsonBoolean)
-        {
-// schema.class class com.symphony.oss.canon2.generator.java.JavaBooleanSchemaTemplateModel name $1 type Boolean javaType Boolean
-          _$1_ = ((JsonBoolean)node).asBoolean();
-        }
-        else if(!modelRegistry.getParserValidation().isIgnoreInvalidAttributes())
-        {
-          _$1_ = null;
-        }
+        matches.add("$1");
       }
-      return super.withValues(jsonObject, modelRegistry);
+
+      if(matches.size() != 1)
+      {
+        throw new IllegalArgumentException("Exactly one of SchemaOrRef,\n" +
+          "$1 must be present but " + matches + " were encountered at " + json.getContext(),
+                   new ParserResultException(parserExceptions));
+      }
+      return self();
     }
 
     /* void populateAllFields(List<Object> result)
@@ -249,7 +268,7 @@ public class AdditionalProperties extends Entity
      *
      * @return This (fluent method).
      */
-    public T withSchemaOrRef(SchemaOrRef value) //main
+    public T withSchemaOrRef(SchemaOrRef value)
     {
       _schemaOrRef_ = value;
       return self();
@@ -273,7 +292,7 @@ public class AdditionalProperties extends Entity
      *
      * @return This (fluent method).
      */
-    public T with$1(Boolean value) //main
+    public T with$1(Boolean value)
     {
       _$1_ = value;
       return self();
@@ -391,8 +410,6 @@ public class AdditionalProperties extends Entity
 
     return null;
   }
-// entity.additionalProperties??
-// innerClasses
 }
 
 /*----------------------------------------------------------------------------------------------------

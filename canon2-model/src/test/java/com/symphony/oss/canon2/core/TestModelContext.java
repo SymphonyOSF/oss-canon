@@ -209,6 +209,41 @@ public class TestModelContext
         "24:20");
   }
   
+
+  
+//  @Test
+//  public void testInavlidOneOf() throws ParserResultException
+//  {
+//    testError("{\n" + 
+//        "  \"canon\": \"0.0.1\",\n" + 
+//        "  \"info\": {\n" + 
+//        "    \"title\": \"typedef example\",\n" + 
+//        "    \"license\": {\n" + 
+//        "      \"name\": \"Apache2\"\n" + 
+//        "    }\n" + 
+//        "  },\n" + 
+//        "  \"x-canon-id\": \"com.symphony.oss.canon2.test.typedef\",\n" + 
+//        "  \"x-canon-version\": \"1.0\",\n" + 
+//        "  \"x-canon-generators\": {\n" + 
+//        "    \"java\": {\n" + 
+//        "      \"genPackage\":  \"com.symphony.oss.canon2.test.typedef\"\n" + 
+//        "    }\n" + 
+//        "  },\n" + 
+//        "  \"components\": {\n" + 
+//        "    \"schemas\": {   \n" + 
+//        "    \"Int64Typedef\": {\n" + 
+//        "        \"description\": \"A double typedef with a facade.\",\n" + 
+//        "        \"oneOf\": true,\n" + 
+//        "        \"Xtype\": \"number\",\n" + 
+//        "        \"format\": \"int64\"\n" + 
+//        "      }\n" + 
+//        "    }\n" + 
+//        "  }\n" + 
+//        "}",
+//        "23:20",
+//        "24:20");
+//  }
+  
   private void testError(String input, String ...locations) throws ParserResultException
   {
     Set<String> locationSet = new HashSet<>();
@@ -219,6 +254,7 @@ public class TestModelContext
     try
     {
       test(input);
+      fail("Expected errors");
     }
     catch(ParserResultException e)
     {

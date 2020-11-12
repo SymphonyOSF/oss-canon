@@ -21,72 +21,9 @@
  *    Generator groupId    org.symphonyoss.s2.canon
  *              artifactId canon2-generator-java
  *    Template name        template/Object/_Entity.java.ftl
- *    At                   2020-11-10 17:41:52 GMT
+ *    At                   2020-11-12 10:04:36 GMT
  *----------------------------------------------------------------------------------------------------
  */
-// importFields
-// importField x-canon-builderFacade nullable is Nullable
-// importType x-canon-builderFacade
-// importType x-canon-builderFacade
-// importField XXXadditionalProperties nullable is Nullable
-// importType AdditionalProperties
-// importType AdditionalProperties
-// importField x-canon-identifier nullable is Nullable
-// importType x-canon-identifier
-// importType x-canon-identifier
-// importField type nullable is Nonnull
-// importType type
-// importType type
-// importField x-canon-facade nullable is Nullable
-// importType x-canon-facade
-// importType x-canon-facade
-// importField properties nullable is Nonnull
-// importType PropertiesObject
-// importType PropertiesObject
-// importField required nullable is Nullable
-// importType required
-// importType required
-// importType items BRUCE 001
-// importField x-canon-extends nullable is Nullable
-// importType ReferenceObject
-// importType ReferenceObject
-// importField discriminator nullable is Nullable
-// importType DiscriminatorObject
-// importType DiscriminatorObject
-  // innerClass class com.symphony.oss.canon2.generator.java.JavaBooleanSchemaTemplateModel
-  // innerClass x-canon-builderFacade
-         
-    // innerClass x-canon-builderFacade isPrimitive
-        
-        
-        
-  // innerClass class com.symphony.oss.canon2.generator.java.JavaStringSchemaTemplateModel
-  // innerClass x-canon-identifier
-         
-    // innerClass x-canon-identifier isPrimitive
-        
-        
-        
-  // innerClass class com.symphony.oss.canon2.generator.java.JavaStringSchemaTemplateModel
-  // innerClass type
-         
-    // innerClass type isPrimitive
-        
-        
-        
-  // innerClass class com.symphony.oss.canon2.generator.java.JavaBooleanSchemaTemplateModel
-  // innerClass x-canon-facade
-         
-    // innerClass x-canon-facade isPrimitive
-        
-        
-        
-  // innerClass class com.symphony.oss.canon2.generator.java.JavaArraySchemaTemplateModel
-  // innerClass required
-         
-        
-        
-        
 
 package com.symphony.oss.canon2.model;
 
@@ -162,7 +99,6 @@ public abstract class ObjectSchemaEntity extends ObjectEntity
       {
         if(node instanceof JsonBoolean)
         {
-// schema.class class com.symphony.oss.canon2.generator.java.JavaBooleanSchemaTemplateModel name x-canon-builderFacade type Boolean javaType Boolean
           _xCanonBuilderFacade_ = ((JsonBoolean)node).asBoolean();
         }
         else 
@@ -190,7 +126,6 @@ public abstract class ObjectSchemaEntity extends ObjectEntity
       {
         if(node instanceof JsonString)
         {
-// schema.class class com.symphony.oss.canon2.generator.java.JavaStringSchemaTemplateModel name x-canon-identifier type String javaType String
           _xCanonIdentifier_ = ((JsonString)node).asString();
         }
         else 
@@ -208,7 +143,6 @@ public abstract class ObjectSchemaEntity extends ObjectEntity
       {
         if(node instanceof JsonString)
         {
-// schema.class class com.symphony.oss.canon2.generator.java.JavaStringSchemaTemplateModel name type type ObjectSchema.Type javaType String
           _type_ = ObjectSchema.Type.deserialize(((JsonString)node).asString());
         }
         else 
@@ -226,7 +160,6 @@ public abstract class ObjectSchemaEntity extends ObjectEntity
       {
         if(node instanceof JsonBoolean)
         {
-// schema.class class com.symphony.oss.canon2.generator.java.JavaBooleanSchemaTemplateModel name x-canon-facade type Boolean javaType Boolean
           _xCanonFacade_ = ((JsonBoolean)node).asBoolean();
         }
         else 
@@ -260,7 +193,6 @@ public abstract class ObjectSchemaEntity extends ObjectEntity
             String itemValue0 = null;
             if(item0 instanceof JsonString)
             {
-// schema.class class com.symphony.oss.canon2.generator.java.JavaStringSchemaTemplateModel name items BRUCE 001 type String javaType String
               itemValue0 = ((JsonString)item0).asString();
             }
             else 
@@ -399,7 +331,6 @@ public abstract class ObjectSchemaEntity extends ObjectEntity
    * @param <B> The concrete type of the built object.
    */
   public static abstract class AbstractBuilder<T extends AbstractBuilder<T,B>, B extends ObjectSchemaEntity>
-// super class name
     extends ObjectEntity.AbstractBuilder<T,B>
     implements IObjectSchemaInstanceOrBuilder, Initialiser
   {
@@ -439,15 +370,21 @@ public abstract class ObjectSchemaEntity extends ObjectEntity
       _discriminator_ = initial.getDiscriminator();
     }
 
-    @Override
-    public T withValues(JsonObject jsonObject, ModelRegistry modelRegistry)
+    /**
+     * Initialize this builder with the values from the given serialized form.
+     * 
+     * @param json          The serialized form of an instance of the built type.
+     * @param modelRegistry A model registry.
+     * 
+     * @return This (fluent method).
+     */
+    public T withValues(JsonObject json, ModelRegistry modelRegistry)
     {
-      if(jsonObject.containsKey("x-canon-builderFacade"))
+      if(json.containsKey("x-canon-builderFacade"))
       {
-        JsonDomNode  node = jsonObject.get("x-canon-builderFacade");
+        JsonDomNode  node = json.get("x-canon-builderFacade");
         if(node instanceof JsonBoolean)
         {
-// schema.class class com.symphony.oss.canon2.generator.java.JavaBooleanSchemaTemplateModel name x-canon-builderFacade type Boolean javaType Boolean
           _xCanonBuilderFacade_ = ((JsonBoolean)node).asBoolean();
         }
         else if(!modelRegistry.getParserValidation().isIgnoreInvalidAttributes())
@@ -455,17 +392,16 @@ public abstract class ObjectSchemaEntity extends ObjectEntity
           throw new ParserErrorException("x-canon-builderFacade must be an instance of JsonBoolean not " + node.getClass().getName(), node.getContext());
         }
       }
-      if(jsonObject.containsKey("XXXadditionalProperties"))
+      if(json.containsKey("XXXadditionalProperties"))
       {
-        JsonDomNode  node = jsonObject.get("XXXadditionalProperties");
+        JsonDomNode  node = json.get("XXXadditionalProperties");
         _xXXadditionalProperties_ = AdditionalProperties.FACTORY.newInstance(node, modelRegistry);
       }
-      if(jsonObject.containsKey("x-canon-identifier"))
+      if(json.containsKey("x-canon-identifier"))
       {
-        JsonDomNode  node = jsonObject.get("x-canon-identifier");
+        JsonDomNode  node = json.get("x-canon-identifier");
         if(node instanceof JsonString)
         {
-// schema.class class com.symphony.oss.canon2.generator.java.JavaStringSchemaTemplateModel name x-canon-identifier type String javaType String
           _xCanonIdentifier_ = ((JsonString)node).asString();
         }
         else if(!modelRegistry.getParserValidation().isIgnoreInvalidAttributes())
@@ -473,12 +409,11 @@ public abstract class ObjectSchemaEntity extends ObjectEntity
           throw new ParserErrorException("x-canon-identifier must be an instance of JsonString not " + node.getClass().getName(), node.getContext());
         }
       }
-      if(jsonObject.containsKey("type"))
+      if(json.containsKey("type"))
       {
-        JsonDomNode  node = jsonObject.get("type");
+        JsonDomNode  node = json.get("type");
         if(node instanceof JsonString)
         {
-// schema.class class com.symphony.oss.canon2.generator.java.JavaStringSchemaTemplateModel name type type ObjectSchema.Type javaType String
           _type_ = ObjectSchema.Type.deserialize(((JsonString)node).asString());
         }
         else if(!modelRegistry.getParserValidation().isIgnoreInvalidAttributes())
@@ -486,12 +421,11 @@ public abstract class ObjectSchemaEntity extends ObjectEntity
           throw new ParserErrorException("type must be an instance of JsonString not " + node.getClass().getName(), node.getContext());
         }
       }
-      if(jsonObject.containsKey("x-canon-facade"))
+      if(json.containsKey("x-canon-facade"))
       {
-        JsonDomNode  node = jsonObject.get("x-canon-facade");
+        JsonDomNode  node = json.get("x-canon-facade");
         if(node instanceof JsonBoolean)
         {
-// schema.class class com.symphony.oss.canon2.generator.java.JavaBooleanSchemaTemplateModel name x-canon-facade type Boolean javaType Boolean
           _xCanonFacade_ = ((JsonBoolean)node).asBoolean();
         }
         else if(!modelRegistry.getParserValidation().isIgnoreInvalidAttributes())
@@ -499,14 +433,14 @@ public abstract class ObjectSchemaEntity extends ObjectEntity
           throw new ParserErrorException("x-canon-facade must be an instance of JsonBoolean not " + node.getClass().getName(), node.getContext());
         }
       }
-      if(jsonObject.containsKey("properties"))
+      if(json.containsKey("properties"))
       {
-        JsonDomNode  node = jsonObject.get("properties");
+        JsonDomNode  node = json.get("properties");
         _properties_ = PropertiesObject.FACTORY.newInstance(node, modelRegistry);
       }
-      if(jsonObject.containsKey("required"))
+      if(json.containsKey("required"))
       {
-        JsonDomNode  node = jsonObject.get("required");
+        JsonDomNode  node = json.get("required");
         if(node instanceof JsonArray)
         {
           Set<String> itemSet0 = new HashSet<>();
@@ -515,7 +449,6 @@ public abstract class ObjectSchemaEntity extends ObjectEntity
             String itemValue0 = null;
             if(item0 instanceof JsonString)
             {
-// schema.class class com.symphony.oss.canon2.generator.java.JavaStringSchemaTemplateModel name items BRUCE 001 type String javaType String
               itemValue0 = ((JsonString)item0).asString();
             }
             else if(!modelRegistry.getParserValidation().isIgnoreInvalidAttributes())
@@ -531,17 +464,17 @@ public abstract class ObjectSchemaEntity extends ObjectEntity
           throw new ParserErrorException("required must be a JsonArray node not " + node.getClass().getName(), node.getContext());
         }
       }
-      if(jsonObject.containsKey("x-canon-extends"))
+      if(json.containsKey("x-canon-extends"))
       {
-        JsonDomNode  node = jsonObject.get("x-canon-extends");
+        JsonDomNode  node = json.get("x-canon-extends");
         _xCanonExtends_ = ReferenceObject.FACTORY.newInstance(node, modelRegistry);
       }
-      if(jsonObject.containsKey("discriminator"))
+      if(json.containsKey("discriminator"))
       {
-        JsonDomNode  node = jsonObject.get("discriminator");
+        JsonDomNode  node = json.get("discriminator");
         _discriminator_ = DiscriminatorObject.FACTORY.newInstance(node, modelRegistry);
       }
-      return super.withValues(jsonObject, modelRegistry);
+      return self();
     }
 
     /* void populateAllFields(List<Object> result)
@@ -575,7 +508,7 @@ public abstract class ObjectSchemaEntity extends ObjectEntity
      *
      * @return This (fluent method).
      */
-    public T withXCanonBuilderFacade(Boolean value) //main
+    public T withXCanonBuilderFacade(Boolean value)
     {
       _xCanonBuilderFacade_ = value;
       return self();
@@ -599,7 +532,7 @@ public abstract class ObjectSchemaEntity extends ObjectEntity
      *
      * @return This (fluent method).
      */
-    public T withXXXadditionalProperties(AdditionalProperties value) //main
+    public T withXXXadditionalProperties(AdditionalProperties value)
     {
       _xXXadditionalProperties_ = value;
       return self();
@@ -623,7 +556,7 @@ public abstract class ObjectSchemaEntity extends ObjectEntity
      *
      * @return This (fluent method).
      */
-    public T withXCanonIdentifier(String value) //main
+    public T withXCanonIdentifier(String value)
     {
       _xCanonIdentifier_ = value;
       return self();
@@ -649,7 +582,7 @@ public abstract class ObjectSchemaEntity extends ObjectEntity
      *
      * @return This (fluent method).
      */
-    public T withType(ObjectSchema.Type value) //main
+    public T withType(ObjectSchema.Type value)
     {
         if(value == null)
           throw new IllegalArgumentException("type is required.");
@@ -665,7 +598,7 @@ public abstract class ObjectSchemaEntity extends ObjectEntity
      *
      * @return This (fluent method).
      */
-    public T withType(String value) // primitive
+    public T withType(String value)
     {
       if(value == null)
         throw new IllegalArgumentException("type is required.");
@@ -692,7 +625,7 @@ public abstract class ObjectSchemaEntity extends ObjectEntity
      *
      * @return This (fluent method).
      */
-    public T withXCanonFacade(Boolean value) //main
+    public T withXCanonFacade(Boolean value)
     {
       _xCanonFacade_ = value;
       return self();
@@ -718,7 +651,7 @@ public abstract class ObjectSchemaEntity extends ObjectEntity
      *
      * @return This (fluent method).
      */
-    public T withProperties(PropertiesObject value) //main
+    public T withProperties(PropertiesObject value)
     {
         if(value == null)
           throw new IllegalArgumentException("properties is required.");
@@ -745,7 +678,7 @@ public abstract class ObjectSchemaEntity extends ObjectEntity
      *
      * @return This (fluent method).
      */
-    public T withRequired(Set<String> value) //main
+    public T withRequired(Set<String> value)
     {
       _required_ = ImmutableSet.copyOf(value);
       return self();
@@ -769,7 +702,7 @@ public abstract class ObjectSchemaEntity extends ObjectEntity
      *
      * @return This (fluent method).
      */
-    public T withXCanonExtends(ReferenceObject value) //main
+    public T withXCanonExtends(ReferenceObject value)
     {
       _xCanonExtends_ = value;
       return self();
@@ -793,7 +726,7 @@ public abstract class ObjectSchemaEntity extends ObjectEntity
      *
      * @return This (fluent method).
      */
-    public T withDiscriminator(DiscriminatorObject value) //main
+    public T withDiscriminator(DiscriminatorObject value)
     {
       _discriminator_ = value;
       return self();
@@ -1020,11 +953,6 @@ public abstract class ObjectSchemaEntity extends ObjectEntity
     return toString().hashCode();
   }
 
-// entity.additionalProperties??
-// innerClasses
-  // innerClass x-canon-builderFacade BOOLEAN class com.symphony.oss.canon2.core.SchemaTemplateModelType
-  // innerClass x-canon-identifier STRING class com.symphony.oss.canon2.core.SchemaTemplateModelType
-  // innerClass type STRING class com.symphony.oss.canon2.core.SchemaTemplateModelType
   /**
    * Enum  type canon
    * Model canon
@@ -1075,8 +1003,6 @@ public abstract class ObjectSchemaEntity extends ObjectEntity
       }
     }
   }
-  // innerClass x-canon-facade BOOLEAN class com.symphony.oss.canon2.core.SchemaTemplateModelType
-  // innerClass required ARRAY class com.symphony.oss.canon2.core.SchemaTemplateModelType
 }
 
 /*----------------------------------------------------------------------------------------------------

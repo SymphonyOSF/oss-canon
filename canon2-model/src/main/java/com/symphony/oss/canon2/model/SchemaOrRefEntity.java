@@ -21,24 +21,21 @@
  *    Generator groupId    org.symphonyoss.s2.canon
  *              artifactId canon2-generator-java
  *    Template name        template/Object/_Entity.java.ftl
- *    At                   2020-11-10 17:41:52 GMT
+ *    At                   2020-11-12 10:04:36 GMT
  *----------------------------------------------------------------------------------------------------
  */
-// importFields
-// importField ReferenceObject nullable is Nullable
-// importType ReferenceObject
-// importType ReferenceObject
-// importField Schema nullable is Nullable
-// importType Schema
-// importType Schema
 
 package com.symphony.oss.canon2.model;
+
+import java.util.LinkedList;
+import java.util.List;
 
 import javax.annotation.Nullable;
 import javax.annotation.concurrent.Immutable;
 
-import com.google.common.collect.ImmutableSet;
 import com.symphony.oss.canon.json.ParserErrorException;
+import com.symphony.oss.canon.json.ParserException;
+import com.symphony.oss.canon.json.ParserResultException;
 import com.symphony.oss.canon.json.model.JsonDomNode;
 import com.symphony.oss.canon.json.model.JsonNull;
 import com.symphony.oss.canon.json.model.JsonObject;
@@ -77,19 +74,27 @@ public abstract class SchemaOrRefEntity extends Entity
     if(initialiser instanceof JsonEntityInitialiser)
     {
       JsonEntityInitialiser jsonInitialiser = (JsonEntityInitialiser)initialiser;
-
-      JsonDomNode  node = jsonInitialiser.getJson();
-      int          valueCnt = 0;
-       _referenceObject_ = ReferenceObject.FACTORY.newInstanceOrNull(node, jsonInitialiser.getModelRegistry());
+      List<ParserException> parserExceptions = new LinkedList<>();
+      List<String>          matches = new LinkedList<>();
+      JsonDomNode           node = jsonInitialiser.getJson();
+       _referenceObject_ = ReferenceObject.FACTORY.newInstanceOrNull(parserExceptions, node, jsonInitialiser.getModelRegistry());
       if(_referenceObject_ != null)
-        valueCnt++;
+      {
+        matches.add("ReferenceObject");
+      }
 
-       _schema_ = Schema.FACTORY.newInstanceOrNull(node, jsonInitialiser.getModelRegistry());
+       _schema_ = Schema.FACTORY.newInstanceOrNull(parserExceptions, node, jsonInitialiser.getModelRegistry());
       if(_schema_ != null)
-        valueCnt++;
+      {
+        matches.add("Schema");
+      }
 
-      if(valueCnt != 1)
-        throw new ParserErrorException("Exactly one value must be present", jsonInitialiser.getJson().getContext());
+      if(matches.size() != 1)
+      {
+        throw new ParserErrorException("Exactly one of ReferenceObject,\n" +
+          "Schema must be present but " + matches + " were encountered", jsonInitialiser.getJson().getContext(),
+                   new ParserResultException(parserExceptions));
+      }
     }
     else
     {
@@ -166,7 +171,6 @@ public abstract class SchemaOrRefEntity extends Entity
    * @param <B> The concrete type of the built object.
    */
   public static abstract class AbstractBuilder<T extends AbstractBuilder<T,B>, B extends SchemaOrRefEntity>
-// super class name
     extends Entity.AbstractBuilder<T,B>
     implements ISchemaOrRefInstanceOrBuilder, Initialiser
   {
@@ -192,20 +196,37 @@ public abstract class SchemaOrRefEntity extends Entity
       _schema_ = initial.getSchema();
     }
 
-    @Override
-    public T withValues(JsonObject jsonObject, ModelRegistry modelRegistry)
+    /**
+     * Initialize this builder with the values from the given serialized form.
+     * 
+     * @param json          The serialized form of an instance of the built type.
+     * @param modelRegistry A model registry.
+     * 
+     * @return This (fluent method).
+     */
+    public T withValues(JsonDomNode json, ModelRegistry modelRegistry)
     {
-      if(jsonObject.containsKey("ReferenceObject"))
+      List<ParserException> parserExceptions = new LinkedList<>();
+      List<String>          matches = new LinkedList<>();
+       _referenceObject_ = ReferenceObject.FACTORY.newInstanceOrNull(parserExceptions, json, modelRegistry);
+      if(_referenceObject_ != null)
       {
-        JsonDomNode  node = jsonObject.get("ReferenceObject");
-        _referenceObject_ = ReferenceObject.FACTORY.newInstanceOrNull(node, modelRegistry);
+        matches.add("ReferenceObject");
       }
-      if(jsonObject.containsKey("Schema"))
+
+       _schema_ = Schema.FACTORY.newInstanceOrNull(parserExceptions, json, modelRegistry);
+      if(_schema_ != null)
       {
-        JsonDomNode  node = jsonObject.get("Schema");
-        _schema_ = Schema.FACTORY.newInstanceOrNull(node, modelRegistry);
+        matches.add("Schema");
       }
-      return super.withValues(jsonObject, modelRegistry);
+
+      if(matches.size() != 1)
+      {
+        throw new IllegalArgumentException("Exactly one of ReferenceObject,\n" +
+          "Schema must be present but " + matches + " were encountered at " + json.getContext(),
+                   new ParserResultException(parserExceptions));
+      }
+      return self();
     }
 
     /* void populateAllFields(List<Object> result)
@@ -232,7 +253,7 @@ public abstract class SchemaOrRefEntity extends Entity
      *
      * @return This (fluent method).
      */
-    public T withReferenceObject(ReferenceObject value) //main
+    public T withReferenceObject(ReferenceObject value)
     {
       _referenceObject_ = value;
       return self();
@@ -256,7 +277,7 @@ public abstract class SchemaOrRefEntity extends Entity
      *
      * @return This (fluent method).
      */
-    public T withSchema(Schema value) //main
+    public T withSchema(Schema value)
     {
       _schema_ = value;
       return self();
@@ -374,8 +395,6 @@ public abstract class SchemaOrRefEntity extends Entity
 
     return null;
   }
-// entity.additionalProperties??
-// innerClasses
 }
 
 /*----------------------------------------------------------------------------------------------------
