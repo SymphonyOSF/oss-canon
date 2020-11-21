@@ -20,8 +20,6 @@ package com.symphony.oss.canon2.generator;
 
 import java.util.List;
 
-import javax.annotation.Nullable;
-
 import com.symphony.oss.canon2.core.ResolvedSchema;
 import com.symphony.oss.canon2.core.SchemaTemplateModelType;
 
@@ -29,6 +27,10 @@ import com.symphony.oss.canon2.core.SchemaTemplateModelType;
  * Base implementation of ISchemaTemplateModel.
  * 
  * @author Bruce Skingle
+ * 
+ * @param <T> The concrete type of ITemplateModel
+ * @param <M> The concrete type of IOpenApiTemplateModel
+ * @param <S> The concrete type of ISchemaTemplateModel
  *
  */
 public abstract class SchemaTemplateModel<
@@ -40,15 +42,31 @@ S extends ISchemaTemplateModel<T,M,S>
   implements ISchemaTemplateModel<T,M,S>
 {
   private final SchemaTemplateModelType schemaType_;
-    
+  
+  /**
+   * Constructor.
+   * 
+   * 
+   * @param generatorContext  Contains the source context for error reporting. 
+   * @param identifier        The identifier used for this entity in generated code.
+   * @param resolvedSchema    The resolvedSchema object from the OpenApi model.
+   * @param schemaType        The type of this schema.
+   * @param model             The IOpenApiTemplateModel to which this entity belongs.
+   * @param templates         The list of templates to be called for this model.
+   */
   public SchemaTemplateModel(CanonGenerator<T,M,S,?,?,?,?,?>.AbstractContext generatorContext, 
-      String identifier, ResolvedSchema<?> resolvedSchema, @Nullable SchemaTemplateModelType schemaType, M model, List<String> templates)
+      String identifier, ResolvedSchema<?> resolvedSchema, SchemaTemplateModelType schemaType, M model, List<String> templates)
   {
     super(generatorContext, resolvedSchema.getName(), identifier, resolvedSchema, model, templates);
     
     schemaType_ = schemaType;
   }
 
+  /**
+   * Return the schema type.
+   * 
+   * @return the schema type.
+   */
   public final SchemaTemplateModelType getSchemaType()
   {
     return schemaType_;

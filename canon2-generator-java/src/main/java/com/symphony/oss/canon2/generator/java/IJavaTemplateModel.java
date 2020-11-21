@@ -29,6 +29,13 @@ JavaSchemaTemplateModel
 >
 {
   /**
+   * Return the target language type of this class.
+   * 
+   * @return the target language type of this class.
+   */
+  String getType();
+  
+  /**
    * Return the set of imports needed for this class.
    * 
    * @return the set of imports needed for this class.
@@ -42,12 +49,12 @@ JavaSchemaTemplateModel
    */
   String getCamelName();
 
-  /**
-   * Return the name of this model entity in snake_case with a lower case initial letter.
-   * 
-   * @return The name of this model entity in snake_case with a lower case initial letter.
-   */
-  String getSnakeName();
+//  /**
+//   * Return the name of this model entity in snake_case with a lower case initial letter.
+//   * 
+//   * @return The name of this model entity in snake_case with a lower case initial letter.
+//   */
+//  String getSnakeName();
 
   /**
    * Return the name of this model entity in CamelCase with an upper case initial letter.
@@ -56,10 +63,10 @@ JavaSchemaTemplateModel
    */
   String getCamelCapitalizedName();
   
-  /**
-   * Return the name of this model entity in Snake_case with an upper case initial letter.
-   * 
-   * @return The name of this model entity in Snake_case with an upper case initial letter.
-   */
-  String getSnakeCapitalizedName();
+//  /**
+//   * Return the name of this model entity in Snake_case with an upper case initial letter.
+//   * 
+//   * @return The name of this model entity in Snake_case with an upper case initial letter.
+//   */
+//  String getSnakeCapitalizedName();
 }

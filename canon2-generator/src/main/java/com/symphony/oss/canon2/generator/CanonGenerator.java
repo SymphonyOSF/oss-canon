@@ -78,6 +78,21 @@ import freemarker.template.Template;
 import freemarker.template.TemplateException;
 import freemarker.template.Version;
 
+/**
+ * Base class for canon code generators.
+ * 
+ * @author Bruce Skingle
+ *
+ * Type parameters define the generator's concrete class for:
+ * @param <T> The generic template model.
+ * @param <M> The OpenApi (overall model) template model.
+ * @param <S> The generic template model for all schemas.
+ * @param <O> The template model for object schemas.
+ * @param <A> The template model for array schemas
+ * @param <P> The template model for all primitive schemas.
+ * @param <F> The template model for fields (named schemas).
+ * @param <C> The generator context.
+ */
 public abstract class CanonGenerator<
 T extends ITemplateModel<T,M,S>,
 M extends IOpenApiTemplateModel<T,M,S>,
@@ -96,6 +111,11 @@ C extends CanonGenerator<T,M,S,O,A,P,F,C>.AbstractContext>
   private Configuration                                  config_;
   private File                                           templateDir_;
 
+  /**
+   * Constructor.
+   * 
+   * @param language The target generated language.
+   */
   public CanonGenerator(String language)
   {
     language_ = language;
@@ -105,21 +125,6 @@ C extends CanonGenerator<T,M,S,O,A,P,F,C>.AbstractContext>
     config_.setDefaultEncoding("UTF-8");
     config_.setLocale(Locale.US);
   }
-  
-
-//  protected abstract Configuration getFreemarkerConfig();
-//  
-//  protected abstract CanonGenerator<T,M,S,O,A,P,F,G> withTemplateDir(File templateDir);
-
-  //IGeneratorModelContext<T,M,S,O,A,P,F,G> createModelContext(ICanonContext canonContext, IModelContext context, JsonObject generatorConfig);
-
-//  protected abstract String getLanguage();
-
-//  protected abstract Set<String> getTemplatesFor(TemplateType type, String templateGroup);
-//
-//  protected abstract String getIdentifierName(String name, ICanonModelEntity entity, Context generatorContext, boolean isSchema);
-  
-  // formally GeneratorModelContext:
   
   protected abstract M generateOpenApiObject(C generatorContext, ResolvedOpenApiObject resolvedOpenApiObject);
 
@@ -170,41 +175,13 @@ C extends CanonGenerator<T,M,S,O,A,P,F,C>.AbstractContext>
   
   public abstract C newGeneratorContext(CanonGenerationContext canonGenerationContext, SourceContext sourceContext) throws ParserResultException;
   
-//  @SuppressWarnings("unchecked")
-//  protected <T extends ModelElement> void register(Class<T> elementType, ICanonDataModelFunc<T> func)
-//  {
-//    dataModelFuncMap_.put(elementType, (ICanonDataModelFunc<ModelElement>)func);
-//  }
-//
-//  @Override
-//  public void populateDataModel(Map<String, Object> dataModel, ModelElement modelElement)
-//  {
-////    ICanonDataModelFunc<ModelElement> func = dataModelFuncMap_.get(modelElement.getElementType());
-////    
-////    if(func != null)
-////      func.populateDataModel(dataModel, modelElement);
-//    
-//      doPopulateDataModel(dataModel, modelElement);
-////    for(Entry<Class<?>, ICanonDataModelFunc<ModelElement>> entry : dataModelFuncMap_.entrySet())
-////    {
-////      if(entry.getKey().isInstance(modelElement))
-////      {
-////        entry.getValue().populateDataModel(dataModel, modelElement);
-////      }
-////    }
-//  }
-//  
-//  private <T extends ModelElement> void doPopulateDataModel(Map<String, Object> dataModel, T modelElement)
-//  {
-//    @SuppressWarnings("unchecked")
-//    ICanonDataModelFunc<T> func = (ICanonDataModelFunc<T>) dataModelFuncMap_.get(modelElement.getClass());
-//    
-//    if(func != null)
-//    {
-//      func.populateDataModel(dataModel, modelElement);
-//    }
-//  }
-  
+  /**
+   * Set the directory from which templates will be loaded.
+   * 
+   * @param templateDir the directory from which templates will be loaded.
+   * 
+   * @return this (fluent method).
+   */
   public CanonGenerator<T,M,S,O,A,P,F,C> withTemplateDir(File templateDir)
   {
     templateDir_ = templateDir;
@@ -212,17 +189,27 @@ C extends CanonGenerator<T,M,S,O,A,P,F,C>.AbstractContext>
     return this;
   }
 
+  /**
+   * Return the target generated language.
+   * 
+   * @return the target generated language.
+   */
   public String getLanguage()
   {
     return language_;
   }
 
+  /**
+   * Return the Freemarker configuration.
+   * 
+   * @return the Freemarker configuration.
+   */
   public Configuration getFreemarkerConfig()
   {
     return config_;
   }
 
-  public TemplateLoader getTemplateLoader()
+  private TemplateLoader getTemplateLoader()
   {
     try
     {
@@ -236,7 +223,7 @@ C extends CanonGenerator<T,M,S,O,A,P,F,C>.AbstractContext>
   }
   
 
-  public Set<String> getTemplatesFor(TemplateType type, String templateGroup)
+  private Set<String> getTemplatesFor(TemplateType type, String templateGroup)
   {
     Set<String> result = new HashSet<>();
     
@@ -256,17 +243,6 @@ C extends CanonGenerator<T,M,S,O,A,P,F,C>.AbstractContext>
     return result;
   }
   
-  
-  
-//  /**
-//   * Return true if the given name is a valid identifier in the generated language.
-//   * 
-//   * @param identifier The proposed name to be used as an identifier in generated code.
-//   * 
-//   * @return true if the given name is a valid identifier in the generated language.
-//   */
-//  protected abstract boolean isValidIdentifier(String identifier, boolean isSchema);
-  
   /**
    * Map the given name to an identifier name in the generated language.
    * 
@@ -279,133 +255,16 @@ C extends CanonGenerator<T,M,S,O,A,P,F,C>.AbstractContext>
    * @return The mapped value to be used as an identifier in generated code.
    */
   protected abstract String toIdentifier(String name);
-
-//  public String getIdentifierName(String name, ICanonModelEntity entity, Context generatorContext, boolean isSchema)
-//  {
-//    String        canonIdString = generatorContext.getCanonIdString();
-//    SourceContext sourceContext = generatorContext.getSourceContext();
-//    
-//    if(entity.getJson() instanceof JsonObject)
-//    {
-//      JsonObject json = (JsonObject)entity.getJson();
-//
-//      // "x-canon-${LANGUAGE}-identifier"
-//      String attrName = Canon2.X_CANON + getLanguage() + Canon2.NAME_PART_SEPARATOR + Canon2.IDENTIFIER_SUFFIX;
-//      String identifier = json.getString(attrName, null);
-//      
-//      if(identifier != null)
-//      {
-//        if(!isValidIdentifier(identifier, isSchema))
-//        {
-//          sourceContext.error(new ParserErrorException("Element " + name + " has the language specific name \"" + identifier + "\" specified by attribute \"" +
-//              attrName + "\" but that is not a valid Java identifier.", 
-//              json.get(attrName).getContext()));
-//        }
-//        else if(identifier.startsWith(canonIdString) || identifier.endsWith(canonIdString))
-//        {
-//          sourceContext.error(new ParserErrorException("Element " + name + " has the language specific name \"" + identifier + "\" specified by attribute \"" +
-//              attrName + "\" which may not start or end with the canon ID string \"" + canonIdString + "\"", 
-//              json.get(attrName).getContext()));
-//        }
-//        return identifier;
-//      }
-//      
-//      // "x-canon-identifier"
-//      attrName = Canon2.X_CANON + Canon2.IDENTIFIER_SUFFIX;
-//      String unMappedId = json.getString(attrName, null);
-//      identifier = unMappedId == null ? null : toIdentifier(unMappedId);
-//      
-//      if(identifier != null)
-//      {
-//        if(!isValidIdentifier(identifier, isSchema))
-//        {
-//          sourceContext.error(new ParserErrorException("Element " + name + " has the name \"" + unMappedId + "\" specified by attribute \"" +
-//              attrName + "\" which mapps to the " + getLanguage() + " name \"" + identifier + 
-//                  "\" but that is not a valid Java identifier, specify a " + getLanguage() + " specific name for code generation with x-canon-" +
-//                  getLanguage() + "-identifier.", 
-//                  json.get(attrName).getContext()));
-//        }
-//        else if(identifier.startsWith(canonIdString) || identifier.endsWith(canonIdString))
-//        {
-//          sourceContext.error(new ParserErrorException("Element " + name + " has the name \"" + unMappedId + "\" specified by attribute \"" +
-//              attrName + "\" which mapps to the " + getLanguage() + " name \"" + identifier + "\" which may not start or end with the canon ID string \"" + canonIdString + "\"", 
-//              json.get(attrName).getContext()));
-//        }
-//        
-//        return identifier;
-//      }
-//    }
-//    
-//    String identifier = toIdentifier(name);
-//    
-//    if(!isValidIdentifier(identifier, isSchema))
-//    {
-//      sourceContext.error(new ParserErrorException("\"" + name + "\" is not a valid Java identifier, specify a name for code generation with x-canon-" +
-//          getLanguage() + "-identifier or x-canon-identifier" + ".", 
-//          entity.getJson().getContext()));
-//    }
-//    else 
-//      if(identifier.startsWith(canonIdString) || identifier.endsWith(canonIdString))
-//    {
-//      sourceContext.error(new ParserErrorException("\"" + name +  "\" may not start or end with the canon ID string \"" + canonIdString +
-//          "\", specify a name for code generation with x-canon-" +
-//          getLanguage() + "-identifier or x-canon-identifier" + ".", 
-//          entity.getJson().getContext()));
-//    }
-//    
-//    return identifier;
-//  }
   
-//  private InputStream getResourceAsStream(String resource) {
-//    final InputStream in
-//            = getContextClassLoader().getResourceAsStream(resource);
-//
-//    return in == null ? getClass().getResourceAsStream(resource) : in;
-//  }
-//  
-//  private ClassLoader getContextClassLoader() {
-//      return Thread.currentThread().getContextClassLoader();
-//  }
-//  
-//  @Override
-//  public Set<String> getTemplatesFor(String type, String element)
-//  {
-//    Set<String> filenames = new HashSet<>();
-//    String prefix = type + "/" + language_ + "/" + element;
-//    
-//    System.err.println("TEMPLATES");
-////    try (InputStream in = getClass().getResourceAsStream("/canon/" + prefix))
-//    try (InputStream in = getContextClassLoader().getResourceAsStream("/canon/"))
-//    {
-//      System.err.println("TEMPLATES in=" + in);
-//      if(in != null)
-//      {
-//        System.err.println("++++++++");
-//        int c;
-//        while((c = in.read()) != -1)
-//          System.err.write(c);
-//
-//        System.err.println("++++++++");
-//        
-////        try (BufferedReader br = new BufferedReader(new InputStreamReader(in)))
-////        {
-////            String resource;
-////    
-////            while ((resource = br.readLine()) != null) {
-////                filenames.add(prefix + "/" + resource);
-////                System.err.println("TEMPLATES resource=" + resource);
-////            }
-////        }
-//      }
-//    }
-//    catch(IOException e)
-//    {
-//      throw new CodingFault(e);
-//    }
-//
-//    return filenames;
-//  }
-  
+  /**
+   * A generator context.
+   * 
+   * There is one instance of this class per generator per source context. Each generator provides it's own
+   * subclass which is passed to all template model instances.
+   * 
+   * @author Bruce Skingle
+   *
+   */
   public abstract class AbstractContext extends Fluent<C>
   {
     private static final String DEFAULT_CANON_ID_STRING = "_";
@@ -416,6 +275,13 @@ C extends CanonGenerator<T,M,S,O,A,P,F,C>.AbstractContext>
     private final Map<String, S>                          schemaModelMap_         = new HashMap<>();
     private final String                                  canonIdString_;
     
+    /**
+     * Constructor.
+     * 
+     * @param type                Concrete type for fluent method return value.
+     * @param generationContext   Context for the overall generation run.
+     * @param sourceContext       Context for the source model being processed.
+     */
     public AbstractContext(Class<C> type, CanonGenerationContext generationContext, SourceContext sourceContext)
     {
       super(type);
@@ -438,9 +304,9 @@ C extends CanonGenerator<T,M,S,O,A,P,F,C>.AbstractContext>
     }
     
     /**
-     * Return the canon ID character.
+     * Return the canon ID string.
      * 
-     * This character is not allowed in identifier names and is used to construct secondary names in generated code.
+     * Identifier names may not begin or end with this string and is used to construct secondary names in generated code.
      * The default value is _.
      * 
      * For example, an entity with the name MyObject might generate files
@@ -451,19 +317,21 @@ C extends CanonGenerator<T,M,S,O,A,P,F,C>.AbstractContext>
      * This prevents name collisions, for example if a model contained entities with the names MyObject and MyObjectEntity
      * then without this mechanism the name MyObjectEntity.java would be generated for both entities in the model.
      * 
-     * @return the canon ID character.
+     * The value of this string can be overridden in the model spec with canonIdString in the generator config block.
+     * 
+     * @return the canon ID string.
      */
     public String getCanonIdString()
     {
       return canonIdString_;
     }
     
-    public CanonGenerator<T,M,S,O,A,P,F,C> getGenerator()
+    CanonGenerator<T,M,S,O,A,P,F,C> getGenerator()
     {
       return CanonGenerator.this;
     }
 
-    public IPathNameConstructor<T> getPathBuilder()
+    IPathNameConstructor<T> getPathBuilder()
     {
       return pathBuilder_;
     }
@@ -802,7 +670,7 @@ C extends CanonGenerator<T,M,S,O,A,P,F,C>.AbstractContext>
       return entity.asSchemaTemplateModel();
     }
 
-    public M process1() throws ParserResultException
+    M process1() throws ParserResultException
     {
       
       //String identifier = getIdentifierName(sourceContext_.getInputSourceName(), sourceContext_.getModel(), true);
@@ -834,7 +702,7 @@ C extends CanonGenerator<T,M,S,O,A,P,F,C>.AbstractContext>
       return parentModel;
     }
 
-    public void populateTemplateModel(Map<String, Object> map)
+    void populateTemplateModel(Map<String, Object> map)
     {
       CanonGenerator.this.populateTemplateModel(self(), map);
       generationContext_.populateTemplateModel(map);
@@ -855,12 +723,12 @@ C extends CanonGenerator<T,M,S,O,A,P,F,C>.AbstractContext>
     
     private final Map<String, List<TemplateContext>> map_ = new HashMap<>();
     
-    public CanonGenerator<T,M,S,O,A,P,F,C> getGenerator()
+    CanonGenerator<T,M,S,O,A,P,F,C> getGenerator()
     {
       return CanonGenerator.this;
     }
     
-    public void process(CanonGenerationContext canonGenerationContext, SourceContext sourceContext) throws ParserResultException
+    void process(CanonGenerationContext canonGenerationContext, SourceContext sourceContext) throws ParserResultException
     {
       C generatorContext = newGeneratorContext(canonGenerationContext, sourceContext);
       
@@ -879,7 +747,7 @@ C extends CanonGenerator<T,M,S,O,A,P,F,C>.AbstractContext>
       }
     }
 
-    public synchronized void accept(CanonGenerator<T,M,S,O,A,P,F,C>.AbstractContext generatorContext, T templateModel)
+    synchronized void accept(CanonGenerator<T,M,S,O,A,P,F,C>.AbstractContext generatorContext, T templateModel)
     {
       if(templateModel.getTemplates() != null)
       {

@@ -33,6 +33,10 @@ import com.symphony.oss.canon2.model.SemanticVersion;
  * Template model object for the OpenApi top-level model.
  * 
  * @author Bruce Skingle
+ * 
+ * @param <T> The concrete type of ITemplateModel
+ * @param <M> The concrete type of IOpenApiTemplateModel
+ * @param <S> The concrete type of ISchemaTemplateModel
  *
  */
 public abstract class OpenApiTemplateModel<
@@ -44,13 +48,24 @@ S extends ISchemaTemplateModel<T,M,S>>
 {
   private final OpenApiObject         model_;
   private final List<S>               schemas_   = new LinkedList<>();
+  private final List<T>               children_  = new LinkedList<>();
   private final Map<String, S>        schemaMap_ = new HashMap<>();
 
   private final Integer               canonMajorVersion_;
   private final Integer               canonMinorVersion_;
   private final ResolvedOpenApiObject resolvedOpenApiObject_;
 
-  
+  /**
+   * Constructor.
+   * 
+   * @param generatorContext      Contains the source context for error reporting.
+   * @param identifier            The identifier used for this entity in generated code.
+   * @param resolvedOpenApiObject The resolvedSchema object from the OpenApi model.
+   * @param templates             The list of templates to be called for this model.
+   * 
+   * The reason we have name and identifier is that the name may be valid in the JSON input spec but a reserved word in the
+   * target generated language.
+   */
   public OpenApiTemplateModel(CanonGenerator<T,M,S,?,?,?,?,?>.AbstractContext generatorContext,
       String identifier, ResolvedOpenApiObject resolvedOpenApiObject, List<String> templates)
   {
@@ -86,21 +101,41 @@ S extends ISchemaTemplateModel<T,M,S>>
     return resolvedOpenApiObject_;
   }
 
+  /**
+   * Return the canon model ID specified by the x-canon-id attribute.
+   * 
+   * @return the canon model ID specified by the x-canon-id attribute.
+   */
   public String getCanonId()
   {
     return model_.getXCanonId();
   }
   
+  /**
+   * Return the canon model major version number.
+   * 
+   * @return the canon model major version number.
+   */
   public Integer getCanonMajorVersion()
   {
     return canonMajorVersion_;
   }
 
+  /**
+   * Return the canon model minor version number.
+   * 
+   * @return the canon model minor version number.
+   */
   public Integer getCanonMinorVersion()
   {
     return canonMinorVersion_;
   }
 
+  /**
+   * Return the canon model version.
+   * 
+   * @return the canon model version.
+   */
   public SemanticVersion getCanonVersion()
   {
     return model_.getXCanonVersion();
@@ -115,11 +150,12 @@ S extends ISchemaTemplateModel<T,M,S>>
   @Override
   public void addSchema(S schema)
   {
-    if(schemaMap_.put(schema.getCamelName(), schema) != null)
+    if(schemaMap_.put(schema.getIdentifier(), schema) != null)
     {
-      throw new ParserErrorException("Duplicate schema name \"" + schema.getCamelName() + "\"", schema);
+      throw new ParserErrorException("Duplicate schema name \"" + schema.getIdentifier() + "\"", schema);
     }
     schemas_.add(schema);
+    children_.add(schema.asTemplateModel());
   }
 
   @Override
@@ -131,7 +167,7 @@ S extends ISchemaTemplateModel<T,M,S>>
   @Override
   public Collection<T> getChildren()
   {
-    return (Collection<T>) getSchemas();
+    return children_;
   }
 
   @Override

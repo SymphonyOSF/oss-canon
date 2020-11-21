@@ -28,10 +28,15 @@ import java.util.TreeSet;
 
 import com.google.common.collect.ImmutableList;
 import com.symphony.oss.canon2.core.ResolvedSchema;
-import com.symphony.oss.canon2.core.ResolvedStringSchema;
 import com.symphony.oss.canon2.core.SchemaTemplateModelType;
 import com.symphony.oss.canon2.generator.SchemaTemplateModel;
 
+/**
+ * Implementation of SchemaTemplateModel for the Java generator.
+ * 
+ * @author Bruce Skingle
+ *
+ */
 public abstract class JavaSchemaTemplateModel
 extends SchemaTemplateModel<
 IJavaTemplateModel,
@@ -140,16 +145,30 @@ implements IJavaTemplateModel
       imports_.add(fullyQualifiedImport);
   }
 
+  /**
+   * Return the fully qualified Java package name of this type.
+   * 
+   * @return the fully qualified Java package name of this type.
+   */
   public String getPackageName()
   {
     return packageName_;
   }
 
+  // not called as far as I can tell
   public String getImport()
   {
     return import_;
   }
 
+  /**
+   * Sort and de-duplicate the given list of imports.
+   * 
+   * @param list        A list of fully qualified java classes to import.
+   * @param genPackage  The package of the current class to filter unneeded imports.
+   * 
+   * @return  A sorted and de-duplicated list of import statements.
+   */
   public List<String> sortImports(List<String> list, String genPackage)
   {
     String[] groups = new String[]

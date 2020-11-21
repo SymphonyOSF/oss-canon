@@ -47,7 +47,7 @@ public class PathNameConstructor<T extends ITemplateModel<?,?,?>> implements IPa
   public String constructFile(String templateName,
       T modelElement) 
   {
-    return constructFile(null, templateName, modelElement, modelElement.getName());
+    return constructFile(null, templateName, modelElement, modelElement.getIdentifier());
   }
 
   protected String constructFile(String directoryPath, String templateName,

@@ -18,7 +18,6 @@
 
 package com.symphony.oss.canon2.generator.java;
 
-import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
@@ -29,6 +28,12 @@ import com.symphony.oss.canon2.core.SourceContext;
 import com.symphony.oss.canon2.generator.NameCollisionDetector;
 import com.symphony.oss.canon2.generator.OpenApiTemplateModel;
 
+/**
+ * Implementation of OpenApiTemplateModel for the Java generator.
+ * 
+ * @author Bruce Skingle
+ *
+ */
 class JavaOpenApiTemplateModel extends OpenApiTemplateModel<
 IJavaTemplateModel,
 JavaOpenApiTemplateModel,

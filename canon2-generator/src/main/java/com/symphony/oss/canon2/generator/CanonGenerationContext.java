@@ -227,27 +227,6 @@ public class CanonGenerationContext extends CanonModelContext
   @Override
   protected void process(Deque<SourceContext> processQueue) throws ParserResultException
   {
-//    List<CanonGenerator<?,?,?,?,?,?,?,?>.GeneratorTemplateProcessor> templateProcessors = new ArrayList<>(generators_.size());
-//    
-//    for(CanonGenerator<?,?,?,?,?,?,?,?> generator : generators_)
-//    {
-//       templateProcessors.add(new GeneratorTemplateProcessor<>(generator));
-//    }
-//    
-//    for(SourceContext sourceContext : processQueue)
-//    {
-//      for(GeneratorTemplateProcessor<?,?,?,?,?,?,?,?> templateProcessor : templateProcessors)
-//      {
-//        templateProcessor.process(this, sourceContext);
-//        
-//      }
-//    }
-//    
-//    for(GeneratorTemplateProcessor<?,?,?,?,?,?,?,?> templateProcessor : templateProcessors)
-//    {
-//      templateProcessor.generate();
-//    }
-    
     for(SourceContext sourceContext : processQueue)
     {
       for(CanonGenerator<?,?,?,?,?,?,?,?> generator : generators_)
@@ -269,33 +248,4 @@ public class CanonGenerationContext extends CanonModelContext
     map.put("copyright",  copyright_);
     map.put("license",  license_);
   }
-  
-//  private <
-//  T extends ITemplateModel<T,M,S>,
-//  M extends IOpenApiTemplateModel<T,M,S>,
-//  S extends ISchemaTemplateModel<T,M,S>,
-//  O extends IObjectSchemaTemplateModel<T,M,S,F>,
-//  A extends IArraySchemaTemplateModel<T,M,S>,
-//  P extends IPrimitiveSchemaTemplateModel<T,M,S>,
-//  F extends IFieldTemplateModel<T,M,S>
-//  >
-//  GeneratorContext<T,M,S,O,A,P,F,G> createGeneratorContext(ICanonGenerator<T,M,S,O,A,P,F,G> generator, SourceContext sourceContext)
-//  {
-//    return new GeneratorContext<T,M,S,O,A,P,F,G>(this, generator, sourceContext);
-//  }
-  
-//  private <
-//  T extends ITemplateModel<T,M,S>,
-//  M extends IOpenApiTemplateModel<T,M,S>,
-//  S extends ISchemaTemplateModel<T,M,S>,
-//  O extends IObjectSchemaTemplateModel<T,M,S,F>,
-//  A extends IArraySchemaTemplateModel<T,M,S>,
-//  P extends IPrimitiveSchemaTemplateModel<T,M,S>,
-//  F extends IFieldTemplateModel<T,M,S>
-//  >
-//  void process(SourceContext context, ICanonGenerator<T,M,S,O,A,P,F,G> generator,
-//      TemplateModelConsumer consumer)
-//  {
-//    new GeneratorContext<T,M,S,O,A,P,F,G>(generator, this, context, consumer).generateFor();
-//  }
 }

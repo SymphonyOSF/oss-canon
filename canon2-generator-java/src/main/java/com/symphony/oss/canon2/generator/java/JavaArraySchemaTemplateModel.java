@@ -20,6 +20,12 @@ import com.symphony.oss.canon2.model.ArraySchema_Entity.MinItems;
 import com.symphony.oss.canon2.model.CanonCardinality;
 import com.symphony.oss.commons.fault.CodingFault;
 
+/**
+ * Template model of an Array schema for the Java generator.
+ * 
+ * @author Bruce Skingle
+ *
+ */
 public class JavaArraySchemaTemplateModel extends JavaSchemaTemplateModel
 implements IArraySchemaTemplateModel<
 IJavaTemplateModel,
@@ -85,6 +91,11 @@ JavaSchemaTemplateModel>
   {
   }
   
+  /**
+   * Return the super class name in cases where this entity does not extend another entity in the model.
+   * 
+   * @return the super class name in cases where this entity does not extend another entity in the model.
+   */
   public String getBaseSuperType()
   {
     return "Entity";
@@ -148,6 +159,11 @@ JavaSchemaTemplateModel>
     return minItems_ != null || maxItems_ != null;
   }
 
+  /**
+   * Return the minimum allowed number of elements or null if there is no minimum.
+   * 
+   * @return the minimum allowed number of elements or null if there is no minimum.
+   */
   public BigInteger getMinItems()
   {
     if(minItems_ == null)
@@ -156,6 +172,11 @@ JavaSchemaTemplateModel>
     return minItems_.asBigInteger();
   }
 
+  /**
+   * Return the maximum allowed number of elements or null if there is no maximum.
+   * 
+   * @return the maximum allowed number of elements or null if there is no maximum.
+   */
   public BigInteger getMaxItems()
   {
     if(maxItems_ == null)

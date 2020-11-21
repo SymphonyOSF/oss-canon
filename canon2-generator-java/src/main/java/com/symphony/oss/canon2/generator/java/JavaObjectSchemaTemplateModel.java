@@ -24,7 +24,6 @@ import java.util.List;
 import java.util.Map;
 
 import com.google.common.collect.ImmutableList;
-import com.symphony.oss.canon2.core.ResolvedArraySchema;
 import com.symphony.oss.canon2.core.ResolvedPropertyContainerSchema;
 import com.symphony.oss.canon2.core.SourceContext;
 import com.symphony.oss.canon2.generator.IObjectSchemaTemplateModel;

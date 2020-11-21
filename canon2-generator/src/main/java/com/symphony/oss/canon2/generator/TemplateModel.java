@@ -42,6 +42,7 @@ S extends ISchemaTemplateModel<T,M,S>
 >
 implements ITemplateModel<T,M,S>
 {
+  /** The empty list of template names */
   public static final List<String> EMPTY_TEMPLATES = ImmutableList.of();
 
   private final String                                                 name_;
@@ -62,33 +63,33 @@ implements ITemplateModel<T,M,S>
   /**
    * Constructor.
    * 
-   * @param generatorContext  The source context for error reporting. 
+   * @param generatorContext  Contains the source context for error reporting. 
    * @param name              The name of the entity represented by this model as defined in the OpenApi document.
    * @param identifier        The identifier used for this entity in generated code.
    * @param resolvedEntity    The resolvedSchema object from the OpenApi model.
    * @param model             The IOpenApiTemplateModel to which this entity belongs.
    * @param templates         The list of templates to be called for this model.
    * 
-   * The reason we have name and identifier is that the name may be valid in general but a reserved word in the
-   * generated language.
+   * The reason we have name and identifier is that the name may be valid in the JSON input spec but a reserved word in the
+   * target generated language.
    */
   public TemplateModel(CanonGenerator<T,M,S,?,?,?,?,?>.AbstractContext generatorContext, String name, String identifier, ResolvedEntity resolvedEntity, M model, List<String> templates)
   {
-    generatorContext_ = generatorContext;
-    model_ = model ;
-    name_ = name;
-    quotedName_ = name.replaceAll("\\\"", "\\\\\"");
-    identifier_ = identifier;
-    templates_ = templates;
+    generatorContext_     = generatorContext;
+    model_                = model ;
+    name_                 = name;
+    quotedName_           = name.replaceAll("\\\"", "\\\\\"");
+    identifier_           = identifier;
+    templates_            = templates;
     
-    external_ = model != null && (resolvedEntity.getResolvedOpenApiObject() != model.getResolvedOpenApiObject());
-    json_ = resolvedEntity.getJson();
+    external_             = model != null && (resolvedEntity.getResolvedOpenApiObject() != model.getResolvedOpenApiObject());
+    json_                 = resolvedEntity.getJson();
   
-    camelName_ = toCamelCase(getIdentifier());
+    camelName_            = toCamelCase(getIdentifier());
     camelCapitalizedName_ = capitalize(camelName_);
-    snakeName_ = toSnakeCase(getIdentifier());
+    snakeName_            = toSnakeCase(getIdentifier());
     snakeCapitalizedName_ = capitalize(snakeName_);
-    snakeUpperCaseName_ = snakeName_.toUpperCase();
+    snakeUpperCaseName_   = snakeName_.toUpperCase();
   }
   
   @Override
@@ -103,6 +104,24 @@ implements ITemplateModel<T,M,S>
     return templates_;
   }
 
+  /**
+   * Return the canon ID string.
+   * 
+   * Identifier names may not begin or end with this string and is used to construct secondary names in generated code.
+   * The default value is _.
+   * 
+   * For example, an entity with the name MyObject might generate files
+   *   MyObject.java
+   *   I_MyObject.java
+   *   MyObject_Entity.java
+   *   
+   * This prevents name collisions, for example if a model contained entities with the names MyObject and MyObjectEntity
+   * then without this mechanism the name MyObjectEntity.java would be generated for both entities in the model.
+   * 
+   * The value of this string can be overridden in the model spec with canonIdString in the generator config block.
+   * 
+   * @return the canon ID string.
+   */
   public String getCanonIdString()
   {
     return generatorContext_.getCanonIdString();
@@ -219,36 +238,63 @@ implements ITemplateModel<T,M,S>
     return name_;
   }
 
+  /**
+   * Return the name of this model entity as written in the input spec, with double quotes escaped.
+   * 
+   * This is intended for use in a quoted context.
+   * 
+   * @return The name of this model entity as written in the input spec with double quotes escaped.
+   */
   public String getQuotedName()
   {
     return quotedName_;
   }
 
-  @Override
+  /**
+   * Return the name of this model entity in camelCase with a lower case initial letter.
+   * 
+   * @return The name of this model entity in camelCase with a lower case initial letter.
+   */
   public String getCamelName()
   {
     return camelName_;
   }
 
-  @Override
+  /**
+   * Return the name of this model entity in CamelCase with an upper case initial letter.
+   * 
+   * @return The name of this model entity in CamelCase with an upper case initial letter.
+   */
   public String getCamelCapitalizedName()
   {
     return camelCapitalizedName_;
   }
 
-  @Override
+  /**
+   * Return the name of this model entity in snake_case with a lower case initial letter.
+   * 
+   * @return The name of this model entity in snake_case with a lower case initial letter.
+   */
   public String getSnakeName()
   {
     return snakeName_;
   }
   
-  @Override
+  /**
+   * Return the name of this model entity in Snake_case with an upper case initial letter.
+   * 
+   * @return The name of this model entity in Snake_case with an upper case initial letter.
+   */
   public String getSnakeCapitalizedName()
   {
     return snakeCapitalizedName_;
   }
 
-  @Override
+  /**
+   * Return the name of this model entity in Snake_case in all upper case.
+   * 
+   * @return The name of this model entity in Snake_case in all upper case.
+   */
   public String getSnakeUpperCaseName()
   {
     return snakeUpperCaseName_;

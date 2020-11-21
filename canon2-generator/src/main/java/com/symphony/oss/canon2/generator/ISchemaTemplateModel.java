@@ -18,8 +18,6 @@
 
 package com.symphony.oss.canon2.generator;
 
-import com.symphony.oss.canon2.model.SchemaType;
-
 /**
  * Super interface for template models for all schema types.
  * 
@@ -45,13 +43,6 @@ public interface ISchemaTemplateModel<
    * @return this object as an ITemplateModel.
    */
   T asTemplateModel();
-  
-//  /**
-//   * Return the type of this schema.
-//   * 
-//   * @return the type of this schema.
-//   */
-//  SchemaType getSchemaType();
   
   /**
    * Return true if this schema or any of its children is required, or has validation limits. 
