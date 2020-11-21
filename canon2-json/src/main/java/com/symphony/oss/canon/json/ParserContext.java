@@ -115,4 +115,10 @@ public class ParserContext implements IParserContext
   {
     return sourceLocation_;
   }
+
+  @Override
+  public String toString()
+  {
+    return sourceLocation_;
+  }
 }

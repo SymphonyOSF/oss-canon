@@ -31,7 +31,7 @@ import com.symphony.oss.canon2.runtime.java.ModelRegistry;
 @SuppressWarnings("javadoc")
 public class TestFundamentalObject
 {
-  ModelRegistry modelRegistry_ = new ModelRegistry.Builder().withFactories(TypeCheckModel.FACTORIES).build();
+  ModelRegistry modelRegistry_ = new ModelRegistry.Builder().withFactories(TypeCheck_Model.FACTORIES).build();
   
   @Test
   public void testBuild() throws ParserResultException

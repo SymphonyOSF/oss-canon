@@ -242,7 +242,7 @@
           "properties": {
             "$ref": "#/components/schemas/PropertiesObject"
           },
-          "XXXadditionalProperties": {
+          "additionalProperties": {
             "$ref": "#/components/schemas/AdditionalProperties"
           },
           "x-canon-extends": {

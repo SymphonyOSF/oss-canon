@@ -41,9 +41,10 @@ S extends ISchemaTemplateModel<T,M,S>
 {
   private final SchemaTemplateModelType schemaType_;
     
-  public SchemaTemplateModel(ResolvedSchema resolvedSchema, @Nullable SchemaTemplateModelType schemaType, String identifier, M model, List<String> templates)
+  public SchemaTemplateModel(CanonGenerator<T,M,S,?,?,?,?,?>.AbstractContext generatorContext, 
+      String identifier, ResolvedSchema<?> resolvedSchema, @Nullable SchemaTemplateModelType schemaType, M model, List<String> templates)
   {
-    super(resolvedSchema.getName(), resolvedSchema, identifier, model, templates);
+    super(generatorContext, resolvedSchema.getName(), identifier, resolvedSchema, model, templates);
     
     schemaType_ = schemaType;
   }

@@ -22,6 +22,7 @@ import java.util.Collection;
 import java.util.List;
 
 import com.symphony.oss.canon.json.model.IJsonDomNodeProvider;
+import com.symphony.oss.canon2.core.SourceContext;
 
 /**
  * Super-interface for all template model objects.
@@ -55,37 +56,44 @@ extends IJsonDomNodeProvider
   String getType();
   
   /**
-   * Return the name of this model entity in camelCase with a lower case initial letter.
+   * Return the name of this model entity as used in generated code.
    * 
-   * @return The name of this model entity in camelCase with a lower case initial letter.
+   * @return The name of this model entity as used in generated code.
+   */
+  String getIdentifier();
+  
+  /**
+   * Return the identifier of this model entity in camelCase with a lower case initial letter.
+   * 
+   * @return The identifier of this model entity in camelCase with a lower case initial letter.
    */
   String getCamelName();
 
   /**
-   * Return the name of this model entity in snake_case with a lower case initial letter.
+   * Return the identifier of this model entity in snake_case with a lower case initial letter.
    * 
-   * @return The name of this model entity in snake_case with a lower case initial letter.
+   * @return The identifier of this model entity in snake_case with a lower case initial letter.
    */
   String getSnakeName();
 
   /**
-   * Return the name of this model entity in CamelCase with an upper case initial letter.
+   * Return the identifier of this model entity in CamelCase with an upper case initial letter.
    * 
-   * @return The name of this model entity in CamelCase with an upper case initial letter.
+   * @return The identifier of this model entity in CamelCase with an upper case initial letter.
    */
   String getCamelCapitalizedName();
   
   /**
-   * Return the name of this model entity in Snake_case with an upper case initial letter.
+   * Return the identifier of this model entity in Snake_case with an upper case initial letter.
    * 
-   * @return The name of this model entity in Snake_case with an upper case initial letter.
+   * @return The identifier of this model entity in Snake_case with an upper case initial letter.
    */
   String getSnakeCapitalizedName();
   
   /**
-   * Return the name of this model entity in upper case SNAKE_CASE.
+   * Return the identifier of this model entity in upper case SNAKE_CASE.
    * 
-   * @return The name of this model entity in upper case SNAKE_CASE.
+   * @return The identifier of this model entity in upper case SNAKE_CASE.
    */
   String getSnakeUpperCaseName();
 
@@ -94,7 +102,7 @@ extends IJsonDomNodeProvider
    * 
    * @return The list of template names which should be run against this model.
    */
-  Collection<String> getTemaplates();
+  Collection<String> getTemplates();
 
   /**
    * Return the OpenApiObject template model.
@@ -104,4 +112,8 @@ extends IJsonDomNodeProvider
   M getModel();
   
   Collection<T> getChildren();
+  
+
+
+  void validate(SourceContext sourceContext);
 }

@@ -12,13 +12,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
+import com.symphony.oss.canon.json.ParserWarningException;
 import com.symphony.oss.canon2.core.ResolvedStringSchema;
 import com.symphony.oss.canon2.generator.IPrimitiveSchemaTemplateModel;
+import com.symphony.oss.canon2.generator.java.JavaGenerator.Context;
 import com.symphony.oss.canon2.model.StringSchema;
 
 /**
@@ -32,19 +31,17 @@ implements IPrimitiveSchemaTemplateModel<
 IJavaTemplateModel,
 JavaOpenApiTemplateModel,
 JavaSchemaTemplateModel>
-{  
-  private static final Logger log_ = LoggerFactory.getLogger(JavaStringSchemaTemplateModel.class);
-  
+{
   private final Set<String>                  quotedEnumValues_;
   private final Set<String>                  enumValues_;
   private final ImmutableMap<String, String> enumMap_;
   private final String                       constructPrefix_;
   private final String                       getValueSuffix_;
   
-  JavaStringSchemaTemplateModel(ResolvedStringSchema resolvedSchema, String identifier, String packageName, JavaOpenApiTemplateModel model,
-       List<String> templates)
+  JavaStringSchemaTemplateModel(JavaGenerator.Context generatorContext, ResolvedStringSchema resolvedSchema, String packageName, JavaOpenApiTemplateModel model)
   { 
-    super(resolvedSchema, !resolvedSchema.getEnum().isEmpty(), identifier, packageName, initType(resolvedSchema), model, templates);
+    super(generatorContext, initIdentifier(generatorContext, resolvedSchema), resolvedSchema, !resolvedSchema.getEnum().isEmpty(),
+        packageName, initType(resolvedSchema), model, initTemplates(resolvedSchema));
     
     StringSchema entity = resolvedSchema.getSchema();
     if(entity.getFormat() != null)
@@ -56,9 +53,10 @@ JavaSchemaTemplateModel>
           break;
           
         default:
-          log_.warn("Unrecognized " + entity.getType() + " format \"" + entity.getFormat() + "\" ignored at " + entity.getJson().getContext().getSourceLocation());
+         generatorContext.getSourceContext().error(new ParserWarningException("Unrecognized " + entity.getType() + " format \"" + entity.getFormat() + "\" ignored.", getJson().getContext()));
       }
     }
+    
     
     Set<String> enumList = resolvedSchema.getSchema().getEnum();
     
@@ -72,7 +70,6 @@ JavaSchemaTemplateModel>
     }
     else
     {
-      int debig=1;
       Set<String> quotedValues = new HashSet<>(enumList.size());
       Set<String> values = new HashSet<>(enumList.size());
       Map<String, String> valueMap = new HashMap<>();
@@ -101,6 +98,35 @@ JavaSchemaTemplateModel>
       enumMap_ = ImmutableMap.copyOf(valueMap);
       constructPrefix_ = getType() + ".deserialize(";
       getValueSuffix_ = ".getValue()";
+    }
+  }
+
+  private static List<String> initTemplates(ResolvedStringSchema resolvedSchema)
+  {
+    if(resolvedSchema.isInnerClass() || resolvedSchema.getResolvedOpenApiObject().isReferencedModel())
+    {
+      return EMPTY_TEMPLATES;
+    }
+    else if(!resolvedSchema.getSchema().isEnum())
+    {
+      return TYPEDEF_TEMPLATES;
+    }
+    else
+    {
+      return ENUM_TEMPLATES;
+    }
+  }
+
+  private static String initIdentifier(Context generatorContext,
+      ResolvedStringSchema resolvedSchema)
+  {
+    if(resolvedSchema.isInnerClass() || resolvedSchema.getResolvedOpenApiObject().isReferencedModel())
+    {
+      return resolvedSchema.getName(); // not generating for this so we don't care if the identifier is valid.
+    }
+    else
+    {
+      return getIdentifier(generatorContext, resolvedSchema);
     }
   }
 

@@ -25,17 +25,17 @@ import java.util.Map.Entry;
 import javax.annotation.Nonnull;
 
 import com.google.common.collect.ImmutableMap;
-import com.symphony.oss.canon2.model.ISchemaInstance;
+import com.symphony.oss.canon2.core.ResolvedProperty.AbstractBuilder;
 
 public class ResolvedPropertiesObject
 {
-  private final Map<String, ResolvedSchema<?>> properties_;
+  private final Map<String, ResolvedProperty> properties_;
   
   private ResolvedPropertiesObject(SingletonBuilder builder)
   {
-    ImmutableMap.Builder<String, ResolvedSchema<?>> b = new ImmutableMap.Builder<String, ResolvedSchema<?>>();
+    ImmutableMap.Builder<String, ResolvedProperty> b = new ImmutableMap.Builder<String, ResolvedProperty>();
     
-    for(Entry<String, ResolvedSchema.AbstractBuilder<? extends ISchemaInstance,?,?>> entry : builder.propertyBuilders_.entrySet())
+    for(Entry<String, AbstractBuilder<?, ?>> entry : builder.propertyBuilders_.entrySet())
     {
       b.put(entry.getKey(), entry.getValue().build());
     }
@@ -44,10 +44,10 @@ public class ResolvedPropertiesObject
   
   public static class SingletonBuilder
   {
-    Map<String, ResolvedSchema.AbstractBuilder<? extends ISchemaInstance,?,?>> propertyBuilders_ = new HashMap<>();
+    Map<String, ResolvedProperty.AbstractBuilder<?,?>> propertyBuilders_ = new HashMap<>();
     ResolvedPropertiesObject built_;
     
-    public SingletonBuilder with(String name, ResolvedSchema.AbstractBuilder<? extends ISchemaInstance,?,?> property)
+    public SingletonBuilder with(String name, ResolvedProperty.AbstractBuilder<?,?> property)
     {
       if(built_ != null)
         throw new IllegalStateException("SingletonBuilder has already been built");
@@ -68,13 +68,13 @@ public class ResolvedPropertiesObject
 
   public void validate(SourceContext context)
   {
-    for(ResolvedSchema<?> schema : properties_.values())
+    for(ResolvedProperty schema : properties_.values())
     {
       schema.validate(context);
     }
   }
 
-  public @Nonnull Map<String, ResolvedSchema<?>> getResolvedProperties()
+  public @Nonnull Map<String, ResolvedProperty> getResolvedProperties()
   {
     return properties_;
   }

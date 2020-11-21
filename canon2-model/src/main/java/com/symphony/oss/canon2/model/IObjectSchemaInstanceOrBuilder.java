@@ -21,7 +21,7 @@
  *    Generator groupId    org.symphonyoss.s2.canon
  *              artifactId canon2-generator-java
  *    Template name        template/Object/I_InstanceOrBuilder.java.ftl
- *    At                   2020-11-12 10:04:36 GMT
+ *    At                   2020-11-12 11:16:47 GMT
  *----------------------------------------------------------------------------------------------------
  */
 
@@ -48,11 +48,11 @@ public interface IObjectSchemaInstanceOrBuilder extends IObjectEntityInitialiser
   @Nullable Boolean getXCanonBuilderFacade();
   
   /**
-   * Return the value of the XXXadditionalProperties attribute.
+   * Return the value of the additionalProperties attribute.
    *
-   * @return the value of the XXXadditionalProperties attribute.
+   * @return the value of the additionalProperties attribute.
    */
-  @Nullable AdditionalProperties getXXXadditionalProperties();
+  @Nullable AdditionalProperties getAdditionalProperties();
   
   /**
    * Return the value of the x-canon-identifier attribute.

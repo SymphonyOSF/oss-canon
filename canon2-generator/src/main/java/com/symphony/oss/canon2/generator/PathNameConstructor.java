@@ -35,10 +35,12 @@ import com.symphony.oss.commons.fault.CodingFault;
 public class PathNameConstructor<T extends ITemplateModel<?,?,?>> implements IPathNameConstructor<T>
 {
   private final String language_;
+  private final String canonIdString_;
 
-  public PathNameConstructor(String language)
+  public PathNameConstructor(String language, String canonIdString)
   {
     language_ = language;
+    canonIdString_ = canonIdString;
   }
 
   @Override
@@ -88,15 +90,16 @@ public class PathNameConstructor<T extends ITemplateModel<?,?,?>> implements IPa
       StringBuilder varName = null;
       boolean firstVarName = true;
       boolean inDollar = false;
+      boolean dollarFirst=false;
       
       char[] chars = templateName.endsWith(".ftl") ? templateName.substring(0, templateName.length() - 4).toCharArray() : 
         templateName.toCharArray();
       
-      for(char c : chars)
+      for(int i=0 ; i<chars.length ; i++)
       {
         if(inDollar)
         {  
-          switch(c)
+          switch(chars[i])
           {
             case '{':
               varName = new StringBuilder();
@@ -106,13 +109,13 @@ public class PathNameConstructor<T extends ITemplateModel<?,?,?>> implements IPa
               
             default:
               s.append('$');
-              s.append(c);
+              s.append(chars[i]);
           }
           inDollar = false;
         }
         else if(varName != null)
         {  
-          switch(c)
+          switch(chars[i])
           {
             case '}':
               varNameList.add(varName.toString());
@@ -135,7 +138,17 @@ public class PathNameConstructor<T extends ITemplateModel<?,?,?>> implements IPa
                   throw new CodingFault("Unknown variable \"" + name + "\"", e);
                 }
               }
+              
+              if(dollarFirst)
+              {
+                s.append(canonIdString_);
+              }
               s.append(value);
+              
+              if(i<chars.length && templateName.lastIndexOf('.') != i)
+              {
+                s.append(canonIdString_);
+              }
               break;
             
             case '.':
@@ -147,25 +160,26 @@ public class PathNameConstructor<T extends ITemplateModel<?,?,?>> implements IPa
             default:
               if(firstVarName)
               {
-                varName.append(Character.toUpperCase(c));
+                varName.append(Character.toUpperCase(chars[i]));
                 firstVarName = false;
               }
               else
               {
-                varName.append(c);
+                varName.append(chars[i]);
               }
           }
         }
         else
         {  
-          switch(c)
+          switch(chars[i])
           {
             case '$':
               inDollar=true;
+              dollarFirst = i == 0;
               break;
             
             default:
-              s.append(c);
+              s.append(chars[i]);
           }
         }
       }
@@ -180,9 +194,19 @@ public class PathNameConstructor<T extends ITemplateModel<?,?,?>> implements IPa
         s.append(templateName.charAt(i++));
       }
       
+      if(i > 0)
+      {
+        s.append(canonIdString_);
+      }
+      
       i++; // skip the underscore
       
       s.append(modelElementName);
+
+      if(i<len && templateName.lastIndexOf('.', len-1) != i)
+      {
+        s.append(canonIdString_);
+      }
       
       while(i<len)
       {

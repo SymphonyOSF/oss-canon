@@ -20,7 +20,7 @@ package com.symphony.oss.canon2.generator;
 
 import java.util.List;
 
-import com.symphony.oss.canon2.core.ResolvedEntity;
+import com.symphony.oss.canon2.core.ResolvedProperty;
 
 /**
  * Template model object for an object field.
@@ -38,11 +38,10 @@ S extends ISchemaTemplateModel<T,M,S>>
   private final S typeSchema_;
   private final boolean required_;
   
-  public FieldTemplateModel(String name, ResolvedEntity resolvedEntity, String identifier, M model,
-      S typeSchema, boolean required,
-      List<String> temaplates)
+  public FieldTemplateModel(CanonGenerator<T,M,S,?,?,?,?,?>.AbstractContext generatorContext, String identifier, ResolvedProperty resolvedProperty, M model,
+      S typeSchema, boolean required, List<String> templates)
   {
-    super(name, resolvedEntity, identifier, model, temaplates);
+    super(generatorContext, resolvedProperty.getName(), identifier, resolvedProperty.getResolvedSchema(), model, templates);
     
     typeSchema_ = typeSchema;
     required_ = required;

@@ -176,7 +176,7 @@ public class ReferenceObject extends ReferenceObjectEntity
      {
        throw new ParserErrorException("No such schema \"" + getFragment() + "\"", this);
      }
-     uri = sourceContext.getUrl() + getFragment();
+     uri = sourceContext.getUrl() + "#" + getFragment();
    }
    else
    {

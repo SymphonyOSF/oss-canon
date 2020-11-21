@@ -7,12 +7,15 @@
 package com.symphony.oss.canon2.generator.java;
 
 import java.math.BigInteger;
+import java.util.Collection;
 import java.util.List;
 
+import com.google.common.collect.ImmutableList;
 import com.symphony.oss.canon2.core.ResolvedArraySchema;
-import com.symphony.oss.canon2.core.ResolvedSchema;
 import com.symphony.oss.canon2.core.SchemaTemplateModelType;
+import com.symphony.oss.canon2.core.SourceContext;
 import com.symphony.oss.canon2.generator.IArraySchemaTemplateModel;
+import com.symphony.oss.canon2.generator.java.JavaGenerator.Context;
 import com.symphony.oss.canon2.model.ArraySchemaEntity.MaxItems;
 import com.symphony.oss.canon2.model.ArraySchemaEntity.MinItems;
 import com.symphony.oss.canon2.model.CanonCardinality;
@@ -24,25 +27,21 @@ IJavaTemplateModel,
 JavaOpenApiTemplateModel,
 JavaSchemaTemplateModel>
 {
-//  private static final String[] IMPORTS = new String[] 
-//  {
-//      
-//  };
+  private static final List<String> ARRAY_TEMPLATES              = ImmutableList.of("Array");
   
   private JavaSchemaTemplateModel elementType_;
   
   private final CanonCardinality  cardinality_;
   
-  private String            type_;
-  private String            copyPrefix_;
-  private final MinItems        minItems_;
-  private final MaxItems        maxItems_;
-  private String            typeNew_;
+  private String                  type_;
+  private String                  copyPrefix_;
+  private final MinItems          minItems_;
+  private final MaxItems          maxItems_;
+  private String                  typeNew_;
   
-  JavaArraySchemaTemplateModel(ResolvedArraySchema resolvedSchema, String identifier, String packageName, CanonCardinality cardinality, JavaOpenApiTemplateModel model,
-      List<String> templates)
+  JavaArraySchemaTemplateModel(JavaGenerator.Context generatorContext, ResolvedArraySchema resolvedSchema, String packageName, CanonCardinality cardinality, JavaOpenApiTemplateModel model)
   {
-    super(resolvedSchema, SchemaTemplateModelType.ARRAY, identifier, model, templates);
+    super(generatorContext, initIdentifier(generatorContext, resolvedSchema), resolvedSchema, SchemaTemplateModelType.ARRAY, model, initTemplates(resolvedSchema));
     
     cardinality_ = cardinality;
     
@@ -56,8 +55,35 @@ JavaSchemaTemplateModel>
     
     minItems_ = resolvedSchema.getSchema().getMinItems();
     maxItems_ = resolvedSchema.getSchema().getMaxItems();
-    
-    
+  }
+
+  private static List<String> initTemplates(ResolvedArraySchema resolvedSchema)
+  {
+    if(resolvedSchema.isInnerClass() || resolvedSchema.getResolvedOpenApiObject().isReferencedModel())
+    {
+      return EMPTY_TEMPLATES;
+    }
+    else
+    {
+      return ARRAY_TEMPLATES;
+    }
+  }
+
+  private static String initIdentifier(Context generatorContext, ResolvedArraySchema resolvedSchema)
+  {
+    if(resolvedSchema.isInnerClass() || resolvedSchema.getResolvedOpenApiObject().isReferencedModel())
+    {
+      return resolvedSchema.getName(); // not generating for this so we don't care if the identifier is valid.
+    }
+    else
+    {
+      return getIdentifier(generatorContext, resolvedSchema);
+    }
+  }
+
+  @Override
+  public void validate(SourceContext sourceContext)
+  {
   }
   
   public String getBaseSuperType()

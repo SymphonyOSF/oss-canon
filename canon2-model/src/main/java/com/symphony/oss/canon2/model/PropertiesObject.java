@@ -33,6 +33,7 @@ import java.util.Map;
 import javax.annotation.concurrent.Immutable;
 
 import com.google.common.collect.ImmutableMap;
+import com.symphony.oss.canon.json.IParserContext;
 import com.symphony.oss.canon.json.model.JsonObject;
 
 
@@ -72,6 +73,11 @@ public class PropertiesObject extends PropertiesObjectEntity
   public ImmutableMap<String, Object> getProperties()
   {
     return properties_;
+  }
+  
+  public IParserContext getNameContext(String name)
+  {
+    return getJson().getNameContext(name);
   }
 }
 /*----------------------------------------------------------------------------------------------------

@@ -21,6 +21,7 @@ package com.symphony.oss.canon2.generator;
 import java.util.Collection;
 
 import com.symphony.oss.canon2.core.ResolvedOpenApiObject;
+import com.symphony.oss.canon2.core.SourceContext;
 
 /**
  * The template model for the overall OpenApi model.

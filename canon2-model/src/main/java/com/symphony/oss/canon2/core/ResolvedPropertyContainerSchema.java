@@ -75,8 +75,10 @@ public class ResolvedPropertyContainerSchema<S extends ISchemaInstance> extends 
 //      }
     }
   }
+  
+  
 
-  public @Nonnull Map<String, ResolvedSchema<?>> getResolvedProperties()
+  public @Nonnull Map<String, ResolvedProperty> getResolvedProperties()
   {
     if(resolvedPropertiesBuilder_ == null)
       return null;

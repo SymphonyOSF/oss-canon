@@ -6,12 +6,13 @@
 
 package com.symphony.oss.canon2.generator.java;
 
-import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
 
-import com.symphony.oss.canon2.core.ResolvedSchema;
+import com.symphony.oss.canon2.core.ResolvedProperty;
+import com.symphony.oss.canon2.core.SourceContext;
 import com.symphony.oss.canon2.generator.FieldTemplateModel;
+import com.symphony.oss.canon2.generator.java.JavaGenerator.Context;
 
 public class JavaFieldTemplateModel extends FieldTemplateModel<
 IJavaTemplateModel,
@@ -22,14 +23,23 @@ implements IJavaTemplateModel
   Set<String> imports_ = new TreeSet<>();
   private final String nullable_;
   
-  public JavaFieldTemplateModel(String name, ResolvedSchema resolvedSchema, String identifier, JavaOpenApiTemplateModel model,
-      JavaSchemaTemplateModel typeSchema, boolean required,
-      List<String> temaplates)
+  public JavaFieldTemplateModel(JavaGenerator.Context generatorContext, ResolvedProperty resolvedProperty, JavaOpenApiTemplateModel model,
+      JavaSchemaTemplateModel typeSchema, boolean required)
   {
-    super(name, resolvedSchema, identifier, model, typeSchema, required, temaplates);
+    super(generatorContext, initIdentifier(generatorContext, resolvedProperty), resolvedProperty, model, typeSchema, required, EMPTY_TEMPLATES);
     
     imports_.addAll(typeSchema.getImports());
     nullable_ = required ? "Nonnull" : "Nullable";
+  }
+
+  private static String initIdentifier(Context generatorContext, ResolvedProperty resolvedSchema)
+  {
+    return generatorContext.getJavaIdentifier(resolvedSchema, false, false);
+  }
+  
+  @Override
+  public void validate(SourceContext sourceContext)
+  {
   }
 
   public String getNullable()

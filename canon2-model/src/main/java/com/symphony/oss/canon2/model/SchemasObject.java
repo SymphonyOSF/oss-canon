@@ -34,9 +34,12 @@ import java.util.Map.Entry;
 import javax.annotation.concurrent.Immutable;
 
 import com.google.common.collect.ImmutableMap;
+import com.symphony.oss.canon.json.IParserContext;
 import com.symphony.oss.canon2.core.CanonModelContext;
 import com.symphony.oss.canon2.core.ResolvedOpenApiObject;
 import com.symphony.oss.canon2.core.ResolvedPropertiesObject;
+import com.symphony.oss.canon2.core.ResolvedProperty;
+import com.symphony.oss.canon2.core.ResolvedSchema;
 import com.symphony.oss.canon2.core.SourceContext;
 
 
@@ -74,6 +77,11 @@ public class SchemasObject extends SchemasObjectEntity
     return schemas_;
   }
   
+  public IParserContext getNameContext(String name)
+  {
+    return getJson().getNameContext(name);
+  }
+  
   public ISchema get(String[] parts, int index)
   {
     ISchema schema = schemas_.get(parts[index]);
@@ -90,8 +98,13 @@ public class SchemasObject extends SchemasObjectEntity
     
     for(Entry<String, ? extends ISchema> entry : getSchemas().entrySet())
     {
-      builder.with(entry.getKey(),
-          modelContext.link(openApiObjectBuilder, sourceContext, entry.getKey(), uri + "/" + entry.getKey(), entry.getValue(), null));
+      ResolvedSchema.AbstractBuilder<?,?,?> resolvedPropertySchema = modelContext.link(openApiObjectBuilder, sourceContext, entry.getKey(), uri + "/" + entry.getKey(), entry.getValue(), null);
+      ResolvedProperty.SingletonBuilder resolvedProperty = new ResolvedProperty.SingletonBuilder()
+          .withName(entry.getKey())
+          .withNameContext(getNameContext(entry.getKey()))
+          .withResolvedSchema(resolvedPropertySchema);
+      
+      builder.with(entry.getKey(), resolvedProperty);
     }
     
     return builder;

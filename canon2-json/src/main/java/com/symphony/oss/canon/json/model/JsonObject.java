@@ -46,13 +46,15 @@ import com.symphony.oss.commons.type.provider.IStringProvider;
  */
 public class JsonObject extends JsonDomNode implements IJsonOrBuilder<JsonObject, Void>
 {
-  private final ImmutableMap<String, JsonDomNode> children_;
+  private final ImmutableMap<String, JsonDomNode>    children_;
+  private final ImmutableMap<String, IParserContext> nameContexts_;
   
   protected JsonObject(AbstractBuilder<?,?> builder)
   {
     super(builder);
     
-    children_ = builder.children_ == null ? ImmutableMap.of() : ImmutableMap.copyOf(builder.children_);
+    children_     = builder.children_     == null ? ImmutableMap.of() : ImmutableMap.copyOf(builder.children_);
+    nameContexts_ = builder.nameContexts_ == null ? ImmutableMap.of() : ImmutableMap.copyOf(builder.nameContexts_);
   }
   
   @Override
@@ -122,6 +124,30 @@ public class JsonObject extends JsonDomNode implements IJsonOrBuilder<JsonObject
   public @Nullable JsonDomNode get(String name)
   {
     return children_.get(name);
+  }
+  
+
+
+  /**
+   * Return the IParserContext of the given attribute name.
+   * 
+   * @param name The name of the required attribute.
+   * 
+   * Note that this method does not return null, if there is no context for the given name then the
+   * context of the overall JSON is given. It is assumed that this method will only be called for
+   * attributes which are known to exist. If this object was deserialised then there will be
+   * a context for every valid attribute. If the object was constructed then there will not.
+   * 
+   * @return The IParserContext of the given attribute name.
+   */
+  public IParserContext getNameContext(String name)
+  {
+    IParserContext result = nameContexts_.get(name);
+    
+    if(result == null)
+      return getJson().getContext();
+    
+    return result;
   }
   
   /**
@@ -198,6 +224,7 @@ public class JsonObject extends JsonDomNode implements IJsonOrBuilder<JsonObject
   public static abstract class AbstractBuilder<T extends AbstractBuilder<T,B>, B extends JsonObject> extends JsonDomNode.AbstractBuilder<T, B>
   {
     Map<String, JsonDomNode> children_;
+    Map<String, IParserContext> nameContexts_;
     
     AbstractBuilder(Class<T> type)
     {
@@ -432,7 +459,11 @@ public class JsonObject extends JsonDomNode implements IJsonOrBuilder<JsonObject
       if(children_.containsKey(name))
         throw new DuplicateAttributeException("Attribute \"" + name + "\" redefined", context);
       
+      if(nameContexts_ == null)
+        nameContexts_ = canonicalize_ ? new TreeMap<>() : new LinkedHashMap<>();
+      
       children_.put(name, value);
+      nameContexts_.put(name, context);
       
       return self();
     }

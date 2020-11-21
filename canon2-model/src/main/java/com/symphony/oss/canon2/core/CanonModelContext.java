@@ -77,7 +77,7 @@ public abstract class CanonModelContext
   private Deque<SourceContext>                  parseQueue_         = new LinkedList<>();
   private Deque<SourceContext>                  validateQueue_      = new LinkedList<>();
   private Deque<SourceContext>                  generateQueue_      = new LinkedList<>();
-  private Map<URL, OpenApiObject>              modelMap_           = new HashMap<>();
+  private Map<URL, OpenApiObject>               modelMap_           = new HashMap<>();
   private Map<String, ResolvedSchema.AbstractBuilder<?,?,?>>  schemaMap_          = new HashMap<>();
   
   protected CanonModelContext(AbstractBuilder<?,?> builder)
@@ -331,7 +331,7 @@ public abstract class CanonModelContext
     
     context.getResolvedOpenApiObject().validate(context);
     
-    context.printErrorsAndThrowException();
+    context.printErrorsAndThrowException(false);
     
     if(!context.isReferencedModel())
     {

@@ -20,13 +20,15 @@ package com.symphony.oss.canon2.generator.java;
 
 import java.util.List;
 import java.util.Map;
+import java.util.function.Function;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.google.common.collect.ImmutableList;
+import com.symphony.oss.canon.json.ParserResultException;
 import com.symphony.oss.canon.json.model.JsonObject;
-import com.symphony.oss.canon2.core.INamedModelEntity;
+import com.symphony.oss.canon2.core.ICanonModelEntity;
 import com.symphony.oss.canon2.core.ResolvedArraySchema;
 import com.symphony.oss.canon2.core.ResolvedBigDecimalSchema;
 import com.symphony.oss.canon2.core.ResolvedBigIntegerSchema;
@@ -35,16 +37,19 @@ import com.symphony.oss.canon2.core.ResolvedDoubleSchema;
 import com.symphony.oss.canon2.core.ResolvedFloatSchema;
 import com.symphony.oss.canon2.core.ResolvedIntegerSchema;
 import com.symphony.oss.canon2.core.ResolvedLongSchema;
-import com.symphony.oss.canon2.core.ResolvedObjectSchema;
 import com.symphony.oss.canon2.core.ResolvedOpenApiObject;
 import com.symphony.oss.canon2.core.ResolvedPrimitiveSchema;
+import com.symphony.oss.canon2.core.ResolvedProperty;
 import com.symphony.oss.canon2.core.ResolvedPropertyContainerSchema;
 import com.symphony.oss.canon2.core.ResolvedSchema;
 import com.symphony.oss.canon2.core.ResolvedStringSchema;
 import com.symphony.oss.canon2.core.SourceContext;
+import com.symphony.oss.canon2.generator.Canon2;
+import com.symphony.oss.canon2.generator.CanonGenerationContext;
 import com.symphony.oss.canon2.generator.CanonGenerator;
 import com.symphony.oss.canon2.generator.IGroupSchemaTemplateModel;
 import com.symphony.oss.canon2.generator.IPathNameConstructor;
+import com.symphony.oss.canon2.generator.CanonGenerator.AbstractContext;
 import com.symphony.oss.canon2.model.CanonCardinality;
 import com.symphony.oss.canon2.model.OpenApiObject;
 
@@ -56,7 +61,7 @@ JavaObjectSchemaTemplateModel,
 JavaArraySchemaTemplateModel,
 JavaPrimitiveSchemaTemplateModel,
 JavaFieldTemplateModel,
-IGroupSchemaTemplateModel<IJavaTemplateModel,JavaOpenApiTemplateModel,JavaSchemaTemplateModel>
+JavaGenerator.Context
 >
 {
   private static final List<String> EMPTY_TEMPLATES              = ImmutableList.of();
@@ -64,13 +69,12 @@ IGroupSchemaTemplateModel<IJavaTemplateModel,JavaOpenApiTemplateModel,JavaSchema
   private static final List<String> ENUM_TEMPLATES               = ImmutableList.of("Enum");
   private static final List<String> OBJECT_TEMPLATES             = ImmutableList.of("Object");
   private static final List<String> ARRAY_TEMPLATES              = ImmutableList.of("Array");
-  private static final List<String> MODEL_TEMPLATES              = ImmutableList.of("Model");
+//  private static final List<String> MODEL_TEMPLATES              = ImmutableList.of("Model");
 
   private static Logger             log_                         = LoggerFactory.getLogger(JavaGenerator.class);
   
   // IDs in the model
   private static final String       GEN_PACKAGE                  = "genPackage";
-  static final String               LANGUAGE                     = "java";
 
   // IDs of generated attributes
   static final String               PREFIX                       = "java";
@@ -79,6 +83,12 @@ IGroupSchemaTemplateModel<IJavaTemplateModel,JavaOpenApiTemplateModel,JavaSchema
   static final String               CLASS_NAME                   = PREFIX + "ClassName";
   static final String               GENERATED_BUILDER_CLASS_NAME = PREFIX + "GeneratedBuilderClassName";
 
+  private static final String[] STD_JAVA_PACKAGES = new String[]
+  {
+      "java.lang",
+      "java.util"
+  };
+  
   /**
    * Constructor.
    */
@@ -118,12 +128,97 @@ IGroupSchemaTemplateModel<IJavaTemplateModel,JavaOpenApiTemplateModel,JavaSchema
 //        data.put("javaCardinality", javaCardinality);
 //    });
   }
+  
+  class Context extends CanonGenerator<
+  IJavaTemplateModel, JavaOpenApiTemplateModel,
+  JavaSchemaTemplateModel,
+  JavaObjectSchemaTemplateModel,
+  JavaArraySchemaTemplateModel,
+  JavaPrimitiveSchemaTemplateModel,
+  JavaFieldTemplateModel,
+  Context
+  >.AbstractContext
+  {
+
+    Context(CanonGenerationContext generationContext,
+        SourceContext sourceContext)
+    {
+      super(Context.class, generationContext, sourceContext);
+    }
+    
+    String getJavaIdentifier(ResolvedSchema<?> resolvedSchema, boolean isClassName, boolean isTopLevelClassName)
+    {
+      return getIdentifierName(resolvedSchema, (identifier) -> isValidJavaIdentifier(identifier, isClassName, isTopLevelClassName));
+    }
+    
+    String getJavaIdentifier(ResolvedOpenApiObject resolvedOpenApiObject, boolean isClassName, boolean isTopLevelClassName)
+    {
+      return getIdentifierName(resolvedOpenApiObject, (identifier) -> isValidJavaIdentifier(identifier, isClassName, isTopLevelClassName));
+    }
+    
+    String getJavaIdentifier(ResolvedProperty resolvedProperty, boolean isClassName, boolean isTopLevelClassName)
+    {
+      return getIdentifier(resolvedProperty.getName(), resolvedProperty.getJsonDomNode(), (identifier) -> isValidJavaIdentifier(identifier, isClassName, isTopLevelClassName));
+    }
+    
+    private boolean isValidJavaIdentifier(String identifier, boolean isClassName, boolean isTopLevelClassName)
+    {
+      if(identifier.length() == 0)
+        return false;
+      
+      int i=0;
+      
+      if(isClassName)
+      {
+        if(!Character.isJavaIdentifierStart(identifier.charAt(i++)))
+        {
+          return false;
+        }
+      }
+      
+      while(i<identifier.length())
+      {
+        if(!Character.isJavaIdentifierPart(identifier.charAt(i++)))
+        {
+          return false;
+        }
+      }
+      
+      if(isTopLevelClassName)
+      {
+        for(String packageName : STD_JAVA_PACKAGES)
+        {
+          try
+          {
+            Class.forName(packageName + "." +  identifier);
+            return false;
+          }
+          catch (ClassNotFoundException e)
+          {
+            // This is ok
+          }
+        }
+      }
+      
+      return true;
+    }
+  }
+  
+  @Override
+  public Context newGeneratorContext(CanonGenerationContext canonGenerationContext, SourceContext sourceContext) throws ParserResultException
+  {
+    return new Context(canonGenerationContext, sourceContext);
+  }
 
 //  @Override
 //  public JavaGeneratorModelContext createModelContext(ICanonContext canonContext, IModelContext context, JsonObject generatorConfig)
 //  {
 //    return new JavaGeneratorModelContext(this, canonContext, context, generatorConfig);
 //  }
+  
+
+  
+  
 
   public String getJavaGenerationPackage(SourceContext sourceContext)
   {
@@ -154,72 +249,41 @@ IGroupSchemaTemplateModel<IJavaTemplateModel,JavaOpenApiTemplateModel,JavaSchema
 
 //  private IdentifierAndImport getIdentifierAndImport(String identifier, ResolvedSchema resolvedEntity)
 //  {
-//    return new IdentifierAndImport(getJavaGenerationPackage(resolvedEntity.getResolvedOpenApiObject().getModel()), identifier, identifier, false);
+//    return new IdentifierAndImport(getJavaGenerationPackage(resolvedEntity.getResolvedOpenApiObject().getModel()), identifier, false);
 //  }
   
-  @Override
-  public String getIdentifierName(String name, INamedModelEntity entity)
+  protected String getIdentifierName(ICanonModelEntity entity, String language)
   {
-    String identifier = entity.getXCanonIdentifier(LANGUAGE);
-    
-    if(identifier != null)
+    if(entity.getJson() instanceof JsonObject)
     {
-      if(!isValidIdentifier(identifier))
-        log_.error("Element " + name + " has the Java name \"" + identifier + "\" but that is not a valid Java identifier.");
+      JsonObject json = (JsonObject)entity.getJson();
+
+      // "x-canon-${LANGUAGE}-identifier"
+      String attrName = Canon2.X_CANON + language + Canon2.NAME_PART_SEPARATOR + Canon2.IDENTIFIER_SUFFIX;
+      String result = json.getString(attrName, null);
       
-      return identifier;
-    }
-    
-    identifier = entity.getXCanonIdentifier();
-    
-    if(identifier != null)
-    {
-      return toIdentifier(identifier);
-    }
-    
-    return toIdentifier(name);
-  }
-  
-  @Override
-  public IPathNameConstructor<IJavaTemplateModel> createPathBuilder(SourceContext sourceContext)
-  {
-    return new JavaPathNameConstructor(getJavaGenerationPackage(sourceContext));
-  }
-
-  private boolean isValidIdentifier(String identifier)
-  {
-    if(identifier.length() == 0)
-      return false;
-    
-    if(!Character.isJavaIdentifierStart(identifier.charAt(0)))
-    {
-      return false;
-    }
-    
-    for(int i=1 ; i<identifier.length() ; i++)
-    {
-      if(!Character.isJavaIdentifierPart(identifier.charAt(i)))
+      if(result == null)
       {
-        return false;
+        // "x-canon-identifier"
+        attrName = Canon2.X_CANON + Canon2.IDENTIFIER_SUFFIX;
+        result = toIdentifier(json.getString(attrName, null));
       }
+      
+      return result;
     }
-    
-    return true;
-  }
+    else
+    {
+      return null;
+    }
+  }  
 
-  private static String toIdentifier(String name)
+  @Override
+  protected String toIdentifier(String name)
   {
     StringBuilder s = new StringBuilder();
     int i=1;
     
-    if(Character.isJavaIdentifierStart(name.charAt(0)))
-    {
-      s.append(Character.toUpperCase(name.charAt(0)));
-    }
-    else
-    {
-      s.append('_');
-    }
+    s.append(Character.toUpperCase(name.charAt(0)));
     
     while(i<name.length())
     {
@@ -246,42 +310,87 @@ IGroupSchemaTemplateModel<IJavaTemplateModel,JavaOpenApiTemplateModel,JavaSchema
   }
 
   @Override
-  public void populateTemplateModel(SourceContext sourceContext, Map<String, Object> map)
+  public IPathNameConstructor<IJavaTemplateModel> createPathBuilder(AbstractContext generatorContext)
+  {
+    return new JavaPathNameConstructor(getJavaGenerationPackage(generatorContext.getSourceContext()), generatorContext.getCanonIdString());
+  }
+  
+  
+  
+  
+//  @Override
+//  protected boolean isValidIdentifier(String identifier, boolean isSchema)
+//  {
+//    if(identifier.length() == 0)
+//      return false;
+//    
+//    if(!Character.isJavaIdentifierStart(identifier.charAt(0)))
+//    {
+//      return false;
+//    }
+//    
+//    for(int i=1 ; i<identifier.length() ; i++)
+//    {
+//      if(!Character.isJavaIdentifierPart(identifier.charAt(i)))
+//      {
+//        return false;
+//      }
+//    }
+//    
+//    if(isSchema)
+//    {
+//      for(String packageName : STD_JAVA_PACKAGES)
+//      {
+//        try
+//        {
+//          Class.forName(packageName + "." +  identifier);
+//          return false;
+//        }
+//        catch (ClassNotFoundException e)
+//        {
+//          // This is ok
+//        }
+//      }
+//    }
+//    
+//    return true;
+//  }
+
+  @Override
+  public void populateTemplateModel(JavaGenerator.Context generatorContext, Map<String, Object> map)
   {
     
-    map.put(JavaGenerator.GEN_PACKAGE, getJavaGenerationPackage(sourceContext));
+    map.put(JavaGenerator.GEN_PACKAGE, getJavaGenerationPackage(generatorContext.getSourceContext()));
   }
 
   @Override
-  public JavaOpenApiTemplateModel generateOpenApiObject(SourceContext context, String name, ResolvedOpenApiObject resolvedOpenApiObject, String identifier)
+  public JavaOpenApiTemplateModel generateOpenApiObject(JavaGenerator.Context generatorContext, ResolvedOpenApiObject resolvedOpenApiObject)
   {
-    return new JavaOpenApiTemplateModel(context, name, resolvedOpenApiObject, identifier, MODEL_TEMPLATES);
+    return new JavaOpenApiTemplateModel(generatorContext, resolvedOpenApiObject);
   }
 
   
   @Override
-  public JavaObjectSchemaTemplateModel generateObjectSchema(JavaOpenApiTemplateModel model, ResolvedPropertyContainerSchema<?> resolvedSchema, String identifier)
+  public JavaObjectSchemaTemplateModel generateObjectSchema(JavaGenerator.Context generatorContext, JavaOpenApiTemplateModel model, ResolvedPropertyContainerSchema<?> resolvedSchema)
   {
-    return new JavaObjectSchemaTemplateModel(resolvedSchema, 
+    return new JavaObjectSchemaTemplateModel(generatorContext, resolvedSchema, 
 
-        identifier, getJavaGenerationPackage(resolvedSchema.getResolvedOpenApiObject().getModel()),
-        model, 
-        resolvedSchema.isInnerClass() ? EMPTY_TEMPLATES : OBJECT_TEMPLATES);
+        getJavaGenerationPackage(resolvedSchema.getResolvedOpenApiObject().getModel()),
+        model);
   }
 
   @Override
-  public JavaArraySchemaTemplateModel generateArraySchema(JavaOpenApiTemplateModel model, ResolvedArraySchema resolvedSchema, String identifier, CanonCardinality cardinality)
+  public JavaArraySchemaTemplateModel generateArraySchema(JavaGenerator.Context generatorContext, JavaOpenApiTemplateModel model, ResolvedArraySchema resolvedSchema, CanonCardinality cardinality)
   {
-    return new JavaArraySchemaTemplateModel(resolvedSchema,
-        identifier, getJavaGenerationPackage(resolvedSchema.getResolvedOpenApiObject().getModel()),
-        cardinality, model, 
-        resolvedSchema.isInnerClass() || resolvedSchema.getResolvedOpenApiObject().isReferencedModel() ? EMPTY_TEMPLATES : ARRAY_TEMPLATES);
+    return new JavaArraySchemaTemplateModel(generatorContext, resolvedSchema,
+        getJavaGenerationPackage(resolvedSchema.getResolvedOpenApiObject().getModel()),
+        cardinality, model);
   }
   
   
   
 //  private JavaPrimitiveSchemaTemplateModel generatePrimitiveSchemaTemplateModel(JavaOpenApiTemplateModel model,
-//      ResolvedPrimitiveSchema resolvedSchema, String identifier, String javaTypePackage, String javaType)
+//      ResolvedPrimitiveSchema resolvedSchema, String javaTypePackage, String javaType)
 //  {
 //    boolean typedef;
 //    
@@ -322,57 +431,57 @@ IGroupSchemaTemplateModel<IJavaTemplateModel,JavaOpenApiTemplateModel,JavaSchema
   
   
   @Override
-  public JavaPrimitiveSchemaTemplateModel generateBigDecimalSchema(JavaOpenApiTemplateModel model,
-      ResolvedBigDecimalSchema resolvedSchema, String identifier)
+  public JavaPrimitiveSchemaTemplateModel generateBigDecimalSchema(JavaGenerator.Context generatorContext, JavaOpenApiTemplateModel model,
+      ResolvedBigDecimalSchema resolvedSchema)
   {
-    return new JavaNumberSchemaTemplateModel(resolvedSchema,
-        identifier, getJavaGenerationPackage(resolvedSchema.getResolvedOpenApiObject().getModel()), "java.math", "BigDecimal",  model,
-         true, getJavaPrimitiveTemplates(resolvedSchema));
+    return new JavaNumberSchemaTemplateModel(generatorContext, resolvedSchema,
+         getJavaGenerationPackage(resolvedSchema.getResolvedOpenApiObject().getModel()), "java.math", "BigDecimal",  model,
+         true);
   }
 
   @Override
-  public JavaPrimitiveSchemaTemplateModel generateBigIntegerSchema(JavaOpenApiTemplateModel model,
-      ResolvedBigIntegerSchema resolvedSchema, String identifier)
+  public JavaPrimitiveSchemaTemplateModel generateBigIntegerSchema(JavaGenerator.Context generatorContext, JavaOpenApiTemplateModel model,
+      ResolvedBigIntegerSchema resolvedSchema)
   {
-    return new JavaNumberSchemaTemplateModel(resolvedSchema,
-        identifier, getJavaGenerationPackage(resolvedSchema.getResolvedOpenApiObject().getModel()), "java.math", "BigInteger",  model,
-        true, getJavaPrimitiveTemplates(resolvedSchema));
+    return new JavaNumberSchemaTemplateModel(generatorContext, resolvedSchema,
+         getJavaGenerationPackage(resolvedSchema.getResolvedOpenApiObject().getModel()), "java.math", "BigInteger",  model,
+        true);
   }
 
   @Override
-  public JavaPrimitiveSchemaTemplateModel generateDoubleSchema(JavaOpenApiTemplateModel model,
-      ResolvedDoubleSchema resolvedSchema, String identifier)
+  public JavaPrimitiveSchemaTemplateModel generateDoubleSchema(JavaGenerator.Context generatorContext, JavaOpenApiTemplateModel model,
+      ResolvedDoubleSchema resolvedSchema)
   {
-    return new JavaNumberSchemaTemplateModel(resolvedSchema,
-        identifier, getJavaGenerationPackage(resolvedSchema.getResolvedOpenApiObject().getModel()) ,null, "Double",  model,
-        false, getJavaPrimitiveTemplates(resolvedSchema));
+    return new JavaNumberSchemaTemplateModel(generatorContext, resolvedSchema,
+         getJavaGenerationPackage(resolvedSchema.getResolvedOpenApiObject().getModel()) ,null, "Double",  model,
+        false);
   }
 
   @Override
-  public JavaPrimitiveSchemaTemplateModel generateFloatSchema(JavaOpenApiTemplateModel model,
-      ResolvedFloatSchema resolvedSchema, String identifier)
+  public JavaPrimitiveSchemaTemplateModel generateFloatSchema(JavaGenerator.Context generatorContext, JavaOpenApiTemplateModel model,
+      ResolvedFloatSchema resolvedSchema)
   {
-    return new JavaNumberSchemaTemplateModel(resolvedSchema,
-        identifier, getJavaGenerationPackage(resolvedSchema.getResolvedOpenApiObject().getModel()), null, "Float", model,
-        false, getJavaPrimitiveTemplates(resolvedSchema));
+    return new JavaNumberSchemaTemplateModel(generatorContext, resolvedSchema,
+        getJavaGenerationPackage(resolvedSchema.getResolvedOpenApiObject().getModel()), null, "Float", model,
+        false);
   }
 
   @Override
-  public JavaPrimitiveSchemaTemplateModel generateIntegerSchema(JavaOpenApiTemplateModel model,
-      ResolvedIntegerSchema resolvedSchema, String identifier)
+  public JavaPrimitiveSchemaTemplateModel generateIntegerSchema(JavaGenerator.Context generatorContext, JavaOpenApiTemplateModel model,
+      ResolvedIntegerSchema resolvedSchema)
   {
-    return new JavaNumberSchemaTemplateModel(resolvedSchema,
-        identifier, getJavaGenerationPackage(resolvedSchema.getResolvedOpenApiObject().getModel()), null, "Integer", model,
-       false, getJavaPrimitiveTemplates(resolvedSchema));
+    return new JavaNumberSchemaTemplateModel(generatorContext, resolvedSchema,
+         getJavaGenerationPackage(resolvedSchema.getResolvedOpenApiObject().getModel()), null, "Integer", model,
+       false);
   }
 
   @Override
-  public JavaPrimitiveSchemaTemplateModel generateLongSchema(JavaOpenApiTemplateModel model,
-      ResolvedLongSchema resolvedSchema, String identifier)
+  public JavaPrimitiveSchemaTemplateModel generateLongSchema(JavaGenerator.Context generatorContext, JavaOpenApiTemplateModel model,
+      ResolvedLongSchema resolvedSchema)
   {
-    return new JavaNumberSchemaTemplateModel(resolvedSchema,
-        identifier, getJavaGenerationPackage(resolvedSchema.getResolvedOpenApiObject().getModel()), null, "Long",  model,
-        false, getJavaPrimitiveTemplates(resolvedSchema));
+    return new JavaNumberSchemaTemplateModel(generatorContext, resolvedSchema,
+         getJavaGenerationPackage(resolvedSchema.getResolvedOpenApiObject().getModel()), null, "Long",  model,
+        false);
   }
 
   private List<String> getJavaPrimitiveTemplates(ResolvedPrimitiveSchema<?> resolvedSchema)
@@ -404,45 +513,45 @@ IGroupSchemaTemplateModel<IJavaTemplateModel,JavaOpenApiTemplateModel,JavaSchema
   }
 
   @Override
-  public JavaPrimitiveSchemaTemplateModel generateStringSchema(JavaOpenApiTemplateModel model,
-      ResolvedStringSchema resolvedSchema, String identifier)
+  public JavaPrimitiveSchemaTemplateModel generateStringSchema(JavaGenerator.Context generatorContext, JavaOpenApiTemplateModel model,
+      ResolvedStringSchema resolvedSchema)
   {
-    return new JavaStringSchemaTemplateModel(resolvedSchema,
-        identifier, getJavaGenerationPackage(resolvedSchema.getResolvedOpenApiObject().getModel()),
-        model, getJavaStringTemplates(resolvedSchema));
+    return new JavaStringSchemaTemplateModel(generatorContext, resolvedSchema,
+        getJavaGenerationPackage(resolvedSchema.getResolvedOpenApiObject().getModel()),
+        model);
   }
 
   @Override
-  public JavaPrimitiveSchemaTemplateModel generateBooleanSchema(JavaOpenApiTemplateModel model,
-      ResolvedBooleanSchema resolvedSchema, String identifier)
+  public JavaPrimitiveSchemaTemplateModel generateBooleanSchema(JavaGenerator.Context generatorContext, JavaOpenApiTemplateModel model,
+      ResolvedBooleanSchema resolvedSchema)
   {
-    return new JavaBooleanSchemaTemplateModel(resolvedSchema,
-        identifier, getJavaGenerationPackage(resolvedSchema.getResolvedOpenApiObject().getModel()),
-        model, getJavaPrimitiveTemplates(resolvedSchema));
+    return new JavaBooleanSchemaTemplateModel(generatorContext, resolvedSchema,
+         getJavaGenerationPackage(resolvedSchema.getResolvedOpenApiObject().getModel()),
+        model);
   }
 
 //  public JavaPrimitiveSchemaTemplateModel generatePrimativeSchema(
-//      JavaOpenApiTemplateModel model, ResolvedPrimitiveSchema resolvedSchema, String identifier)
+//      JavaOpenApiTemplateModel model, ResolvedPrimitiveSchema resolvedSchema)
 //  {
 //    //if(isReference || (!resolvedSchema.isGenerated() && !resolvedSchema.getSchema().isEnum()))
 //    if(resolvedSchema.isInnerClass() || resolvedSchema.getResolvedOpenApiObject().isReferencedModel())
 //    {
-//      return new JavaPrimitiveSchemaTemplateModel(resolvedSchema, identifier, getJavaGenerationPackage(resolvedSchema), model);
+//      return new JavaPrimitiveSchemaTemplateModel(generatorContext, resolvedSchema, getJavaGenerationPackage(resolvedSchema), model);
 //    }
 //    else if(!resolvedSchema.getSchema().isEnum())
 //    {
-//      return new JavaPrimitiveSchemaTemplateModel(resolvedSchema, identifier, getJavaGenerationPackage(resolvedSchema), model, "TypeDef");
+//      return new JavaPrimitiveSchemaTemplateModel(generatorContext, resolvedSchema, getJavaGenerationPackage(resolvedSchema), model, "TypeDef");
 //    }
 //    else
 //    {
-//      return new JavaPrimitiveSchemaTemplateModel(resolvedSchema, identifier, getJavaGenerationPackage(resolvedSchema), model, "Enum");
+//      return new JavaPrimitiveSchemaTemplateModel(generatorContext, resolvedSchema, getJavaGenerationPackage(resolvedSchema), model, "Enum");
 //    }
 //  }
 
   @Override
-  public JavaFieldTemplateModel generateField(JavaOpenApiTemplateModel model, String name, ResolvedSchema resolvedSchema, String identifier,
-      JavaSchemaTemplateModel typeSchema, boolean required)
+  public JavaFieldTemplateModel generateField(JavaGenerator.Context generatorContext, JavaOpenApiTemplateModel model,
+      ResolvedProperty resolvedProperty, JavaSchemaTemplateModel typeSchema, boolean required)
   {
-    return new JavaFieldTemplateModel(name, resolvedSchema, identifier, model, typeSchema, required, EMPTY_TEMPLATES);
+    return new JavaFieldTemplateModel(generatorContext, resolvedProperty, model, typeSchema, required);
   }
 }

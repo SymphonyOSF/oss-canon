@@ -26,7 +26,7 @@ import com.symphony.oss.canon2.runtime.java.ModelRegistry;
 @SuppressWarnings("javadoc")
 public class TestSchema
 {
-  ModelRegistry modelRegistry_ = new ModelRegistry.Builder().withFactories(OneOfModel.FACTORIES).build();
+  ModelRegistry modelRegistry_ = new ModelRegistry.Builder().withFactories(OneOf_Model.FACTORIES).build();
   
   @Test
   public void testBuild() throws ParserResultException

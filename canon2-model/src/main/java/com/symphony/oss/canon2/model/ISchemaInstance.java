@@ -23,7 +23,7 @@ import java.util.function.Consumer;
 import javax.annotation.Nullable;
 
 import com.symphony.oss.canon2.core.CanonModelContext;
-import com.symphony.oss.canon2.core.INamedModelEntity;
+import com.symphony.oss.canon2.core.ICanonModelEntity;
 import com.symphony.oss.canon2.core.ResolvedOpenApiObject.SingletonBuilder;
 import com.symphony.oss.canon2.core.ResolvedSchema.AbstractBuilder;
 import com.symphony.oss.canon2.core.SchemaTemplateModelType;
@@ -35,7 +35,7 @@ import com.symphony.oss.canon2.core.SourceContext;
  * @author Bruce Skingle
  *
  */
-public interface ISchemaInstance extends INamedModelEntity
+public interface ISchemaInstance extends ICanonModelEntity
 {
 
   SchemaTemplateModelType getSchemaType();

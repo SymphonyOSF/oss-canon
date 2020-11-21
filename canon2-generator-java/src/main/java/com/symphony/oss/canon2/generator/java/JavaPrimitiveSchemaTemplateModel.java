@@ -9,6 +9,7 @@ package com.symphony.oss.canon2.generator.java;
 import java.util.List;
 
 import com.symphony.oss.canon2.core.ResolvedPrimitiveSchema;
+import com.symphony.oss.canon2.core.SourceContext;
 import com.symphony.oss.canon2.generator.IPrimitiveSchemaTemplateModel;
 import com.symphony.oss.canon2.model.CanonAttributes;
 
@@ -42,10 +43,9 @@ JavaSchemaTemplateModel>
 
   private final String primitiveType_;
 
-  JavaPrimitiveSchemaTemplateModel(ResolvedPrimitiveSchema<?> resolvedSchema, boolean requiresGeneration, String identifier, String packageName, String javaType, JavaOpenApiTemplateModel model,
-      List<String> templates)
+  JavaPrimitiveSchemaTemplateModel(JavaGenerator.Context generatorContext, String identifier, ResolvedPrimitiveSchema<?> resolvedSchema, boolean requiresGeneration, String packageName, String javaType, JavaOpenApiTemplateModel model, List<String> templates)
   { 
-    super(resolvedSchema, resolvedSchema.getSchemaType(), identifier, model, templates);
+    super(generatorContext, identifier, resolvedSchema, resolvedSchema.getSchemaType(), model, templates);
     
     hasLimits_ = resolvedSchema.hasLimits();
     javaType_ = javaType;
@@ -103,8 +103,8 @@ JavaSchemaTemplateModel>
     {
       externalPackage_ = attr.getJson().getString("javaExternalPackage", "");
       externalType_ = attr.getJson().getString("javaExternalType", null);
-      constructPrefix = getCamelCapitalizedName() + "Builder.build(";
-      getValuePrefix = getCamelCapitalizedName() + "Builder.to" + javaType_ + "(";
+      constructPrefix = getCamelCapitalizedName() + getCanonIdString() + "Builder.build(";
+      getValuePrefix = getCamelCapitalizedName() + getCanonIdString() + "Builder.to" + javaType_ + "(";
       getValueSuffix = ")";
       setAndAddImport(externalPackage_, externalType_);
     }
@@ -140,6 +140,11 @@ JavaSchemaTemplateModel>
     }
     getValuePrefix_ = getValuePrefix;
     getValueSuffix_ = getValueSuffix;
+  }
+  
+  @Override
+  public void validate(SourceContext sourceContext)
+  {
   }
 
   @Override

@@ -17,7 +17,7 @@ import com.symphony.oss.canon2.runtime.java.Entity;
 </#list>
 </#if>
  */
-public class ${model.camelCapitalizedName}Model
+public class ${model.camelCapitalizedName}${c}Model
 {
   /** Factories for every object in the model. */
   public static final Entity.Factory<?>[] FACTORIES = new Entity.Factory<?>[]
@@ -42,7 +42,7 @@ public class ${model.camelCapitalizedName}Model
 
   };
     
-  private ${model.camelCapitalizedName}Model()
+  private ${model.camelCapitalizedName}${c}Model()
   {
   }
 }

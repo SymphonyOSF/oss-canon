@@ -140,7 +140,6 @@ public class ResolvedStringSchema extends ResolvedPrimitiveSchema<StringSchema>
       
       return built_;
     }
-    
   }
 
   @Override

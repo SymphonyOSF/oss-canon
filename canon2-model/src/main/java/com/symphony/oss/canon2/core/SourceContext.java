@@ -59,19 +59,19 @@ public class SourceContext
   private static Logger log_ = LoggerFactory.getLogger(SourceContext.class);
 
 
-  private final URL                   url_;
-  private final CanonModelContext     generationContext_;
-  private OpenApiObject        model_;
+  private final URL                                    url_;
+  private final CanonModelContext                      generationContext_;
+  private OpenApiObject                                model_;
   private final ResolvedOpenApiObject.SingletonBuilder resolvedOpenApiObjectBuilder_ = new ResolvedOpenApiObject.SingletonBuilder();;
-  private final Map<String, String>   uriMap_;
-  
-  private final String          inputSource_;
-  private final String          inputSourceFileName_;
-  private final String          inputSourceName_;
-  private final boolean         referencedModel_;
-  private Reader                reader_;
-  private List<ParserException>          errors_ = new LinkedList<>();
+  private final Map<String, String>                    uriMap_;
 
+  private final String                                 inputSource_;
+  private final String                                 inputSourceFileName_;
+  private final String                                 inputSourceName_;
+  private final boolean                                referencedModel_;
+  private Reader                                       reader_;
+  private List<ParserException>                        errors_                       = new LinkedList<>();
+  private boolean                                      hasFatalErrors_;
 
 //  private List<SchemaInfo> schemas_ = new LinkedList<>();
   
@@ -289,40 +289,66 @@ public class SourceContext
     }
   }
   
-  public void  printErrorsAndThrowException() throws ParserResultException
+  public void  printErrorsAndThrowException(boolean finalCall) throws ParserResultException
   {
     if(errors_.isEmpty())
       return;
     
-    boolean hasErrors = false;
+    if(!finalCall && !hasFatalErrors_)
+      return;
     
-    log_.error("=============================================================================================================================");
-    log_.error(errors_.size() + " errors encountered:");
+    if(hasFatalErrors_)
+    {
+      log_.error("=============================================================================================================================");
+      log_.error(errors_.size() + " errors encountered:");
+    }
+    else
+    {
+      log_.warn("=============================================================================================================================");
+      log_.warn(errors_.size() + " warnings encountered:");
+    }
     for(ParserException error : errors_)
     {
-      if(generationContext_.isVerbose())
-        log_.error(error.toString(), error);
-      else
-        log_.error(error.toString());
-      
       if(error.isFatal())
-        hasErrors = true;
+      {
+        if(generationContext_.isVerbose())
+          log_.error(error.toString(), error);
+        else
+          log_.error(error.toString());
+      }
+      else
+      {
+        if(generationContext_.isVerbose())
+          log_.warn(error.toString(), error);
+        else
+          log_.warn(error.toString());
+      }
     }
-    log_.error("=============================================================================================================================");
+    if(hasFatalErrors_)
+    {
+      log_.error("=============================================================================================================================");
+    }
+    else
+    {
+      log_.warn("=============================================================================================================================");
+    }
     
-    if(hasErrors)
+    if(hasFatalErrors_)
       throw new ParserResultException(errors_);
   }
-
+  
   public void error(ParserException error)
   {
-    log_.error(error.toString());
+    //log_.error(error.toString());
     errors_.add(error);
+    
+    if(error.isFatal())
+      hasFatalErrors_ = true;
   }
 
   public void error(ParserResultException error)
   {
-    log_.error(error.toString());
+    //log_.error(error.toString());
     
     for(ParserException cause : error.getParserExceptions())
     {
@@ -360,6 +386,7 @@ public class SourceContext
   public void link(CanonModelContext canonModelContext)
   {
     resolvedOpenApiObjectBuilder_
+      .withName(getInputSourceName())
       .withModel(model_)
       .withReferencedModel(referencedModel_);
     model_.link(resolvedOpenApiObjectBuilder_, canonModelContext, this, getUrl() + "#");
@@ -375,7 +402,7 @@ public class SourceContext
     return resolvedOpenApiObjectBuilder_;
   }
 
-  public Map<String, ResolvedSchema<?>> getSchemas()
+  public Map<String, ResolvedProperty> getSchemas()
   {
     return getResolvedOpenApiObject().getComponents().getSchemas().getResolvedProperties();
   }

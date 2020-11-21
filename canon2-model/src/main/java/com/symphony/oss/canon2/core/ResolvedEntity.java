@@ -27,15 +27,18 @@ import com.symphony.oss.commons.fluent.BaseAbstractBuilder;
 
 public abstract class ResolvedEntity implements IJsonDomNodeProvider
 {
+  private final String                name_;
   private final List<ParserException> errors_;
   
   ResolvedEntity(AbstractBuilder<?,?> builder)
   {
-    errors_                                 = builder.errors_;
+    name_    = builder.name_;
+    errors_  = builder.errors_;
   }
   
   public abstract static class AbstractBuilder<T extends AbstractBuilder<T, B>, B extends ResolvedEntity> extends BaseAbstractBuilder<T,B>
   {
+    private String                      name_;
     private final List<ParserException> errors_ = new LinkedList<>();
     
     AbstractBuilder(Class<T> type)
@@ -44,6 +47,16 @@ public abstract class ResolvedEntity implements IJsonDomNodeProvider
     }
     
     abstract boolean isBuilt();
+
+    public T withName(String name)
+    {
+      if(isBuilt())
+        throw new IllegalStateException("SingletonBuilder has already been built");
+      
+      name_ = name;
+      
+      return self();
+    }
     
     public T withError(ParserException error)
     {
@@ -62,5 +75,10 @@ public abstract class ResolvedEntity implements IJsonDomNodeProvider
   {
     for(ParserException e : errors_)
       context.error(e);
+  }
+
+  public String getName()
+  {
+    return name_;
   }
 }

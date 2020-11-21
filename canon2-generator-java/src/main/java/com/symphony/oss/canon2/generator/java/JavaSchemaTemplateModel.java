@@ -28,6 +28,7 @@ import java.util.TreeSet;
 
 import com.google.common.collect.ImmutableList;
 import com.symphony.oss.canon2.core.ResolvedSchema;
+import com.symphony.oss.canon2.core.ResolvedStringSchema;
 import com.symphony.oss.canon2.core.SchemaTemplateModelType;
 import com.symphony.oss.canon2.generator.SchemaTemplateModel;
 
@@ -39,8 +40,24 @@ JavaSchemaTemplateModel
 >
 implements IJavaTemplateModel
 { 
+
+  static final List<String> TYPEDEF_TEMPLATES            = ImmutableList.of("TypeDef");
+  static final List<String> ENUM_TEMPLATES               = ImmutableList.of("Enum");
+  static final List<String> OBJECT_TEMPLATES             = ImmutableList.of("Object");
+  static final List<String> ARRAY_TEMPLATES              = ImmutableList.of("Array");
+  static final List<String> MODEL_TEMPLATES              = ImmutableList.of("Model");
+  
   private static final List<JavaSchemaTemplateModel> EMPTY_SCHEMAS = ImmutableList.of();
   private static final List<JavaFieldTemplateModel>   EMPTY_FIELDS = ImmutableList.of();
+  
+
+  static final String[] STD_JAVA_PACKAGES = new String[]
+  {
+      "java.lang",
+      "java.util"
+  };
+  
+  
 
   /** Set of imports any class implementing this schema needs */
   private Set<String> imports_ = new TreeSet<>();
@@ -53,10 +70,10 @@ implements IJavaTemplateModel
   private final boolean generateFacade_;
   private final boolean generateBuilderFacade_;
   
-  JavaSchemaTemplateModel(ResolvedSchema<?> resolvedSchema, SchemaTemplateModelType schemaType, String identifier, JavaOpenApiTemplateModel model,
-      List<String> templates)
+  JavaSchemaTemplateModel(JavaGenerator.Context generatorContext, 
+      String identifier, ResolvedSchema<?> resolvedSchema, SchemaTemplateModelType schemaType, JavaOpenApiTemplateModel model, List<String> templates)
   {
-    super(resolvedSchema, schemaType, identifier, model, templates);
+    super(generatorContext, identifier, resolvedSchema, schemaType, model, templates);
     
     generateFacade_ = resolvedSchema.getSchema().getXCanonFacade() == null ? false : resolvedSchema.getSchema().getXCanonFacade();
     generateBuilderFacade_ = resolvedSchema.getSchema().getXCanonBuilderFacade() == null ? false : resolvedSchema.getSchema().getXCanonBuilderFacade();
@@ -86,6 +103,15 @@ implements IJavaTemplateModel
 ////    }
 //  }
   
+  static String getIdentifier(JavaGenerator.Context generatorContext, ResolvedSchema<?> resolvedSchema)
+  {
+    if(resolvedSchema.isInnerClass())
+      return generatorContext.getJavaIdentifier(resolvedSchema, true, false);
+    
+
+    return generatorContext.getJavaIdentifier(resolvedSchema, true, true);
+  }
+
   void setAndAddImport(String packageName, String camelCapitalizedName)
   {
     setImport(packageName, camelCapitalizedName);

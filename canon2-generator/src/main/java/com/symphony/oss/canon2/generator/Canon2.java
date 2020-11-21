@@ -45,7 +45,8 @@ public class Canon2
   /* JSON Constants */
   public static final String    X_CANON                = "x-canon-";
 
-  public static final String IDENTIFIER_SUFFIX = "-identifier";
+  public static final String IDENTIFIER_SUFFIX = "identifier";
+  public static final String NAME_PART_SEPARATOR = "-";
   
 //  public static final String    X_MODEL               = "model";
 //  public static final String    X_ID                  = "id";
@@ -100,7 +101,7 @@ public class Canon2
   private List<String>          fileNames_            = new ArrayList<>();
   private List<String>          errors_               = new ArrayList<>();
   private Map<String, String>   uriMap_               = new HashMap<>();
-  private List<ICanonGenerator> generators_           = new ArrayList<>();
+  private List<CanonGenerator<?,?,?,?,?,?,?,?>> generators_           = new ArrayList<>();
   private String                copyright_;
   private String                license_;
 
@@ -334,7 +335,7 @@ public class Canon2
     try
     {
       Class<?> generatorClass = Class.forName(parts[0]);
-      ICanonGenerator<?,?,?,?,?,?,?,?> generator = (ICanonGenerator<?,?,?,?,?,?,?,?>)generatorClass.newInstance();
+      CanonGenerator<?,?,?,?,?,?,?,?> generator = (CanonGenerator<?,?,?,?,?,?,?,?>)generatorClass.newInstance();
       File f = new File(parts[1]);
       
       if (!f.exists())
@@ -395,7 +396,7 @@ public class Canon2
         ;
     
     
-    for(ICanonGenerator<?,?,?,?,?,?,?,?> generator : generators_)
+    for(CanonGenerator<?,?,?,?,?,?,?,?> generator : generators_)
       builder.withGenerator(generator);
     
     if (verbose_)

@@ -31,17 +31,17 @@ import java.net.MalformedURLException;
 import java.util.Map.Entry;
 import java.util.function.Consumer;
 
-import javax.annotation.Nullable;
 import javax.annotation.concurrent.Immutable;
 
 import com.symphony.oss.canon.json.ParserErrorException;
 import com.symphony.oss.canon2.core.CanonModelContext;
 import com.symphony.oss.canon2.core.ResolvedObjectSchema;
+import com.symphony.oss.canon2.core.ResolvedOpenApiObject.SingletonBuilder;
 import com.symphony.oss.canon2.core.ResolvedPropertiesObject;
+import com.symphony.oss.canon2.core.ResolvedProperty;
 import com.symphony.oss.canon2.core.ResolvedSchema;
 import com.symphony.oss.canon2.core.SchemaTemplateModelType;
 import com.symphony.oss.canon2.core.SourceContext;
-import com.symphony.oss.canon2.core.ResolvedOpenApiObject.SingletonBuilder;
 
 
 /**
@@ -112,37 +112,30 @@ public class ObjectSchema extends ObjectSchemaEntity implements ISchema
         {
           ISchemaInstance schema = (ISchemaInstance)entry.getValue();
           
-          ResolvedSchema.AbstractBuilder<? extends ISchemaInstance,?,?> resolvedProperty = modelContext.link(openApiObjectBuilder, sourceContext, entry.getKey(), uri + "/" + entry.getKey(), schema, builder);
+          ResolvedSchema.AbstractBuilder<? extends ISchemaInstance,?,?> resolvedPropertySchema = modelContext.link(openApiObjectBuilder, sourceContext, entry.getKey(), uri + "/" + entry.getKey(), schema, builder);
+          ResolvedProperty.SingletonBuilder resolvedProperty = new ResolvedProperty.SingletonBuilder()
+              .withName(entry.getKey())
+              .withNameContext(propertiesObject.getNameContext(entry.getKey()))
+              .withResolvedSchema(resolvedPropertySchema)
+              .withJson(schema.getJson());
           resolvedPropertiesBuilder.with(entry.getKey(), resolvedProperty);
-          
-//          switch(schema.getType())
-//          {
-//            case "object":
-              innerClassesBuilder.with(entry.getKey(), resolvedProperty);
-//              break;
-//            default:
-//              System.err.println("IGNORE INNER " + entry.getKey() + " " + entry.getValue());
-//          }
+
+          innerClassesBuilder.with(entry.getKey(), resolvedProperty);
         }
         else
         {
           ReferenceObject ref = (ReferenceObject)entry.getValue();
-          
-//          try
-//          {
-//                Schema schema = fetchSchema(modelContext, sourceContext, ref);
-//                ResolvedSchema.SingletonBuilder resolvedProperty = modelContext.link(sourceContext, sourceContext.getSchemaUri(entry.getKey()), schema, false); // isGenerated was true here in the previous version, what does this actually mean?
-            resolvedPropertiesBuilder.with(entry.getKey(), ref.fetchSchema(openApiObjectBuilder, modelContext, sourceContext));
-//          }
-//          catch(GenerationException e)
-//          {
-//            sourceContext.error("Invalid schema reference \"" + ref.get$ref() + "\" at " + getSourceLocation());
-//          }
+          ResolvedSchema.AbstractBuilder<? extends ISchemaInstance,?,?> resolvedPropertySchema = ref.fetchSchema(openApiObjectBuilder, modelContext, sourceContext);
+          ResolvedProperty.SingletonBuilder resolvedProperty = new ResolvedProperty.SingletonBuilder()
+              .withName(entry.getKey())
+              .withNameContext(propertiesObject.getNameContext(entry.getKey()))
+              .withResolvedSchema(resolvedPropertySchema)
+              .withJson(ref.getJson());
+          resolvedPropertiesBuilder.with(entry.getKey(), resolvedProperty);
         }
       }
     }
 
-    // TODO: Put back
 //    if(getAdditionalProperties() != null)
 //    {
 //      Object additionalProperies = getAdditionalProperties().canonGetValue();
@@ -202,12 +195,6 @@ public class ObjectSchema extends ObjectSchemaEntity implements ISchema
   public  SchemaTemplateModelType getSchemaType()
   {
     return SchemaTemplateModelType.OBJECT;
-  }
-  
-  @Override
-  public @Nullable String getXCanonIdentifier(String language)
-  {
-    return getJson().getString("x-canon-" + language + "-identifier", null);
   }
 }
 /*----------------------------------------------------------------------------------------------------

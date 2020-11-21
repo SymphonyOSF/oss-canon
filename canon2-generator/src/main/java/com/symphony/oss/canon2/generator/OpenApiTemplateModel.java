@@ -26,7 +26,6 @@ import java.util.Map;
 
 import com.symphony.oss.canon.json.ParserErrorException;
 import com.symphony.oss.canon2.core.ResolvedOpenApiObject;
-import com.symphony.oss.canon2.core.SourceContext;
 import com.symphony.oss.canon2.model.OpenApiObject;
 import com.symphony.oss.canon2.model.SemanticVersion;
 
@@ -52,12 +51,12 @@ S extends ISchemaTemplateModel<T,M,S>>
   private final ResolvedOpenApiObject resolvedOpenApiObject_;
 
   
-  public OpenApiTemplateModel(SourceContext sourceContext, String name, ResolvedOpenApiObject resolvedOpenApiObject, String identifier,
-      List<String> temaplates)
+  public OpenApiTemplateModel(CanonGenerator<T,M,S,?,?,?,?,?>.AbstractContext generatorContext,
+      String identifier, ResolvedOpenApiObject resolvedOpenApiObject, List<String> templates)
   {
-    super(name, resolvedOpenApiObject, identifier, null, temaplates);
+    super(generatorContext, resolvedOpenApiObject.getName(), identifier, resolvedOpenApiObject, null, templates);
     
-    model_ = sourceContext.getModel();
+    model_ = generatorContext.getSourceContext().getModel();
     resolvedOpenApiObject_ = resolvedOpenApiObject;
     
     String[] parts = getCanonVersion().getValue().split("\\.");

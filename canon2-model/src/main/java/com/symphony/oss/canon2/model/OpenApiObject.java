@@ -27,13 +27,11 @@
 
 package com.symphony.oss.canon2.model;
 
-import javax.annotation.Nullable;
 import javax.annotation.concurrent.Immutable;
 
 import com.google.common.collect.ImmutableMap;
 import com.symphony.oss.canon2.core.CanonModelContext;
 import com.symphony.oss.canon2.core.ICanonModelEntity;
-import com.symphony.oss.canon2.core.INamedModelEntity;
 import com.symphony.oss.canon2.core.ResolvedOpenApiObject;
 import com.symphony.oss.canon2.core.SourceContext;
 
@@ -44,7 +42,7 @@ import com.symphony.oss.canon2.core.SourceContext;
  * Generated from OpenApiObject
  */
 @Immutable
-public class OpenApiObject extends OpenApiObjectEntity implements INamedModelEntity
+public class OpenApiObject extends OpenApiObjectEntity implements ICanonModelEntity
 {
   /**
    * Constructor.
@@ -54,12 +52,6 @@ public class OpenApiObject extends OpenApiObjectEntity implements INamedModelEnt
   protected OpenApiObject(Initialiser initialiser)
   {
     super(initialiser);
-  }
-  
-  @Override
-  public @Nullable String getXCanonIdentifier(String language)
-  {
-    return getJson().getString("x-canon-" + language + "-identifier", null);
   }
 
   public <T extends ICanonModelEntity> T get(String fragment, Class<T> type)

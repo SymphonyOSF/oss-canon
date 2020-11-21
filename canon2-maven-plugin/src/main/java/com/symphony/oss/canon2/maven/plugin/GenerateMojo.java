@@ -63,7 +63,7 @@ import org.slf4j.LoggerFactory;
 import com.symphony.oss.canon.json.ParserException;
 import com.symphony.oss.canon.json.ParserResultException;
 import com.symphony.oss.canon2.generator.CanonGenerationContext;
-import com.symphony.oss.canon2.generator.ICanonGenerator;
+import com.symphony.oss.canon2.generator.CanonGenerator;
 
 @Mojo( name = "generate-sources", defaultPhase = LifecyclePhase.GENERATE_SOURCES )
 public class GenerateMojo extends AbstractMojo
@@ -468,11 +468,11 @@ public class GenerateMojo extends AbstractMojo
                   Class<?> generatorClass = cl.loadClass(className);
                   Object generator = generatorClass.newInstance();
                   
-                  if(generator instanceof ICanonGenerator)
+                  if(generator instanceof CanonGenerator)
                   {
   
                     log_.info("Class " + generatorClass + " IS an ICanonGenerator");
-                    generationContext.withGenerator(((ICanonGenerator<?,?,?,?,?,?,?,?>)generator).withTemplateDir(templateCopy));
+                    generationContext.withGenerator(((CanonGenerator<?,?,?,?,?,?,?,?>)generator).withTemplateDir(templateCopy));
                   }
                   else
                   {

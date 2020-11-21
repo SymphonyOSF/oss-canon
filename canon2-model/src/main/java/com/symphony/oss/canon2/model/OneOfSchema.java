@@ -29,13 +29,13 @@ package com.symphony.oss.canon2.model;
 
 import java.util.function.Consumer;
 
-import javax.annotation.Nullable;
 import javax.annotation.concurrent.Immutable;
 
 import com.symphony.oss.canon2.core.CanonModelContext;
 import com.symphony.oss.canon2.core.ResolvedOneOfSchema;
 import com.symphony.oss.canon2.core.ResolvedOpenApiObject;
 import com.symphony.oss.canon2.core.ResolvedPropertiesObject;
+import com.symphony.oss.canon2.core.ResolvedProperty;
 import com.symphony.oss.canon2.core.ResolvedSchema;
 import com.symphony.oss.canon2.core.SchemaTemplateModelType;
 import com.symphony.oss.canon2.core.SourceContext;
@@ -81,10 +81,15 @@ public class OneOfSchema extends OneOfSchemaEntity implements ISchemaInstance
       String name = subSchema.getReferenceObject() == null ? "$" + i : subSchema.getReferenceObject().getName();
       
       ResolvedSchema.AbstractBuilder<? extends ISchemaInstance,?,?> resolvedSubSchema = subSchema.link(openApiObjectBuilder, modelContext, sourceContext, name, uri, builder);
-      resolvedPropertiesBuilder.with(name, resolvedSubSchema);
+      ResolvedProperty.SingletonBuilder resolvedProperty = new ResolvedProperty.SingletonBuilder()
+          .withName(name)
+          .withNameContext(subSchema.getJson().getContext())
+          .withResolvedSchema(resolvedSubSchema)
+          .withJson(getJson());
+      resolvedPropertiesBuilder.with(name, resolvedProperty);
       
       if(subSchema.getSchema() != null && resolvedSubSchema.build().getSchemaType().getIsObject())
-        innerClassesBuilder.with(name, resolvedSubSchema);
+        innerClassesBuilder.with(name, resolvedProperty);
       i++;
     }
   }
@@ -93,12 +98,6 @@ public class OneOfSchema extends OneOfSchemaEntity implements ISchemaInstance
   public SchemaTemplateModelType getSchemaType()
   {
     return SchemaTemplateModelType.ONE_OF;
-  }
-  
-  @Override
-  public @Nullable String getXCanonIdentifier(String language)
-  {
-    return getJson().getString("x-canon-" + language + "-identifier", null);
   }
 }
 /*----------------------------------------------------------------------------------------------------

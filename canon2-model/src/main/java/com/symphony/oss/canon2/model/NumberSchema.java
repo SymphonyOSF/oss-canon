@@ -29,7 +29,6 @@ package com.symphony.oss.canon2.model;
 
 import java.util.function.Consumer;
 
-import javax.annotation.Nullable;
 import javax.annotation.concurrent.Immutable;
 
 import com.symphony.oss.canon.json.ParserWarningException;
@@ -157,12 +156,6 @@ public class NumberSchema extends NumberSchemaEntity implements IPrimitiveSchema
   public  SchemaTemplateModelType getSchemaType()
   {
     return SchemaTemplateModelType.NUMBER;
-  }
-  
-  @Override
-  public @Nullable String getXCanonIdentifier(String language)
-  {
-    return getJson().getString("x-canon-" + language + "-identifier", null);
   }
 }
 /*----------------------------------------------------------------------------------------------------

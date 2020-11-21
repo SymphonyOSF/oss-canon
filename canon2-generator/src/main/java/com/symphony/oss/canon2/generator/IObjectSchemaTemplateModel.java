@@ -22,8 +22,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import com.symphony.oss.canon2.model.SchemaType;
-
 public interface IObjectSchemaTemplateModel<
   T extends ITemplateModel<T,M,S>,
   M extends IOpenApiTemplateModel<T,M,S>,

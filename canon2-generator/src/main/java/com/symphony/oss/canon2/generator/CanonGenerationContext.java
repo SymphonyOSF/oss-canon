@@ -19,7 +19,6 @@
 package com.symphony.oss.canon2.generator;
 
 import java.io.File;
-import java.util.ArrayList;
 import java.util.Deque;
 import java.util.LinkedList;
 import java.util.List;
@@ -51,7 +50,7 @@ public class CanonGenerationContext extends CanonModelContext
   private final File                           copyDir_;
   private final String                         license_;
   private final String                         copyright_;
-  private final ImmutableList<ICanonGenerator<?,?,?,?,?,?,?,?>> generators_;
+  private final ImmutableList<CanonGenerator<?,?,?,?,?,?,?,?>> generators_;
   
   private CanonGenerationContext(AbstractBuilder<?,?> builder)
   {
@@ -74,7 +73,7 @@ public class CanonGenerationContext extends CanonModelContext
     private File                                  copyDir_;
     private String                                license_;
     private String                                copyright_;
-    private List<ICanonGenerator<?,?,?,?,?,?,?,?>>  generators_ = new LinkedList<>();
+    private List<CanonGenerator<?,?,?,?,?,?,?,?>>  generators_ = new LinkedList<>();
     
     public AbstractBuilder(Class<T> type)
     {
@@ -123,14 +122,14 @@ public class CanonGenerationContext extends CanonModelContext
       return self();
     }
 
-    public T withGenerators(List<ICanonGenerator<?,?,?,?,?,?,?,?>> generators)
+    public T withGenerators(List<CanonGenerator<?,?,?,?,?,?,?,?>> generators)
     {
       generators_ = generators;
       
       return self();
     }
 
-    public T withGenerator(ICanonGenerator<?,?,?,?,?,?,?,?> generator)
+    public T withGenerator(CanonGenerator<?,?,?,?,?,?,?,?> generator)
     {
       generators_.add(generator);
       
@@ -205,7 +204,7 @@ public class CanonGenerationContext extends CanonModelContext
     }
   }
 
-  public List<com.symphony.oss.canon2.generator.ICanonGenerator<?,?,?,?,?,?,?,?>> getGenerators()
+  public List<CanonGenerator<?,?,?,?,?,?,?,?>> getGenerators()
   {
     return generators_;
   }
@@ -228,25 +227,39 @@ public class CanonGenerationContext extends CanonModelContext
   @Override
   protected void process(Deque<SourceContext> processQueue) throws ParserResultException
   {
-    List<GeneratorTemplateProcessor<?,?,?,?,?,?,?,?>> templateProcessors = new ArrayList<>(generators_.size());
-    
-    for(ICanonGenerator<?,?,?,?,?,?,?,?> generator : generators_)
-    {
-       templateProcessors.add(new GeneratorTemplateProcessor<>(generator));
-    }
+//    List<CanonGenerator<?,?,?,?,?,?,?,?>.GeneratorTemplateProcessor> templateProcessors = new ArrayList<>(generators_.size());
+//    
+//    for(CanonGenerator<?,?,?,?,?,?,?,?> generator : generators_)
+//    {
+//       templateProcessors.add(new GeneratorTemplateProcessor<>(generator));
+//    }
+//    
+//    for(SourceContext sourceContext : processQueue)
+//    {
+//      for(GeneratorTemplateProcessor<?,?,?,?,?,?,?,?> templateProcessor : templateProcessors)
+//      {
+//        templateProcessor.process(this, sourceContext);
+//        
+//      }
+//    }
+//    
+//    for(GeneratorTemplateProcessor<?,?,?,?,?,?,?,?> templateProcessor : templateProcessors)
+//    {
+//      templateProcessor.generate();
+//    }
     
     for(SourceContext sourceContext : processQueue)
     {
-      for(GeneratorTemplateProcessor<?,?,?,?,?,?,?,?> templateProcessor : templateProcessors)
+      for(CanonGenerator<?,?,?,?,?,?,?,?> generator : generators_)
       {
-        templateProcessor.process(this, sourceContext);
+        generator.process(this, sourceContext);
         
       }
     }
     
-    for(GeneratorTemplateProcessor<?,?,?,?,?,?,?,?> templateProcessor : templateProcessors)
+    for(CanonGenerator<?,?,?,?,?,?,?,?> generator : generators_)
     {
-      templateProcessor.generate();
+      generator.generate();
     }
   }
 

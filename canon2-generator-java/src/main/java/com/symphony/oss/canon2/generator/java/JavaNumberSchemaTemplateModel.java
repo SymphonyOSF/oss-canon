@@ -10,6 +10,7 @@ import java.util.List;
 
 import com.symphony.oss.canon2.core.ResolvedNumberSchema;
 import com.symphony.oss.canon2.generator.IPrimitiveSchemaTemplateModel;
+import com.symphony.oss.canon2.generator.java.JavaGenerator.Context;
 
 /**
  * Java template model for number and integer.
@@ -23,18 +24,17 @@ IJavaTemplateModel,
 JavaOpenApiTemplateModel,
 JavaSchemaTemplateModel>
 {
-  private final String  minimum_;
-  private final String  maximum_;
-  private final boolean exclusiveMinimum_;
-  private final boolean exclusiveMaximum_;
-  private final boolean isComparable_;
+  private final String       minimum_;
+  private final String       maximum_;
+  private final boolean      exclusiveMinimum_;
+  private final boolean      exclusiveMaximum_;
+  private final boolean      isComparable_;
   
-  JavaNumberSchemaTemplateModel(ResolvedNumberSchema<?> resolvedSchema, String identifier, String packageName,
+  JavaNumberSchemaTemplateModel(JavaGenerator.Context generatorContext, ResolvedNumberSchema<?> resolvedSchema, String packageName,
       String javaTypePackageName, String javaType, JavaOpenApiTemplateModel model,
-      boolean isComparable,
-      List<String> templates)
+      boolean isComparable)
   { 
-    super(resolvedSchema, false, identifier, packageName, javaType, model, templates);
+    super(generatorContext, initIdentifier(generatorContext, resolvedSchema), resolvedSchema, false, packageName, javaType, model, initTemplates(resolvedSchema));
 
     minimum_ = resolvedSchema.getMinimum() == null ? null : resolvedSchema.getMinimum().toString();
     maximum_ = resolvedSchema.getMaximum() == null ? null : resolvedSchema.getMaximum().toString();
@@ -50,13 +50,30 @@ JavaSchemaTemplateModel>
     {
       setImport(packageName,  getCamelCapitalizedName());
     }
-    
+  }
 
-//  if(isExternal())
-//  {
-//    addImport(packageName + "." + getCamelCapitalizedName());
-//  }
-  
+  private static List<String> initTemplates(ResolvedNumberSchema<?> resolvedSchema)
+  {
+    if(resolvedSchema.isInnerClass() || resolvedSchema.getResolvedOpenApiObject().isReferencedModel())
+    {
+      return EMPTY_TEMPLATES;
+    }
+    else
+    {
+      return TYPEDEF_TEMPLATES;
+    }
+  }
+
+  private static String initIdentifier(Context generatorContext, ResolvedNumberSchema<?> resolvedSchema)
+  {
+    if(resolvedSchema.isInnerClass() || resolvedSchema.getResolvedOpenApiObject().isReferencedModel())
+    {
+      return resolvedSchema.getName(); // not generating for this so we don't care if the identifier is valid.
+    }
+    else
+    {
+      return getIdentifier(generatorContext, resolvedSchema);
+    }
   }
 
   @Override

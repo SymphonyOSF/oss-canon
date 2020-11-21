@@ -9,7 +9,9 @@ package com.symphony.oss.canon2.generator.java;
 import java.util.List;
 
 import com.symphony.oss.canon2.core.ResolvedBooleanSchema;
+import com.symphony.oss.canon2.core.ResolvedPropertyContainerSchema;
 import com.symphony.oss.canon2.generator.IPrimitiveSchemaTemplateModel;
+import com.symphony.oss.canon2.generator.java.JavaGenerator.Context;
 
 /**
  * Java template model for number and integer.
@@ -22,11 +24,34 @@ implements IPrimitiveSchemaTemplateModel<
 IJavaTemplateModel,
 JavaOpenApiTemplateModel,
 JavaSchemaTemplateModel>
-{  
-  JavaBooleanSchemaTemplateModel(ResolvedBooleanSchema resolvedSchema, String identifier, String packageName, JavaOpenApiTemplateModel model,
-       List<String> templates)
+{
+  JavaBooleanSchemaTemplateModel(JavaGenerator.Context generatorContext, ResolvedBooleanSchema resolvedSchema, String packageName, JavaOpenApiTemplateModel model)
   { 
-    super(resolvedSchema, false, identifier, packageName, "Boolean", model, templates);
+    super(generatorContext, initIdentifier(generatorContext, resolvedSchema), resolvedSchema, false, packageName, "Boolean", model, initTemplates(resolvedSchema));
+  }
+
+  private static List<String> initTemplates(ResolvedBooleanSchema resolvedSchema)
+  {
+    if(resolvedSchema.isInnerClass() || resolvedSchema.getResolvedOpenApiObject().isReferencedModel())
+    {
+      return EMPTY_TEMPLATES;
+    }
+    else
+    {
+      return TYPEDEF_TEMPLATES;
+    }
+  }
+
+  private static String initIdentifier(Context generatorContext, ResolvedBooleanSchema resolvedSchema)
+  {
+    if(resolvedSchema.isInnerClass() || resolvedSchema.getResolvedOpenApiObject().isReferencedModel())
+    {
+      return resolvedSchema.getName(); // not generating for this so we don't care if the identifier is valid.
+    }
+    else
+    {
+      return getIdentifier(generatorContext, resolvedSchema);
+    }
   }
 
   @Override

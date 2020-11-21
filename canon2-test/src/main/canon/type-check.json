@@ -1,5 +1,6 @@
 {
   "canon": "0.0.1",
+  "openapi": "3.0.0",
   "info": {
     "title": "Canon Template Type Check",
     "license": {
@@ -463,6 +464,13 @@
             "items": {
               "$ref": "#/components/schemas/Instant"
             }
+          },
+          "IntTypedef": {
+            "description": "An integer typedef.",
+            "type": "integer",
+            "format": "int32",
+            "minimum": 0,
+            "maximum": 7
           }
         }
       },

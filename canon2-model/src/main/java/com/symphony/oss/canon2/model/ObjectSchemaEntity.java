@@ -21,7 +21,7 @@
  *    Generator groupId    org.symphonyoss.s2.canon
  *              artifactId canon2-generator-java
  *    Template name        template/Object/_Entity.java.ftl
- *    At                   2020-11-12 10:04:36 GMT
+ *    At                   2020-11-12 11:16:47 GMT
  *----------------------------------------------------------------------------------------------------
  */
 
@@ -66,7 +66,7 @@ public abstract class ObjectSchemaEntity extends ObjectEntity
 
   private final ImmutableSet<String>        unknownKeys_;
   private final Boolean                    _xCanonBuilderFacade_;
-  private final AdditionalProperties       _xXXadditionalProperties_;
+  private final AdditionalProperties       _additionalProperties_;
   private final String                     _xCanonIdentifier_;
   private final ObjectSchema.Type          _type_;
   private final Boolean                    _xCanonFacade_;
@@ -107,14 +107,14 @@ public abstract class ObjectSchemaEntity extends ObjectEntity
         }
       }
 
-      node = jsonInitialiser.get("XXXadditionalProperties");
+      node = jsonInitialiser.get("additionalProperties");
       if(node == null || node instanceof JsonNull)
       {
-        _xXXadditionalProperties_ = null;
+        _additionalProperties_ = null;
       }
       else
       {
-        _xXXadditionalProperties_ = AdditionalProperties.FACTORY.newInstance(node, jsonInitialiser.getModelRegistry());
+        _additionalProperties_ = AdditionalProperties.FACTORY.newInstance(node, jsonInitialiser.getModelRegistry());
       }
 
       node = jsonInitialiser.get("x-canon-identifier");
@@ -239,7 +239,7 @@ public abstract class ObjectSchemaEntity extends ObjectEntity
         throw new IllegalArgumentException("Initializer is not an JsonObjectEntityInitialiser but getInstanceOrBuilder() returns null");
       }
       _xCanonBuilderFacade_ = builder.getXCanonBuilderFacade();
-      _xXXadditionalProperties_ = builder.getXXXadditionalProperties();
+      _additionalProperties_ = builder.getAdditionalProperties();
       _xCanonIdentifier_ = builder.getXCanonIdentifier();
       _type_ = builder.getType();
       if(_type_ == null)
@@ -335,7 +335,7 @@ public abstract class ObjectSchemaEntity extends ObjectEntity
     implements IObjectSchemaInstanceOrBuilder, Initialiser
   {
     protected Boolean                    _xCanonBuilderFacade_;
-    protected AdditionalProperties       _xXXadditionalProperties_;
+    protected AdditionalProperties       _additionalProperties_;
     protected String                     _xCanonIdentifier_;
     protected ObjectSchema.Type          _type_;
     protected Boolean                    _xCanonFacade_;
@@ -360,7 +360,7 @@ public abstract class ObjectSchemaEntity extends ObjectEntity
       super(type, initial);
 
       _xCanonBuilderFacade_ = initial.getXCanonBuilderFacade();
-      _xXXadditionalProperties_ = initial.getXXXadditionalProperties();
+      _additionalProperties_ = initial.getAdditionalProperties();
       _xCanonIdentifier_ = initial.getXCanonIdentifier();
       _type_ = initial.getType();
       _xCanonFacade_ = initial.getXCanonFacade();
@@ -392,10 +392,10 @@ public abstract class ObjectSchemaEntity extends ObjectEntity
           throw new ParserErrorException("x-canon-builderFacade must be an instance of JsonBoolean not " + node.getClass().getName(), node.getContext());
         }
       }
-      if(json.containsKey("XXXadditionalProperties"))
+      if(json.containsKey("additionalProperties"))
       {
-        JsonDomNode  node = json.get("XXXadditionalProperties");
-        _xXXadditionalProperties_ = AdditionalProperties.FACTORY.newInstance(node, modelRegistry);
+        JsonDomNode  node = json.get("additionalProperties");
+        _additionalProperties_ = AdditionalProperties.FACTORY.newInstance(node, modelRegistry);
       }
       if(json.containsKey("x-canon-identifier"))
       {
@@ -480,7 +480,7 @@ public abstract class ObjectSchemaEntity extends ObjectEntity
     /* void populateAllFields(List<Object> result)
     {
       result.add(_xCanonBuilderFacade_);
-      result.add(_xXXadditionalProperties_);
+      result.add(_additionalProperties_);
       result.add(_xCanonIdentifier_);
       result.add(_type_);
       result.add(_xCanonFacade_);
@@ -515,26 +515,26 @@ public abstract class ObjectSchemaEntity extends ObjectEntity
     }
 
     /**
-     * Return the value of the XXXadditionalProperties attribute.
+     * Return the value of the additionalProperties attribute.
      *
-     * @return the value of the XXXadditionalProperties attribute.
+     * @return the value of the additionalProperties attribute.
      */
     @Override
-    public @Nullable AdditionalProperties getXXXadditionalProperties()
+    public @Nullable AdditionalProperties getAdditionalProperties()
     {
-      return _xXXadditionalProperties_;
+      return _additionalProperties_;
     }
 
     /**
-     * Set the value of the XXXadditionalProperties attribute.
+     * Set the value of the additionalProperties attribute.
      *
      * @param value The value to be set.
      *
      * @return This (fluent method).
      */
-    public T withXXXadditionalProperties(AdditionalProperties value)
+    public T withAdditionalProperties(AdditionalProperties value)
     {
-      _xXXadditionalProperties_ = value;
+      _additionalProperties_ = value;
       return self();
     }
 
@@ -756,9 +756,9 @@ public abstract class ObjectSchemaEntity extends ObjectEntity
         builder.addIfNotNull("x-canon-builderFacade", getXCanonBuilderFacade());
       }
 
-      if(getXXXadditionalProperties() != null)
+      if(getAdditionalProperties() != null)
       {
-        builder.addIfNotNull("XXXadditionalProperties", getXXXadditionalProperties().getJson());
+        builder.addIfNotNull("additionalProperties", getAdditionalProperties().getJson());
       }
 
       if(getXCanonIdentifier() != null)
@@ -859,13 +859,13 @@ public abstract class ObjectSchemaEntity extends ObjectEntity
   }
 
   /**
-   * Return the value of the XXXadditionalProperties attribute.
+   * Return the value of the additionalProperties attribute.
    *
-   * @return the value of the XXXadditionalProperties attribute.
+   * @return the value of the additionalProperties attribute.
    */
-  public @Nullable AdditionalProperties getXXXadditionalProperties()
+  public @Nullable AdditionalProperties getAdditionalProperties()
   {
-    return _xXXadditionalProperties_;
+    return _additionalProperties_;
   }
 
   /**

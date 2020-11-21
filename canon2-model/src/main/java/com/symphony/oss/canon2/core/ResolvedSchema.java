@@ -23,7 +23,6 @@ import com.symphony.oss.canon2.model.ISchemaInstance;
 
 public abstract class ResolvedSchema<S extends ISchemaInstance> extends ResolvedEntity
 {
-  private final String                                            name_;
   private final String                                            uri_;
   private final S                                                 schema_;
   private final ResolvedOpenApiObject.SingletonBuilder            openApiObjectBuilder_;
@@ -33,7 +32,6 @@ public abstract class ResolvedSchema<S extends ISchemaInstance> extends Resolved
   {
     super(builder);
     
-    name_                                 = builder.name_;
     uri_                                  = builder.uri_;
     schema_                               = builder.schema_;
     openApiObjectBuilder_                 = builder.openApiObjectBuilder_;
@@ -42,7 +40,6 @@ public abstract class ResolvedSchema<S extends ISchemaInstance> extends Resolved
   
   public abstract static class AbstractBuilder<S extends ISchemaInstance, T extends AbstractBuilder<S,T,B>, B extends ResolvedSchema<S>> extends ResolvedEntity.AbstractBuilder<T,B>
   {
-    private String                                            name_;
     private String                                            uri_;
     private S                                                 schema_;
     private ResolvedOpenApiObject.SingletonBuilder            openApiObjectBuilder_;
@@ -51,16 +48,6 @@ public abstract class ResolvedSchema<S extends ISchemaInstance> extends Resolved
     AbstractBuilder(Class<T> type)
     {
       super(type);
-    }
-
-    public T withName(String name)
-    {
-      if(isBuilt())
-        throw new IllegalStateException("SingletonBuilder has already been built");
-      
-      name_ = name;
-      
-      return self();
     }
     
     public T withUri(String uri)
@@ -128,11 +115,6 @@ public abstract class ResolvedSchema<S extends ISchemaInstance> extends Resolved
   public JsonDomNode getJson()
   {
     return schema_.getJson();
-  }
-
-  public String getName()
-  {
-    return name_;
   }
 
   public String getUri()

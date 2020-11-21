@@ -37,9 +37,9 @@ class JavaPathNameConstructor extends PathNameConstructor<IJavaTemplateModel>
    * 
    * @param packageName  Name java package name.
    */
-  public JavaPathNameConstructor(String packageName)
+  public JavaPathNameConstructor(String packageName, String canonIdString)
   {
-    super("java");
+    super("java", canonIdString);
     packageName_ = packageName;
   }
 

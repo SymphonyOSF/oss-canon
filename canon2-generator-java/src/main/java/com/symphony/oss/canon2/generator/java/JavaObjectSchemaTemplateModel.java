@@ -23,8 +23,13 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.google.common.collect.ImmutableList;
+import com.symphony.oss.canon2.core.ResolvedArraySchema;
 import com.symphony.oss.canon2.core.ResolvedPropertyContainerSchema;
+import com.symphony.oss.canon2.core.SourceContext;
 import com.symphony.oss.canon2.generator.IObjectSchemaTemplateModel;
+import com.symphony.oss.canon2.generator.NameCollisionDetector;
+import com.symphony.oss.canon2.generator.java.JavaGenerator.Context;
 
 public class JavaObjectSchemaTemplateModel extends JavaSchemaTemplateModel
 implements IObjectSchemaTemplateModel<
@@ -34,16 +39,7 @@ JavaSchemaTemplateModel,
 JavaFieldTemplateModel
 >
 {
-//  private static final String[] IMPORTS = new String[] 
-//  {
-//    "javax.annotation.concurrent.Immutable",
-//    "javax.annotation.Nullable",
-//    "com.google.common.collect.ImmutableSet",
-//    "java.util.List",
-//    "java.util.Set",
-//    "java.util.HashSet",
-//    "com.symphony.oss.canon2.runtime.java.ModelRegistry"
-//  };
+  private static final List<String> OBJECT_TEMPLATES             = ImmutableList.of("Object");
   
   private Map<String, JavaFieldTemplateModel> fieldMap_ = new HashMap<>();
   private Map<String, JavaSchemaTemplateModel> innerClassMap_ = new HashMap<>();
@@ -58,10 +54,10 @@ JavaFieldTemplateModel
   private final boolean objectType_;
   
   
-  JavaObjectSchemaTemplateModel(ResolvedPropertyContainerSchema<?> resolvedSchema, String identifier, String packageName, JavaOpenApiTemplateModel model,
-      List<String> temaplates)
+  JavaObjectSchemaTemplateModel(JavaGenerator.Context generatorContext, ResolvedPropertyContainerSchema<?> resolvedSchema,  String packageName, JavaOpenApiTemplateModel model)
   {
-    super(resolvedSchema, resolvedSchema.getSchemaType(), identifier, model, temaplates);
+    super(generatorContext, initIdentifier(generatorContext, resolvedSchema), resolvedSchema, resolvedSchema.getSchemaType(), model, initTemplates(resolvedSchema));
+    
     
     type_ = resolvedSchema.getResolvedContainer() == null ? getCamelCapitalizedName() :
       capitalize(toCamelCase(resolvedSchema.getResolvedContainer().getName())) + "." + getCamelCapitalizedName();
@@ -72,7 +68,7 @@ JavaFieldTemplateModel
 //    addImport(packageName + "." + getCamelCapitalizedName());
 //  }
   
-  setImport(packageName,  getCamelCapitalizedName());
+    setImport(packageName,  getCamelCapitalizedName());
     
     switch(resolvedSchema.getSchemaType())
     {
@@ -90,7 +86,38 @@ JavaFieldTemplateModel
         objectType_ = true;
     }
   }
+
+  private static List<String> initTemplates(ResolvedPropertyContainerSchema<?> resolvedSchema)
+  {
+    if(resolvedSchema.isInnerClass() || resolvedSchema.getResolvedOpenApiObject().isReferencedModel())
+    {
+      return EMPTY_TEMPLATES;
+    }
+    else
+    {
+      return OBJECT_TEMPLATES;
+    }
+  }
+
+  private static String initIdentifier(Context generatorContext, ResolvedPropertyContainerSchema<?> resolvedSchema)
+  {
+    if(resolvedSchema.isInnerClass() || resolvedSchema.getResolvedOpenApiObject().isReferencedModel())
+    {
+      return resolvedSchema.getName(); // not generating for this so we don't care if the identifier is valid.
+    }
+    else
+    {
+      return getIdentifier(generatorContext, resolvedSchema);
+    }
+  }
   
+  @Override
+  public void validate(SourceContext sourceContext)
+  {
+    new NameCollisionDetector(getFields()).logCollisions(sourceContext, this);
+    new NameCollisionDetector(getInnerClasses()).logCollisions(sourceContext, this);
+  }
+
   public boolean getIsObjectType()
   {
     return objectType_;

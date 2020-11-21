@@ -29,7 +29,6 @@ package com.symphony.oss.canon2.model;
 
 import java.util.function.Consumer;
 
-import javax.annotation.Nullable;
 import javax.annotation.concurrent.Immutable;
 
 import com.symphony.oss.canon.json.SyntaxErrorException;
@@ -122,18 +121,6 @@ public class Schema extends SchemaEntity implements ISchema
   public SchemaTemplateModelType getSchemaType()
   {
     return getSchema().getSchemaType();
-  }
-  
-  @Override
-  public String getXCanonIdentifier()
-  {
-    return getSchema().getXCanonIdentifier();
-  }
-  
-  @Override
-  public @Nullable String getXCanonIdentifier(String language)
-  {
-    return getSchema().getXCanonIdentifier(language);
   }
 
   @Override

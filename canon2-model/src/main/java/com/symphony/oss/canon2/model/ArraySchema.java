@@ -30,7 +30,6 @@ package com.symphony.oss.canon2.model;
 import java.net.MalformedURLException;
 import java.util.function.Consumer;
 
-import javax.annotation.Nullable;
 import javax.annotation.concurrent.Immutable;
 
 import com.symphony.oss.canon.json.ParserErrorException;
@@ -137,12 +136,6 @@ public class ArraySchema extends ArraySchemaEntity implements ISchemaInstance
   public  SchemaTemplateModelType getSchemaType()
   {
     return SchemaTemplateModelType.ARRAY;
-  }
-  
-  @Override
-  public @Nullable String getXCanonIdentifier(String language)
-  {
-    return getJson().getString("x-canon-" + language + "-identifier", null);
   }
 }
 /*----------------------------------------------------------------------------------------------------

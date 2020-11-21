@@ -20,6 +20,7 @@ package com.symphony.oss.canon2.generator;
 
 import java.util.List;
 
+import com.google.common.collect.ImmutableList;
 import com.symphony.oss.canon.json.model.JsonDomNode;
 import com.symphony.oss.canon2.core.ResolvedEntity;
 
@@ -41,45 +42,70 @@ S extends ISchemaTemplateModel<T,M,S>
 >
 implements ITemplateModel<T,M,S>
 {
-  private final List<String> templates_;
-  private final String       name_;
-  private final String       quotedName_;
-  private final String       camelName_;
-  private final String       camelCapitalizedName_;
-  private final String       snakeName_;
-  private final String       snakeCapitalizedName_;
-  private final String       snakeUpperCaseName_;
-  private final M            model_;
-  private final boolean      external_;
-  private final JsonDomNode  json_;
+  public static final List<String> EMPTY_TEMPLATES = ImmutableList.of();
+
+  private final String                                                 name_;
+  private final String                                                 quotedName_;
+  private final String                                                 identifier_;
+  private final String                                                 camelName_;
+  private final String                                                 camelCapitalizedName_;
+  private final String                                                 snakeName_;
+  private final String                                                 snakeCapitalizedName_;
+  private final String                                                 snakeUpperCaseName_;
+  private final M                                                      model_;
+  private final List<String>                                           templates_;
+  private final boolean                                                external_;
+  private final JsonDomNode                                            json_;
+  private final CanonGenerator<T, M, S, ?, ?, ?, ?, ?>.AbstractContext generatorContext_;
+
 
   /**
    * Constructor.
    * 
-   * @param name            The name of the entity represented by this model as defined in the OpenApi document.
-   * @param resolvedEntity  The resolvedSchema object from the OpenApi model.
-   * @param identifier      The name this entity will be known by in generated code.
-   * @param model           The IOpenApiTemplateModel to which this entity belongs.
-   * @param templates       The list of template names which should be run against this model.
+   * @param generatorContext  The source context for error reporting. 
+   * @param name              The name of the entity represented by this model as defined in the OpenApi document.
+   * @param identifier        The identifier used for this entity in generated code.
+   * @param resolvedEntity    The resolvedSchema object from the OpenApi model.
+   * @param model             The IOpenApiTemplateModel to which this entity belongs.
+   * @param templates         The list of templates to be called for this model.
    * 
    * The reason we have name and identifier is that the name may be valid in general but a reserved word in the
    * generated language.
    */
-  public TemplateModel(String name, ResolvedEntity resolvedEntity, String identifier, M model, List<String> templates)
+  public TemplateModel(CanonGenerator<T,M,S,?,?,?,?,?>.AbstractContext generatorContext, String name, String identifier, ResolvedEntity resolvedEntity, M model, List<String> templates)
   {
+    generatorContext_ = generatorContext;
     model_ = model ;
     name_ = name;
     quotedName_ = name.replaceAll("\\\"", "\\\\\"");
+    identifier_ = identifier;
     templates_ = templates;
-
-    camelName_ = toCamelCase(identifier);
-    camelCapitalizedName_ = capitalize(camelName_);
-    snakeName_ = toSnakeCase(identifier);
-    snakeCapitalizedName_ = capitalize(snakeName_);
-    snakeUpperCaseName_ = snakeName_.toUpperCase();
     
     external_ = model != null && (resolvedEntity.getResolvedOpenApiObject() != model.getResolvedOpenApiObject());
     json_ = resolvedEntity.getJson();
+  
+    camelName_ = toCamelCase(getIdentifier());
+    camelCapitalizedName_ = capitalize(camelName_);
+    snakeName_ = toSnakeCase(getIdentifier());
+    snakeCapitalizedName_ = capitalize(snakeName_);
+    snakeUpperCaseName_ = snakeName_.toUpperCase();
+  }
+  
+  @Override
+  public final String getIdentifier()
+  {
+    return identifier_;
+  }
+
+  @Override
+  public final List<String> getTemplates()
+  {
+    return templates_;
+  }
+
+  public String getCanonIdString()
+  {
+    return generatorContext_.getCanonIdString();
   }
 
   @Override
@@ -96,12 +122,6 @@ implements ITemplateModel<T,M,S>
   public boolean isExternal()
   {
     return external_;
-  }
-
-  @Override
-  public List<String> getTemaplates()
-  {
-    return templates_;
   }
 
   /**

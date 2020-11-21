@@ -18,6 +18,7 @@
 
 package com.symphony.oss.canon2.generator;
 
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
@@ -28,54 +29,20 @@ import java.util.Set;
 
 import com.symphony.oss.canon.json.ParserErrorException;
 import com.symphony.oss.canon.json.model.IJsonDomNodeProvider;
-import com.symphony.oss.canon2.core.ResolvedSchema;
 import com.symphony.oss.canon2.core.SourceContext;
 
-class NameCollisionDetector
+public class NameCollisionDetector
 {
-  private static final String[] STD_JAVA_PACKAGES = new String[]
-  {
-      "java.lang",
-      "java.util"
-  };
-
-//  private static Logger log_ = LoggerFactory.getLogger(NameCollisionDetector.class);
   private Set<List<String>>     collisionSet_     = new HashSet<>();
   private Set<ParserErrorException>  invalidSet_       = new HashSet<>();
-  
-//  public static NameCollisionDetector create(ICanonContext canonContext, URL url, ICanonGenerator<?,?,?,?,?,?,?,?> generator, Map<String, Object> schemaOrReferences, boolean isSchema) throws GenerationException
-//  {
-//    Map<String, Schema> schemas = new HashMap<>(schemaOrReferences.size());
-//    
-//    for(Entry<String, Object> entry : schemaOrReferences.entrySet())
-//    {
-//      if(entry.getValue() instanceof Schema)
-//      {
-//        schemas.put(entry.getKey(), (Schema)entry.getValue());
-//      }
-//      else if(entry.getValue() instanceof ReferenceObject)
-//      {
-//        ReferenceObject ref = (ReferenceObject)entry.getValue();
-//        
-//        schemas.put(entry.getKey(), canonContext.getSchemaInfo(ref.getAbsoluteUri(url)).getSchema());
-//      }
-//      else
-//      {
-//        throw new GenerationException("Unexpected schema or reference " + entry.getValue().getClass());
-//      }
-//    }
-//    
-//    return new NameCollisionDetector(generator, schemas, isSchema);
-//  }
-  
-  NameCollisionDetector(ICanonGenerator<?,?,?,?,?,?,?,?> generator, Map<String, ResolvedSchema<?>> schemas, boolean isSchema)
+    
+  public NameCollisionDetector(Collection<? extends ITemplateModel<?,?,?>> schemas)
   {
     Map<String, List<String>>   camelMap  = new HashMap<>();
     
-    for(Entry<String, ResolvedSchema<?>> entry : schemas.entrySet())
+    for(ITemplateModel<?,?,?> schema : schemas)
     {
-      boolean initial   = isSchema;
-      String  name      = generator.getIdentifierName(entry.getKey(), entry.getValue().getSchema());
+      String  name = schema.getIdentifier();
       
       List<String> list = camelMap.get(name);
       
@@ -84,37 +51,7 @@ class NameCollisionDetector
         list = new LinkedList<>();
         camelMap.put(name, list);
       }
-      list.add("\"" + entry.getKey() + "\" at " + entry.getValue().getSchema().getJson().getContext());
-      
-      for(char c : name.toCharArray())
-      {
-        boolean check = initial ? Character.isJavaIdentifierStart(c) : Character.isJavaIdentifierPart(c);
-        
-        initial = false;
-        
-        if(!check)
-        {
-          invalidSet_.add(new ParserErrorException((isSchema ? "Schema" : "Attribute") + " \"" + entry.getKey() + "\" maps to \"" + name + "\"", entry.getValue().getSchema()));
-          break;
-        }
-      }
-      
-      if(isSchema)
-      {
-        for(String packageName : STD_JAVA_PACKAGES)
-        {
-          try
-          {
-            Class.forName(packageName + "." +  name);
-            invalidSet_.add(new ParserErrorException("Schema \"" + entry.getKey() + "\" maps to \"" + name + "\"", entry.getValue().getSchema()));
-            break;
-          }
-          catch (ClassNotFoundException e)
-          {
-            // This is ok
-          }
-        }
-      }
+      list.add("\"" + schema.getName() + "\" at " + schema.getJson().getContext());
     }
     
     for(Entry<String, List<String>> entry : camelMap.entrySet())
@@ -129,7 +66,7 @@ class NameCollisionDetector
     return collisionSet_;
   }
 
-  void logCollisions(SourceContext sourceContext, IJsonDomNodeProvider context)
+  public void logCollisions(SourceContext sourceContext, IJsonDomNodeProvider context)
   {
     for(List<String> c : getCollisionSet())
     {

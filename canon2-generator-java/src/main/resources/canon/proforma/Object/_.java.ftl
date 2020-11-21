@@ -23,7 +23,7 @@ import javax.annotation.concurrent.Immutable;
  * Generated from ${entity}
  */
 @Immutable
-public class ${entity.type} extends ${entity.type}Entity
+public class ${entity.type} extends ${entity.type}${c}Entity
 {
 <#if entity.generateBuilderFacade>
 //  /*
@@ -68,8 +68,8 @@ public class ${entity.type} extends ${entity.type}Entity
    * @param <T> The concrete type of the built object.
    */
   public static abstract class AbstractBuilder<T extends AbstractBuilder<T,B>, B extends ${entity.type}>
-    extends ${entity.type}Entity.AbstractBuilder<T,B>
-    //implements I${entity.type}InstanceOrBuilder
+    extends ${entity.type}${c}Entity.AbstractBuilder<T,B>
+    //implements I${c}${entity.type}${c}InstanceOrBuilder
   {
     protected AbstractBuilder(Class<T> type)
     {

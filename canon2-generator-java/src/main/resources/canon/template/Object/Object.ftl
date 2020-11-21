@@ -211,7 +211,7 @@ ${indent}      unknownKeys_ = jsonInitialiser.getCanonUnknownKeys();
 ${indent}    }
 ${indent}    else
 ${indent}    {
-${indent}      I${entity.camelCapitalizedName}InstanceOrBuilder builder =  initialiser.getInstanceOrBuilder();
+${indent}      I${c}${entity.camelCapitalizedName}${c}InstanceOrBuilder builder =  initialiser.getInstanceOrBuilder();
 
 ${indent}      if(builder == null)
 ${indent}      {
@@ -284,7 +284,7 @@ ${indent}     * Return an instance or builder containing the values for a new in
 ${indent}     * 
 ${indent}     * @return an instance or builder containing the values for a new instance.
 ${indent}     */
-${indent}    I${entity.camelCapitalizedName}InstanceOrBuilder getInstanceOrBuilder();
+${indent}    I${c}${entity.camelCapitalizedName}${c}InstanceOrBuilder getInstanceOrBuilder();
 ${indent}  }
 
 ${indent}  /**
@@ -304,7 +304,7 @@ ${indent}      super(json, modelRegistry);
 ${indent}    }
 
 ${indent}    @Override
-${indent}    public I${entity.camelCapitalizedName}InstanceOrBuilder getInstanceOrBuilder()
+${indent}    public I${c}${entity.camelCapitalizedName}${c}InstanceOrBuilder getInstanceOrBuilder()
 ${indent}    {
 ${indent}      return null;
 ${indent}    }
@@ -323,7 +323,7 @@ ${indent}   * @param <B> The concrete type of the built object.
 ${indent}   */
 ${indent}  public static abstract class AbstractBuilder<T extends AbstractBuilder<T,B>, B extends ${className}>
 ${indent}    extends ${entity.superTypeName}.AbstractBuilder<T,B>
-${indent}    implements I${entity.camelCapitalizedName}InstanceOrBuilder, Initialiser
+${indent}    implements I${c}${entity.camelCapitalizedName}${c}InstanceOrBuilder, Initialiser
 ${indent}  {
   <#list entity.fields as field>
 ${indent}    protected ${field.type?right_pad(25)}  _${field.camelName}_${field.typeSchema.builderTypeNew};
@@ -335,7 +335,7 @@ ${indent}      super(type);
 ${indent}    }
 
 ${indent}    @Override
-${indent}    public I${entity.camelCapitalizedName}InstanceOrBuilder getInstanceOrBuilder()
+${indent}    public I${c}${entity.camelCapitalizedName}${c}InstanceOrBuilder getInstanceOrBuilder()
 ${indent}    {
 ${indent}      return this;
 ${indent}    }

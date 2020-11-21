@@ -26,7 +26,7 @@ ${import}
  * Generated from ${entity} at {entity.context.path}
  */
 @Immutable
-public class ${entity.type} extends ${entity.type}TypeDef
+public class ${entity.type} extends ${entity.type}${c}TypeDef
 {
   /**
    * Constructor from a ${entity.javaType} value.

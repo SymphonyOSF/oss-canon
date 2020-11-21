@@ -18,27 +18,40 @@
 
 package com.symphony.oss.canon2.generator.java;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
 
+import com.google.common.collect.ImmutableList;
 import com.symphony.oss.canon2.core.ResolvedOpenApiObject;
 import com.symphony.oss.canon2.core.SourceContext;
+import com.symphony.oss.canon2.generator.NameCollisionDetector;
 import com.symphony.oss.canon2.generator.OpenApiTemplateModel;
 
-public class JavaOpenApiTemplateModel extends OpenApiTemplateModel<
+class JavaOpenApiTemplateModel extends OpenApiTemplateModel<
 IJavaTemplateModel,
 JavaOpenApiTemplateModel,
 JavaSchemaTemplateModel
 >
 implements IJavaTemplateModel
 {
+  private static final List<String> MODEL_TEMPLATES              = ImmutableList.of("Model");
+  
   Set<String> imports_ = new TreeSet<>();
   
-  public JavaOpenApiTemplateModel(SourceContext context, String name, ResolvedOpenApiObject resolvedOpenApiObject, String identifier,
-      List<String> temaplates)
+  JavaOpenApiTemplateModel(JavaGenerator.Context generatorContext, ResolvedOpenApiObject resolvedOpenApiObject)
   {
-    super(context, name, resolvedOpenApiObject, identifier, temaplates);
+    super(generatorContext, generatorContext.getJavaIdentifier(resolvedOpenApiObject, false, false), resolvedOpenApiObject, MODEL_TEMPLATES);
+    
+  }
+  
+  @Override
+  public void validate(SourceContext sourceContext)
+  {
+    NameCollisionDetector ncd = new NameCollisionDetector(getSchemas());
+    
+    ncd.logCollisions(sourceContext, getResolvedOpenApiObject());
   }
 
   @Override

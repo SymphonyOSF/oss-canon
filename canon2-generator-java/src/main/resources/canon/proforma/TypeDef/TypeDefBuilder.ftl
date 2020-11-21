@@ -18,7 +18,7 @@ ${import}
  * Builder helper function for the external type ${entity.externalType}.
  */
 @Immutable
-public class ${entity.externalType}Builder
+public class ${entity.externalType}${c}Builder
 {
   /**
    * Constructor from a ${entity.javaType} value.
