@@ -47,7 +47,7 @@ import com.symphony.oss.canon2.core.SourceContext;
  * Generated from ReferenceObject
  */
 @Immutable
-public class ReferenceObject extends ReferenceObjectEntity
+public class ReferenceObject extends ReferenceObject_Entity
 {
   class UriParts
   {

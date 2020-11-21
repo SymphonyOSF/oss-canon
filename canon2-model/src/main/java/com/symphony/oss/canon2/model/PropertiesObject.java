@@ -43,7 +43,7 @@ import com.symphony.oss.canon.json.model.JsonObject;
  * Generated from PropertiesObject
  */
 @Immutable
-public class PropertiesObject extends PropertiesObjectEntity
+public class PropertiesObject extends PropertiesObject_Entity
 {
   private final ImmutableMap<String, Object> properties_;
   

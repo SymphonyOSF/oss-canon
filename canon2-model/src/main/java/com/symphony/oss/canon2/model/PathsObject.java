@@ -21,7 +21,7 @@
  *    Generator groupId    org.symphonyoss.s2.canon
  *              artifactId canon2-generator-java
  *    Template name        template/Object/_.java.ftl
- *    At                   2020-11-12 11:16:46 GMT
+ *    At                   2020-11-21 06:21:48 GMT
  *----------------------------------------------------------------------------------------------------
  */
 
@@ -73,7 +73,7 @@ public class PathsObject extends ObjectEntity
     }
     else
     {
-      IPathsObjectInstanceOrBuilder builder =  initialiser.getInstanceOrBuilder();
+      I_PathsObject_InstanceOrBuilder builder =  initialiser.getInstanceOrBuilder();
 
       if(builder == null)
       {
@@ -124,7 +124,7 @@ public class PathsObject extends ObjectEntity
      * 
      * @return an instance or builder containing the values for a new instance.
      */
-    IPathsObjectInstanceOrBuilder getInstanceOrBuilder();
+    I_PathsObject_InstanceOrBuilder getInstanceOrBuilder();
   }
 
   /**
@@ -144,7 +144,7 @@ public class PathsObject extends ObjectEntity
     }
 
     @Override
-    public IPathsObjectInstanceOrBuilder getInstanceOrBuilder()
+    public I_PathsObject_InstanceOrBuilder getInstanceOrBuilder()
     {
       return null;
     }
@@ -158,7 +158,7 @@ public class PathsObject extends ObjectEntity
    */
   public static abstract class AbstractBuilder<T extends AbstractBuilder<T,B>, B extends PathsObject>
     extends ObjectEntity.AbstractBuilder<T,B>
-    implements IPathsObjectInstanceOrBuilder, Initialiser
+    implements I_PathsObject_InstanceOrBuilder, Initialiser
   {
 
     protected AbstractBuilder(Class<T> type)
@@ -167,7 +167,7 @@ public class PathsObject extends ObjectEntity
     }
 
     @Override
-    public IPathsObjectInstanceOrBuilder getInstanceOrBuilder()
+    public I_PathsObject_InstanceOrBuilder getInstanceOrBuilder()
     {
       return this;
     }

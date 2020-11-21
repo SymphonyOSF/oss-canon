@@ -20,48 +20,55 @@
  *    Input source         canon.json
  *    Generator groupId    org.symphonyoss.s2.canon
  *              artifactId canon2-generator-java
- *    Template name        template/Object/_.java.ftl
+ *    Template name        template/Object/_Entity.java.ftl
  *    At                   2020-11-21 06:21:48 GMT
  *----------------------------------------------------------------------------------------------------
  */
 
 package com.symphony.oss.canon2.model;
 
+import java.util.Objects;
+
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.annotation.concurrent.Immutable;
 
 import com.google.common.collect.ImmutableSet;
 import com.symphony.oss.canon.json.ParserErrorException;
 import com.symphony.oss.canon.json.model.JsonDomNode;
+import com.symphony.oss.canon.json.model.JsonNull;
 import com.symphony.oss.canon.json.model.JsonObject;
+import com.symphony.oss.canon.json.model.JsonString;
 import com.symphony.oss.canon2.runtime.java.IObjectEntityInitialiser;
 import com.symphony.oss.canon2.runtime.java.JsonObjectEntityInitialiser;
 import com.symphony.oss.canon2.runtime.java.ModelRegistry;
 import com.symphony.oss.canon2.runtime.java.ObjectEntity;
+import com.symphony.oss.canon2.runtime.java.TypeDef;
 import com.symphony.oss.commons.fault.FaultAccumulator;
 
 /**
- * Implementation for Object CanonAttributes
- * Generated from CanonAttributes at {entity.context.path}
+ * Implementation for Object ReferenceObject
+ * Generated from ReferenceObject at {entity.context.path}
  */
 @Immutable
-public class CanonAttributes extends ObjectEntity
+public abstract class ReferenceObject_Entity extends ObjectEntity
 {
   /** Type ID */
-  public static final String  TYPE_ID = "com.symphony.oss.canon2.model.CanonAttributes";
+  public static final String  TYPE_ID = "com.symphony.oss.canon2.model.ReferenceObject";
   /** Type version */
   public static final String  TYPE_VERSION = "1.0";
   /** Factory instance */
   public static final Factory FACTORY = new Factory();
 
   private final ImmutableSet<String>        unknownKeys_;
+  private final String                     _$ref_;
 
   /**
    * Constructor.
    *
    * @param initialiser Initialiser, may be JSON serialisation, builder or another instance.
    */
-  public CanonAttributes(Initialiser initialiser)
+  public ReferenceObject_Entity(Initialiser initialiser)
   {
     super(initialiser);
 
@@ -69,25 +76,47 @@ public class CanonAttributes extends ObjectEntity
     {
       JsonObjectEntityInitialiser jsonInitialiser = (JsonObjectEntityInitialiser)initialiser;
 
+      JsonDomNode  node;
+
+      node = jsonInitialiser.get("$ref");
+      if(node == null || node instanceof JsonNull)
+      {
+        throw new ParserErrorException("$ref is required.", jsonInitialiser.getJson().getContext());
+      }
+      else
+      {
+        if(node instanceof JsonString)
+        {
+          _$ref_ = ((JsonString)node).asString();
+        }
+        else 
+        {
+          throw new ParserErrorException("$ref must be an instance of JsonString not " + node.getClass().getName(), node.getContext());
+        }
+      }
       unknownKeys_ = jsonInitialiser.getCanonUnknownKeys();
     }
     else
     {
-      I_CanonAttributes_InstanceOrBuilder builder =  initialiser.getInstanceOrBuilder();
+      I_ReferenceObject_InstanceOrBuilder builder =  initialiser.getInstanceOrBuilder();
 
       if(builder == null)
       {
         throw new IllegalArgumentException("Initializer is not an JsonObjectEntityInitialiser but getInstanceOrBuilder() returns null");
       }
+      _$ref_ = builder.get$ref();
+      if(_$ref_ == null)
+        throw new IllegalArgumentException("$ref is required.");
+  
       unknownKeys_ = builder.getCanonUnknownKeys();
     }
   }
 
 
   /**
-   * Factory class for CanonAttributes.
+   * Factory class for ReferenceObject.
    */
-  public static class Factory extends ObjectEntity.Factory<CanonAttributes>
+  public static class Factory extends ObjectEntity.Factory<ReferenceObject>
   {
     @Override
     public String getCanonType()
@@ -96,16 +125,16 @@ public class CanonAttributes extends ObjectEntity
     }
 
     @Override
-    public CanonAttributes newInstance(JsonDomNode node, ModelRegistry modelRegistry)
+    public ReferenceObject newInstance(JsonDomNode node, ModelRegistry modelRegistry)
     {
       if(node instanceof JsonObject)
       {
-        return new CanonAttributes(new JsonInitialiser((JsonObject)node, modelRegistry));
+        return new ReferenceObject(new JsonInitialiser((JsonObject)node, modelRegistry));
       }
 
       if(!modelRegistry.getParserValidation().isIgnoreInvalidAttributes())
       {
-        throw new ParserErrorException("CanonAttributes must be an Object node not " + node.getClass().getName(), node.getContext());
+        throw new ParserErrorException("ReferenceObject must be an Object node not " + node.getClass().getName(), node.getContext());
       }
       else
       {
@@ -115,7 +144,7 @@ public class CanonAttributes extends ObjectEntity
   }
 
   /**
-   * Abstract Initialiser for CanonAttributes
+   * Abstract Initialiser for ReferenceObject
    */
   public interface Initialiser extends IObjectEntityInitialiser
   {
@@ -124,11 +153,11 @@ public class CanonAttributes extends ObjectEntity
      * 
      * @return an instance or builder containing the values for a new instance.
      */
-    I_CanonAttributes_InstanceOrBuilder getInstanceOrBuilder();
+    I_ReferenceObject_InstanceOrBuilder getInstanceOrBuilder();
   }
 
   /**
-   * JSON Initialiser for CanonAttributes
+   * JSON Initialiser for ReferenceObject
    */
   public static class JsonInitialiser extends JsonObjectEntityInitialiser implements Initialiser
   {
@@ -144,22 +173,23 @@ public class CanonAttributes extends ObjectEntity
     }
 
     @Override
-    public I_CanonAttributes_InstanceOrBuilder getInstanceOrBuilder()
+    public I_ReferenceObject_InstanceOrBuilder getInstanceOrBuilder()
     {
       return null;
     }
   }
 
   /**
-   * Abstract builder for CanonAttributes. If there are sub-classes of this type then their builders sub-class this builder.
+   * Abstract builder for ReferenceObject. If there are sub-classes of this type then their builders sub-class this builder.
    *
    * @param <T> The concrete type of the builder, used for fluent methods.
    * @param <B> The concrete type of the built object.
    */
-  public static abstract class AbstractBuilder<T extends AbstractBuilder<T,B>, B extends CanonAttributes>
+  public static abstract class AbstractBuilder<T extends AbstractBuilder<T,B>, B extends ReferenceObject_Entity>
     extends ObjectEntity.AbstractBuilder<T,B>
-    implements I_CanonAttributes_InstanceOrBuilder, Initialiser
+    implements I_ReferenceObject_InstanceOrBuilder, Initialiser
   {
+    protected String                     _$ref_;
 
     protected AbstractBuilder(Class<T> type)
     {
@@ -167,7 +197,7 @@ public class CanonAttributes extends ObjectEntity
     }
 
     @Override
-    public I_CanonAttributes_InstanceOrBuilder getInstanceOrBuilder()
+    public I_ReferenceObject_InstanceOrBuilder getInstanceOrBuilder()
     {
       return this;
     }
@@ -176,6 +206,7 @@ public class CanonAttributes extends ObjectEntity
     {
       super(type, initial);
 
+      _$ref_ = initial.get$ref();
     }
 
     /**
@@ -188,12 +219,54 @@ public class CanonAttributes extends ObjectEntity
      */
     public T withValues(JsonObject json, ModelRegistry modelRegistry)
     {
+      if(json.containsKey("$ref"))
+      {
+        JsonDomNode  node = json.get("$ref");
+        if(node instanceof JsonString)
+        {
+          _$ref_ = ((JsonString)node).asString();
+        }
+        else if(!modelRegistry.getParserValidation().isIgnoreInvalidAttributes())
+        {
+          throw new ParserErrorException("$ref must be an instance of JsonString not " + node.getClass().getName(), node.getContext());
+        }
+      }
       return self();
     }
 
     /* void populateAllFields(List<Object> result)
     {
+      result.add(_$ref_);
     }*/
+
+    /**
+     * Return the value of the $ref attribute.
+     *
+     * @return the value of the $ref attribute.
+     */
+    @Override
+    public @Nonnull String get$ref()
+    {
+      if(_$ref_ == null)
+        throw new IllegalStateException("Unexpected null value encountered");
+      return _$ref_;
+    }
+
+    /**
+     * Set the value of the $ref attribute.
+     *
+     * @param value The value to be set.
+     *
+     * @return This (fluent method).
+     */
+    public T with$ref(String value)
+    {
+        if(value == null)
+          throw new IllegalArgumentException("$ref is required.");
+  
+      _$ref_ = value;
+      return self();
+    }
 
 
     @Override
@@ -201,8 +274,8 @@ public class CanonAttributes extends ObjectEntity
     {
       JsonObject.Builder builder = new JsonObject.Builder();
 
-      builder.addIfNotNull(JSON_TYPE, CanonAttributes.TYPE_ID);
-      builder.addIfNotNull(JSON_VERSION, CanonAttributes.TYPE_VERSION);
+      builder.addIfNotNull(JSON_TYPE, ReferenceObject_Entity.TYPE_ID);
+      builder.addIfNotNull(JSON_VERSION, ReferenceObject_Entity.TYPE_VERSION);
 
       populateJson(builder);
 
@@ -213,12 +286,18 @@ public class CanonAttributes extends ObjectEntity
     public void populateJson(JsonObject.Builder builder)
     {
       super.populateJson(builder);
+
+      if(get$ref() != null)
+      {
+        builder.addIfNotNull("$ref", get$ref());
+      }
     }
 
     @Override
     public void validate(FaultAccumulator faultAccumulator)
     {
       super.validate(faultAccumulator);
+      faultAccumulator.checkNotNull(_$ref_, "$ref");
     }
   }
 
@@ -229,9 +308,9 @@ public class CanonAttributes extends ObjectEntity
   }
 
   /**
-   * Builder for CanonAttributes
+   * Builder for ReferenceObject
    */
-  public static class Builder extends CanonAttributes.AbstractBuilder<Builder, CanonAttributes>
+  public static class Builder extends ReferenceObject.AbstractBuilder<Builder, ReferenceObject>
   {
     /**
      * Constructor.
@@ -246,24 +325,34 @@ public class CanonAttributes extends ObjectEntity
      *
      * @param initial An instance of the built type from which values are to be initialised.
      */
-    public Builder(CanonAttributes initial)
+    public Builder(ReferenceObject initial)
     {
       super(Builder.class, initial);
     }
 
     @Override
-    protected CanonAttributes construct()
+    protected ReferenceObject construct()
     {
-      return new CanonAttributes(this);
+      return new ReferenceObject(this);
     }
   }
 
 
+  /**
+   * Return the value of the $ref attribute.
+   *
+   * @return the value of the $ref attribute.
+   */
+  public @Nonnull String get$ref()
+  {
+    return _$ref_;
+  }
+
   @Override
   public boolean equals(Object obj)
   {
-    if(obj instanceof CanonAttributes)
-      return toString().equals(((CanonAttributes)obj).toString());
+    if(obj instanceof ReferenceObject_Entity)
+      return toString().equals(((ReferenceObject_Entity)obj).toString());
 
     return false;
   }
@@ -277,6 +366,6 @@ public class CanonAttributes extends ObjectEntity
 }
 
 /*----------------------------------------------------------------------------------------------------
- * End of template template/Object/_.java.ftl
+ * End of template template/Object/_Entity.java.ftl
  * End of code generation
  *------------------------------------------------------------------------------------------------- */

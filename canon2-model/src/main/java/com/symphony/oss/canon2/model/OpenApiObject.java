@@ -42,7 +42,7 @@ import com.symphony.oss.canon2.core.SourceContext;
  * Generated from OpenApiObject
  */
 @Immutable
-public class OpenApiObject extends OpenApiObjectEntity implements ICanonModelEntity
+public class OpenApiObject extends OpenApiObject_Entity implements ICanonModelEntity
 {
   /**
    * Constructor.

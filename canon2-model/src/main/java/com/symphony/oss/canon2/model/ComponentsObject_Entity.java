@@ -20,7 +20,7 @@
  *    Input source         canon.json
  *    Generator groupId    org.symphonyoss.s2.canon
  *              artifactId canon2-generator-java
- *    Template name        template/Object/_.java.ftl
+ *    Template name        template/Object/_Entity.java.ftl
  *    At                   2020-11-21 06:21:48 GMT
  *----------------------------------------------------------------------------------------------------
  */
@@ -33,6 +33,7 @@ import javax.annotation.concurrent.Immutable;
 import com.google.common.collect.ImmutableSet;
 import com.symphony.oss.canon.json.ParserErrorException;
 import com.symphony.oss.canon.json.model.JsonDomNode;
+import com.symphony.oss.canon.json.model.JsonNull;
 import com.symphony.oss.canon.json.model.JsonObject;
 import com.symphony.oss.canon2.runtime.java.IObjectEntityInitialiser;
 import com.symphony.oss.canon2.runtime.java.JsonObjectEntityInitialiser;
@@ -41,27 +42,28 @@ import com.symphony.oss.canon2.runtime.java.ObjectEntity;
 import com.symphony.oss.commons.fault.FaultAccumulator;
 
 /**
- * Implementation for Object CanonAttributes
- * Generated from CanonAttributes at {entity.context.path}
+ * Implementation for Object ComponentsObject
+ * Generated from ComponentsObject at {entity.context.path}
  */
 @Immutable
-public class CanonAttributes extends ObjectEntity
+public abstract class ComponentsObject_Entity extends ObjectEntity
 {
   /** Type ID */
-  public static final String  TYPE_ID = "com.symphony.oss.canon2.model.CanonAttributes";
+  public static final String  TYPE_ID = "com.symphony.oss.canon2.model.ComponentsObject";
   /** Type version */
   public static final String  TYPE_VERSION = "1.0";
   /** Factory instance */
   public static final Factory FACTORY = new Factory();
 
   private final ImmutableSet<String>        unknownKeys_;
+  private final SchemasObject              _schemas_;
 
   /**
    * Constructor.
    *
    * @param initialiser Initialiser, may be JSON serialisation, builder or another instance.
    */
-  public CanonAttributes(Initialiser initialiser)
+  public ComponentsObject_Entity(Initialiser initialiser)
   {
     super(initialiser);
 
@@ -69,25 +71,37 @@ public class CanonAttributes extends ObjectEntity
     {
       JsonObjectEntityInitialiser jsonInitialiser = (JsonObjectEntityInitialiser)initialiser;
 
+      JsonDomNode  node;
+
+      node = jsonInitialiser.get("schemas");
+      if(node == null || node instanceof JsonNull)
+      {
+        _schemas_ = null;
+      }
+      else
+      {
+        _schemas_ = SchemasObject.FACTORY.newInstance(node, jsonInitialiser.getModelRegistry());
+      }
       unknownKeys_ = jsonInitialiser.getCanonUnknownKeys();
     }
     else
     {
-      I_CanonAttributes_InstanceOrBuilder builder =  initialiser.getInstanceOrBuilder();
+      I_ComponentsObject_InstanceOrBuilder builder =  initialiser.getInstanceOrBuilder();
 
       if(builder == null)
       {
         throw new IllegalArgumentException("Initializer is not an JsonObjectEntityInitialiser but getInstanceOrBuilder() returns null");
       }
+      _schemas_ = builder.getSchemas();
       unknownKeys_ = builder.getCanonUnknownKeys();
     }
   }
 
 
   /**
-   * Factory class for CanonAttributes.
+   * Factory class for ComponentsObject.
    */
-  public static class Factory extends ObjectEntity.Factory<CanonAttributes>
+  public static class Factory extends ObjectEntity.Factory<ComponentsObject>
   {
     @Override
     public String getCanonType()
@@ -96,16 +110,16 @@ public class CanonAttributes extends ObjectEntity
     }
 
     @Override
-    public CanonAttributes newInstance(JsonDomNode node, ModelRegistry modelRegistry)
+    public ComponentsObject newInstance(JsonDomNode node, ModelRegistry modelRegistry)
     {
       if(node instanceof JsonObject)
       {
-        return new CanonAttributes(new JsonInitialiser((JsonObject)node, modelRegistry));
+        return new ComponentsObject(new JsonInitialiser((JsonObject)node, modelRegistry));
       }
 
       if(!modelRegistry.getParserValidation().isIgnoreInvalidAttributes())
       {
-        throw new ParserErrorException("CanonAttributes must be an Object node not " + node.getClass().getName(), node.getContext());
+        throw new ParserErrorException("ComponentsObject must be an Object node not " + node.getClass().getName(), node.getContext());
       }
       else
       {
@@ -115,7 +129,7 @@ public class CanonAttributes extends ObjectEntity
   }
 
   /**
-   * Abstract Initialiser for CanonAttributes
+   * Abstract Initialiser for ComponentsObject
    */
   public interface Initialiser extends IObjectEntityInitialiser
   {
@@ -124,11 +138,11 @@ public class CanonAttributes extends ObjectEntity
      * 
      * @return an instance or builder containing the values for a new instance.
      */
-    I_CanonAttributes_InstanceOrBuilder getInstanceOrBuilder();
+    I_ComponentsObject_InstanceOrBuilder getInstanceOrBuilder();
   }
 
   /**
-   * JSON Initialiser for CanonAttributes
+   * JSON Initialiser for ComponentsObject
    */
   public static class JsonInitialiser extends JsonObjectEntityInitialiser implements Initialiser
   {
@@ -144,22 +158,23 @@ public class CanonAttributes extends ObjectEntity
     }
 
     @Override
-    public I_CanonAttributes_InstanceOrBuilder getInstanceOrBuilder()
+    public I_ComponentsObject_InstanceOrBuilder getInstanceOrBuilder()
     {
       return null;
     }
   }
 
   /**
-   * Abstract builder for CanonAttributes. If there are sub-classes of this type then their builders sub-class this builder.
+   * Abstract builder for ComponentsObject. If there are sub-classes of this type then their builders sub-class this builder.
    *
    * @param <T> The concrete type of the builder, used for fluent methods.
    * @param <B> The concrete type of the built object.
    */
-  public static abstract class AbstractBuilder<T extends AbstractBuilder<T,B>, B extends CanonAttributes>
+  public static abstract class AbstractBuilder<T extends AbstractBuilder<T,B>, B extends ComponentsObject_Entity>
     extends ObjectEntity.AbstractBuilder<T,B>
-    implements I_CanonAttributes_InstanceOrBuilder, Initialiser
+    implements I_ComponentsObject_InstanceOrBuilder, Initialiser
   {
+    protected SchemasObject              _schemas_;
 
     protected AbstractBuilder(Class<T> type)
     {
@@ -167,7 +182,7 @@ public class CanonAttributes extends ObjectEntity
     }
 
     @Override
-    public I_CanonAttributes_InstanceOrBuilder getInstanceOrBuilder()
+    public I_ComponentsObject_InstanceOrBuilder getInstanceOrBuilder()
     {
       return this;
     }
@@ -176,6 +191,7 @@ public class CanonAttributes extends ObjectEntity
     {
       super(type, initial);
 
+      _schemas_ = initial.getSchemas();
     }
 
     /**
@@ -188,12 +204,42 @@ public class CanonAttributes extends ObjectEntity
      */
     public T withValues(JsonObject json, ModelRegistry modelRegistry)
     {
+      if(json.containsKey("schemas"))
+      {
+        JsonDomNode  node = json.get("schemas");
+        _schemas_ = SchemasObject.FACTORY.newInstance(node, modelRegistry);
+      }
       return self();
     }
 
     /* void populateAllFields(List<Object> result)
     {
+      result.add(_schemas_);
     }*/
+
+    /**
+     * Return the value of the schemas attribute.
+     *
+     * @return the value of the schemas attribute.
+     */
+    @Override
+    public @Nullable SchemasObject getSchemas()
+    {
+      return _schemas_;
+    }
+
+    /**
+     * Set the value of the schemas attribute.
+     *
+     * @param value The value to be set.
+     *
+     * @return This (fluent method).
+     */
+    public T withSchemas(SchemasObject value)
+    {
+      _schemas_ = value;
+      return self();
+    }
 
 
     @Override
@@ -201,8 +247,8 @@ public class CanonAttributes extends ObjectEntity
     {
       JsonObject.Builder builder = new JsonObject.Builder();
 
-      builder.addIfNotNull(JSON_TYPE, CanonAttributes.TYPE_ID);
-      builder.addIfNotNull(JSON_VERSION, CanonAttributes.TYPE_VERSION);
+      builder.addIfNotNull(JSON_TYPE, ComponentsObject_Entity.TYPE_ID);
+      builder.addIfNotNull(JSON_VERSION, ComponentsObject_Entity.TYPE_VERSION);
 
       populateJson(builder);
 
@@ -213,6 +259,11 @@ public class CanonAttributes extends ObjectEntity
     public void populateJson(JsonObject.Builder builder)
     {
       super.populateJson(builder);
+
+      if(getSchemas() != null)
+      {
+        builder.addIfNotNull("schemas", getSchemas().getJson());
+      }
     }
 
     @Override
@@ -229,9 +280,9 @@ public class CanonAttributes extends ObjectEntity
   }
 
   /**
-   * Builder for CanonAttributes
+   * Builder for ComponentsObject
    */
-  public static class Builder extends CanonAttributes.AbstractBuilder<Builder, CanonAttributes>
+  public static class Builder extends ComponentsObject.AbstractBuilder<Builder, ComponentsObject>
   {
     /**
      * Constructor.
@@ -246,24 +297,34 @@ public class CanonAttributes extends ObjectEntity
      *
      * @param initial An instance of the built type from which values are to be initialised.
      */
-    public Builder(CanonAttributes initial)
+    public Builder(ComponentsObject initial)
     {
       super(Builder.class, initial);
     }
 
     @Override
-    protected CanonAttributes construct()
+    protected ComponentsObject construct()
     {
-      return new CanonAttributes(this);
+      return new ComponentsObject(this);
     }
   }
 
 
+  /**
+   * Return the value of the schemas attribute.
+   *
+   * @return the value of the schemas attribute.
+   */
+  public @Nullable SchemasObject getSchemas()
+  {
+    return _schemas_;
+  }
+
   @Override
   public boolean equals(Object obj)
   {
-    if(obj instanceof CanonAttributes)
-      return toString().equals(((CanonAttributes)obj).toString());
+    if(obj instanceof ComponentsObject_Entity)
+      return toString().equals(((ComponentsObject_Entity)obj).toString());
 
     return false;
   }
@@ -277,6 +338,6 @@ public class CanonAttributes extends ObjectEntity
 }
 
 /*----------------------------------------------------------------------------------------------------
- * End of template template/Object/_.java.ftl
+ * End of template template/Object/_Entity.java.ftl
  * End of code generation
  *------------------------------------------------------------------------------------------------- */

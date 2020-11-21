@@ -20,70 +20,49 @@
  *    Input source         canon.json
  *    Generator groupId    org.symphonyoss.s2.canon
  *              artifactId canon2-generator-java
- *    Template name        template/Enum/_.java.ftl
+ *    Template name        template/Model/_Model.java.ftl
  *    At                   2020-11-21 06:21:48 GMT
  *----------------------------------------------------------------------------------------------------
  */
+
 package com.symphony.oss.canon2.model;
 
-import javax.annotation.concurrent.Immutable;
+import com.symphony.oss.canon2.runtime.java.Entity;
 
 /**
- * Enum  CanonCardinality canon
- * Model canon
- * Generated from CanonCardinality at {entity.context.path}
+ * Model class for canon
  */
-@Immutable
-public enum CanonCardinality
+public class Canon_Model
 {
-  /** LIST */
-  LIST("LIST"),
-  /** SET */
-  SET("SET")
-  ;
-  
-  private final String value_;
-  
-  private CanonCardinality(String value)
+  /** Factories for every object in the model. */
+  public static final Entity.Factory<?>[] FACTORIES = new Entity.Factory<?>[]
   {
-    value_ = value;
-  }
-  
-  /**
-   * Return the serialized value of this enum constant.
-   *
-   * @return the serialized value of this enum constant.
-   */
-  public String getValue()
+    CanonGeneratorConfig.FACTORY,
+    SchemaOrRef.FACTORY,
+    PropertiesObject.FACTORY,
+    SchemasObject.FACTORY,
+    InfoObject.FACTORY,
+    OpenApiObject.FACTORY,
+    Schema.FACTORY,
+    CanonAttributes.FACTORY,
+    NumberSchema.FACTORY,
+    ComponentsObject.FACTORY,
+    BooleanSchema.FACTORY,
+    ReferenceObject.FACTORY,
+    ArraySchema.FACTORY,
+    ObjectSchema.FACTORY,
+    DiscriminatorObject.FACTORY,
+    PathsObject.FACTORY,
+    StringSchema.FACTORY,
+    AdditionalProperties.FACTORY,
+    OneOfSchema.FACTORY
+  };
+    
+  private Canon_Model()
   {
-    return value_;
-  }
-  
-  /**
-   * Deserialize an enum constant value from a String value.
-   * 
-   * @param value The serialized form of an enum constant.
-   * 
-   * @return The enum constant value from the given String value.
-   * 
-   * @throws IllegalArgumentException If the given value is not a valid enum constant.
-   */
-  public static final CanonCardinality deserialize(String value)
-  {
-    switch(value)
-    {
-      case "LIST":
-        return LIST;
-        
-      case "SET":
-        return SET;
-        
-      default:
-        throw new IllegalArgumentException("No enum constant \"" + value + "\" in CanonCardinality");
-    }
   }
 }
 /*----------------------------------------------------------------------------------------------------
- * End of template template/Enum/_.java.ftl
+ * End of template template/Model/_Model.java.ftl
  * End of code generation
  *------------------------------------------------------------------------------------------------- */

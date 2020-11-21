@@ -42,7 +42,7 @@ import com.symphony.oss.canon2.core.SourceContext;
  * Generated from ComponentsObject
  */
 @Immutable
-public class ComponentsObject extends ComponentsObjectEntity
+public class ComponentsObject extends ComponentsObject_Entity
 {
   /**
    * Constructor.

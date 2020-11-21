@@ -20,70 +20,38 @@
  *    Input source         canon.json
  *    Generator groupId    org.symphonyoss.s2.canon
  *              artifactId canon2-generator-java
- *    Template name        template/Enum/_.java.ftl
+ *    Template name        template/Object/I_InstanceOrBuilder.java.ftl
  *    At                   2020-11-21 06:21:48 GMT
  *----------------------------------------------------------------------------------------------------
  */
+
 package com.symphony.oss.canon2.model;
 
-import javax.annotation.concurrent.Immutable;
+import javax.annotation.Nullable;
+
+import com.symphony.oss.canon2.runtime.java.IEntityInitialiser;
 
 /**
- * Enum  CanonCardinality canon
- * Model canon
- * Generated from CanonCardinality at {entity.context.path}
+ * Instance or Builder for Object AdditionalProperties
  */
-@Immutable
-public enum CanonCardinality
+public interface I_AdditionalProperties_InstanceOrBuilder extends IEntityInitialiser
 {
-  /** LIST */
-  LIST("LIST"),
-  /** SET */
-  SET("SET")
-  ;
-  
-  private final String value_;
-  
-  private CanonCardinality(String value)
-  {
-    value_ = value;
-  }
   
   /**
-   * Return the serialized value of this enum constant.
+   * Return the value of the SchemaOrRef attribute.
    *
-   * @return the serialized value of this enum constant.
+   * @return the value of the SchemaOrRef attribute.
    */
-  public String getValue()
-  {
-    return value_;
-  }
+  @Nullable SchemaOrRef getSchemaOrRef();
   
   /**
-   * Deserialize an enum constant value from a String value.
-   * 
-   * @param value The serialized form of an enum constant.
-   * 
-   * @return The enum constant value from the given String value.
-   * 
-   * @throws IllegalArgumentException If the given value is not a valid enum constant.
+   * Return the value of the $1 attribute.
+   *
+   * @return the value of the $1 attribute.
    */
-  public static final CanonCardinality deserialize(String value)
-  {
-    switch(value)
-    {
-      case "LIST":
-        return LIST;
-        
-      case "SET":
-        return SET;
-        
-      default:
-        throw new IllegalArgumentException("No enum constant \"" + value + "\" in CanonCardinality");
-    }
-  }
+  @Nullable Boolean get$1();
 }
 /*----------------------------------------------------------------------------------------------------
- * End of template template/Enum/_.java.ftl
+ * End of template template/Object/I_InstanceOrBuilder.java.ftl
  * End of code generation
  *------------------------------------------------------------------------------------------------- */

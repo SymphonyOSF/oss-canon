@@ -7,7 +7,6 @@
 package com.symphony.oss.canon2.generator.java;
 
 import java.math.BigInteger;
-import java.util.Collection;
 import java.util.List;
 
 import com.google.common.collect.ImmutableList;
@@ -16,8 +15,8 @@ import com.symphony.oss.canon2.core.SchemaTemplateModelType;
 import com.symphony.oss.canon2.core.SourceContext;
 import com.symphony.oss.canon2.generator.IArraySchemaTemplateModel;
 import com.symphony.oss.canon2.generator.java.JavaGenerator.Context;
-import com.symphony.oss.canon2.model.ArraySchemaEntity.MaxItems;
-import com.symphony.oss.canon2.model.ArraySchemaEntity.MinItems;
+import com.symphony.oss.canon2.model.ArraySchema_Entity.MaxItems;
+import com.symphony.oss.canon2.model.ArraySchema_Entity.MinItems;
 import com.symphony.oss.canon2.model.CanonCardinality;
 import com.symphony.oss.commons.fault.CodingFault;
 

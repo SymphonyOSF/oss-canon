@@ -45,7 +45,7 @@ import com.symphony.oss.canon2.core.SourceContext;
  * Generated from StringSchema
  */
 @Immutable
-public class StringSchema extends StringSchemaEntity implements IPrimitiveSchema
+public class StringSchema extends StringSchema_Entity implements IPrimitiveSchema
 {
   /**
    * Constructor.

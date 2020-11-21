@@ -47,7 +47,7 @@ import com.symphony.oss.canon2.core.SourceContext;
  * Generated from OneOfSchema
  */
 @Immutable
-public class OneOfSchema extends OneOfSchemaEntity implements ISchemaInstance
+public class OneOfSchema extends OneOfSchema_Entity implements ISchemaInstance
 {
   /**
    * Constructor.

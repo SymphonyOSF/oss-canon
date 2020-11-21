@@ -45,7 +45,7 @@ import com.symphony.oss.canon2.core.SourceContext;
  * Generated from BooleanSchema
  */
 @Immutable
-public class BooleanSchema extends BooleanSchemaEntity implements IPrimitiveSchema
+public class BooleanSchema extends BooleanSchema_Entity implements IPrimitiveSchema
 {
   /**
    * Constructor.

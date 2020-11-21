@@ -42,7 +42,7 @@ import com.symphony.oss.canon2.core.SourceContext;
  * Generated from SchemaOrRef
  */
 @Immutable
-public class SchemaOrRef extends SchemaOrRefEntity
+public class SchemaOrRef extends SchemaOrRef_Entity
 {
   /**
    * Constructor.

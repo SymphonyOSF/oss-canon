@@ -47,7 +47,7 @@ import com.symphony.oss.canon2.core.SourceContext;
  * Generated from ArraySchema
  */
 @Immutable
-public class ArraySchema extends ArraySchemaEntity implements ISchemaInstance
+public class ArraySchema extends ArraySchema_Entity implements ISchemaInstance
 {
   /**
    * Constructor.

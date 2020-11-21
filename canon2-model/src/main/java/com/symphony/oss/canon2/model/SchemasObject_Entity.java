@@ -20,7 +20,7 @@
  *    Input source         canon.json
  *    Generator groupId    org.symphonyoss.s2.canon
  *              artifactId canon2-generator-java
- *    Template name        template/Object/_.java.ftl
+ *    Template name        template/Object/_Entity.java.ftl
  *    At                   2020-11-21 06:21:48 GMT
  *----------------------------------------------------------------------------------------------------
  */
@@ -41,14 +41,14 @@ import com.symphony.oss.canon2.runtime.java.ObjectEntity;
 import com.symphony.oss.commons.fault.FaultAccumulator;
 
 /**
- * Implementation for Object CanonAttributes
- * Generated from CanonAttributes at {entity.context.path}
+ * Implementation for Object SchemasObject
+ * Generated from SchemasObject at {entity.context.path}
  */
 @Immutable
-public class CanonAttributes extends ObjectEntity
+public abstract class SchemasObject_Entity extends ObjectEntity
 {
   /** Type ID */
-  public static final String  TYPE_ID = "com.symphony.oss.canon2.model.CanonAttributes";
+  public static final String  TYPE_ID = "com.symphony.oss.canon2.model.SchemasObject";
   /** Type version */
   public static final String  TYPE_VERSION = "1.0";
   /** Factory instance */
@@ -61,7 +61,7 @@ public class CanonAttributes extends ObjectEntity
    *
    * @param initialiser Initialiser, may be JSON serialisation, builder or another instance.
    */
-  public CanonAttributes(Initialiser initialiser)
+  public SchemasObject_Entity(Initialiser initialiser)
   {
     super(initialiser);
 
@@ -73,7 +73,7 @@ public class CanonAttributes extends ObjectEntity
     }
     else
     {
-      I_CanonAttributes_InstanceOrBuilder builder =  initialiser.getInstanceOrBuilder();
+      I_SchemasObject_InstanceOrBuilder builder =  initialiser.getInstanceOrBuilder();
 
       if(builder == null)
       {
@@ -85,9 +85,9 @@ public class CanonAttributes extends ObjectEntity
 
 
   /**
-   * Factory class for CanonAttributes.
+   * Factory class for SchemasObject.
    */
-  public static class Factory extends ObjectEntity.Factory<CanonAttributes>
+  public static class Factory extends ObjectEntity.Factory<SchemasObject>
   {
     @Override
     public String getCanonType()
@@ -96,16 +96,16 @@ public class CanonAttributes extends ObjectEntity
     }
 
     @Override
-    public CanonAttributes newInstance(JsonDomNode node, ModelRegistry modelRegistry)
+    public SchemasObject newInstance(JsonDomNode node, ModelRegistry modelRegistry)
     {
       if(node instanceof JsonObject)
       {
-        return new CanonAttributes(new JsonInitialiser((JsonObject)node, modelRegistry));
+        return new SchemasObject(new JsonInitialiser((JsonObject)node, modelRegistry));
       }
 
       if(!modelRegistry.getParserValidation().isIgnoreInvalidAttributes())
       {
-        throw new ParserErrorException("CanonAttributes must be an Object node not " + node.getClass().getName(), node.getContext());
+        throw new ParserErrorException("SchemasObject must be an Object node not " + node.getClass().getName(), node.getContext());
       }
       else
       {
@@ -115,7 +115,7 @@ public class CanonAttributes extends ObjectEntity
   }
 
   /**
-   * Abstract Initialiser for CanonAttributes
+   * Abstract Initialiser for SchemasObject
    */
   public interface Initialiser extends IObjectEntityInitialiser
   {
@@ -124,11 +124,11 @@ public class CanonAttributes extends ObjectEntity
      * 
      * @return an instance or builder containing the values for a new instance.
      */
-    I_CanonAttributes_InstanceOrBuilder getInstanceOrBuilder();
+    I_SchemasObject_InstanceOrBuilder getInstanceOrBuilder();
   }
 
   /**
-   * JSON Initialiser for CanonAttributes
+   * JSON Initialiser for SchemasObject
    */
   public static class JsonInitialiser extends JsonObjectEntityInitialiser implements Initialiser
   {
@@ -144,21 +144,21 @@ public class CanonAttributes extends ObjectEntity
     }
 
     @Override
-    public I_CanonAttributes_InstanceOrBuilder getInstanceOrBuilder()
+    public I_SchemasObject_InstanceOrBuilder getInstanceOrBuilder()
     {
       return null;
     }
   }
 
   /**
-   * Abstract builder for CanonAttributes. If there are sub-classes of this type then their builders sub-class this builder.
+   * Abstract builder for SchemasObject. If there are sub-classes of this type then their builders sub-class this builder.
    *
    * @param <T> The concrete type of the builder, used for fluent methods.
    * @param <B> The concrete type of the built object.
    */
-  public static abstract class AbstractBuilder<T extends AbstractBuilder<T,B>, B extends CanonAttributes>
+  public static abstract class AbstractBuilder<T extends AbstractBuilder<T,B>, B extends SchemasObject_Entity>
     extends ObjectEntity.AbstractBuilder<T,B>
-    implements I_CanonAttributes_InstanceOrBuilder, Initialiser
+    implements I_SchemasObject_InstanceOrBuilder, Initialiser
   {
 
     protected AbstractBuilder(Class<T> type)
@@ -167,7 +167,7 @@ public class CanonAttributes extends ObjectEntity
     }
 
     @Override
-    public I_CanonAttributes_InstanceOrBuilder getInstanceOrBuilder()
+    public I_SchemasObject_InstanceOrBuilder getInstanceOrBuilder()
     {
       return this;
     }
@@ -201,8 +201,8 @@ public class CanonAttributes extends ObjectEntity
     {
       JsonObject.Builder builder = new JsonObject.Builder();
 
-      builder.addIfNotNull(JSON_TYPE, CanonAttributes.TYPE_ID);
-      builder.addIfNotNull(JSON_VERSION, CanonAttributes.TYPE_VERSION);
+      builder.addIfNotNull(JSON_TYPE, SchemasObject_Entity.TYPE_ID);
+      builder.addIfNotNull(JSON_VERSION, SchemasObject_Entity.TYPE_VERSION);
 
       populateJson(builder);
 
@@ -229,9 +229,9 @@ public class CanonAttributes extends ObjectEntity
   }
 
   /**
-   * Builder for CanonAttributes
+   * Builder for SchemasObject
    */
-  public static class Builder extends CanonAttributes.AbstractBuilder<Builder, CanonAttributes>
+  public static class Builder extends SchemasObject.AbstractBuilder<Builder, SchemasObject>
   {
     /**
      * Constructor.
@@ -246,15 +246,15 @@ public class CanonAttributes extends ObjectEntity
      *
      * @param initial An instance of the built type from which values are to be initialised.
      */
-    public Builder(CanonAttributes initial)
+    public Builder(SchemasObject initial)
     {
       super(Builder.class, initial);
     }
 
     @Override
-    protected CanonAttributes construct()
+    protected SchemasObject construct()
     {
-      return new CanonAttributes(this);
+      return new SchemasObject(this);
     }
   }
 
@@ -262,8 +262,8 @@ public class CanonAttributes extends ObjectEntity
   @Override
   public boolean equals(Object obj)
   {
-    if(obj instanceof CanonAttributes)
-      return toString().equals(((CanonAttributes)obj).toString());
+    if(obj instanceof SchemasObject_Entity)
+      return toString().equals(((SchemasObject_Entity)obj).toString());
 
     return false;
   }
@@ -277,6 +277,6 @@ public class CanonAttributes extends ObjectEntity
 }
 
 /*----------------------------------------------------------------------------------------------------
- * End of template template/Object/_.java.ftl
+ * End of template template/Object/_Entity.java.ftl
  * End of code generation
  *------------------------------------------------------------------------------------------------- */

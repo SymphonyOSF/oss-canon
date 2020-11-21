@@ -20,70 +20,62 @@
  *    Input source         canon.json
  *    Generator groupId    org.symphonyoss.s2.canon
  *              artifactId canon2-generator-java
- *    Template name        template/Enum/_.java.ftl
+ *    Template name        template/Object/I_InstanceOrBuilder.java.ftl
  *    At                   2020-11-21 06:21:48 GMT
  *----------------------------------------------------------------------------------------------------
  */
+
 package com.symphony.oss.canon2.model;
 
-import javax.annotation.concurrent.Immutable;
+import java.util.Set;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
+import com.symphony.oss.canon2.runtime.java.IObjectEntityInitialiser;
 
 /**
- * Enum  CanonCardinality canon
- * Model canon
- * Generated from CanonCardinality at {entity.context.path}
+ * Instance or Builder for Object OneOfSchema
  */
-@Immutable
-public enum CanonCardinality
+public interface I_OneOfSchema_InstanceOrBuilder extends IObjectEntityInitialiser
 {
-  /** LIST */
-  LIST("LIST"),
-  /** SET */
-  SET("SET")
-  ;
-  
-  private final String value_;
-  
-  private CanonCardinality(String value)
-  {
-    value_ = value;
-  }
   
   /**
-   * Return the serialized value of this enum constant.
+   * Return the value of the oneOf attribute.
    *
-   * @return the serialized value of this enum constant.
+   * @return the value of the oneOf attribute.
    */
-  public String getValue()
-  {
-    return value_;
-  }
+  @Nonnull Set<SchemaOrRef> getOneOf();
   
   /**
-   * Deserialize an enum constant value from a String value.
-   * 
-   * @param value The serialized form of an enum constant.
-   * 
-   * @return The enum constant value from the given String value.
-   * 
-   * @throws IllegalArgumentException If the given value is not a valid enum constant.
+   * Return the value of the x-canon-builderFacade attribute.
+   *
+   * @return the value of the x-canon-builderFacade attribute.
    */
-  public static final CanonCardinality deserialize(String value)
-  {
-    switch(value)
-    {
-      case "LIST":
-        return LIST;
-        
-      case "SET":
-        return SET;
-        
-      default:
-        throw new IllegalArgumentException("No enum constant \"" + value + "\" in CanonCardinality");
-    }
-  }
+  @Nullable Boolean getXCanonBuilderFacade();
+  
+  /**
+   * Return the value of the x-canon-identifier attribute.
+   *
+   * @return the value of the x-canon-identifier attribute.
+   */
+  @Nullable String getXCanonIdentifier();
+  
+  /**
+   * Return the value of the x-canon-facade attribute.
+   *
+   * @return the value of the x-canon-facade attribute.
+   */
+  @Nullable Boolean getXCanonFacade();
+  
+  /**
+   * Return the value of the discriminator attribute.
+   *
+   * @return the value of the discriminator attribute.
+   */
+  @Nullable DiscriminatorObject getDiscriminator();
 }
 /*----------------------------------------------------------------------------------------------------
- * End of template template/Enum/_.java.ftl
+ * End of template template/Object/I_InstanceOrBuilder.java.ftl
  * End of code generation
  *------------------------------------------------------------------------------------------------- */

@@ -42,7 +42,7 @@ import com.symphony.oss.canon.json.ParserErrorException;
 import com.symphony.oss.canon.json.ParserException;
 import com.symphony.oss.canon.json.ParserResultException;
 import com.symphony.oss.canon2.core.ResolvedOpenApiObject.SingletonBuilder;
-import com.symphony.oss.canon2.model.CanonModel;
+import com.symphony.oss.canon2.model.Canon_Model;
 import com.symphony.oss.canon2.model.ISchemaInstance;
 import com.symphony.oss.canon2.model.OpenApiObject;
 import com.symphony.oss.canon2.runtime.java.ModelRegistry;
@@ -66,7 +66,7 @@ public abstract class CanonModelContext
 
   
   private final ModelRegistry                  modelRegistry_      = new ModelRegistry.Builder()
-      .withFactories(CanonModel.FACTORIES)
+      .withFactories(Canon_Model.FACTORIES)
       .build();
 
   private final ImmutableMap<String, String>   uriMap_;

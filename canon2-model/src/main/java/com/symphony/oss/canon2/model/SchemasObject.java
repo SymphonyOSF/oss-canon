@@ -49,7 +49,7 @@ import com.symphony.oss.canon2.core.SourceContext;
  * Generated from SchemasObject
  */
 @Immutable
-public class SchemasObject extends SchemasObjectEntity
+public class SchemasObject extends SchemasObject_Entity
 {
   private final ImmutableMap<String, ? extends ISchema> schemas_;
   

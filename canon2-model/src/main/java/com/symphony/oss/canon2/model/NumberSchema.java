@@ -53,7 +53,7 @@ import com.symphony.oss.canon2.core.SourceContext;
  * Generated from NumberSchema
  */
 @Immutable
-public class NumberSchema extends NumberSchemaEntity implements IPrimitiveSchema
+public class NumberSchema extends NumberSchema_Entity implements IPrimitiveSchema
 {
   /**
    * Constructor.

@@ -21,7 +21,7 @@
  *    Generator groupId    org.symphonyoss.s2.canon
  *              artifactId canon2-generator-java
  *    Template name        template/Object/_.java.ftl
- *    At                   2020-11-12 11:16:46 GMT
+ *    At                   2020-11-21 06:21:48 GMT
  *----------------------------------------------------------------------------------------------------
  */
 
@@ -98,7 +98,7 @@ public class DiscriminatorObject extends ObjectEntity
     }
     else
     {
-      IDiscriminatorObjectInstanceOrBuilder builder =  initialiser.getInstanceOrBuilder();
+      I_DiscriminatorObject_InstanceOrBuilder builder =  initialiser.getInstanceOrBuilder();
 
       if(builder == null)
       {
@@ -150,7 +150,7 @@ public class DiscriminatorObject extends ObjectEntity
      * 
      * @return an instance or builder containing the values for a new instance.
      */
-    IDiscriminatorObjectInstanceOrBuilder getInstanceOrBuilder();
+    I_DiscriminatorObject_InstanceOrBuilder getInstanceOrBuilder();
   }
 
   /**
@@ -170,7 +170,7 @@ public class DiscriminatorObject extends ObjectEntity
     }
 
     @Override
-    public IDiscriminatorObjectInstanceOrBuilder getInstanceOrBuilder()
+    public I_DiscriminatorObject_InstanceOrBuilder getInstanceOrBuilder()
     {
       return null;
     }
@@ -184,7 +184,7 @@ public class DiscriminatorObject extends ObjectEntity
    */
   public static abstract class AbstractBuilder<T extends AbstractBuilder<T,B>, B extends DiscriminatorObject>
     extends ObjectEntity.AbstractBuilder<T,B>
-    implements IDiscriminatorObjectInstanceOrBuilder, Initialiser
+    implements I_DiscriminatorObject_InstanceOrBuilder, Initialiser
   {
     protected String                     _propertyName_;
 
@@ -194,7 +194,7 @@ public class DiscriminatorObject extends ObjectEntity
     }
 
     @Override
-    public IDiscriminatorObjectInstanceOrBuilder getInstanceOrBuilder()
+    public I_DiscriminatorObject_InstanceOrBuilder getInstanceOrBuilder()
     {
       return this;
     }

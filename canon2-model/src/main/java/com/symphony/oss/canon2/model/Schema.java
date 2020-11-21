@@ -46,7 +46,7 @@ import com.symphony.oss.commons.fault.CodingFault;
  * Generated from Schema
  */
 @Immutable
-public class Schema extends SchemaEntity implements ISchema
+public class Schema extends Schema_Entity implements ISchema
 {
   /**
    * Constructor.

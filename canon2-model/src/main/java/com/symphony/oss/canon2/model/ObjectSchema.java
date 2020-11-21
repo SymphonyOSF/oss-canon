@@ -50,7 +50,7 @@ import com.symphony.oss.canon2.core.SourceContext;
  * Generated from ObjectSchema
  */
 @Immutable
-public class ObjectSchema extends ObjectSchemaEntity implements ISchema
+public class ObjectSchema extends ObjectSchema_Entity implements ISchema
 {
   /**
    * Constructor.
