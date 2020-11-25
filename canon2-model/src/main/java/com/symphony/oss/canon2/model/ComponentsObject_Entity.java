@@ -1,3 +1,13 @@
+  
+  
+// TRACE 1 imports
+// javax.annotation.concurrent.Immutable
+// com.symphony.oss.canon2.runtime.java.ModelRegistry
+// com.symphony.oss.canon.json.model.JsonDomNode
+// com.symphony.oss.canon.json.ParserErrorException
+// com.symphony.oss.commons.fault.FaultAccumulator
+
+
 /**
  * GENERATED CODE - DO NOT EDIT OR CHECK IN TO SOURCE CODE CONTROL
  *
@@ -21,21 +31,76 @@
  *    Generator groupId    org.symphonyoss.s2.canon
  *              artifactId canon2-generator-java
  *    Template name        template/Object/_Entity.java.ftl
- *    At                   2020-11-21 06:21:48 GMT
+ *    At                   2020-11-25 13:28:55 GMT
  *----------------------------------------------------------------------------------------------------
  */
+  
+  
+// TRACE 2 imports
+// javax.annotation.concurrent.Immutable
+// com.symphony.oss.canon2.runtime.java.ModelRegistry
+// com.symphony.oss.canon.json.model.JsonDomNode
+// com.symphony.oss.canon.json.ParserErrorException
+// com.symphony.oss.commons.fault.FaultAccumulator
+
+
+  
+  
+// TRACE 3 imports
+// javax.annotation.concurrent.Immutable
+// com.symphony.oss.canon2.runtime.java.ModelRegistry
+// com.symphony.oss.canon.json.model.JsonDomNode
+// com.symphony.oss.canon.json.ParserErrorException
+// com.symphony.oss.commons.fault.FaultAccumulator
+
+
+// T2 A
+      // field schemas
+    
+      // T B schemas
+// schema.class class com.symphony.oss.canon2.generator.java.JavaObjectSchemaTemplateModel
+    // add SchemasObject -> com.symphony.oss.canon.json.model.JsonObject
+  
+  
+// TRACE 4 imports
+// javax.annotation.concurrent.Immutable
+// com.symphony.oss.canon2.runtime.java.ModelRegistry
+// com.symphony.oss.canon.json.model.JsonDomNode
+// com.symphony.oss.canon.json.ParserErrorException
+// com.symphony.oss.commons.fault.FaultAccumulator
+// com.google.common.collect.ImmutableSortedMap
+// java.util.Map
+// java.util.HashMap
+// com.symphony.oss.canon2.runtime.java.IObjectEntityInitialiser
+// com.symphony.oss.canon2.runtime.java.JsonObjectEntityInitialiser
+// com.symphony.oss.canon2.runtime.java.JsonEntityInitialiser
+// com.symphony.oss.canon2.runtime.java.ObjectEntity
+// com.symphony.oss.canon2.runtime.java.Entity
+// com.symphony.oss.canon2.runtime.java.ObjectEntity
+// com.symphony.oss.canon.json.model.JsonObject
+// com.symphony.oss.canon.json.model.JsonNull
+// javax.annotation.Nullable
+// com.symphony.oss.canon.json.model.JsonNull
+// com.symphony.oss.canon.json.model.JsonObject
+
+
 
 package com.symphony.oss.canon2.model;
+
+import java.util.HashMap;
+import java.util.Map;
 
 import javax.annotation.Nullable;
 import javax.annotation.concurrent.Immutable;
 
-import com.google.common.collect.ImmutableSet;
+import com.google.common.collect.ImmutableSortedMap;
 import com.symphony.oss.canon.json.ParserErrorException;
 import com.symphony.oss.canon.json.model.JsonDomNode;
 import com.symphony.oss.canon.json.model.JsonNull;
 import com.symphony.oss.canon.json.model.JsonObject;
+import com.symphony.oss.canon2.runtime.java.Entity;
 import com.symphony.oss.canon2.runtime.java.IObjectEntityInitialiser;
+import com.symphony.oss.canon2.runtime.java.JsonEntityInitialiser;
 import com.symphony.oss.canon2.runtime.java.JsonObjectEntityInitialiser;
 import com.symphony.oss.canon2.runtime.java.ModelRegistry;
 import com.symphony.oss.canon2.runtime.java.ObjectEntity;
@@ -55,7 +120,7 @@ public abstract class ComponentsObject_Entity extends ObjectEntity
   /** Factory instance */
   public static final Factory FACTORY = new Factory();
 
-  private final ImmutableSet<String>        unknownKeys_;
+  private final Map<String, Entity>        additionalProperties_;
   private final SchemasObject              _schemas_;
 
   /**
@@ -70,8 +135,9 @@ public abstract class ComponentsObject_Entity extends ObjectEntity
     if(initialiser instanceof JsonObjectEntityInitialiser)
     {
       JsonObjectEntityInitialiser jsonInitialiser = (JsonObjectEntityInitialiser)initialiser;
+      ModelRegistry modelRegistry = jsonInitialiser.getModelRegistry();
 
-      JsonDomNode  node;
+      JsonDomNode               node;
 
       node = jsonInitialiser.get("schemas");
       if(node == null || node instanceof JsonNull)
@@ -80,9 +146,39 @@ public abstract class ComponentsObject_Entity extends ObjectEntity
       }
       else
       {
-        _schemas_ = SchemasObject.FACTORY.newInstance(node, jsonInitialiser.getModelRegistry());
+// A1
+//A2
+    //A3
+    
+    
+        if(node instanceof JsonObject)
+        {
+//A6a
+          _schemas_ = SchemasObject.FACTORY.newInstance((JsonObject)node, modelRegistry);
+        }
+        else 
+        {
+          throw new ParserErrorException("schemas must be an instance of JsonObject not " + node.getClass().getName(), node.getContext());
+        }
       }
-      unknownKeys_ = jsonInitialiser.getCanonUnknownKeys();
+      Map<String, Entity>       additionalProperties = new HashMap<>();    
+      Entity                    prop;
+
+      for(String name : jsonInitialiser.getCanonUnknownKeys())
+      {
+        prop   = null;
+        node   = jsonInitialiser.get(name);
+        if(node instanceof JsonObject)
+        {
+          prop = new ObjectEntity(new JsonObjectEntityInitialiser((JsonObject)node, initialiser.getModelRegistry()));
+        }
+        else 
+        {
+          prop = new Entity(new JsonEntityInitialiser(node, initialiser.getModelRegistry()));
+        }
+        additionalProperties.put(name, prop);
+      }
+      additionalProperties_ =  ImmutableSortedMap.copyOf(additionalProperties);
     }
     else
     {
@@ -93,7 +189,7 @@ public abstract class ComponentsObject_Entity extends ObjectEntity
         throw new IllegalArgumentException("Initializer is not an JsonObjectEntityInitialiser but getInstanceOrBuilder() returns null");
       }
       _schemas_ = builder.getSchemas();
-      unknownKeys_ = builder.getCanonUnknownKeys();
+      additionalProperties_ = builder.canonGetAdditionalProperties();
     }
   }
 
@@ -175,6 +271,7 @@ public abstract class ComponentsObject_Entity extends ObjectEntity
     implements I_ComponentsObject_InstanceOrBuilder, Initialiser
   {
     protected SchemasObject              _schemas_;
+    protected Map<String, Entity>        additionalProperties_ = ImmutableSortedMap.of();
 
     protected AbstractBuilder(Class<T> type)
     {
@@ -207,7 +304,20 @@ public abstract class ComponentsObject_Entity extends ObjectEntity
       if(json.containsKey("schemas"))
       {
         JsonDomNode  node = json.get("schemas");
-        _schemas_ = SchemasObject.FACTORY.newInstance(node, modelRegistry);
+// A1
+//A2
+    //A3
+    
+    
+        if(node instanceof JsonObject)
+        {
+//A6a
+          _schemas_ = SchemasObject.FACTORY.newInstance((JsonObject)node, modelRegistry);
+        }
+        else if(!modelRegistry.getParserValidation().isIgnoreInvalidAttributes())
+        {
+          throw new ParserErrorException("schemas must be an instance of JsonObject not " + node.getClass().getName(), node.getContext());
+        }
       }
       return self();
     }
@@ -267,16 +377,26 @@ public abstract class ComponentsObject_Entity extends ObjectEntity
     }
 
     @Override
+    public Map<String, Entity> canonGetAdditionalProperties()
+    {
+       return additionalProperties_;
+    }
+
+    @Override
     public void validate(FaultAccumulator faultAccumulator)
     {
       super.validate(faultAccumulator);
     }
   }
 
-  @Override
-  public ImmutableSet<String> getCanonUnknownKeys()
+  /**
+   * Return any additional attributes.
+   * 
+   * @return any additional attributes.
+   */
+  public Map<String, Entity> canonGetAdditionalProperties()
   {
-    return unknownKeys_;
+     return additionalProperties_;
   }
 
   /**
@@ -334,6 +454,7 @@ public abstract class ComponentsObject_Entity extends ObjectEntity
   {
     return toString().hashCode();
   }
+
 
 }
 

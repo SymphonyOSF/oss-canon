@@ -433,7 +433,7 @@
         "properties": {
         },
         "additionalProperties": {
-          "$ref": "#/components/schemas/Schema"
+          "$ref": "#/components/schemas/SchemaOrRef"
         }
       },
       

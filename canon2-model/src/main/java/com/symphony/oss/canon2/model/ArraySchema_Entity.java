@@ -1,3 +1,14 @@
+  
+  
+// TRACE 1 imports
+// java.math.BigInteger
+// javax.annotation.concurrent.Immutable
+// com.symphony.oss.canon2.runtime.java.ModelRegistry
+// com.symphony.oss.canon.json.model.JsonDomNode
+// com.symphony.oss.canon.json.ParserErrorException
+// com.symphony.oss.commons.fault.FaultAccumulator
+
+
 /**
  * GENERATED CODE - DO NOT EDIT OR CHECK IN TO SOURCE CODE CONTROL
  *
@@ -21,20 +32,162 @@
  *    Generator groupId    org.symphonyoss.s2.canon
  *              artifactId canon2-generator-java
  *    Template name        template/Object/_Entity.java.ftl
- *    At                   2020-11-21 06:21:48 GMT
+ *    At                   2020-11-25 13:28:55 GMT
  *----------------------------------------------------------------------------------------------------
  */
+  
+  
+// TRACE 2 imports
+// java.math.BigInteger
+// javax.annotation.concurrent.Immutable
+// com.symphony.oss.canon2.runtime.java.ModelRegistry
+// com.symphony.oss.canon.json.model.JsonDomNode
+// com.symphony.oss.canon.json.ParserErrorException
+// com.symphony.oss.commons.fault.FaultAccumulator
+
+
+  
+  
+// TRACE 3 imports
+// java.math.BigInteger
+// javax.annotation.concurrent.Immutable
+// com.symphony.oss.canon2.runtime.java.ModelRegistry
+// com.symphony.oss.canon.json.model.JsonDomNode
+// com.symphony.oss.canon.json.ParserErrorException
+// com.symphony.oss.commons.fault.FaultAccumulator
+
+
+// T2 A
+      // field minItems
+    
+      // T B minItems
+// schema.class class com.symphony.oss.canon2.generator.java.JavaNumberSchemaTemplateModel
+    // add minItems -> com.symphony.oss.canon.json.model.JsonParsedNumber
+      // field maxItems
+    
+      // T B maxItems
+// schema.class class com.symphony.oss.canon2.generator.java.JavaNumberSchemaTemplateModel
+    // add maxItems -> com.symphony.oss.canon.json.model.JsonParsedNumber
+      // field x-canon-builderFacade
+    
+      // T B x-canon-builderFacade
+// schema.class class com.symphony.oss.canon2.generator.java.JavaBooleanSchemaTemplateModel
+    // add x-canon-builderFacade -> com.symphony.oss.canon.json.model.JsonBoolean
+      // field x-canon-cardinality
+    
+      // T B x-canon-cardinality
+// schema.class class com.symphony.oss.canon2.generator.java.JavaStringSchemaTemplateModel
+    // add CanonCardinality -> com.symphony.oss.canon.json.model.JsonString
+      // field x-canon-identifier
+    
+      // T B x-canon-identifier
+// schema.class class com.symphony.oss.canon2.generator.java.JavaStringSchemaTemplateModel
+    // add x-canon-identifier -> com.symphony.oss.canon.json.model.JsonString
+      // field type
+    
+      // T B type
+// schema.class class com.symphony.oss.canon2.generator.java.JavaStringSchemaTemplateModel
+    // add type -> com.symphony.oss.canon.json.model.JsonString
+      // field x-canon-facade
+    
+      // T B x-canon-facade
+// schema.class class com.symphony.oss.canon2.generator.java.JavaBooleanSchemaTemplateModel
+    // add x-canon-facade -> com.symphony.oss.canon.json.model.JsonBoolean
+      // field items
+    
+      // T B items
+// schema.class class com.symphony.oss.canon2.generator.java.JavaObjectSchemaTemplateModel
+      // field discriminator
+    
+      // T B discriminator
+// schema.class class com.symphony.oss.canon2.generator.java.JavaObjectSchemaTemplateModel
+    // add DiscriminatorObject -> com.symphony.oss.canon.json.model.JsonObject
+  // iiner class minItems
+    // primitive inner class minItems
+      // primitive inner class minItems DO IT
+      
+  // iiner class maxItems
+    // primitive inner class maxItems
+      // primitive inner class maxItems DO IT
+      
+  // iiner class x-canon-builderFacade
+    // primitive inner class x-canon-builderFacade
+      
+  // iiner class x-canon-identifier
+    // primitive inner class x-canon-identifier
+      
+  // iiner class type
+    // primitive inner class type
+      // primitive inner class type DO IT
+      
+  // iiner class x-canon-facade
+    // primitive inner class x-canon-facade
+      
+  
+  
+// TRACE 4 imports
+// java.math.BigInteger
+// javax.annotation.concurrent.Immutable
+// com.symphony.oss.canon2.runtime.java.ModelRegistry
+// com.symphony.oss.canon.json.model.JsonDomNode
+// com.symphony.oss.canon.json.ParserErrorException
+// com.symphony.oss.commons.fault.FaultAccumulator
+// com.google.common.collect.ImmutableSortedMap
+// java.util.Map
+// java.util.HashMap
+// com.symphony.oss.canon2.runtime.java.IObjectEntityInitialiser
+// com.symphony.oss.canon2.runtime.java.JsonObjectEntityInitialiser
+// com.symphony.oss.canon2.runtime.java.JsonEntityInitialiser
+// com.symphony.oss.canon2.runtime.java.ObjectEntity
+// com.symphony.oss.canon2.runtime.java.Entity
+// com.symphony.oss.canon2.runtime.java.ObjectEntity
+// com.symphony.oss.canon.json.model.JsonObject
+// com.symphony.oss.canon.json.model.JsonNull
+// javax.annotation.Nullable
+// com.symphony.oss.canon.json.model.JsonParsedNumber
+// javax.annotation.Nullable
+// com.symphony.oss.canon.json.model.JsonParsedNumber
+// javax.annotation.Nullable
+// com.symphony.oss.canon.json.model.JsonBoolean
+// javax.annotation.Nullable
+// com.symphony.oss.canon.json.model.JsonString
+// javax.annotation.Nullable
+// com.symphony.oss.canon.json.model.JsonString
+// javax.annotation.Nonnull
+// com.symphony.oss.canon.json.model.JsonString
+// javax.annotation.Nullable
+// com.symphony.oss.canon.json.model.JsonBoolean
+// javax.annotation.Nonnull
+// javax.annotation.Nullable
+// com.symphony.oss.canon.json.model.JsonNull
+// com.symphony.oss.canon.json.model.JsonObject
+// java.util.Objects
+// com.symphony.oss.canon2.runtime.java.TypeDef
+// javax.annotation.Nonnull
+// com.symphony.oss.canon.json.model.JsonParsedNumber
+// java.util.Objects
+// com.symphony.oss.canon2.runtime.java.TypeDef
+// javax.annotation.Nonnull
+// com.symphony.oss.canon.json.model.JsonParsedNumber
+// java.util.Objects
+// com.symphony.oss.canon2.runtime.java.TypeDef
+// javax.annotation.Nonnull
+// com.symphony.oss.canon.json.model.JsonString
+
+
 
 package com.symphony.oss.canon2.model;
 
 import java.math.BigInteger;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Objects;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.annotation.concurrent.Immutable;
 
-import com.google.common.collect.ImmutableSet;
+import com.google.common.collect.ImmutableSortedMap;
 import com.symphony.oss.canon.json.ParserErrorException;
 import com.symphony.oss.canon.json.model.JsonBoolean;
 import com.symphony.oss.canon.json.model.JsonDomNode;
@@ -42,7 +195,9 @@ import com.symphony.oss.canon.json.model.JsonNull;
 import com.symphony.oss.canon.json.model.JsonObject;
 import com.symphony.oss.canon.json.model.JsonParsedNumber;
 import com.symphony.oss.canon.json.model.JsonString;
+import com.symphony.oss.canon2.runtime.java.Entity;
 import com.symphony.oss.canon2.runtime.java.IObjectEntityInitialiser;
+import com.symphony.oss.canon2.runtime.java.JsonEntityInitialiser;
 import com.symphony.oss.canon2.runtime.java.JsonObjectEntityInitialiser;
 import com.symphony.oss.canon2.runtime.java.ModelRegistry;
 import com.symphony.oss.canon2.runtime.java.ObjectEntity;
@@ -63,7 +218,7 @@ public abstract class ArraySchema_Entity extends ObjectEntity
   /** Factory instance */
   public static final Factory FACTORY = new Factory();
 
-  private final ImmutableSet<String>        unknownKeys_;
+  private final Map<String, Entity>        additionalProperties_;
   private final ArraySchema.MinItems       _minItems_;
   private final ArraySchema.MaxItems       _maxItems_;
   private final Boolean                    _xCanonBuilderFacade_;
@@ -86,8 +241,9 @@ public abstract class ArraySchema_Entity extends ObjectEntity
     if(initialiser instanceof JsonObjectEntityInitialiser)
     {
       JsonObjectEntityInitialiser jsonInitialiser = (JsonObjectEntityInitialiser)initialiser;
+      ModelRegistry modelRegistry = jsonInitialiser.getModelRegistry();
 
-      JsonDomNode  node;
+      JsonDomNode               node;
 
       node = jsonInitialiser.get("minItems");
       if(node == null || node instanceof JsonNull)
@@ -96,8 +252,11 @@ public abstract class ArraySchema_Entity extends ObjectEntity
       }
       else
       {
+// A1
+//A2
         if(node instanceof JsonParsedNumber)
         {
+//A6
           _minItems_ = new ArraySchema.MinItems(((JsonParsedNumber)node).asBigInteger());
         }
         else 
@@ -113,8 +272,11 @@ public abstract class ArraySchema_Entity extends ObjectEntity
       }
       else
       {
+// A1
+//A2
         if(node instanceof JsonParsedNumber)
         {
+//A6
           _maxItems_ = new ArraySchema.MaxItems(((JsonParsedNumber)node).asBigInteger());
         }
         else 
@@ -130,8 +292,11 @@ public abstract class ArraySchema_Entity extends ObjectEntity
       }
       else
       {
+// A1
+//A2
         if(node instanceof JsonBoolean)
         {
+//A6
           _xCanonBuilderFacade_ = ((JsonBoolean)node).asBoolean();
         }
         else 
@@ -147,8 +312,11 @@ public abstract class ArraySchema_Entity extends ObjectEntity
       }
       else
       {
+// A1
+//A2
         if(node instanceof JsonString)
         {
+//A6
           _xCanonCardinality_ = CanonCardinality.deserialize(((JsonString)node).asString());
         }
         else 
@@ -164,8 +332,11 @@ public abstract class ArraySchema_Entity extends ObjectEntity
       }
       else
       {
+// A1
+//A2
         if(node instanceof JsonString)
         {
+//A6
           _xCanonIdentifier_ = ((JsonString)node).asString();
         }
         else 
@@ -181,8 +352,11 @@ public abstract class ArraySchema_Entity extends ObjectEntity
       }
       else
       {
+// A1
+//A2
         if(node instanceof JsonString)
         {
+//A6
           _type_ = ArraySchema.Type.deserialize(((JsonString)node).asString());
         }
         else 
@@ -198,8 +372,11 @@ public abstract class ArraySchema_Entity extends ObjectEntity
       }
       else
       {
+// A1
+//A2
         if(node instanceof JsonBoolean)
         {
+//A6
           _xCanonFacade_ = ((JsonBoolean)node).asBoolean();
         }
         else 
@@ -215,7 +392,19 @@ public abstract class ArraySchema_Entity extends ObjectEntity
       }
       else
       {
-        _items_ = SchemaOrRef.FACTORY.newInstance(node, jsonInitialiser.getModelRegistry());
+// A1
+//A2
+    
+    
+        if(node instanceof JsonDomNode)
+        {
+//A6a
+          _items_ = SchemaOrRef.FACTORY.newInstance((JsonDomNode)node, modelRegistry);
+        }
+        else 
+        {
+          throw new ParserErrorException("items must be an instance of JsonDomNode not " + node.getClass().getName(), node.getContext());
+        }
       }
 
       node = jsonInitialiser.get("discriminator");
@@ -225,9 +414,39 @@ public abstract class ArraySchema_Entity extends ObjectEntity
       }
       else
       {
-        _discriminator_ = DiscriminatorObject.FACTORY.newInstance(node, jsonInitialiser.getModelRegistry());
+// A1
+//A2
+    //A3
+    
+    
+        if(node instanceof JsonObject)
+        {
+//A6a
+          _discriminator_ = DiscriminatorObject.FACTORY.newInstance((JsonObject)node, modelRegistry);
+        }
+        else 
+        {
+          throw new ParserErrorException("discriminator must be an instance of JsonObject not " + node.getClass().getName(), node.getContext());
+        }
       }
-      unknownKeys_ = jsonInitialiser.getCanonUnknownKeys();
+      Map<String, Entity>       additionalProperties = new HashMap<>();    
+      Entity                    prop;
+
+      for(String name : jsonInitialiser.getCanonUnknownKeys())
+      {
+        prop   = null;
+        node   = jsonInitialiser.get(name);
+        if(node instanceof JsonObject)
+        {
+          prop = new ObjectEntity(new JsonObjectEntityInitialiser((JsonObject)node, initialiser.getModelRegistry()));
+        }
+        else 
+        {
+          prop = new Entity(new JsonEntityInitialiser(node, initialiser.getModelRegistry()));
+        }
+        additionalProperties.put(name, prop);
+      }
+      additionalProperties_ =  ImmutableSortedMap.copyOf(additionalProperties);
     }
     else
     {
@@ -252,7 +471,7 @@ public abstract class ArraySchema_Entity extends ObjectEntity
         throw new IllegalArgumentException("items is required.");
   
       _discriminator_ = builder.getDiscriminator();
-      unknownKeys_ = builder.getCanonUnknownKeys();
+      additionalProperties_ = builder.canonGetAdditionalProperties();
     }
   }
 
@@ -266,12 +485,6 @@ public abstract class ArraySchema_Entity extends ObjectEntity
     public String getCanonType()
     {
       return TYPE_ID;
-    }
-    
-    public ArraySchema newInstance(JsonObject node, ModelRegistry modelRegistry)
-    {
-        return new ArraySchema(new JsonInitialiser(node, modelRegistry));
-
     }
 
     @Override
@@ -348,6 +561,7 @@ public abstract class ArraySchema_Entity extends ObjectEntity
     protected Boolean                    _xCanonFacade_;
     protected SchemaOrRef                _items_;
     protected DiscriminatorObject        _discriminator_;
+    protected Map<String, Entity>        additionalProperties_ = ImmutableSortedMap.of();
 
     protected AbstractBuilder(Class<T> type)
     {
@@ -388,8 +602,11 @@ public abstract class ArraySchema_Entity extends ObjectEntity
       if(json.containsKey("minItems"))
       {
         JsonDomNode  node = json.get("minItems");
+// A1
+//A2
         if(node instanceof JsonParsedNumber)
         {
+//A6
           _minItems_ = new ArraySchema.MinItems(((JsonParsedNumber)node).asBigInteger());
         }
         else if(!modelRegistry.getParserValidation().isIgnoreInvalidAttributes())
@@ -400,8 +617,11 @@ public abstract class ArraySchema_Entity extends ObjectEntity
       if(json.containsKey("maxItems"))
       {
         JsonDomNode  node = json.get("maxItems");
+// A1
+//A2
         if(node instanceof JsonParsedNumber)
         {
+//A6
           _maxItems_ = new ArraySchema.MaxItems(((JsonParsedNumber)node).asBigInteger());
         }
         else if(!modelRegistry.getParserValidation().isIgnoreInvalidAttributes())
@@ -412,8 +632,11 @@ public abstract class ArraySchema_Entity extends ObjectEntity
       if(json.containsKey("x-canon-builderFacade"))
       {
         JsonDomNode  node = json.get("x-canon-builderFacade");
+// A1
+//A2
         if(node instanceof JsonBoolean)
         {
+//A6
           _xCanonBuilderFacade_ = ((JsonBoolean)node).asBoolean();
         }
         else if(!modelRegistry.getParserValidation().isIgnoreInvalidAttributes())
@@ -424,8 +647,11 @@ public abstract class ArraySchema_Entity extends ObjectEntity
       if(json.containsKey("x-canon-cardinality"))
       {
         JsonDomNode  node = json.get("x-canon-cardinality");
+// A1
+//A2
         if(node instanceof JsonString)
         {
+//A6
           _xCanonCardinality_ = CanonCardinality.deserialize(((JsonString)node).asString());
         }
         else if(!modelRegistry.getParserValidation().isIgnoreInvalidAttributes())
@@ -436,8 +662,11 @@ public abstract class ArraySchema_Entity extends ObjectEntity
       if(json.containsKey("x-canon-identifier"))
       {
         JsonDomNode  node = json.get("x-canon-identifier");
+// A1
+//A2
         if(node instanceof JsonString)
         {
+//A6
           _xCanonIdentifier_ = ((JsonString)node).asString();
         }
         else if(!modelRegistry.getParserValidation().isIgnoreInvalidAttributes())
@@ -448,8 +677,11 @@ public abstract class ArraySchema_Entity extends ObjectEntity
       if(json.containsKey("type"))
       {
         JsonDomNode  node = json.get("type");
+// A1
+//A2
         if(node instanceof JsonString)
         {
+//A6
           _type_ = ArraySchema.Type.deserialize(((JsonString)node).asString());
         }
         else if(!modelRegistry.getParserValidation().isIgnoreInvalidAttributes())
@@ -460,8 +692,11 @@ public abstract class ArraySchema_Entity extends ObjectEntity
       if(json.containsKey("x-canon-facade"))
       {
         JsonDomNode  node = json.get("x-canon-facade");
+// A1
+//A2
         if(node instanceof JsonBoolean)
         {
+//A6
           _xCanonFacade_ = ((JsonBoolean)node).asBoolean();
         }
         else if(!modelRegistry.getParserValidation().isIgnoreInvalidAttributes())
@@ -472,12 +707,37 @@ public abstract class ArraySchema_Entity extends ObjectEntity
       if(json.containsKey("items"))
       {
         JsonDomNode  node = json.get("items");
-        _items_ = SchemaOrRef.FACTORY.newInstance(node, modelRegistry);
+// A1
+//A2
+    
+    
+        if(node instanceof JsonDomNode)
+        {
+//A6a
+          _items_ = SchemaOrRef.FACTORY.newInstance((JsonDomNode)node, modelRegistry);
+        }
+        else if(!modelRegistry.getParserValidation().isIgnoreInvalidAttributes())
+        {
+          throw new ParserErrorException("items must be an instance of JsonDomNode not " + node.getClass().getName(), node.getContext());
+        }
       }
       if(json.containsKey("discriminator"))
       {
         JsonDomNode  node = json.get("discriminator");
-        _discriminator_ = DiscriminatorObject.FACTORY.newInstance(node, modelRegistry);
+// A1
+//A2
+    //A3
+    
+    
+        if(node instanceof JsonObject)
+        {
+//A6a
+          _discriminator_ = DiscriminatorObject.FACTORY.newInstance((JsonObject)node, modelRegistry);
+        }
+        else if(!modelRegistry.getParserValidation().isIgnoreInvalidAttributes())
+        {
+          throw new ParserErrorException("discriminator must be an instance of JsonObject not " + node.getClass().getName(), node.getContext());
+        }
       }
       return self();
     }
@@ -842,6 +1102,12 @@ public abstract class ArraySchema_Entity extends ObjectEntity
     }
 
     @Override
+    public Map<String, Entity> canonGetAdditionalProperties()
+    {
+       return additionalProperties_;
+    }
+
+    @Override
     public void validate(FaultAccumulator faultAccumulator)
     {
       super.validate(faultAccumulator);
@@ -850,10 +1116,14 @@ public abstract class ArraySchema_Entity extends ObjectEntity
     }
   }
 
-  @Override
-  public ImmutableSet<String> getCanonUnknownKeys()
+  /**
+   * Return any additional attributes.
+   * 
+   * @return any additional attributes.
+   */
+  public Map<String, Entity> canonGetAdditionalProperties()
   {
-    return unknownKeys_;
+     return additionalProperties_;
   }
 
   /**
@@ -992,6 +1262,8 @@ public abstract class ArraySchema_Entity extends ObjectEntity
     return toString().hashCode();
   }
 
+
+// innerClass minItems
   /**
    * TypeDef implementation for canon.minItems
    * Generated from minItems at {entity.context.path}
@@ -1106,7 +1378,7 @@ public abstract class ArraySchema_Entity extends ObjectEntity
     /**
      * Builder.
      *
-     * @deprecated use new MinItems(BigInteger value)
+     * @deprecated use new ArraySchema.MinItems(BigInteger value)
      *
      */
     @Deprecated
@@ -1121,7 +1393,7 @@ public abstract class ArraySchema_Entity extends ObjectEntity
        *
        * @param value The value for the new instance.
        *
-       * @deprecated use new MinItems(BigInteger value)
+       * @deprecated use new ArraySchema.MinItems(BigInteger value)
        *
        * @return A new instance.
        */
@@ -1147,6 +1419,7 @@ public abstract class ArraySchema_Entity extends ObjectEntity
       }
     }
   }
+// innerClass maxItems
   /**
    * TypeDef implementation for canon.maxItems
    * Generated from maxItems at {entity.context.path}
@@ -1261,7 +1534,7 @@ public abstract class ArraySchema_Entity extends ObjectEntity
     /**
      * Builder.
      *
-     * @deprecated use new MaxItems(BigInteger value)
+     * @deprecated use new ArraySchema.MaxItems(BigInteger value)
      *
      */
     @Deprecated
@@ -1276,7 +1549,7 @@ public abstract class ArraySchema_Entity extends ObjectEntity
        *
        * @param value The value for the new instance.
        *
-       * @deprecated use new MaxItems(BigInteger value)
+       * @deprecated use new ArraySchema.MaxItems(BigInteger value)
        *
        * @return A new instance.
        */
@@ -1302,6 +1575,9 @@ public abstract class ArraySchema_Entity extends ObjectEntity
       }
     }
   }
+// innerClass x-canon-builderFacade
+// innerClass x-canon-identifier
+// innerClass type
   /**
    * Enum  type canon
    * Model canon
@@ -1352,6 +1628,7 @@ public abstract class ArraySchema_Entity extends ObjectEntity
       }
     }
   }
+// innerClass x-canon-facade
 }
 
 /*----------------------------------------------------------------------------------------------------

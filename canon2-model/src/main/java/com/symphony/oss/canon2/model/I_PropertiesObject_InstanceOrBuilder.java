@@ -21,19 +21,41 @@
  *    Generator groupId    org.symphonyoss.s2.canon
  *              artifactId canon2-generator-java
  *    Template name        template/Object/I_InstanceOrBuilder.java.ftl
- *    At                   2020-11-21 06:21:48 GMT
+ *    At                   2020-11-25 13:28:55 GMT
  *----------------------------------------------------------------------------------------------------
  */
+    //tr 1
+      // tr 3
+        // add com.symphony.oss.canon2.model.SchemaOrRef
+
 
 package com.symphony.oss.canon2.model;
 
+import java.util.Map;
+
+import com.symphony.oss.canon2.runtime.java.Entity;
 import com.symphony.oss.canon2.runtime.java.IObjectEntityInitialiser;
 
 /**
  * Instance or Builder for Object PropertiesObject
  */
+// entity.class class com.symphony.oss.canon2.generator.java.JavaObjectSchemaTemplateModel
 public interface I_PropertiesObject_InstanceOrBuilder extends IObjectEntityInitialiser
 {
+
+ /**
+   * Return any additional attributes.
+   * 
+   * @return any additional attributes.
+   */
+  Map<String, SchemaOrRef> canonGetAdditionalProperties();
+
+ /**
+   * Return any unknown attributes.
+   * 
+   * @return any unknown attributes.
+   */
+  Map<String, Entity> canonGetUnknownProperties();
 }
 /*----------------------------------------------------------------------------------------------------
  * End of template template/Object/I_InstanceOrBuilder.java.ftl

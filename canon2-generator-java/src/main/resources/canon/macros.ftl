@@ -13,7 +13,7 @@
     <#case "ALL_OF">
     <#case "ANY_OF">
     <#case "ONE_OF">
-${indent}${var}.addIfNotNull("${name}", ${source}.getJson());
+${indent}${var}.addIfNotNull(${name}, ${source}.getJson());
     <#break>
     <#case "ARRAY">
 ${indent}JsonArray.Builder arrayBuilder = new JsonArray.Builder();
@@ -21,13 +21,13 @@ ${indent}for(${schema.elementType.type} item : ${source})
 ${indent}{
       <@generateCreateArrayJsonDomNode "${indent}  " 1 schema.elementType "item" "arrayBuilder"/>
 ${indent}}
-${indent}${var}.with("${name}", arrayBuilder.build());
+${indent}${var}.with(${name}, arrayBuilder.build());
     <#break>
     <#case "STRING">
     <#case "NUMBER">
     <#case "INTEGER">
     <#case "BOOLEAN">
-${indent}${var}.addIfNotNull("${name}", ${schema.getValuePrefix}${source}${schema.getValueSuffix});
+${indent}${var}.addIfNotNull(${name}, ${schema.getValuePrefix}${source}${schema.getValueSuffix});
     <#break>
     
     <#default>

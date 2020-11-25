@@ -1,3 +1,13 @@
+  
+  
+// TRACE 1 imports
+// javax.annotation.concurrent.Immutable
+// com.symphony.oss.canon2.runtime.java.ModelRegistry
+// com.symphony.oss.canon.json.model.JsonDomNode
+// com.symphony.oss.canon.json.ParserErrorException
+// com.symphony.oss.commons.fault.FaultAccumulator
+
+
 /**
  * GENERATED CODE - DO NOT EDIT OR CHECK IN TO SOURCE CODE CONTROL
  *
@@ -21,29 +31,82 @@
  *    Generator groupId    org.symphonyoss.s2.canon
  *              artifactId canon2-generator-java
  *    Template name        template/Object/_Entity.java.ftl
- *    At                   2020-11-21 06:21:48 GMT
+ *    At                   2020-11-25 13:28:55 GMT
  *----------------------------------------------------------------------------------------------------
  */
+  
+  
+// TRACE 2 imports
+// javax.annotation.concurrent.Immutable
+// com.symphony.oss.canon2.runtime.java.ModelRegistry
+// com.symphony.oss.canon.json.model.JsonDomNode
+// com.symphony.oss.canon.json.ParserErrorException
+// com.symphony.oss.commons.fault.FaultAccumulator
+
+
+  
+  
+// TRACE 3 imports
+// javax.annotation.concurrent.Immutable
+// com.symphony.oss.canon2.runtime.java.ModelRegistry
+// com.symphony.oss.canon.json.model.JsonDomNode
+// com.symphony.oss.canon.json.ParserErrorException
+// com.symphony.oss.commons.fault.FaultAccumulator
+
+
+// T2 A
+      // field $ref
+    
+      // T B $ref
+// schema.class class com.symphony.oss.canon2.generator.java.JavaStringSchemaTemplateModel
+    // add $ref -> com.symphony.oss.canon.json.model.JsonString
+  // iiner class $ref
+    // primitive inner class $ref
+      
+  
+  
+// TRACE 4 imports
+// javax.annotation.concurrent.Immutable
+// com.symphony.oss.canon2.runtime.java.ModelRegistry
+// com.symphony.oss.canon.json.model.JsonDomNode
+// com.symphony.oss.canon.json.ParserErrorException
+// com.symphony.oss.commons.fault.FaultAccumulator
+// com.google.common.collect.ImmutableSortedMap
+// java.util.Map
+// java.util.HashMap
+// com.symphony.oss.canon2.runtime.java.IObjectEntityInitialiser
+// com.symphony.oss.canon2.runtime.java.JsonObjectEntityInitialiser
+// com.symphony.oss.canon2.runtime.java.JsonEntityInitialiser
+// com.symphony.oss.canon2.runtime.java.ObjectEntity
+// com.symphony.oss.canon2.runtime.java.Entity
+// com.symphony.oss.canon2.runtime.java.ObjectEntity
+// com.symphony.oss.canon.json.model.JsonObject
+// com.symphony.oss.canon.json.model.JsonNull
+// javax.annotation.Nonnull
+// com.symphony.oss.canon.json.model.JsonString
+
+
 
 package com.symphony.oss.canon2.model;
 
-import java.util.Objects;
+import java.util.HashMap;
+import java.util.Map;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import javax.annotation.concurrent.Immutable;
 
-import com.google.common.collect.ImmutableSet;
+import com.google.common.collect.ImmutableSortedMap;
 import com.symphony.oss.canon.json.ParserErrorException;
 import com.symphony.oss.canon.json.model.JsonDomNode;
 import com.symphony.oss.canon.json.model.JsonNull;
 import com.symphony.oss.canon.json.model.JsonObject;
 import com.symphony.oss.canon.json.model.JsonString;
+import com.symphony.oss.canon2.runtime.java.Entity;
 import com.symphony.oss.canon2.runtime.java.IObjectEntityInitialiser;
+import com.symphony.oss.canon2.runtime.java.JsonEntityInitialiser;
 import com.symphony.oss.canon2.runtime.java.JsonObjectEntityInitialiser;
 import com.symphony.oss.canon2.runtime.java.ModelRegistry;
 import com.symphony.oss.canon2.runtime.java.ObjectEntity;
-import com.symphony.oss.canon2.runtime.java.TypeDef;
 import com.symphony.oss.commons.fault.FaultAccumulator;
 
 /**
@@ -60,7 +123,7 @@ public abstract class ReferenceObject_Entity extends ObjectEntity
   /** Factory instance */
   public static final Factory FACTORY = new Factory();
 
-  private final ImmutableSet<String>        unknownKeys_;
+  private final Map<String, Entity>        additionalProperties_;
   private final String                     _$ref_;
 
   /**
@@ -75,8 +138,9 @@ public abstract class ReferenceObject_Entity extends ObjectEntity
     if(initialiser instanceof JsonObjectEntityInitialiser)
     {
       JsonObjectEntityInitialiser jsonInitialiser = (JsonObjectEntityInitialiser)initialiser;
+      ModelRegistry modelRegistry = jsonInitialiser.getModelRegistry();
 
-      JsonDomNode  node;
+      JsonDomNode               node;
 
       node = jsonInitialiser.get("$ref");
       if(node == null || node instanceof JsonNull)
@@ -85,8 +149,11 @@ public abstract class ReferenceObject_Entity extends ObjectEntity
       }
       else
       {
+// A1
+//A2
         if(node instanceof JsonString)
         {
+//A6
           _$ref_ = ((JsonString)node).asString();
         }
         else 
@@ -94,7 +161,24 @@ public abstract class ReferenceObject_Entity extends ObjectEntity
           throw new ParserErrorException("$ref must be an instance of JsonString not " + node.getClass().getName(), node.getContext());
         }
       }
-      unknownKeys_ = jsonInitialiser.getCanonUnknownKeys();
+      Map<String, Entity>       additionalProperties = new HashMap<>();    
+      Entity                    prop;
+
+      for(String name : jsonInitialiser.getCanonUnknownKeys())
+      {
+        prop   = null;
+        node   = jsonInitialiser.get(name);
+        if(node instanceof JsonObject)
+        {
+          prop = new ObjectEntity(new JsonObjectEntityInitialiser((JsonObject)node, initialiser.getModelRegistry()));
+        }
+        else 
+        {
+          prop = new Entity(new JsonEntityInitialiser(node, initialiser.getModelRegistry()));
+        }
+        additionalProperties.put(name, prop);
+      }
+      additionalProperties_ =  ImmutableSortedMap.copyOf(additionalProperties);
     }
     else
     {
@@ -108,7 +192,7 @@ public abstract class ReferenceObject_Entity extends ObjectEntity
       if(_$ref_ == null)
         throw new IllegalArgumentException("$ref is required.");
   
-      unknownKeys_ = builder.getCanonUnknownKeys();
+      additionalProperties_ = builder.canonGetAdditionalProperties();
     }
   }
 
@@ -190,6 +274,7 @@ public abstract class ReferenceObject_Entity extends ObjectEntity
     implements I_ReferenceObject_InstanceOrBuilder, Initialiser
   {
     protected String                     _$ref_;
+    protected Map<String, Entity>        additionalProperties_ = ImmutableSortedMap.of();
 
     protected AbstractBuilder(Class<T> type)
     {
@@ -222,8 +307,11 @@ public abstract class ReferenceObject_Entity extends ObjectEntity
       if(json.containsKey("$ref"))
       {
         JsonDomNode  node = json.get("$ref");
+// A1
+//A2
         if(node instanceof JsonString)
         {
+//A6
           _$ref_ = ((JsonString)node).asString();
         }
         else if(!modelRegistry.getParserValidation().isIgnoreInvalidAttributes())
@@ -294,6 +382,12 @@ public abstract class ReferenceObject_Entity extends ObjectEntity
     }
 
     @Override
+    public Map<String, Entity> canonGetAdditionalProperties()
+    {
+       return additionalProperties_;
+    }
+
+    @Override
     public void validate(FaultAccumulator faultAccumulator)
     {
       super.validate(faultAccumulator);
@@ -301,10 +395,14 @@ public abstract class ReferenceObject_Entity extends ObjectEntity
     }
   }
 
-  @Override
-  public ImmutableSet<String> getCanonUnknownKeys()
+  /**
+   * Return any additional attributes.
+   * 
+   * @return any additional attributes.
+   */
+  public Map<String, Entity> canonGetAdditionalProperties()
   {
-    return unknownKeys_;
+     return additionalProperties_;
   }
 
   /**
@@ -363,6 +461,8 @@ public abstract class ReferenceObject_Entity extends ObjectEntity
     return toString().hashCode();
   }
 
+
+// innerClass $ref
 }
 
 /*----------------------------------------------------------------------------------------------------

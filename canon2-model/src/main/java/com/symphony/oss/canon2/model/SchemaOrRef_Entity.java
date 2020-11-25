@@ -1,3 +1,13 @@
+  
+  
+// TRACE 1 imports
+// javax.annotation.concurrent.Immutable
+// com.symphony.oss.canon2.runtime.java.ModelRegistry
+// com.symphony.oss.canon.json.model.JsonDomNode
+// com.symphony.oss.canon.json.ParserErrorException
+// com.symphony.oss.commons.fault.FaultAccumulator
+
+
 /**
  * GENERATED CODE - DO NOT EDIT OR CHECK IN TO SOURCE CODE CONTROL
  *
@@ -21,9 +31,60 @@
  *    Generator groupId    org.symphonyoss.s2.canon
  *              artifactId canon2-generator-java
  *    Template name        template/Object/_Entity.java.ftl
- *    At                   2020-11-21 06:21:48 GMT
+ *    At                   2020-11-25 13:28:55 GMT
  *----------------------------------------------------------------------------------------------------
  */
+  
+  
+// TRACE 2 imports
+// javax.annotation.concurrent.Immutable
+// com.symphony.oss.canon2.runtime.java.ModelRegistry
+// com.symphony.oss.canon.json.model.JsonDomNode
+// com.symphony.oss.canon.json.ParserErrorException
+// com.symphony.oss.commons.fault.FaultAccumulator
+
+
+  
+  
+// TRACE 3 imports
+// javax.annotation.concurrent.Immutable
+// com.symphony.oss.canon2.runtime.java.ModelRegistry
+// com.symphony.oss.canon.json.model.JsonDomNode
+// com.symphony.oss.canon.json.ParserErrorException
+// com.symphony.oss.commons.fault.FaultAccumulator
+
+
+// T2 A
+      // field ReferenceObject
+    
+      // T B ReferenceObject
+// schema.class class com.symphony.oss.canon2.generator.java.JavaObjectSchemaTemplateModel
+    // add ReferenceObject -> com.symphony.oss.canon.json.model.JsonObject
+      // field Schema
+    
+      // T B Schema
+// schema.class class com.symphony.oss.canon2.generator.java.JavaObjectSchemaTemplateModel
+  
+  
+// TRACE 4 imports
+// javax.annotation.concurrent.Immutable
+// com.symphony.oss.canon2.runtime.java.ModelRegistry
+// com.symphony.oss.canon.json.model.JsonDomNode
+// com.symphony.oss.canon.json.ParserErrorException
+// com.symphony.oss.commons.fault.FaultAccumulator
+// com.symphony.oss.canon2.runtime.java.IEntityInitialiser
+// com.symphony.oss.canon2.runtime.java.JsonEntityInitialiser
+// java.util.List
+// java.util.LinkedList
+// com.symphony.oss.canon.json.ParserException
+// com.symphony.oss.canon.json.ParserResultException
+// com.symphony.oss.canon2.runtime.java.Entity
+// javax.annotation.Nullable
+// com.symphony.oss.canon.json.model.JsonNull
+// com.symphony.oss.canon.json.model.JsonObject
+// javax.annotation.Nullable
+
+
 
 package com.symphony.oss.canon2.model;
 
@@ -74,16 +135,42 @@ public abstract class SchemaOrRef_Entity extends Entity
     if(initialiser instanceof JsonEntityInitialiser)
     {
       JsonEntityInitialiser jsonInitialiser = (JsonEntityInitialiser)initialiser;
+      ModelRegistry modelRegistry = jsonInitialiser.getModelRegistry();
       List<ParserException> parserExceptions = new LinkedList<>();
       List<String>          matches = new LinkedList<>();
       JsonDomNode           node = jsonInitialiser.getJson();
-       _referenceObject_ = ReferenceObject.FACTORY.newInstanceOrNull(parserExceptions, node, jsonInitialiser.getModelRegistry());
+// A1
+//A2
+    //A3
+    
+    
+       if(node instanceof JsonObject)
+       {
+//A6a
+         _referenceObject_ = ReferenceObject.FACTORY.newInstanceOrNull(parserExceptions, (JsonObject)node, modelRegistry);
+       }
+       else 
+       {
+         _referenceObject_ = null;
+       }
       if(_referenceObject_ != null)
       {
         matches.add("ReferenceObject");
       }
 
-       _schema_ = Schema.FACTORY.newInstanceOrNull(parserExceptions, node, jsonInitialiser.getModelRegistry());
+// A1
+//A2
+    
+    
+       if(node instanceof JsonDomNode)
+       {
+//A6a
+         _schema_ = Schema.FACTORY.newInstanceOrNull(parserExceptions, (JsonDomNode)node, modelRegistry);
+       }
+       else 
+       {
+         _schema_ = null;
+       }
       if(_schema_ != null)
       {
         matches.add("Schema");
@@ -208,13 +295,38 @@ public abstract class SchemaOrRef_Entity extends Entity
     {
       List<ParserException> parserExceptions = new LinkedList<>();
       List<String>          matches = new LinkedList<>();
-       _referenceObject_ = ReferenceObject.FACTORY.newInstanceOrNull(parserExceptions, json, modelRegistry);
+// A1
+//A2
+    //A3
+    
+    
+       if(json instanceof JsonObject)
+       {
+//A6a
+         _referenceObject_ = ReferenceObject.FACTORY.newInstanceOrNull(parserExceptions, (JsonObject)json, modelRegistry);
+       }
+       else if(!modelRegistry.getParserValidation().isIgnoreInvalidAttributes())
+       {
+         _referenceObject_ = null;
+       }
       if(_referenceObject_ != null)
       {
         matches.add("ReferenceObject");
       }
 
-       _schema_ = Schema.FACTORY.newInstanceOrNull(parserExceptions, json, modelRegistry);
+// A1
+//A2
+    
+    
+       if(json instanceof JsonDomNode)
+       {
+//A6a
+         _schema_ = Schema.FACTORY.newInstanceOrNull(parserExceptions, (JsonDomNode)json, modelRegistry);
+       }
+       else if(!modelRegistry.getParserValidation().isIgnoreInvalidAttributes())
+       {
+         _schema_ = null;
+       }
       if(_schema_ != null)
       {
         matches.add("Schema");
@@ -312,7 +424,6 @@ public abstract class SchemaOrRef_Entity extends Entity
     }
   }
 
-
   /**
    * Builder for SchemaOrRef
    */
@@ -395,6 +506,7 @@ public abstract class SchemaOrRef_Entity extends Entity
 
     return null;
   }
+
 }
 
 /*----------------------------------------------------------------------------------------------------

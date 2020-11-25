@@ -1,3 +1,13 @@
+  
+  
+// TRACE 1 imports
+// javax.annotation.concurrent.Immutable
+// com.symphony.oss.canon2.runtime.java.ModelRegistry
+// com.symphony.oss.canon.json.model.JsonDomNode
+// com.symphony.oss.canon.json.ParserErrorException
+// com.symphony.oss.commons.fault.FaultAccumulator
+
+
 /**
  * GENERATED CODE - DO NOT EDIT OR CHECK IN TO SOURCE CODE CONTROL
  *
@@ -21,9 +31,95 @@
  *    Generator groupId    org.symphonyoss.s2.canon
  *              artifactId canon2-generator-java
  *    Template name        template/Object/_Entity.java.ftl
- *    At                   2020-11-21 06:21:48 GMT
+ *    At                   2020-11-25 13:28:55 GMT
  *----------------------------------------------------------------------------------------------------
  */
+  
+  
+// TRACE 2 imports
+// javax.annotation.concurrent.Immutable
+// com.symphony.oss.canon2.runtime.java.ModelRegistry
+// com.symphony.oss.canon.json.model.JsonDomNode
+// com.symphony.oss.canon.json.ParserErrorException
+// com.symphony.oss.commons.fault.FaultAccumulator
+
+
+  
+  
+// TRACE 3 imports
+// javax.annotation.concurrent.Immutable
+// com.symphony.oss.canon2.runtime.java.ModelRegistry
+// com.symphony.oss.canon.json.model.JsonDomNode
+// com.symphony.oss.canon.json.ParserErrorException
+// com.symphony.oss.commons.fault.FaultAccumulator
+
+
+// T2 A
+      // field BooleanSchema
+    
+      // T B BooleanSchema
+// schema.class class com.symphony.oss.canon2.generator.java.JavaObjectSchemaTemplateModel
+    // add BooleanSchema -> com.symphony.oss.canon.json.model.JsonObject
+      // field ArraySchema
+    
+      // T B ArraySchema
+// schema.class class com.symphony.oss.canon2.generator.java.JavaObjectSchemaTemplateModel
+    // add ArraySchema -> com.symphony.oss.canon.json.model.JsonObject
+      // field ObjectSchema
+    
+      // T B ObjectSchema
+// schema.class class com.symphony.oss.canon2.generator.java.JavaObjectSchemaTemplateModel
+    // add ObjectSchema -> com.symphony.oss.canon.json.model.JsonObject
+      // field StringSchema
+    
+      // T B StringSchema
+// schema.class class com.symphony.oss.canon2.generator.java.JavaObjectSchemaTemplateModel
+    // add StringSchema -> com.symphony.oss.canon.json.model.JsonObject
+      // field NumberSchema
+    
+      // T B NumberSchema
+// schema.class class com.symphony.oss.canon2.generator.java.JavaObjectSchemaTemplateModel
+    // add NumberSchema -> com.symphony.oss.canon.json.model.JsonObject
+      // field OneOfSchema
+    
+      // T B OneOfSchema
+// schema.class class com.symphony.oss.canon2.generator.java.JavaObjectSchemaTemplateModel
+    // add OneOfSchema -> com.symphony.oss.canon.json.model.JsonObject
+  
+  
+// TRACE 4 imports
+// javax.annotation.concurrent.Immutable
+// com.symphony.oss.canon2.runtime.java.ModelRegistry
+// com.symphony.oss.canon.json.model.JsonDomNode
+// com.symphony.oss.canon.json.ParserErrorException
+// com.symphony.oss.commons.fault.FaultAccumulator
+// com.symphony.oss.canon2.runtime.java.IEntityInitialiser
+// com.symphony.oss.canon2.runtime.java.JsonEntityInitialiser
+// java.util.List
+// java.util.LinkedList
+// com.symphony.oss.canon.json.ParserException
+// com.symphony.oss.canon.json.ParserResultException
+// com.symphony.oss.canon2.runtime.java.Entity
+// javax.annotation.Nullable
+// com.symphony.oss.canon.json.model.JsonNull
+// com.symphony.oss.canon.json.model.JsonObject
+// javax.annotation.Nullable
+// com.symphony.oss.canon.json.model.JsonNull
+// com.symphony.oss.canon.json.model.JsonObject
+// javax.annotation.Nullable
+// com.symphony.oss.canon.json.model.JsonNull
+// com.symphony.oss.canon.json.model.JsonObject
+// javax.annotation.Nullable
+// com.symphony.oss.canon.json.model.JsonNull
+// com.symphony.oss.canon.json.model.JsonObject
+// javax.annotation.Nullable
+// com.symphony.oss.canon.json.model.JsonNull
+// com.symphony.oss.canon.json.model.JsonObject
+// javax.annotation.Nullable
+// com.symphony.oss.canon.json.model.JsonNull
+// com.symphony.oss.canon.json.model.JsonObject
+
+
 
 package com.symphony.oss.canon2.model;
 
@@ -78,40 +174,119 @@ public abstract class Schema_Entity extends Entity
     if(initialiser instanceof JsonEntityInitialiser)
     {
       JsonEntityInitialiser jsonInitialiser = (JsonEntityInitialiser)initialiser;
+      ModelRegistry modelRegistry = jsonInitialiser.getModelRegistry();
       List<ParserException> parserExceptions = new LinkedList<>();
       List<String>          matches = new LinkedList<>();
       JsonDomNode           node = jsonInitialiser.getJson();
-       _booleanSchema_ = BooleanSchema.FACTORY.newInstanceOrNull(parserExceptions, node, jsonInitialiser.getModelRegistry());
+// A1
+//A2
+    //A3
+    
+    
+       if(node instanceof JsonObject)
+       {
+//A6a
+         _booleanSchema_ = BooleanSchema.FACTORY.newInstanceOrNull(parserExceptions, (JsonObject)node, modelRegistry);
+       }
+       else 
+       {
+         _booleanSchema_ = null;
+       }
       if(_booleanSchema_ != null)
       {
         matches.add("BooleanSchema");
       }
 
-       _arraySchema_ = ArraySchema.FACTORY.newInstanceOrNull(parserExceptions, node, jsonInitialiser.getModelRegistry());
+// A1
+//A2
+    //A3
+    
+    
+       if(node instanceof JsonObject)
+       {
+//A6a
+         _arraySchema_ = ArraySchema.FACTORY.newInstanceOrNull(parserExceptions, (JsonObject)node, modelRegistry);
+       }
+       else 
+       {
+         _arraySchema_ = null;
+       }
       if(_arraySchema_ != null)
       {
         matches.add("ArraySchema");
       }
 
-       _objectSchema_ = ObjectSchema.FACTORY.newInstanceOrNull(parserExceptions, node, jsonInitialiser.getModelRegistry());
+// A1
+//A2
+    //A3
+    
+    
+       if(node instanceof JsonObject)
+       {
+//A6a
+         _objectSchema_ = ObjectSchema.FACTORY.newInstanceOrNull(parserExceptions, (JsonObject)node, modelRegistry);
+       }
+       else 
+       {
+         _objectSchema_ = null;
+       }
       if(_objectSchema_ != null)
       {
         matches.add("ObjectSchema");
       }
 
-       _stringSchema_ = StringSchema.FACTORY.newInstanceOrNull(parserExceptions, node, jsonInitialiser.getModelRegistry());
+// A1
+//A2
+    //A3
+    
+    
+       if(node instanceof JsonObject)
+       {
+//A6a
+         _stringSchema_ = StringSchema.FACTORY.newInstanceOrNull(parserExceptions, (JsonObject)node, modelRegistry);
+       }
+       else 
+       {
+         _stringSchema_ = null;
+       }
       if(_stringSchema_ != null)
       {
         matches.add("StringSchema");
       }
 
-       _numberSchema_ = NumberSchema.FACTORY.newInstanceOrNull(parserExceptions, node, jsonInitialiser.getModelRegistry());
+// A1
+//A2
+    //A3
+    
+    
+       if(node instanceof JsonObject)
+       {
+//A6a
+         _numberSchema_ = NumberSchema.FACTORY.newInstanceOrNull(parserExceptions, (JsonObject)node, modelRegistry);
+       }
+       else 
+       {
+         _numberSchema_ = null;
+       }
       if(_numberSchema_ != null)
       {
         matches.add("NumberSchema");
       }
 
-       _oneOfSchema_ = OneOfSchema.FACTORY.newInstanceOrNull(parserExceptions, node, jsonInitialiser.getModelRegistry());
+// A1
+//A2
+    //A3
+    
+    
+       if(node instanceof JsonObject)
+       {
+//A6a
+         _oneOfSchema_ = OneOfSchema.FACTORY.newInstanceOrNull(parserExceptions, (JsonObject)node, modelRegistry);
+       }
+       else 
+       {
+         _oneOfSchema_ = null;
+       }
       if(_oneOfSchema_ != null)
       {
         matches.add("OneOfSchema");
@@ -252,37 +427,115 @@ public abstract class Schema_Entity extends Entity
     {
       List<ParserException> parserExceptions = new LinkedList<>();
       List<String>          matches = new LinkedList<>();
-       _booleanSchema_ = BooleanSchema.FACTORY.newInstanceOrNull(parserExceptions, json, modelRegistry);
+// A1
+//A2
+    //A3
+    
+    
+       if(json instanceof JsonObject)
+       {
+//A6a
+         _booleanSchema_ = BooleanSchema.FACTORY.newInstanceOrNull(parserExceptions, (JsonObject)json, modelRegistry);
+       }
+       else if(!modelRegistry.getParserValidation().isIgnoreInvalidAttributes())
+       {
+         _booleanSchema_ = null;
+       }
       if(_booleanSchema_ != null)
       {
         matches.add("BooleanSchema");
       }
 
-       _arraySchema_ = ArraySchema.FACTORY.newInstanceOrNull(parserExceptions, json, modelRegistry);
+// A1
+//A2
+    //A3
+    
+    
+       if(json instanceof JsonObject)
+       {
+//A6a
+         _arraySchema_ = ArraySchema.FACTORY.newInstanceOrNull(parserExceptions, (JsonObject)json, modelRegistry);
+       }
+       else if(!modelRegistry.getParserValidation().isIgnoreInvalidAttributes())
+       {
+         _arraySchema_ = null;
+       }
       if(_arraySchema_ != null)
       {
         matches.add("ArraySchema");
       }
 
-       _objectSchema_ = ObjectSchema.FACTORY.newInstanceOrNull(parserExceptions, json, modelRegistry);
+// A1
+//A2
+    //A3
+    
+    
+       if(json instanceof JsonObject)
+       {
+//A6a
+         _objectSchema_ = ObjectSchema.FACTORY.newInstanceOrNull(parserExceptions, (JsonObject)json, modelRegistry);
+       }
+       else if(!modelRegistry.getParserValidation().isIgnoreInvalidAttributes())
+       {
+         _objectSchema_ = null;
+       }
       if(_objectSchema_ != null)
       {
         matches.add("ObjectSchema");
       }
 
-       _stringSchema_ = StringSchema.FACTORY.newInstanceOrNull(parserExceptions, json, modelRegistry);
+// A1
+//A2
+    //A3
+    
+    
+       if(json instanceof JsonObject)
+       {
+//A6a
+         _stringSchema_ = StringSchema.FACTORY.newInstanceOrNull(parserExceptions, (JsonObject)json, modelRegistry);
+       }
+       else if(!modelRegistry.getParserValidation().isIgnoreInvalidAttributes())
+       {
+         _stringSchema_ = null;
+       }
       if(_stringSchema_ != null)
       {
         matches.add("StringSchema");
       }
 
-       _numberSchema_ = NumberSchema.FACTORY.newInstanceOrNull(parserExceptions, json, modelRegistry);
+// A1
+//A2
+    //A3
+    
+    
+       if(json instanceof JsonObject)
+       {
+//A6a
+         _numberSchema_ = NumberSchema.FACTORY.newInstanceOrNull(parserExceptions, (JsonObject)json, modelRegistry);
+       }
+       else if(!modelRegistry.getParserValidation().isIgnoreInvalidAttributes())
+       {
+         _numberSchema_ = null;
+       }
       if(_numberSchema_ != null)
       {
         matches.add("NumberSchema");
       }
 
-       _oneOfSchema_ = OneOfSchema.FACTORY.newInstanceOrNull(parserExceptions, json, modelRegistry);
+// A1
+//A2
+    //A3
+    
+    
+       if(json instanceof JsonObject)
+       {
+//A6a
+         _oneOfSchema_ = OneOfSchema.FACTORY.newInstanceOrNull(parserExceptions, (JsonObject)json, modelRegistry);
+       }
+       else if(!modelRegistry.getParserValidation().isIgnoreInvalidAttributes())
+       {
+         _oneOfSchema_ = null;
+       }
       if(_oneOfSchema_ != null)
       {
         matches.add("OneOfSchema");
@@ -508,7 +761,6 @@ public abstract class Schema_Entity extends Entity
     }
   }
 
-
   /**
    * Builder for Schema
    */
@@ -643,6 +895,7 @@ public abstract class Schema_Entity extends Entity
 
     return null;
   }
+
 }
 
 /*----------------------------------------------------------------------------------------------------

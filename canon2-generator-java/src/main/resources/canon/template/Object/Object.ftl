@@ -5,25 +5,9 @@
   "com.symphony.oss.canon.json.ParserErrorException",
   "com.symphony.oss.commons.fault.FaultAccumulator"
   ]>
-  
-  
-// TRACE 1 imports
-<#list imports as import>
-// ${import}
-</#list>
-
-
 <#include "/copyrightHeader.ftl"/>
 <#include "/macros.ftl"/>
 <#include "InstanceOrBuilder.ftl">
-  
-  
-// TRACE 2 imports
-<#list imports as import>
-// ${import}
-</#list>
-
-
 <#macro importObject schema>
 <#switch schema.schemaType>
     <#case "OBJECT">
@@ -59,14 +43,12 @@
 </#switch>
 </#macro>
 <#macro importType schema>
-// schema.class ${schema.class}
   <#if schema.isObjectType>
     <#assign imports = imports + [
       "com.symphony.oss.canon.json.model.JsonNull"
     ]>
   </#if>
   <#if schema.fullyQualifiedJsonNodeType??>
-    // add ${schema.name} -> ${schema.fullyQualifiedJsonNodeType}
     <#assign imports = imports + [
       "${schema.fullyQualifiedJsonNodeType}"
     ]>
@@ -101,7 +83,6 @@
     <#case "OBJECT">
       <#break>
     <#default>
-      // T C
     <@importType schema/>
   </#switch>
 </#macro>
@@ -110,9 +91,7 @@
       <@importObject innerClass/>
     </#if>
     <#if innerClass.schemaType.isPrimitive>
-    // primitive inner class ${innerClass.name}
       <#if innerClass.isEnum || innerClass.hasLimits>
-      // primitive inner class ${innerClass.name} DO IT
         <#assign imports = imports + [
           "java.util.Objects",
           "com.symphony.oss.canon2.runtime.java.TypeDef",
@@ -120,7 +99,6 @@
           "${innerClass.fullyQualifiedJsonNodeType}"
           ]>
       </#if>
-      
     </#if>
     <#list innerClass.fields as field>
       <#assign imports = imports + [
@@ -129,21 +107,16 @@
       <#if field.typeSchema.schemaType == "OBJECT">
         <@importFields field.typeSchema/>
       <#else>
-      // T A
         <@importType field/>
       </#if>
     </#list>
 </#macro>
 <#macro importFields entity>
-// T2 A
   <@importObject entity/>
   <#list entity.fields as field>
     <#assign imports = imports + [
         "javax.annotation.${field.nullable}"
       ]>
-      // field ${field.name}
-    
-      // T B ${field.name}
     <@importType field.typeSchema/>
     <#--  @importObject field.typeSchema/ -->
     <#if field.typeSchema.schemaType == "ARRAY">
@@ -151,42 +124,17 @@
     </#if>
   </#list>
   <#list entity.innerClasses as innerClass>
-  // iiner class ${innerClass.name}
     <@importInnerClass innerClass/>
   </#list>
   <#if entity.additionalPropertiesIsInnerClass>
-  // entity.additionalPropertiesIsInnerClass ${entity.name}
     <@importInnerClass entity.additionalProperties/>
   <#else>
     <#if entity.additionalProperties??>
-      // importType additionalProperties ${ entity.additionalProperties.name}
       <@importType entity.additionalProperties/>
     </#if>
   </#if>
 </#macro>
-  
-  
-// TRACE 3 imports
-<#list imports as import>
-// ${import}
-</#list>
-
-
 <@importFields entity/>
-  
-  
-// TRACE 4 imports
-<#list imports as import>
-// ${import}
-</#list>
-
-
-<#--  --if entity.additionalPropertiesAllowed>
-  <#assign imports = imports + [
-      "java.util.List",
-      "java.util.Collection"
-    ]>
-</#if -->
 
 package ${genPackage};
 
@@ -225,28 +173,22 @@ ${indent}}
 <#if entity.isObjectType>
   <#assign hasUnknownProperties = true/>
   <#assign additionalPropertiesFullyQualified = false/>
+  <#assign additionalTypeCopyPrefix = ""/>
+  <#assign additionalTypeCopySuffix = ""/>
   <#if entity.additionalPropertiesAllowed>
     <#if entity.additionalProperties??>
+      <#assign additionalTypeCopyPrefix = entity.additionalProperties.copyPrefix/>
+      <#assign additionalTypeCopySuffix = entity.additionalProperties.copySuffix/>
       <#if entity.additionalPropertiesIsInnerClass>
         <#assign additionalType = "${c}AdditionalProperties"/>
       <#else>
-      // entity.additionalProperties.type ${entity.additionalProperties.type}
-      // entity.additionalProperties.import ${entity.additionalProperties.import}
       <#assign additionalType = entity.additionalProperties.type/>
-      
-      
 <#list entity.innerClasses as innerClass>
-// innerClass ${innerClass.name}
   <#if innerClass.name == additionalType>
-    // collision!
     <#assign additionalPropertiesFullyQualified = true/>
     <#assign additionalType = entity.additionalProperties.import/>
   </#if>
 </#list>
-
-
-        
-        
       </#if>
     <#else>
       <#assign hasUnknownProperties = false/>
@@ -370,21 +312,23 @@ ${indent}        entity = null;
 ${indent}        node   = jsonInitialiser.get(name);
 <#if entity.additionalPropertiesAllowed>
   <#if entity.additionalProperties??>
-  // create additional prop
     <@generateCreateFieldFromJsonDomNode "${indent}        " "node" additionalType entity.additionalProperties "additionalProperties" "prop" "if(!initialiser.getModelRegistry().getParserValidation().isAllowUnknownAttributes())" additionalPropertiesFullyQualified/>
-${indent}        else // HERE
+${indent}        else
 ${indent}        {
     <@generateUnknownAttribute "${indent}          " "entity"/>
 ${indent}        }
   <#else>
     <@generateUnknownAttribute "${indent}        " "prop"/>
   </#if>
-${indent}        additionalProperties.put(name, prop);
+${indent}        if(prop != null)
+${indent}        {
+${indent}          additionalProperties.put(name, prop);
+${indent}        }
   <#else>
     <@generateUnknownAttribute "${indent}        " "entity"/>
 </#if>
 <#if hasUnknownProperties>
-${indent}        // HERE3 if(entity != null)
+${indent}        if(entity != null)
 ${indent}        {
 ${indent}          unknownProperties.put(name, entity);
 ${indent}        }
@@ -522,7 +466,7 @@ ${indent}  {
 ${indent}    protected ${field.type?right_pad(25)}  ${c}${field.camelName}_${field.typeSchema.builderTypeNew};
   </#list>
   <#if entity.additionalPropertiesAllowed>
-${indent}    protected ${"Map<String, ${additionalType}>"?right_pad(25)}  additionalProperties_ = ImmutableSortedMap.of();
+${indent}    protected ${"Map<String, ${additionalType}>"?right_pad(25)}  additionalProperties_ = new HashMap<>();
   </#if>
 <#if hasUnknownProperties>
 ${indent}    protected ${"Map<String, Entity>"?right_pad(25)}  unknownProperties_ = ImmutableSortedMap.of(); 
@@ -598,6 +542,23 @@ ${indent}      return self();
 </#if>
 ${indent}    }
 
+<#if entity.additionalPropertiesAllowed>
+${indent}    /**
+${indent}     * Set an additional property.
+${indent}     * 
+${indent}     * @param name  The property name.
+${indent}     * @param value The property value.
+${indent}     * 
+${indent}     * @return This (fluent method).
+${indent}     */
+${indent}    public T with(String name, ${additionalType} value)
+${indent}    {
+${indent}      additionalProperties_.put(name, ${additionalTypeCopyPrefix}value${additionalTypeCopySuffix});
+
+${indent}      return self();
+${indent}    }
+
+</#if>
 ${indent}    /* void populateAllFields(List<Object> result)
 ${indent}    {
 <#if entity.superSchema??>
@@ -705,9 +666,21 @@ ${indent}      super.populateJson(builder);
 
 ${indent}      if(get${field.camelCapitalizedName}() != null)
 ${indent}      {
-        <@generateCreateJsonDomNodeFromField "${indent}        " field.typeSchema field.quotedName "get${field.camelCapitalizedName}()" "builder"/>
+        <@generateCreateJsonDomNodeFromField "${indent}        " field.typeSchema "\"${field.quotedName}\"" "get${field.camelCapitalizedName}()" "builder"/>
 ${indent}      }
+
   </#list>
+<#if entity.additionalPropertiesAllowed>
+${indent}      for(String name : additionalProperties_.keySet())
+${indent}      {
+${indent}        ${additionalType} value = additionalProperties_.get(name);
+  <#if entity.additionalProperties??>
+    <@generateCreateJsonDomNodeFromField "${indent}        " entity.additionalProperties "name" "value" "builder"/>
+  <#else>
+${indent}        builder.addIfNotNull(name, value.getJson());
+  </#if>
+${indent}      }
+</#if>
 ${indent}    }
        <#break>
     <#case "ONE_OF">
@@ -735,7 +708,7 @@ ${indent}    }
 ${indent}    @Override
 ${indent}    public Map<String, ${additionalType}> canonGetAdditionalProperties()
 ${indent}    {
-${indent}       return additionalProperties_;
+${indent}       return ImmutableSortedMap.copyOf(additionalProperties_);
 ${indent}    }
 
 </#if>
@@ -893,7 +866,6 @@ ${indent}  }
   </#if>
 </#if>
 <#list entity.innerClasses as innerClass>
-// innerClass ${innerClass.name}
   <@generateInnerClass indent innerClass innerClass.camelCapitalizedName classModifier nested/>
 </#list>
 ${indent}}

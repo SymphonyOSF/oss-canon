@@ -1,3 +1,13 @@
+  
+  
+// TRACE 1 imports
+// javax.annotation.concurrent.Immutable
+// com.symphony.oss.canon2.runtime.java.ModelRegistry
+// com.symphony.oss.canon.json.model.JsonDomNode
+// com.symphony.oss.canon.json.ParserErrorException
+// com.symphony.oss.commons.fault.FaultAccumulator
+
+
 /**
  * GENERATED CODE - DO NOT EDIT OR CHECK IN TO SOURCE CODE CONTROL
  *
@@ -21,9 +31,59 @@
  *    Generator groupId    org.symphonyoss.s2.canon
  *              artifactId canon2-generator-java
  *    Template name        template/Object/_.java.ftl
- *    At                   2020-11-21 06:21:48 GMT
+ *    At                   2020-11-25 13:28:55 GMT
  *----------------------------------------------------------------------------------------------------
  */
+  
+  
+// TRACE 2 imports
+// javax.annotation.concurrent.Immutable
+// com.symphony.oss.canon2.runtime.java.ModelRegistry
+// com.symphony.oss.canon.json.model.JsonDomNode
+// com.symphony.oss.canon.json.ParserErrorException
+// com.symphony.oss.commons.fault.FaultAccumulator
+
+
+  
+  
+// TRACE 3 imports
+// javax.annotation.concurrent.Immutable
+// com.symphony.oss.canon2.runtime.java.ModelRegistry
+// com.symphony.oss.canon.json.model.JsonDomNode
+// com.symphony.oss.canon.json.ParserErrorException
+// com.symphony.oss.commons.fault.FaultAccumulator
+
+
+// T2 A
+      // field SchemaOrRef
+    
+      // T B SchemaOrRef
+// schema.class class com.symphony.oss.canon2.generator.java.JavaObjectSchemaTemplateModel
+      // field $1
+    
+      // T B $1
+// schema.class class com.symphony.oss.canon2.generator.java.JavaBooleanSchemaTemplateModel
+    // add $1 -> com.symphony.oss.canon.json.model.JsonBoolean
+  
+  
+// TRACE 4 imports
+// javax.annotation.concurrent.Immutable
+// com.symphony.oss.canon2.runtime.java.ModelRegistry
+// com.symphony.oss.canon.json.model.JsonDomNode
+// com.symphony.oss.canon.json.ParserErrorException
+// com.symphony.oss.commons.fault.FaultAccumulator
+// com.symphony.oss.canon2.runtime.java.IEntityInitialiser
+// com.symphony.oss.canon2.runtime.java.JsonEntityInitialiser
+// java.util.List
+// java.util.LinkedList
+// com.symphony.oss.canon.json.ParserException
+// com.symphony.oss.canon.json.ParserResultException
+// com.symphony.oss.canon2.runtime.java.Entity
+// javax.annotation.Nullable
+// javax.annotation.Nullable
+// com.symphony.oss.canon.json.model.JsonBoolean
+
+
 
 package com.symphony.oss.canon2.model;
 
@@ -38,8 +98,6 @@ import com.symphony.oss.canon.json.ParserException;
 import com.symphony.oss.canon.json.ParserResultException;
 import com.symphony.oss.canon.json.model.JsonBoolean;
 import com.symphony.oss.canon.json.model.JsonDomNode;
-import com.symphony.oss.canon.json.model.JsonNull;
-import com.symphony.oss.canon.json.model.JsonObject;
 import com.symphony.oss.canon2.runtime.java.Entity;
 import com.symphony.oss.canon2.runtime.java.IEntityInitialiser;
 import com.symphony.oss.canon2.runtime.java.JsonEntityInitialiser;
@@ -75,17 +133,33 @@ public class AdditionalProperties extends Entity
     if(initialiser instanceof JsonEntityInitialiser)
     {
       JsonEntityInitialiser jsonInitialiser = (JsonEntityInitialiser)initialiser;
+      ModelRegistry modelRegistry = jsonInitialiser.getModelRegistry();
       List<ParserException> parserExceptions = new LinkedList<>();
       List<String>          matches = new LinkedList<>();
       JsonDomNode           node = jsonInitialiser.getJson();
-       _schemaOrRef_ = SchemaOrRef.FACTORY.newInstanceOrNull(parserExceptions, node, jsonInitialiser.getModelRegistry());
+// A1
+//A2
+    
+    
+       if(node instanceof JsonDomNode)
+       {
+//A6a
+         _schemaOrRef_ = SchemaOrRef.FACTORY.newInstanceOrNull(parserExceptions, (JsonDomNode)node, modelRegistry);
+       }
+       else 
+       {
+         _schemaOrRef_ = null;
+       }
       if(_schemaOrRef_ != null)
       {
         matches.add("SchemaOrRef");
       }
 
+// A1
+//A2
        if(node instanceof JsonBoolean)
        {
+//A6
          _$1_ = ((JsonBoolean)node).asBoolean();
        }
        else 
@@ -216,14 +290,29 @@ public class AdditionalProperties extends Entity
     {
       List<ParserException> parserExceptions = new LinkedList<>();
       List<String>          matches = new LinkedList<>();
-       _schemaOrRef_ = SchemaOrRef.FACTORY.newInstanceOrNull(parserExceptions, json, modelRegistry);
+// A1
+//A2
+    
+    
+       if(json instanceof JsonDomNode)
+       {
+//A6a
+         _schemaOrRef_ = SchemaOrRef.FACTORY.newInstanceOrNull(parserExceptions, (JsonDomNode)json, modelRegistry);
+       }
+       else if(!modelRegistry.getParserValidation().isIgnoreInvalidAttributes())
+       {
+         _schemaOrRef_ = null;
+       }
       if(_schemaOrRef_ != null)
       {
         matches.add("SchemaOrRef");
       }
 
+// A1
+//A2
        if(json instanceof JsonBoolean)
        {
+//A6
          _$1_ = ((JsonBoolean)json).asBoolean();
        }
        else if(!modelRegistry.getParserValidation().isIgnoreInvalidAttributes())
@@ -327,7 +416,6 @@ public class AdditionalProperties extends Entity
     }
   }
 
-
   /**
    * Builder for AdditionalProperties
    */
@@ -410,6 +498,7 @@ public class AdditionalProperties extends Entity
 
     return null;
   }
+
 }
 
 /*----------------------------------------------------------------------------------------------------
