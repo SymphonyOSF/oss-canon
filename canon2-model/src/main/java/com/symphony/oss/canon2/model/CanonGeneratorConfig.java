@@ -1,13 +1,3 @@
-  
-  
-// TRACE 1 imports
-// javax.annotation.concurrent.Immutable
-// com.symphony.oss.canon2.runtime.java.ModelRegistry
-// com.symphony.oss.canon.json.model.JsonDomNode
-// com.symphony.oss.canon.json.ParserErrorException
-// com.symphony.oss.commons.fault.FaultAccumulator
-
-
 /**
  * GENERATED CODE - DO NOT EDIT OR CHECK IN TO SOURCE CODE CONTROL
  *
@@ -31,50 +21,9 @@
  *    Generator groupId    org.symphonyoss.s2.canon
  *              artifactId canon2-generator-java
  *    Template name        template/Object/_.java.ftl
- *    At                   2020-11-25 13:28:55 GMT
+ *    At                   2020-11-25 15:52:09 GMT
  *----------------------------------------------------------------------------------------------------
  */
-  
-  
-// TRACE 2 imports
-// javax.annotation.concurrent.Immutable
-// com.symphony.oss.canon2.runtime.java.ModelRegistry
-// com.symphony.oss.canon.json.model.JsonDomNode
-// com.symphony.oss.canon.json.ParserErrorException
-// com.symphony.oss.commons.fault.FaultAccumulator
-
-
-  
-  
-// TRACE 3 imports
-// javax.annotation.concurrent.Immutable
-// com.symphony.oss.canon2.runtime.java.ModelRegistry
-// com.symphony.oss.canon.json.model.JsonDomNode
-// com.symphony.oss.canon.json.ParserErrorException
-// com.symphony.oss.commons.fault.FaultAccumulator
-
-
-// T2 A
-  
-  
-// TRACE 4 imports
-// javax.annotation.concurrent.Immutable
-// com.symphony.oss.canon2.runtime.java.ModelRegistry
-// com.symphony.oss.canon.json.model.JsonDomNode
-// com.symphony.oss.canon.json.ParserErrorException
-// com.symphony.oss.commons.fault.FaultAccumulator
-// com.google.common.collect.ImmutableSortedMap
-// java.util.Map
-// java.util.HashMap
-// com.symphony.oss.canon2.runtime.java.IObjectEntityInitialiser
-// com.symphony.oss.canon2.runtime.java.JsonObjectEntityInitialiser
-// com.symphony.oss.canon2.runtime.java.JsonEntityInitialiser
-// com.symphony.oss.canon2.runtime.java.ObjectEntity
-// com.symphony.oss.canon2.runtime.java.Entity
-// com.symphony.oss.canon2.runtime.java.ObjectEntity
-// com.symphony.oss.canon.json.model.JsonObject
-
-
 
 package com.symphony.oss.canon2.model;
 
@@ -141,7 +90,10 @@ public class CanonGeneratorConfig extends ObjectEntity
         {
           prop = new Entity(new JsonEntityInitialiser(node, initialiser.getModelRegistry()));
         }
-        additionalProperties.put(name, prop);
+        if(prop != null)
+        {
+          additionalProperties.put(name, prop);
+        }
       }
       additionalProperties_ =  ImmutableSortedMap.copyOf(additionalProperties);
     }
@@ -234,7 +186,7 @@ public class CanonGeneratorConfig extends ObjectEntity
     extends ObjectEntity.AbstractBuilder<T,B>
     implements I_CanonGeneratorConfig_InstanceOrBuilder, Initialiser
   {
-    protected Map<String, Entity>        additionalProperties_ = ImmutableSortedMap.of();
+    protected Map<String, Entity>        additionalProperties_ = new HashMap<>();
 
     protected AbstractBuilder(Class<T> type)
     {
@@ -266,6 +218,21 @@ public class CanonGeneratorConfig extends ObjectEntity
       return self();
     }
 
+    /**
+     * Set an additional property.
+     * 
+     * @param name  The property name.
+     * @param value The property value.
+     * 
+     * @return This (fluent method).
+     */
+    public T with(String name, Entity value)
+    {
+      additionalProperties_.put(name, value);
+
+      return self();
+    }
+
     /* void populateAllFields(List<Object> result)
     {
     }*/
@@ -288,12 +255,17 @@ public class CanonGeneratorConfig extends ObjectEntity
     public void populateJson(JsonObject.Builder builder)
     {
       super.populateJson(builder);
+      for(String name : additionalProperties_.keySet())
+      {
+        Entity value = additionalProperties_.get(name);
+        builder.addIfNotNull(name, value.getJson());
+      }
     }
 
     @Override
     public Map<String, Entity> canonGetAdditionalProperties()
     {
-       return additionalProperties_;
+       return ImmutableSortedMap.copyOf(additionalProperties_);
     }
 
     @Override

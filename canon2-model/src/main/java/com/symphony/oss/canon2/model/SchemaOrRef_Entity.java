@@ -1,13 +1,3 @@
-  
-  
-// TRACE 1 imports
-// javax.annotation.concurrent.Immutable
-// com.symphony.oss.canon2.runtime.java.ModelRegistry
-// com.symphony.oss.canon.json.model.JsonDomNode
-// com.symphony.oss.canon.json.ParserErrorException
-// com.symphony.oss.commons.fault.FaultAccumulator
-
-
 /**
  * GENERATED CODE - DO NOT EDIT OR CHECK IN TO SOURCE CODE CONTROL
  *
@@ -31,60 +21,9 @@
  *    Generator groupId    org.symphonyoss.s2.canon
  *              artifactId canon2-generator-java
  *    Template name        template/Object/_Entity.java.ftl
- *    At                   2020-11-25 13:28:55 GMT
+ *    At                   2020-11-25 15:52:09 GMT
  *----------------------------------------------------------------------------------------------------
  */
-  
-  
-// TRACE 2 imports
-// javax.annotation.concurrent.Immutable
-// com.symphony.oss.canon2.runtime.java.ModelRegistry
-// com.symphony.oss.canon.json.model.JsonDomNode
-// com.symphony.oss.canon.json.ParserErrorException
-// com.symphony.oss.commons.fault.FaultAccumulator
-
-
-  
-  
-// TRACE 3 imports
-// javax.annotation.concurrent.Immutable
-// com.symphony.oss.canon2.runtime.java.ModelRegistry
-// com.symphony.oss.canon.json.model.JsonDomNode
-// com.symphony.oss.canon.json.ParserErrorException
-// com.symphony.oss.commons.fault.FaultAccumulator
-
-
-// T2 A
-      // field ReferenceObject
-    
-      // T B ReferenceObject
-// schema.class class com.symphony.oss.canon2.generator.java.JavaObjectSchemaTemplateModel
-    // add ReferenceObject -> com.symphony.oss.canon.json.model.JsonObject
-      // field Schema
-    
-      // T B Schema
-// schema.class class com.symphony.oss.canon2.generator.java.JavaObjectSchemaTemplateModel
-  
-  
-// TRACE 4 imports
-// javax.annotation.concurrent.Immutable
-// com.symphony.oss.canon2.runtime.java.ModelRegistry
-// com.symphony.oss.canon.json.model.JsonDomNode
-// com.symphony.oss.canon.json.ParserErrorException
-// com.symphony.oss.commons.fault.FaultAccumulator
-// com.symphony.oss.canon2.runtime.java.IEntityInitialiser
-// com.symphony.oss.canon2.runtime.java.JsonEntityInitialiser
-// java.util.List
-// java.util.LinkedList
-// com.symphony.oss.canon.json.ParserException
-// com.symphony.oss.canon.json.ParserResultException
-// com.symphony.oss.canon2.runtime.java.Entity
-// javax.annotation.Nullable
-// com.symphony.oss.canon.json.model.JsonNull
-// com.symphony.oss.canon.json.model.JsonObject
-// javax.annotation.Nullable
-
-
 
 package com.symphony.oss.canon2.model;
 

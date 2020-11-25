@@ -1,13 +1,3 @@
-  
-  
-// TRACE 1 imports
-// javax.annotation.concurrent.Immutable
-// com.symphony.oss.canon2.runtime.java.ModelRegistry
-// com.symphony.oss.canon.json.model.JsonDomNode
-// com.symphony.oss.canon.json.ParserErrorException
-// com.symphony.oss.commons.fault.FaultAccumulator
-
-
 /**
  * GENERATED CODE - DO NOT EDIT OR CHECK IN TO SOURCE CODE CONTROL
  *
@@ -31,130 +21,9 @@
  *    Generator groupId    org.symphonyoss.s2.canon
  *              artifactId canon2-generator-java
  *    Template name        template/Object/_Entity.java.ftl
- *    At                   2020-11-25 13:28:55 GMT
+ *    At                   2020-11-25 15:52:09 GMT
  *----------------------------------------------------------------------------------------------------
  */
-  
-  
-// TRACE 2 imports
-// javax.annotation.concurrent.Immutable
-// com.symphony.oss.canon2.runtime.java.ModelRegistry
-// com.symphony.oss.canon.json.model.JsonDomNode
-// com.symphony.oss.canon.json.ParserErrorException
-// com.symphony.oss.commons.fault.FaultAccumulator
-
-
-  
-  
-// TRACE 3 imports
-// javax.annotation.concurrent.Immutable
-// com.symphony.oss.canon2.runtime.java.ModelRegistry
-// com.symphony.oss.canon.json.model.JsonDomNode
-// com.symphony.oss.canon.json.ParserErrorException
-// com.symphony.oss.commons.fault.FaultAccumulator
-
-
-// T2 A
-      // field components
-    
-      // T B components
-// schema.class class com.symphony.oss.canon2.generator.java.JavaObjectSchemaTemplateModel
-    // add ComponentsObject -> com.symphony.oss.canon.json.model.JsonObject
-      // field x-canon-generators
-    
-      // T B x-canon-generators
-// schema.class class com.symphony.oss.canon2.generator.java.JavaObjectSchemaTemplateModel
-    // add CanonGeneratorConfig -> com.symphony.oss.canon.json.model.JsonObject
-      // field openapi
-    
-      // T B openapi
-// schema.class class com.symphony.oss.canon2.generator.java.JavaStringSchemaTemplateModel
-    // add openapi -> com.symphony.oss.canon.json.model.JsonString
-      // field paths
-    
-      // T B paths
-// schema.class class com.symphony.oss.canon2.generator.java.JavaObjectSchemaTemplateModel
-    // add PathsObject -> com.symphony.oss.canon.json.model.JsonObject
-      // field x-canon-id
-    
-      // T B x-canon-id
-// schema.class class com.symphony.oss.canon2.generator.java.JavaStringSchemaTemplateModel
-    // add x-canon-id -> com.symphony.oss.canon.json.model.JsonString
-      // field x-canon-version
-    
-      // T B x-canon-version
-// schema.class class com.symphony.oss.canon2.generator.java.JavaStringSchemaTemplateModel
-    // add SemanticVersion -> com.symphony.oss.canon.json.model.JsonString
-      // field x-canon-identifier
-    
-      // T B x-canon-identifier
-// schema.class class com.symphony.oss.canon2.generator.java.JavaStringSchemaTemplateModel
-    // add x-canon-identifier -> com.symphony.oss.canon.json.model.JsonString
-      // field canon
-    
-      // T B canon
-// schema.class class com.symphony.oss.canon2.generator.java.JavaStringSchemaTemplateModel
-    // add canon -> com.symphony.oss.canon.json.model.JsonString
-      // field info
-    
-      // T B info
-// schema.class class com.symphony.oss.canon2.generator.java.JavaObjectSchemaTemplateModel
-    // add InfoObject -> com.symphony.oss.canon.json.model.JsonObject
-  // iiner class openapi
-    // primitive inner class openapi
-      
-  // iiner class x-canon-id
-    // primitive inner class x-canon-id
-      
-  // iiner class x-canon-identifier
-    // primitive inner class x-canon-identifier
-      
-  // iiner class canon
-    // primitive inner class canon
-      
-  
-  
-// TRACE 4 imports
-// javax.annotation.concurrent.Immutable
-// com.symphony.oss.canon2.runtime.java.ModelRegistry
-// com.symphony.oss.canon.json.model.JsonDomNode
-// com.symphony.oss.canon.json.ParserErrorException
-// com.symphony.oss.commons.fault.FaultAccumulator
-// com.google.common.collect.ImmutableSortedMap
-// java.util.Map
-// java.util.HashMap
-// com.symphony.oss.canon2.runtime.java.IObjectEntityInitialiser
-// com.symphony.oss.canon2.runtime.java.JsonObjectEntityInitialiser
-// com.symphony.oss.canon2.runtime.java.JsonEntityInitialiser
-// com.symphony.oss.canon2.runtime.java.ObjectEntity
-// com.symphony.oss.canon2.runtime.java.Entity
-// com.symphony.oss.canon2.runtime.java.ObjectEntity
-// com.symphony.oss.canon.json.model.JsonObject
-// com.symphony.oss.canon.json.model.JsonNull
-// javax.annotation.Nullable
-// com.symphony.oss.canon.json.model.JsonNull
-// com.symphony.oss.canon.json.model.JsonObject
-// javax.annotation.Nullable
-// com.symphony.oss.canon.json.model.JsonNull
-// com.symphony.oss.canon.json.model.JsonObject
-// javax.annotation.Nullable
-// com.symphony.oss.canon.json.model.JsonString
-// javax.annotation.Nullable
-// com.symphony.oss.canon.json.model.JsonNull
-// com.symphony.oss.canon.json.model.JsonObject
-// javax.annotation.Nullable
-// com.symphony.oss.canon.json.model.JsonString
-// javax.annotation.Nullable
-// com.symphony.oss.canon.json.model.JsonString
-// javax.annotation.Nullable
-// com.symphony.oss.canon.json.model.JsonString
-// javax.annotation.Nullable
-// com.symphony.oss.canon.json.model.JsonString
-// javax.annotation.Nonnull
-// com.symphony.oss.canon.json.model.JsonNull
-// com.symphony.oss.canon.json.model.JsonObject
-
-
 
 package com.symphony.oss.canon2.model;
 
@@ -426,7 +295,10 @@ public abstract class OpenApiObject_Entity extends ObjectEntity
         {
           prop = new Entity(new JsonEntityInitialiser(node, initialiser.getModelRegistry()));
         }
-        additionalProperties.put(name, prop);
+        if(prop != null)
+        {
+          additionalProperties.put(name, prop);
+        }
       }
       additionalProperties_ =  ImmutableSortedMap.copyOf(additionalProperties);
     }
@@ -540,7 +412,7 @@ public abstract class OpenApiObject_Entity extends ObjectEntity
     protected String                     _xCanonIdentifier_;
     protected String                     _canon_;
     protected InfoObject                 _info_;
-    protected Map<String, Entity>        additionalProperties_ = ImmutableSortedMap.of();
+    protected Map<String, Entity>        additionalProperties_ = new HashMap<>();
 
     protected AbstractBuilder(Class<T> type)
     {
@@ -725,6 +597,21 @@ public abstract class OpenApiObject_Entity extends ObjectEntity
           throw new ParserErrorException("info must be an instance of JsonObject not " + node.getClass().getName(), node.getContext());
         }
       }
+      return self();
+    }
+
+    /**
+     * Set an additional property.
+     * 
+     * @param name  The property name.
+     * @param value The property value.
+     * 
+     * @return This (fluent method).
+     */
+    public T with(String name, Entity value)
+    {
+      additionalProperties_.put(name, value);
+
       return self();
     }
 
@@ -999,51 +886,65 @@ public abstract class OpenApiObject_Entity extends ObjectEntity
         builder.addIfNotNull("components", getComponents().getJson());
       }
 
+
       if(getXCanonGenerators() != null)
       {
         builder.addIfNotNull("x-canon-generators", getXCanonGenerators().getJson());
       }
+
 
       if(getOpenapi() != null)
       {
         builder.addIfNotNull("openapi", getOpenapi());
       }
 
+
       if(getPaths() != null)
       {
         builder.addIfNotNull("paths", getPaths().getJson());
       }
+
 
       if(getXCanonId() != null)
       {
         builder.addIfNotNull("x-canon-id", getXCanonId());
       }
 
+
       if(getXCanonVersion() != null)
       {
         builder.addIfNotNull("x-canon-version", getXCanonVersion().getValue());
       }
+
 
       if(getXCanonIdentifier() != null)
       {
         builder.addIfNotNull("x-canon-identifier", getXCanonIdentifier());
       }
 
+
       if(getCanon() != null)
       {
         builder.addIfNotNull("canon", getCanon());
       }
 
+
       if(getInfo() != null)
       {
         builder.addIfNotNull("info", getInfo().getJson());
+      }
+
+      for(String name : additionalProperties_.keySet())
+      {
+        Entity value = additionalProperties_.get(name);
+        builder.addIfNotNull(name, value.getJson());
       }
     }
 
     @Override
     public Map<String, Entity> canonGetAdditionalProperties()
     {
-       return additionalProperties_;
+       return ImmutableSortedMap.copyOf(additionalProperties_);
     }
 
     @Override
@@ -1201,10 +1102,6 @@ public abstract class OpenApiObject_Entity extends ObjectEntity
   }
 
 
-// innerClass openapi
-// innerClass x-canon-id
-// innerClass x-canon-identifier
-// innerClass canon
 }
 
 /*----------------------------------------------------------------------------------------------------

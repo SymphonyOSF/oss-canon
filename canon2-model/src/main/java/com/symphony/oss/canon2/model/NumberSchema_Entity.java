@@ -1,14 +1,3 @@
-  
-  
-// TRACE 1 imports
-// java.math.BigDecimal
-// javax.annotation.concurrent.Immutable
-// com.symphony.oss.canon2.runtime.java.ModelRegistry
-// com.symphony.oss.canon.json.model.JsonDomNode
-// com.symphony.oss.canon.json.ParserErrorException
-// com.symphony.oss.commons.fault.FaultAccumulator
-
-
 /**
  * GENERATED CODE - DO NOT EDIT OR CHECK IN TO SOURCE CODE CONTROL
  *
@@ -32,137 +21,9 @@
  *    Generator groupId    org.symphonyoss.s2.canon
  *              artifactId canon2-generator-java
  *    Template name        template/Object/_Entity.java.ftl
- *    At                   2020-11-25 13:28:55 GMT
+ *    At                   2020-11-25 15:52:09 GMT
  *----------------------------------------------------------------------------------------------------
  */
-  
-  
-// TRACE 2 imports
-// java.math.BigDecimal
-// javax.annotation.concurrent.Immutable
-// com.symphony.oss.canon2.runtime.java.ModelRegistry
-// com.symphony.oss.canon.json.model.JsonDomNode
-// com.symphony.oss.canon.json.ParserErrorException
-// com.symphony.oss.commons.fault.FaultAccumulator
-
-
-  
-  
-// TRACE 3 imports
-// java.math.BigDecimal
-// javax.annotation.concurrent.Immutable
-// com.symphony.oss.canon2.runtime.java.ModelRegistry
-// com.symphony.oss.canon.json.model.JsonDomNode
-// com.symphony.oss.canon.json.ParserErrorException
-// com.symphony.oss.commons.fault.FaultAccumulator
-
-
-// T2 A
-      // field x-canon-attributes
-    
-      // T B x-canon-attributes
-// schema.class class com.symphony.oss.canon2.generator.java.JavaObjectSchemaTemplateModel
-    // add CanonAttributes -> com.symphony.oss.canon.json.model.JsonObject
-      // field x-canon-builderFacade
-    
-      // T B x-canon-builderFacade
-// schema.class class com.symphony.oss.canon2.generator.java.JavaBooleanSchemaTemplateModel
-    // add x-canon-builderFacade -> com.symphony.oss.canon.json.model.JsonBoolean
-      // field format
-    
-      // T B format
-// schema.class class com.symphony.oss.canon2.generator.java.JavaStringSchemaTemplateModel
-    // add format -> com.symphony.oss.canon.json.model.JsonString
-      // field maximum
-    
-      // T B maximum
-// schema.class class com.symphony.oss.canon2.generator.java.JavaNumberSchemaTemplateModel
-    // add maximum -> com.symphony.oss.canon.json.model.JsonParsedNumber
-      // field x-canon-identifier
-    
-      // T B x-canon-identifier
-// schema.class class com.symphony.oss.canon2.generator.java.JavaStringSchemaTemplateModel
-    // add x-canon-identifier -> com.symphony.oss.canon.json.model.JsonString
-      // field type
-    
-      // T B type
-// schema.class class com.symphony.oss.canon2.generator.java.JavaStringSchemaTemplateModel
-    // add type -> com.symphony.oss.canon.json.model.JsonString
-      // field x-canon-facade
-    
-      // T B x-canon-facade
-// schema.class class com.symphony.oss.canon2.generator.java.JavaBooleanSchemaTemplateModel
-    // add x-canon-facade -> com.symphony.oss.canon.json.model.JsonBoolean
-      // field minimum
-    
-      // T B minimum
-// schema.class class com.symphony.oss.canon2.generator.java.JavaNumberSchemaTemplateModel
-    // add minimum -> com.symphony.oss.canon.json.model.JsonParsedNumber
-  // iiner class x-canon-builderFacade
-    // primitive inner class x-canon-builderFacade
-      
-  // iiner class format
-    // primitive inner class format
-      
-  // iiner class maximum
-    // primitive inner class maximum
-      
-  // iiner class x-canon-identifier
-    // primitive inner class x-canon-identifier
-      
-  // iiner class type
-    // primitive inner class type
-      // primitive inner class type DO IT
-      
-  // iiner class x-canon-facade
-    // primitive inner class x-canon-facade
-      
-  // iiner class minimum
-    // primitive inner class minimum
-      
-  
-  
-// TRACE 4 imports
-// java.math.BigDecimal
-// javax.annotation.concurrent.Immutable
-// com.symphony.oss.canon2.runtime.java.ModelRegistry
-// com.symphony.oss.canon.json.model.JsonDomNode
-// com.symphony.oss.canon.json.ParserErrorException
-// com.symphony.oss.commons.fault.FaultAccumulator
-// com.google.common.collect.ImmutableSortedMap
-// java.util.Map
-// java.util.HashMap
-// com.symphony.oss.canon2.runtime.java.IObjectEntityInitialiser
-// com.symphony.oss.canon2.runtime.java.JsonObjectEntityInitialiser
-// com.symphony.oss.canon2.runtime.java.JsonEntityInitialiser
-// com.symphony.oss.canon2.runtime.java.ObjectEntity
-// com.symphony.oss.canon2.runtime.java.Entity
-// com.symphony.oss.canon2.runtime.java.ObjectEntity
-// com.symphony.oss.canon.json.model.JsonObject
-// com.symphony.oss.canon.json.model.JsonNull
-// javax.annotation.Nullable
-// com.symphony.oss.canon.json.model.JsonNull
-// com.symphony.oss.canon.json.model.JsonObject
-// javax.annotation.Nullable
-// com.symphony.oss.canon.json.model.JsonBoolean
-// javax.annotation.Nullable
-// com.symphony.oss.canon.json.model.JsonString
-// javax.annotation.Nullable
-// com.symphony.oss.canon.json.model.JsonParsedNumber
-// javax.annotation.Nullable
-// com.symphony.oss.canon.json.model.JsonString
-// javax.annotation.Nonnull
-// com.symphony.oss.canon.json.model.JsonString
-// javax.annotation.Nullable
-// com.symphony.oss.canon.json.model.JsonBoolean
-// javax.annotation.Nullable
-// com.symphony.oss.canon.json.model.JsonParsedNumber
-// java.util.Objects
-// com.symphony.oss.canon2.runtime.java.TypeDef
-// javax.annotation.Nonnull
-// com.symphony.oss.canon.json.model.JsonString
-
-
 
 package com.symphony.oss.canon2.model;
 
@@ -409,7 +270,10 @@ public abstract class NumberSchema_Entity extends ObjectEntity
         {
           prop = new Entity(new JsonEntityInitialiser(node, initialiser.getModelRegistry()));
         }
-        additionalProperties.put(name, prop);
+        if(prop != null)
+        {
+          additionalProperties.put(name, prop);
+        }
       }
       additionalProperties_ =  ImmutableSortedMap.copyOf(additionalProperties);
     }
@@ -521,7 +385,7 @@ public abstract class NumberSchema_Entity extends ObjectEntity
     protected NumberSchema.Type          _type_;
     protected Boolean                    _xCanonFacade_;
     protected BigDecimal                 _minimum_;
-    protected Map<String, Entity>        additionalProperties_ = ImmutableSortedMap.of();
+    protected Map<String, Entity>        additionalProperties_ = new HashMap<>();
 
     protected AbstractBuilder(Class<T> type)
     {
@@ -681,6 +545,21 @@ public abstract class NumberSchema_Entity extends ObjectEntity
           throw new ParserErrorException("minimum must be an instance of JsonParsedNumber not " + node.getClass().getName(), node.getContext());
         }
       }
+      return self();
+    }
+
+    /**
+     * Set an additional property.
+     * 
+     * @param name  The property name.
+     * @param value The property value.
+     * 
+     * @return This (fluent method).
+     */
+    public T with(String name, Entity value)
+    {
+      additionalProperties_.put(name, value);
+
       return self();
     }
 
@@ -933,46 +812,59 @@ public abstract class NumberSchema_Entity extends ObjectEntity
         builder.addIfNotNull("x-canon-attributes", getXCanonAttributes().getJson());
       }
 
+
       if(getXCanonBuilderFacade() != null)
       {
         builder.addIfNotNull("x-canon-builderFacade", getXCanonBuilderFacade());
       }
+
 
       if(getFormat() != null)
       {
         builder.addIfNotNull("format", getFormat());
       }
 
+
       if(getMaximum() != null)
       {
         builder.addIfNotNull("maximum", getMaximum());
       }
+
 
       if(getXCanonIdentifier() != null)
       {
         builder.addIfNotNull("x-canon-identifier", getXCanonIdentifier());
       }
 
+
       if(getType() != null)
       {
         builder.addIfNotNull("type", getType().getValue());
       }
+
 
       if(getXCanonFacade() != null)
       {
         builder.addIfNotNull("x-canon-facade", getXCanonFacade());
       }
 
+
       if(getMinimum() != null)
       {
         builder.addIfNotNull("minimum", getMinimum());
+      }
+
+      for(String name : additionalProperties_.keySet())
+      {
+        Entity value = additionalProperties_.get(name);
+        builder.addIfNotNull(name, value.getJson());
       }
     }
 
     @Override
     public Map<String, Entity> canonGetAdditionalProperties()
     {
-       return additionalProperties_;
+       return ImmutableSortedMap.copyOf(additionalProperties_);
     }
 
     @Override
@@ -1120,11 +1012,6 @@ public abstract class NumberSchema_Entity extends ObjectEntity
   }
 
 
-// innerClass x-canon-builderFacade
-// innerClass format
-// innerClass maximum
-// innerClass x-canon-identifier
-// innerClass type
   /**
    * Enum  type canon
    * Model canon
@@ -1180,8 +1067,6 @@ public abstract class NumberSchema_Entity extends ObjectEntity
       }
     }
   }
-// innerClass x-canon-facade
-// innerClass minimum
 }
 
 /*----------------------------------------------------------------------------------------------------
