@@ -39,7 +39,7 @@ public interface IObjectSchemaTemplateModel<
   
   void addField(String name, F field);
   void addInnerClass(String name, S innerClass);
-  void setAdditionalProperties(S additionalProperties);
+  void setAdditionalProperties(S additionalProperties, boolean isInnerClass);
   void setAdditionalPropertiesAllowed(boolean additionalPropertiesAllowed);
   
   /**

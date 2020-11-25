@@ -1,24 +1,49 @@
 <#assign imports = entity.imports + [
   "javax.annotation.concurrent.Immutable",
-  "javax.annotation.Nullable",
   "com.symphony.oss.canon2.runtime.java.ModelRegistry",
-  "com.symphony.oss.canon.json.model.JsonObject",
   "com.symphony.oss.canon.json.model.JsonDomNode",
   "com.symphony.oss.canon.json.ParserErrorException",
   "com.symphony.oss.commons.fault.FaultAccumulator"
   ]>
+  
+  
+// TRACE 1 imports
+<#list imports as import>
+// ${import}
+</#list>
+
+
 <#include "/copyrightHeader.ftl"/>
 <#include "/macros.ftl"/>
 <#include "InstanceOrBuilder.ftl">
+  
+  
+// TRACE 2 imports
+<#list imports as import>
+// ${import}
+</#list>
+
+
 <#macro importObject schema>
 <#switch schema.schemaType>
     <#case "OBJECT">
       <#assign imports = imports + [
-      "com.google.common.collect.ImmutableSet",
-      "com.symphony.oss.canon2.runtime.java.IObjectEntityInitialiser",
-      "com.symphony.oss.canon2.runtime.java.JsonObjectEntityInitialiser",
-      "${schema.fullyQualifiedSuperTypeName}"
+        "com.google.common.collect.ImmutableSortedMap",
+        "java.util.Map",
+        "java.util.HashMap",
+        "com.symphony.oss.canon2.runtime.java.IObjectEntityInitialiser",
+        "com.symphony.oss.canon2.runtime.java.JsonObjectEntityInitialiser",
+        "com.symphony.oss.canon2.runtime.java.JsonEntityInitialiser",
+        "com.symphony.oss.canon2.runtime.java.ObjectEntity",
+        "com.symphony.oss.canon2.runtime.java.Entity",
+        "${schema.fullyQualifiedSuperTypeName}",
+         "com.symphony.oss.canon.json.model.JsonObject"
+        ]>
+      <#if entity.fields?size != 0>
+        <#assign imports = imports + [
+         "com.symphony.oss.canon.json.model.JsonNull"
       ]>
+      </#if>
       <#break>
     <#case "ONE_OF">
       <#assign imports = imports + [
@@ -34,11 +59,18 @@
 </#switch>
 </#macro>
 <#macro importType schema>
-  <#assign imports = imports + [
-    "com.symphony.oss.canon.json.model.JsonDomNode",
-    "com.symphony.oss.canon.json.model.JsonNull",
-    "${schema.fullyQualifiedJsonNodeType}"
-  ]>
+// schema.class ${schema.class}
+  <#if schema.isObjectType>
+    <#assign imports = imports + [
+      "com.symphony.oss.canon.json.model.JsonNull"
+    ]>
+  </#if>
+  <#if schema.fullyQualifiedJsonNodeType??>
+    // add ${schema.name} -> ${schema.fullyQualifiedJsonNodeType}
+    <#assign imports = imports + [
+      "${schema.fullyQualifiedJsonNodeType}"
+    ]>
+  </#if>
   <#if schema.externalType??>
     <#assign imports = imports + [
       "${schema.externalPackage}.${schema.externalType}"
@@ -69,31 +101,26 @@
     <#case "OBJECT">
       <#break>
     <#default>
-    <@importType schema />
+      // T C
+    <@importType schema/>
   </#switch>
 </#macro>
-<#macro importFields entity>
-  <@importObject entity/>
-  <#list entity.fields as field>
-    <#assign imports = imports + [
-        "javax.annotation.${field.nullable}"
-      ]>
-    <@importType field.typeSchema />
-    <#--  @importObject field.typeSchema/ -->
-    <#if field.typeSchema.schemaType == "ARRAY">
-      <@importArrayJsonType field.typeSchema />
-    </#if>
-  </#list>
-  <#list entity.innerClasses as innerClass>
+<#macro importInnerClass innerClass>
     <#if innerClass.schemaType.isObject>
       <@importObject innerClass/>
     </#if>
     <#if innerClass.schemaType.isPrimitive>
-      <#assign imports = imports + [
-        "java.util.Objects",
-        "com.symphony.oss.canon2.runtime.java.TypeDef",
-        "javax.annotation.Nonnull"
-        ]>
+    // primitive inner class ${innerClass.name}
+      <#if innerClass.isEnum || innerClass.hasLimits>
+      // primitive inner class ${innerClass.name} DO IT
+        <#assign imports = imports + [
+          "java.util.Objects",
+          "com.symphony.oss.canon2.runtime.java.TypeDef",
+          "javax.annotation.Nonnull",
+          "${innerClass.fullyQualifiedJsonNodeType}"
+          ]>
+      </#if>
+      
     </#if>
     <#list innerClass.fields as field>
       <#assign imports = imports + [
@@ -102,12 +129,64 @@
       <#if field.typeSchema.schemaType == "OBJECT">
         <@importFields field.typeSchema/>
       <#else>
+      // T A
         <@importType field/>
       </#if>
     </#list>
-  </#list>
 </#macro>
+<#macro importFields entity>
+// T2 A
+  <@importObject entity/>
+  <#list entity.fields as field>
+    <#assign imports = imports + [
+        "javax.annotation.${field.nullable}"
+      ]>
+      // field ${field.name}
+    
+      // T B ${field.name}
+    <@importType field.typeSchema/>
+    <#--  @importObject field.typeSchema/ -->
+    <#if field.typeSchema.schemaType == "ARRAY">
+      <@importArrayJsonType field.typeSchema />
+    </#if>
+  </#list>
+  <#list entity.innerClasses as innerClass>
+  // iiner class ${innerClass.name}
+    <@importInnerClass innerClass/>
+  </#list>
+  <#if entity.additionalPropertiesIsInnerClass>
+  // entity.additionalPropertiesIsInnerClass ${entity.name}
+    <@importInnerClass entity.additionalProperties/>
+  <#else>
+    <#if entity.additionalProperties??>
+      // importType additionalProperties ${ entity.additionalProperties.name}
+      <@importType entity.additionalProperties/>
+    </#if>
+  </#if>
+</#macro>
+  
+  
+// TRACE 3 imports
+<#list imports as import>
+// ${import}
+</#list>
+
+
 <@importFields entity/>
+  
+  
+// TRACE 4 imports
+<#list imports as import>
+// ${import}
+</#list>
+
+
+<#--  --if entity.additionalPropertiesAllowed>
+  <#assign imports = imports + [
+      "java.util.List",
+      "java.util.Collection"
+    ]>
+</#if -->
 
 package ${genPackage};
 
@@ -116,7 +195,67 @@ ${import}
 </#list>
 <#include "../TypeDef/TypeDefMacro.ftl"/>
 <#include "../Enum/EnumMacro.ftl"/>
+<#macro generateInnerClass indent innerClass className classModifier nested>
+  <#if innerClass.schemaType.isObject>
+    <#if nested>
+      <#assign modifier = classModifier/>
+    <#else>
+      <#assign modifier = "static ${classModifier}"/>
+    </#if>
+    <@generateObject "  ${indent}" innerClass className modifier true/>
+  <#elseif innerClass.schemaType.isPrimitive>
+    <#if innerClass.isEnum>
+      <@generateEnum "  ${indent}" model innerClass className "static "/>
+    <#elseif innerClass.hasLimits>
+      <@generateTypeDef "  ${indent}" model innerClass className "static "/>
+    </#if>
+  </#if>
+</#macro>
+<#macro generateUnknownAttribute indent name>
+${indent}if(node instanceof JsonObject)
+${indent}{
+${indent}  ${name} = new ObjectEntity(new JsonObjectEntityInitialiser((JsonObject)node, initialiser.getModelRegistry()));
+${indent}}
+${indent}else 
+${indent}{
+${indent}  ${name} = new Entity(new JsonEntityInitialiser(node, initialiser.getModelRegistry()));
+${indent}}
+</#macro>
 <#macro generateObject indent entity className classModifier nested>
+<#if entity.isObjectType>
+  <#assign hasUnknownProperties = true/>
+  <#assign additionalPropertiesFullyQualified = false/>
+  <#if entity.additionalPropertiesAllowed>
+    <#if entity.additionalProperties??>
+      <#if entity.additionalPropertiesIsInnerClass>
+        <#assign additionalType = "${c}AdditionalProperties"/>
+      <#else>
+      // entity.additionalProperties.type ${entity.additionalProperties.type}
+      // entity.additionalProperties.import ${entity.additionalProperties.import}
+      <#assign additionalType = entity.additionalProperties.type/>
+      
+      
+<#list entity.innerClasses as innerClass>
+// innerClass ${innerClass.name}
+  <#if innerClass.name == additionalType>
+    // collision!
+    <#assign additionalPropertiesFullyQualified = true/>
+    <#assign additionalType = entity.additionalProperties.import/>
+  </#if>
+</#list>
+
+
+        
+        
+      </#if>
+    <#else>
+      <#assign hasUnknownProperties = false/>
+      <#assign additionalType = "Entity"/>
+    </#if>
+  </#if>
+<#else>
+  <#assign hasUnknownProperties = false/>
+</#if>
 <#if nested>
 <@generateInstanceOrBuilder "${indent}" entity/>
 
@@ -146,10 +285,15 @@ ${indent}  /** Factory instance */
 ${indent}  public static final Factory FACTORY = new Factory();
 
 <#if entity.isObjectType>
-${indent}  private final ${"ImmutableSet<String>"?right_pad(25)}   unknownKeys_;
+  <#if entity.additionalPropertiesAllowed>
+${indent}  private final ${"Map<String, ${additionalType}>"?right_pad(25)}  additionalProperties_;
+  </#if>
+  <#if hasUnknownProperties>
+${indent}  private final ${"Map<String, Entity>"?right_pad(25)}  unknownProperties_;
+  </#if>
 </#if>
 <#list entity.fields as field>
-${indent}  private final ${field.type?right_pad(25)}  _${field.camelName}_;
+${indent}  private final ${field.type?right_pad(25)}  ${c}${field.camelName}_;
 </#list>
 
 ${indent}  /**
@@ -164,14 +308,16 @@ ${indent}    super(initialiser);
 ${indent}    if(initialiser instanceof Json${entity.initialiserType})
 ${indent}    {
 ${indent}      Json${entity.initialiserType} jsonInitialiser = (Json${entity.initialiserType})initialiser;
+${indent}      ModelRegistry modelRegistry = jsonInitialiser.getModelRegistry();
 <#switch entity.schemaType>
     <#case "ONE_OF">
 ${indent}      List<ParserException> parserExceptions = new LinkedList<>();
 ${indent}      List<String>          matches = new LinkedList<>();
 ${indent}      JsonDomNode           node = jsonInitialiser.getJson();
   <#list entity.fields as field>
-    <@generateCreateFieldFromJsonDomNode "${indent}       " "node" entity.schemaType field.typeSchema field.quotedName "_${field.camelName}_" "" "jsonInitialiser.getModelRegistry()"/>
-${indent}      if(_${field.camelName}_ != null)
+    <#assign  fullyQualified  = false/>
+    <@generateCreateFieldFromJsonDomNode "${indent}       " "node" entity.schemaType field.typeSchema field.quotedName "${c}${field.camelName}_" "" fullyQualified/>
+${indent}      if(${c}${field.camelName}_ != null)
 ${indent}      {
 ${indent}        matches.add("${field.typeSchema.name}");
 ${indent}      }
@@ -186,9 +332,9 @@ ${indent}      }
       <#break>
     <#case "OBJECT">
 
-<#if entity.fields?size != 0>
-${indent}      JsonDomNode  node;
+${indent}      ${"JsonDomNode"?right_pad(25)} node;
   <#list entity.fields as field>
+    <#assign  fullyQualified  = false/>
 
 ${indent}      node = jsonInitialiser.get("${field.quotedName}");
 ${indent}      if(node == null || node instanceof JsonNull)
@@ -196,16 +342,60 @@ ${indent}      {
     <#if field.required>
 ${indent}        throw new ParserErrorException("${field.name} is required.", jsonInitialiser.getJson().getContext());
     <#else>
-${indent}        _${field.camelName}_ = null;
+${indent}        ${c}${field.camelName}_ = null;
     </#if>
 ${indent}      }
 ${indent}      else
 ${indent}      {
-    <@generateCreateFieldFromJsonDomNode "${indent}        " "node" entity.schemaType field.typeSchema field.quotedName "_${field.camelName}_" "" "jsonInitialiser.getModelRegistry()"/>
+    <@generateCreateFieldFromJsonDomNode "${indent}        " "node" entity.schemaType field.typeSchema field.quotedName "${c}${field.camelName}_" "" fullyQualified/>
 ${indent}      }
   </#list>
+<#if entity.additionalPropertiesAllowed>
+${indent}      ${"Map<String, ${additionalType}>"?right_pad(25)} additionalProperties = new HashMap<>();    
+${indent}      ${additionalType?right_pad(25)} prop;
 </#if>
-${indent}      unknownKeys_ = jsonInitialiser.getCanonUnknownKeys();
+<#if hasUnknownProperties>
+${indent}      ${"Map<String, Entity>"?right_pad(25)} unknownProperties = new HashMap<>(); 
+${indent}      ${"Entity"?right_pad(25)} entity;
+</#if>
+
+${indent}      for(String name : jsonInitialiser.getCanonUnknownKeys())
+${indent}      {
+<#if entity.additionalPropertiesAllowed>
+${indent}        prop   = null;
+</#if>
+<#if hasUnknownProperties>
+${indent}        entity = null;
+</#if>
+${indent}        node   = jsonInitialiser.get(name);
+<#if entity.additionalPropertiesAllowed>
+  <#if entity.additionalProperties??>
+  // create additional prop
+    <@generateCreateFieldFromJsonDomNode "${indent}        " "node" additionalType entity.additionalProperties "additionalProperties" "prop" "if(!initialiser.getModelRegistry().getParserValidation().isAllowUnknownAttributes())" additionalPropertiesFullyQualified/>
+${indent}        else // HERE
+${indent}        {
+    <@generateUnknownAttribute "${indent}          " "entity"/>
+${indent}        }
+  <#else>
+    <@generateUnknownAttribute "${indent}        " "prop"/>
+  </#if>
+${indent}        additionalProperties.put(name, prop);
+  <#else>
+    <@generateUnknownAttribute "${indent}        " "entity"/>
+</#if>
+<#if hasUnknownProperties>
+${indent}        // HERE3 if(entity != null)
+${indent}        {
+${indent}          unknownProperties.put(name, entity);
+${indent}        }
+</#if>
+${indent}      }
+<#if entity.additionalPropertiesAllowed>
+${indent}      additionalProperties_ =  ImmutableSortedMap.copyOf(additionalProperties);
+</#if>
+<#if hasUnknownProperties>
+${indent}      unknownProperties_ =  ImmutableSortedMap.copyOf(unknownProperties);
+</#if>
       <#break>
 </#switch>
 ${indent}    }
@@ -218,11 +408,14 @@ ${indent}      {
 ${indent}        throw new IllegalArgumentException("Initializer is not an JsonObjectEntityInitialiser but getInstanceOrBuilder() returns null");
 ${indent}      }
 <#list entity.fields as field>
-${indent}      _${field.camelName}_ = ${field.typeSchema.copyPrefix}builder.get${field.camelCapitalizedName}()${field.typeSchema.copySuffix};
-    <@checkFieldLimits "${indent}      " field "_${field.camelName}_"/>
+${indent}      ${c}${field.camelName}_ = ${field.typeSchema.copyPrefix}builder.get${field.camelCapitalizedName}()${field.typeSchema.copySuffix};
+    <@checkFieldLimits "${indent}      " field "${c}${field.camelName}_"/>
 </#list>
-<#if entity.isObjectType>
-${indent}      unknownKeys_ = builder.getCanonUnknownKeys();
+<#if entity.additionalPropertiesAllowed>
+${indent}      additionalProperties_ = builder.canonGetAdditionalProperties();
+</#if>
+<#if hasUnknownProperties>
+${indent}      unknownProperties_ = builder.canonGetUnknownProperties();
 </#if>
 ${indent}    }
 ${indent}  }
@@ -326,8 +519,14 @@ ${indent}    extends ${entity.superTypeName}.AbstractBuilder<T,B>
 ${indent}    implements I${c}${entity.camelCapitalizedName}${c}InstanceOrBuilder, Initialiser
 ${indent}  {
   <#list entity.fields as field>
-${indent}    protected ${field.type?right_pad(25)}  _${field.camelName}_${field.typeSchema.builderTypeNew};
+${indent}    protected ${field.type?right_pad(25)}  ${c}${field.camelName}_${field.typeSchema.builderTypeNew};
   </#list>
+  <#if entity.additionalPropertiesAllowed>
+${indent}    protected ${"Map<String, ${additionalType}>"?right_pad(25)}  additionalProperties_ = ImmutableSortedMap.of();
+  </#if>
+<#if hasUnknownProperties>
+${indent}    protected ${"Map<String, Entity>"?right_pad(25)}  unknownProperties_ = ImmutableSortedMap.of(); 
+</#if>
 
 ${indent}    protected AbstractBuilder(Class<T> type)
 ${indent}    {
@@ -345,7 +544,7 @@ ${indent}    {
 ${indent}      super(type, initial);
 
   <#list entity.fields as field>
-${indent}      _${field.camelName}_ = ${field.typeSchema.copyPrefix}initial.get${field.camelCapitalizedName}()${field.typeSchema.copySuffix};
+${indent}      ${c}${field.camelName}_ = ${field.typeSchema.copyPrefix}initial.get${field.camelCapitalizedName}()${field.typeSchema.copySuffix};
   </#list>
 ${indent}    }
 
@@ -364,8 +563,9 @@ ${indent}    {
 ${indent}      List<ParserException> parserExceptions = new LinkedList<>();
 ${indent}      List<String>          matches = new LinkedList<>();
   <#list entity.fields as field>
-    <@generateCreateFieldFromJsonDomNode "${indent}       " "json" entity.schemaType field.typeSchema field.quotedName "_${field.camelName}_" "if(!modelRegistry.getParserValidation().isIgnoreInvalidAttributes())" "modelRegistry"/>
-${indent}      if(_${field.camelName}_ != null)
+    <#assign  fullyQualified  = false/>
+    <@generateCreateFieldFromJsonDomNode "${indent}       " "json" entity.schemaType field.typeSchema field.quotedName "${c}${field.camelName}_" "if(!modelRegistry.getParserValidation().isIgnoreInvalidAttributes())" fullyQualified/>
+${indent}      if(${c}${field.camelName}_ != null)
 ${indent}      {
 ${indent}        matches.add("${field.typeSchema.name}");
 ${indent}      }
@@ -382,10 +582,11 @@ ${indent}      }
 ${indent}    public T withValues(JsonObject json, ModelRegistry modelRegistry)
 ${indent}    {
     <#list entity.fields as field>
+    <#assign  fullyQualified  = false/>
 ${indent}      if(json.containsKey("${field.quotedName}"))
 ${indent}      {
 ${indent}        JsonDomNode  node = json.get("${field.quotedName}");
-  <@generateCreateFieldFromJsonDomNode "        " "node" entity.schemaType field.typeSchema field.quotedName "_${field.camelName}_" "if(!modelRegistry.getParserValidation().isIgnoreInvalidAttributes())" "modelRegistry"/>
+  <@generateCreateFieldFromJsonDomNode "        " "node" entity.schemaType field.typeSchema field.quotedName "${c}${field.camelName}_" "if(!modelRegistry.getParserValidation().isIgnoreInvalidAttributes())" fullyQualified/>
 ${indent}      }
 </#list>
       <#break>
@@ -403,7 +604,7 @@ ${indent}    {
 ${indent}      super.populateAllFields(result);
 </#if>
 <#list entity.fields as field>
-${indent}      result.add(_${field.camelName}_);
+${indent}      result.add(${c}${field.camelName}_);
 </#list>
 ${indent}    }*/
 
@@ -421,10 +622,10 @@ ${indent}    @Override
 ${indent}    public @${field.nullable} ${field.type} get${field.camelCapitalizedName}()
 ${indent}    {
 <#if field.required>
-${indent}      if(_${field.camelName}_ == null)
+${indent}      if(${c}${field.camelName}_ == null)
 ${indent}        throw new IllegalStateException("Unexpected null value encountered");
 </#if>
-${indent}      return _${field.camelName}_;
+${indent}      return ${c}${field.camelName}_;
 ${indent}    }
 
 ${indent}    /**
@@ -437,7 +638,7 @@ ${indent}     */
 ${indent}    public T with${field.camelCapitalizedName}(${field.typeSchema.type} value)
 ${indent}    {
     <@checkFieldLimits "        " field "value"/>
-${indent}      _${field.camelName}_ = ${field.typeSchema.copyPrefix}value${field.typeSchema.copySuffix};
+${indent}      ${c}${field.camelName}_ = ${field.typeSchema.copyPrefix}value${field.typeSchema.copySuffix};
 ${indent}      return self();
 ${indent}    }
 <#if field.typeSchema.schemaType == "ARRAY">
@@ -454,7 +655,7 @@ ${indent}     */
 ${indent}    public T with${field.camelCapitalizedName}(${field.typeSchema.type} value)
 ${indent}    {
     <@checkFieldLimits "    " field "value"/>
-${indent}      _${field.camelName}_.add(value);
+${indent}      ${c}${field.camelName}_.add(value);
 ${indent}      return self();
 ${indent}    }
     </#if>
@@ -474,7 +675,7 @@ ${indent}      if(value == null)
 ${indent}        throw new IllegalArgumentException("${field.camelName} is required.");
 
     </#if>
-${indent}      _${field.camelName}_ = ${field.typeSchema.constructPrefix}value${field.typeSchema.constructSuffix};
+${indent}      ${c}${field.camelName}_ = ${field.typeSchema.getConstructor(false, "value")};
 ${indent}      return self();
 ${indent}    }
 
@@ -530,6 +731,22 @@ ${indent}    }
       <#break>
   </#switch>
 
+<#if entity.additionalPropertiesAllowed>
+${indent}    @Override
+${indent}    public Map<String, ${additionalType}> canonGetAdditionalProperties()
+${indent}    {
+${indent}       return additionalProperties_;
+${indent}    }
+
+</#if>
+<#if hasUnknownProperties>
+${indent}    @Override
+${indent}    public Map<String, Entity> canonGetUnknownProperties()
+${indent}    {
+${indent}       return unknownProperties_;
+${indent}    }
+
+</#if>
 ${indent}    @Override
 ${indent}    public void validate(FaultAccumulator faultAccumulator)
 ${indent}    {
@@ -538,14 +755,14 @@ ${indent}      super.validate(faultAccumulator);
     <#case "OBJECT">
   <#list entity.fields as field>
     <#if field.required>
-${indent}      faultAccumulator.checkNotNull(_${field.camelName}_, "${field.name}");
+${indent}      faultAccumulator.checkNotNull(${c}${field.camelName}_, "${field.name}");
     </#if>
   </#list>
        <#break>
     <#case "ONE_OF">
 ${indent}      faultAccumulator.checkValueCount("fields", 1, 1,
   <#list entity.fields as field>
-${indent}        _${field.camelName}_<#sep>,</#sep>
+${indent}        ${c}${field.camelName}_<#sep>,</#sep>
   </#list>
 ${indent}      );
       <#break>
@@ -553,19 +770,35 @@ ${indent}      );
 ${indent}    }
 ${indent}  }
 
-<#if entity.isObjectType>
-${indent}  @Override
-${indent}  public ImmutableSet<String> getCanonUnknownKeys()
+<#if entity.additionalPropertiesAllowed>
+${indent}  /**
+${indent}   * Return any additional attributes.
+${indent}   * 
+${indent}   * @return any additional attributes.
+${indent}   */
+${indent}  public Map<String, ${additionalType}> canonGetAdditionalProperties()
 ${indent}  {
-${indent}    return unknownKeys_;
+${indent}     return additionalProperties_;
 ${indent}  }
+
+</#if>
+<#if hasUnknownProperties>
+${indent} /**
+${indent}   * Return any additional attributes.
+${indent}   * 
+${indent}   * @return any additional attributes.
+${indent}   */
+${indent}  public Map<String, Entity> canonGetUnknownProperties()
+${indent}  {
+${indent}     return unknownProperties_;
+${indent}  }
+
 </#if>
 <#------------------------------------------------------------------------------------------------------------------------------
 
  Builder
 
 ------------------------------------------------------------------------------------------------------------------------------->
-
 ${indent}  /**
 ${indent}   * Builder for ${entity.type}
 ${indent}   */
@@ -614,7 +847,7 @@ ${indent}   * @return the value of the ${field.name} attribute.
 ${indent}   */
 ${indent}  public @${field.nullable} ${field.type} get${field.camelCapitalizedName}()
 ${indent}  {
-${indent}    return _${field.camelName}_;
+${indent}    return ${c}${field.camelName}_;
 ${indent}  }
 </#list>
 
@@ -644,32 +877,25 @@ ${indent}   */
 ${indent}  public Object canonGetValue()
 ${indent}  {
       <#list entity.fields as field>
-${indent}    if(_${field.camelName}_ != null)
-${indent}      return _${field.camelName}_;
+${indent}    if(${c}${field.camelName}_ != null)
+${indent}      return ${c}${field.camelName}_;
 
       </#list>
 ${indent}    return null;
 ${indent}  }
       <#break>
 </#switch>
+
 <#if entity.additionalProperties??>
+  <#if entity.additionalPropertiesIsInnerClass>
+    <@generateInnerClass indent entity.additionalProperties entity.additionalProperties.camelCapitalizedName classModifier nested/>
+    
+  </#if>
 </#if>
-  <#list entity.innerClasses as innerClass>
-    <#if innerClass.schemaType.isObject>
-      <#if nested>
-        <#assign modifier = classModifier/>
-      <#else>
-        <#assign modifier = "static ${classModifier}"/>
-      </#if>
-      <@generateObject "  ${indent}" innerClass innerClass.camelCapitalizedName modifier true/>
-    <#elseif innerClass.schemaType.isPrimitive>
-      <#if innerClass.isEnum>
-        <@generateEnum "  " model innerClass innerClass.camelCapitalizedName "static "/>
-      <#elseif innerClass.hasLimits>
-        <@generateTypeDef "  " model innerClass innerClass.camelCapitalizedName "static "/>
-      </#if>
-    </#if>
-  </#list>
+<#list entity.innerClasses as innerClass>
+// innerClass ${innerClass.name}
+  <@generateInnerClass indent innerClass innerClass.camelCapitalizedName classModifier nested/>
+</#list>
 ${indent}}
 </#macro>
 <@generateObject "" entity className classModifier false/>

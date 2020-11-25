@@ -108,6 +108,11 @@ implements IJavaTemplateModel
 ////    }
 //  }
   
+  public boolean getIsObjectType()
+  {
+    return false;
+  }
+  
   static String getIdentifier(JavaGenerator.Context generatorContext, ResolvedSchema<?> resolvedSchema)
   {
     if(resolvedSchema.isInnerClass())
@@ -250,16 +255,29 @@ implements IJavaTemplateModel
   {
     return imports_;
   }
-
-  public String getConstructPrefix()
+  
+  /**
+   * Return a construction statement with the given arguments.
+   * 
+   * @param fullyQualified  If true then use the classes fully qualified name.
+   * @param args            The parameters for the constructor call.
+   * 
+   * @return A statement to construct an instance of this type.
+   */
+  public String getConstructor(boolean fullyQualified, String args)
   {
-    return "/*ConstructPrefix*/";
+    return args;
   }
 
-  public String getConstructSuffix()
-  {
-    return "";
-  }
+//  public final String getConstructPrefix()
+//  {
+//    return "/*ConstructPrefix*/";
+//  }
+//
+//  public final String getConstructSuffix()
+//  {
+//    return "";
+//  }
 
   public abstract String getJsonNodeType();
 

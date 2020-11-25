@@ -38,7 +38,6 @@ import com.symphony.oss.canon.json.model.JsonDom;
 import com.symphony.oss.canon.json.model.JsonDomNode;
 import com.symphony.oss.canon.json.model.JsonObject;
 import com.symphony.oss.canon.json.model.JsonValue;
-import com.symphony.oss.canon2.runtime.java.Entity.Factory;
 
 
 /**
@@ -55,12 +54,14 @@ public class ModelRegistry
   public static final ModelRegistry                     STRICT = new Builder().withValidation(ParserValidation.STRICT).build();
   
   private final ParserValidation                        parserValidation_;
-  private final ImmutableMap<String, Entity.Factory<?>> factoryMap_;
+  private final ImmutableMap<String, Entity.Factory<?>> entityFactoryMap_;
+  private final ImmutableMap<String, ObjectEntity.Factory<?>> objectEntityFactoryMap_;
   
   private ModelRegistry(Builder builder)
   {
-    parserValidation_ = builder.parserValidation_;
-    factoryMap_       = ImmutableMap.copyOf(builder.factoryMap_);
+    parserValidation_       = builder.parserValidation_;
+    entityFactoryMap_       = ImmutableMap.copyOf(builder.entityFactoryMap_);
+    objectEntityFactoryMap_ = ImmutableMap.copyOf(builder.objectEntityFactoryMap_);
   }
 
   /**
@@ -96,7 +97,7 @@ public class ModelRegistry
       return new Entity(jsonObject);
     }
     
-    Factory<?> factory = factoryMap_.get(typeId);
+    ObjectEntity.Factory<?> factory = objectEntityFactoryMap_.get(typeId);
     
     if(factory == null)
       return new Entity(jsonObject);
@@ -140,13 +141,13 @@ public class ModelRegistry
       }
     }
     
-    Factory<?> factory = factoryMap_.get(typeId);
+    ObjectEntity.Factory<?> factory = objectEntityFactoryMap_.get(typeId);
     
     if(factory == null)
     {
       if(defaultTypeId != null)
       {
-        factory = factoryMap_.get(defaultTypeId);
+        factory = objectEntityFactoryMap_.get(defaultTypeId);
       }
       
       if(factory == null)
@@ -500,7 +501,8 @@ public class ModelRegistry
   public static class Builder
   {
     private ParserValidation  parserValidation_ = ParserValidation.ALLOW_UNKNOWN_ATTRIBUTES;
-    private Map<String, Entity.Factory<?>>  factoryMap_ = new HashMap<>();
+    private Map<String, Entity.Factory<?>>        entityFactoryMap_ = new HashMap<>();
+    private Map<String, ObjectEntity.Factory<?>>  objectEntityFactoryMap_ = new HashMap<>();
     
     /**
      * Default constructor.
@@ -516,7 +518,8 @@ public class ModelRegistry
     public Builder(ModelRegistry other)
     {
       parserValidation_ = other.parserValidation_;
-      factoryMap_.putAll(other.factoryMap_);
+      entityFactoryMap_.putAll(other.entityFactoryMap_);
+      objectEntityFactoryMap_.putAll(other.objectEntityFactoryMap_);
     }
 
     /**
@@ -540,11 +543,18 @@ public class ModelRegistry
      * 
      * @return this (Fluent interface)
      */
-    public Builder withFactories(Entity.Factory<?> ...factories)
+    public Builder withFactories(BaseEntity.Factory<?,?> ...factories)
     {
-      for(Entity.Factory<?> factory :factories)
+      for(BaseEntity.Factory<?,?> factory :factories)
       {
-        factoryMap_.put(factory.getCanonType(), factory);
+        if(factory instanceof ObjectEntity.Factory)
+        {
+          objectEntityFactoryMap_.put(factory.getCanonType(), (ObjectEntity.Factory<?>)factory);
+        }
+        else if(factory instanceof Entity.Factory)
+        {
+          entityFactoryMap_.put(factory.getCanonType(), (Entity.Factory<?>)factory);
+        }
       }
       
       return this;

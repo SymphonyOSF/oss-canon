@@ -23,9 +23,10 @@ import com.symphony.oss.commons.fault.FaultAccumulator;
 
 public class ResolvedObjectSchema extends ResolvedPropertyContainerSchema<ObjectSchema>
 {
-  private final ResolvedObjectSchema.SingletonBuilder     resolvedExtendsBuilder_;
-  private final ResolvedObjectSchema.SingletonBuilder     resolvedAdditionalPropertiesBuilder_;
-  private final boolean                                   additionalPropertiesAllowed_;
+  private final ResolvedSchema.AbstractBuilder<?, ?, ?> resolvedExtendsBuilder_;
+  private final ResolvedSchema.AbstractBuilder<?, ?, ?> resolvedAdditionalPropertiesBuilder_;
+  private final boolean                                 additionalPropertiesAllowed_;
+  private final boolean                                 additionalPropertiesInnerClass_;
   
   ResolvedObjectSchema(AbstractBuilder<?,?> builder)
   {
@@ -34,15 +35,15 @@ public class ResolvedObjectSchema extends ResolvedPropertyContainerSchema<Object
     resolvedExtendsBuilder_               = builder.resolvedExtendsBuilder_;
     resolvedAdditionalPropertiesBuilder_  = builder.resolvedAdditionalPropertiesBuilder_;
     additionalPropertiesAllowed_          = builder.additionalPropertiesAllowed_;
-    
-    
+    additionalPropertiesInnerClass_       = builder.additionalPropertiesInnerClass_;
   }
   
   abstract static class AbstractBuilder<T extends AbstractBuilder<T,B>, B extends ResolvedObjectSchema> extends ResolvedPropertyContainerSchema.AbstractBuilder<ObjectSchema,T,B>
   {
-    private ResolvedObjectSchema.SingletonBuilder     resolvedExtendsBuilder_;
-    private ResolvedObjectSchema.SingletonBuilder     resolvedAdditionalPropertiesBuilder_;
-    private boolean                                   additionalPropertiesAllowed_;
+    private ResolvedSchema.AbstractBuilder<?,?,?>   resolvedExtendsBuilder_;
+    private ResolvedSchema.AbstractBuilder<?,?,?>   resolvedAdditionalPropertiesBuilder_;
+    private boolean                                 additionalPropertiesAllowed_ = true;
+    private boolean                                 additionalPropertiesInnerClass_;
     
     AbstractBuilder(Class<T> type)
     {
@@ -59,13 +60,23 @@ public class ResolvedObjectSchema extends ResolvedPropertyContainerSchema<Object
       return self();
     }
     
-    public T withResolvedAdditionalProperties(ResolvedObjectSchema.SingletonBuilder resolvedAdditionalPropertiesBuilder)
+    public T withResolvedAdditionalProperties(ResolvedSchema.AbstractBuilder<?,?,?> resolvedAdditionalPropertiesBuilder)
     {
       if(isBuilt())
         throw new IllegalStateException("SingletonBuilder has already been built");
       
       resolvedAdditionalPropertiesBuilder_ = resolvedAdditionalPropertiesBuilder;
       additionalPropertiesAllowed_ = true;
+      
+      return self();
+    }
+    
+    public T withAdditionalPropertiesIsInnerClass(boolean additionalPropertiesInnerClass)
+    {
+      if(isBuilt())
+        throw new IllegalStateException("SingletonBuilder has already been built");
+      
+      additionalPropertiesInnerClass_ = additionalPropertiesInnerClass;
       
       return self();
     }
@@ -123,10 +134,9 @@ public class ResolvedObjectSchema extends ResolvedPropertyContainerSchema<Object
       
       return built_;
     }
-    
   }
 
-  public ResolvedObjectSchema getResolvedExtends()
+  public ResolvedSchema<?> getResolvedExtends()
   {
     if(resolvedExtendsBuilder_ == null)
       return null;
@@ -134,7 +144,7 @@ public class ResolvedObjectSchema extends ResolvedPropertyContainerSchema<Object
     return resolvedExtendsBuilder_.build();
   }
 
-  public ResolvedObjectSchema getResolvedAdditionalProperties()
+  public ResolvedSchema<?> getResolvedAdditionalProperties()
   {
     if(resolvedAdditionalPropertiesBuilder_ == null)
       return null;
@@ -145,5 +155,10 @@ public class ResolvedObjectSchema extends ResolvedPropertyContainerSchema<Object
   public boolean isAdditionalPropertiesAllowed()
   {
     return additionalPropertiesAllowed_;
+  }
+
+  public boolean isAdditionalPropertiesInnerClass()
+  {
+    return additionalPropertiesInnerClass_;
   }
 }

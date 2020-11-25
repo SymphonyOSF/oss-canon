@@ -57,7 +57,14 @@ S extends ISchemaTemplateModel<T,M,S>
   public SchemaTemplateModel(CanonGenerator<T,M,S,?,?,?,?,?>.AbstractContext generatorContext, 
       String identifier, ResolvedSchema<?> resolvedSchema, SchemaTemplateModelType schemaType, M model, List<String> templates)
   {
-    super(generatorContext, resolvedSchema.getName(), identifier, resolvedSchema, model, templates);
+    super(generatorContext,
+        resolvedSchema.isCanonPrefix() ? 
+          generatorContext.getCanonIdString() + resolvedSchema.getName() : 
+            resolvedSchema.getName(),
+        resolvedSchema.isCanonPrefix() ? 
+          generatorContext.getCanonIdString() + identifier :
+            identifier,
+        resolvedSchema, model, templates);
     
     schemaType_ = schemaType;
   }

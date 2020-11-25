@@ -65,7 +65,7 @@ JavaSchemaTemplateModel>
       enumValues_ = ImmutableSet.of();
       quotedEnumValues_ = ImmutableSet.of();
       enumMap_ = ImmutableMap.of();
-      constructPrefix_ = super.getConstructPrefix();
+      constructPrefix_ = null;
       getValueSuffix_ = super.getGetValueSuffix();
     }
     else
@@ -147,10 +147,19 @@ JavaSchemaTemplateModel>
   }
 
   @Override
-  public String getConstructPrefix()
+  public String getConstructor(boolean fullyQualified, String args)
   {
-    return constructPrefix_;
+    if(constructPrefix_ == null)
+      return super.getConstructor(fullyQualified, args);
+    
+    return constructPrefix_ + args + ")";
   }
+  
+//  @Override
+//  public String getConstructPrefix()
+//  {
+//    return constructPrefix_;
+//  }
 
   @Override
   public String getGetValueSuffix()

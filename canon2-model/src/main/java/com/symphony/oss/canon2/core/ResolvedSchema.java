@@ -23,10 +23,11 @@ import com.symphony.oss.canon2.model.ISchemaInstance;
 
 public abstract class ResolvedSchema<S extends ISchemaInstance> extends ResolvedEntity
 {
-  private final String                                            uri_;
-  private final S                                                 schema_;
-  private final ResolvedOpenApiObject.SingletonBuilder            openApiObjectBuilder_;
+  private final String                                             uri_;
+  private final S                                                  schema_;
+  private final ResolvedOpenApiObject.SingletonBuilder             openApiObjectBuilder_;
   private final ResolvedObjectOrArraySchema.AbstractBuilder<?,?,?> outerClassBuilder_;
+  private final boolean                                            canonPrefix_;
   
   ResolvedSchema(AbstractBuilder<S,?,?> builder)
   {
@@ -36,6 +37,7 @@ public abstract class ResolvedSchema<S extends ISchemaInstance> extends Resolved
     schema_                               = builder.schema_;
     openApiObjectBuilder_                 = builder.openApiObjectBuilder_;
     outerClassBuilder_                    = builder.outerClassBuilder_;
+    canonPrefix_                          = builder.canonPrefix_;
   }
   
   public abstract static class AbstractBuilder<S extends ISchemaInstance, T extends AbstractBuilder<S,T,B>, B extends ResolvedSchema<S>> extends ResolvedEntity.AbstractBuilder<T,B>
@@ -43,7 +45,8 @@ public abstract class ResolvedSchema<S extends ISchemaInstance> extends Resolved
     private String                                            uri_;
     private S                                                 schema_;
     private ResolvedOpenApiObject.SingletonBuilder            openApiObjectBuilder_;
-    private ResolvedObjectOrArraySchema.AbstractBuilder<?,?,?> outerClassBuilder_;
+    private ResolvedObjectOrArraySchema.AbstractBuilder<?, ?, ?> outerClassBuilder_;
+    private boolean                                              canonPrefix_;
     
     AbstractBuilder(Class<T> type)
     {
@@ -76,6 +79,16 @@ public abstract class ResolvedSchema<S extends ISchemaInstance> extends Resolved
         throw new IllegalStateException("SingletonBuilder has already been built");
       
       outerClassBuilder_ = outerClassBuilder;
+      
+      return self();
+    }
+    
+    public T withCanonPrefix(boolean canonPrefix)
+    {
+      if(isBuilt())
+        throw new IllegalStateException("SingletonBuilder has already been built");
+      
+      canonPrefix_ = canonPrefix;
       
       return self();
     }
@@ -160,5 +173,10 @@ public abstract class ResolvedSchema<S extends ISchemaInstance> extends Resolved
   public SchemaTemplateModelType getSchemaType()
   {
     return getSchema().getSchemaType();
+  }
+
+  public boolean isCanonPrefix()
+  {
+    return canonPrefix_;
   }
 }

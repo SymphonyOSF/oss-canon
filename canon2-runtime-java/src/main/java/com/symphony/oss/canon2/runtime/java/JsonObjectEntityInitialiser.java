@@ -31,7 +31,7 @@ import com.symphony.oss.canon.json.model.JsonObject;
  * @author Bruce Skingle
  *
  */
-public abstract class JsonObjectEntityInitialiser extends JsonEntityInitialiser implements IJsonObjectEntityInitialiser
+public class JsonObjectEntityInitialiser extends JsonEntityInitialiser implements IJsonObjectEntityInitialiser
 {
   private final JsonObject    jsonObject_;
   private final String        type_;

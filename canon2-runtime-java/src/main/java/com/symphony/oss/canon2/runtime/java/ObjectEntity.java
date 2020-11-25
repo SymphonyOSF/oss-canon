@@ -23,10 +23,13 @@
 
 package com.symphony.oss.canon2.runtime.java;
 
-import java.util.Objects;
+import java.io.StringReader;
 
 import com.google.common.collect.ImmutableSet;
+import com.symphony.oss.canon.json.JsonParser;
+import com.symphony.oss.canon.json.ParserResultException;
 import com.symphony.oss.canon.json.model.IJsonObjectProvider;
+import com.symphony.oss.canon.json.model.JsonDomNode;
 import com.symphony.oss.canon.json.model.JsonObject;
 
 /**
@@ -35,7 +38,7 @@ import com.symphony.oss.canon.json.model.JsonObject;
  * @author Bruce Skingle
  *
  */
-public abstract class ObjectEntity extends Entity implements IJsonObjectProvider
+public class ObjectEntity extends Entity implements IJsonObjectProvider
 {
   private final JsonObject           jsonObject_;
   private final ImmutableSet<String> unknownKeys_;
@@ -47,9 +50,7 @@ public abstract class ObjectEntity extends Entity implements IJsonObjectProvider
    */
   public ObjectEntity(IObjectEntityInitialiser initialiser)
   {
-    super(initialiser);
-    
-    Objects.requireNonNull(initialiser.getJson());
+    super(initialiser.getJson());
     
     jsonObject_   = initialiser.getJson();
     unknownKeys_  = initialiser.getCanonUnknownKeys();
@@ -85,8 +86,31 @@ public abstract class ObjectEntity extends Entity implements IJsonObjectProvider
    *
    * @param <B> Concrete type of the built class.
    */
-  public static abstract class Factory<B extends ObjectEntity> extends Entity.Factory<B>
+//  public static abstract class Factory<B extends ObjectEntity> extends BaseEntity.Factory<JsonObject, B>
+  public static abstract class Factory<B extends ObjectEntity> extends BaseEntity.Factory<JsonDomNode, B>
   {
+//    @Deprecated
+//    public B newInstance(JsonDomNode jsonObject, ModelRegistry modelRegistry)
+//    {
+//      return null;
+//    }
+//    
+//    @Override
+//    public B newInstance(JsonObject jsonObject, ModelRegistry modelRegistry)
+//    {
+//      return null;
+//    }
+    
+    @Override
+    public B newInstance(StringReader reader, ModelRegistry modelRegistry) throws ParserResultException
+    {
+
+      return newInstance(new JsonParser.Builder()
+                            .withInput(reader)
+                            .build()
+                            .parseObject()
+                          , modelRegistry);
+    }
   }
   
   /**
@@ -97,8 +121,8 @@ public abstract class ObjectEntity extends Entity implements IJsonObjectProvider
    * @param <T> Concrete type of the builder.
    * @param <B> Concrete type of the built class.
    */
-  public static abstract class AbstractBuilder<T extends AbstractBuilder<T,B>, B extends Entity>
-    extends Entity.AbstractBuilder<T,B>
+  public static abstract class AbstractBuilder<T extends AbstractBuilder<T,B>, B extends ObjectEntity>
+    extends BaseEntity.AbstractBuilder<JsonObject, T,B>
     implements IObjectEntityInitialiser
   {
     /**
@@ -176,16 +200,16 @@ public abstract class ObjectEntity extends Entity implements IJsonObjectProvider
 //    @Override
 //    public abstract JsonObject getJsonObject();
 
-//    /**
-//     * Populate the given JsonObject.Builder with all attributes.
-//     * 
-//     * This method is called from generated code by super.populateJson(builder).
-//     * 
-//     * @param builder a JsonObject.Builder.
-//     */
-//    protected void populateJson(JsonObject.Builder builder)
-//    {
-//    }
+    /**
+     * Populate the given JsonObject.Builder with all attributes.
+     * 
+     * This method is called from generated code by super.populateJson(builder).
+     * 
+     * @param builder a JsonObject.Builder.
+     */
+    protected void populateJson(JsonObject.Builder builder)
+    {
+    }
     
 //    /**
 //     * Initialize this builder with the values from the given serialized form.

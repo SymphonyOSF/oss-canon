@@ -27,6 +27,7 @@
 
 package com.symphony.oss.canon2.model;
 
+import com.symphony.oss.canon2.runtime.java.BaseEntity;
 import com.symphony.oss.canon2.runtime.java.Entity;
 
 /**
@@ -35,7 +36,7 @@ import com.symphony.oss.canon2.runtime.java.Entity;
 public class Canon_Model
 {
   /** Factories for every object in the model. */
-  public static final Entity.Factory<?>[] FACTORIES = new Entity.Factory<?>[]
+  public static final BaseEntity.Factory<?,?>[] FACTORIES = new BaseEntity.Factory<?,?>[]
   {
     CanonGeneratorConfig.FACTORY,
     SchemaOrRef.FACTORY,

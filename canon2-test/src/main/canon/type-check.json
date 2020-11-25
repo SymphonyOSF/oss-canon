@@ -103,7 +103,8 @@
           "value": {
             "type": "integer"
           }
-        }
+        },
+        "additionalProperties": true
       },
       "ExternalObject": {
         "type": "object",
@@ -114,7 +115,8 @@
           "userId": {
             "$ref": "typedef.json#/components/schemas/UserId"
           }
-        }
+        },
+        "additionalProperties": false
       },
       
       "ListOfInts": {
@@ -472,6 +474,9 @@
             "minimum": 0,
             "maximum": 7
           }
+        },
+        "additionalProperties": {
+          "$ref": "#/components/schemas/IntTypedef"
         }
       },
       
@@ -490,6 +495,53 @@
           "instant2": {
             "$ref": "#/components/schemas/Instant"
           }
+        },
+        "additionalProperties": {
+            "type": "integer",
+            "format": "int32",
+            "minimum": 0,
+            "maximum": 7
+        }
+      },
+      
+      "BasicObject": {
+        "type": "object",
+        "required": [
+          "instant1",
+          "instant2"
+        ],
+        "properties": {
+          "instant1": {
+            "$ref": "#/components/schemas/Instant"
+          },
+          "instant2": {
+            "$ref": "#/components/schemas/Instant"
+          }
+        },
+        "additionalProperties": {
+            "type": "integer",
+            "format": "int32",
+            "minimum": 0,
+            "maximum": 7
+        }
+      },
+      
+      "AnotherObject": {
+        "type": "object",
+        "required": [
+          "instant1",
+          "instant2"
+        ],
+        "properties": {
+          "instant1": {
+            "$ref": "#/components/schemas/Instant"
+          },
+          "instant2": {
+            "$ref": "#/components/schemas/Instant"
+          }
+        },
+        "additionalProperties": {
+            "$ref": "#/components/schemas/IntTypedef"
         }
       }
     }

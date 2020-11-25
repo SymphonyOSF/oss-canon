@@ -24,21 +24,12 @@
 package com.symphony.oss.canon2.runtime.java;
 
 import java.io.StringReader;
-import java.util.List;
-import java.util.Objects;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 
 import com.symphony.oss.canon.json.JsonParser;
-import com.symphony.oss.canon.json.ParserErrorException;
-import com.symphony.oss.canon.json.ParserException;
 import com.symphony.oss.canon.json.ParserResultException;
-import com.symphony.oss.canon.json.ParserWarningException;
-import com.symphony.oss.canon.json.model.IJsonDomNodeProvider;
 import com.symphony.oss.canon.json.model.JsonDomNode;
-import com.symphony.oss.canon.json.model.JsonObject;
-import com.symphony.oss.commons.fluent.BaseAbstractBuilder;
 
 /**
  * Base class for canon2 generated classes.
@@ -46,16 +37,8 @@ import com.symphony.oss.commons.fluent.BaseAbstractBuilder;
  * @author Bruce Skingle
  *
  */
-public class Entity implements IJsonDomNodeProvider
+public class Entity extends BaseEntity
 {
-  /** Name of the JSON type attribute in a serialised canon object. */
-  public static final String JSON_TYPE = "_type";
-
-  /** Name of the JSON version attribute in a serialised canon object. */
-  public static final String JSON_VERSION = "_version";
-  
-  private final @Nonnull JsonDomNode jsonDomNode_;
-  
   /**
    * Constructor.
    * 
@@ -63,9 +46,7 @@ public class Entity implements IJsonDomNodeProvider
    */
   public Entity(IEntityInitialiser initialiser)
   {
-    Objects.requireNonNull(initialiser.getJson());
-    
-    jsonDomNode_ = initialiser.getJson();
+    super(initialiser.getJson());
   }
   
   /**
@@ -77,38 +58,7 @@ public class Entity implements IJsonDomNodeProvider
    */
   public Entity(@Nonnull JsonDomNode jsonDomNode)
   {
-    Objects.requireNonNull(jsonDomNode);
-    
-    jsonDomNode_ = jsonDomNode;
-  }
-  
-  /**
-   * Return the serialized form of this object.
-   * 
-   * @return the serialized form of this object.
-   */
-  @Override
-  public @Nonnull JsonDomNode getJson()
-  {
-    return jsonDomNode_;
-  }
-  
-  @Override
-  public @Nonnull String toString()
-  {
-    return jsonDomNode_.toString();
-  }
-  
-  @Override
-  public int hashCode()
-  {
-    return jsonDomNode_.hashCode();
-  }
-
-  @Override
-  public boolean equals(Object other)
-  {
-    return other instanceof Entity && jsonDomNode_.equals(((Entity)other).jsonDomNode_);
+    super(jsonDomNode);
   }
   
   /**
@@ -120,11 +70,9 @@ public class Entity implements IJsonDomNodeProvider
    * @param <B> Concrete type of the built class.
    */
   public static abstract class AbstractBuilder<T extends AbstractBuilder<T,B>, B extends Entity>
-    extends BaseAbstractBuilder<T,B>
+    extends BaseEntity.AbstractBuilder<JsonDomNode,T,B>
     implements IEntityInitialiser
   {
-    private ModelRegistry modelRegistry_ = ModelRegistry.DEFAULT;
-
     /**
      * Constructor.
      * 
@@ -145,44 +93,17 @@ public class Entity implements IJsonDomNodeProvider
     {
       super(type);
     }
-
-    @Override
-    public ModelRegistry getModelRegistry()
-    {
-      return modelRegistry_;
-    }
-//    
-//    /**
-//     * Initialize this builder with the values from the given serialized form.
-//     * 
-//     * @param jsonObject    The serialized form of an instance of the built type.
-//     * @param modelRegistry A model registry.
-//     * 
-//     * @return This (fluent method).
-//     */
-//    public T withValues(JsonObject jsonObject, ModelRegistry modelRegistry)
-//    {
-//      return self();
-//    }
-
-//    @Override
-//    @Deprecated
-//    public ImmutableSet<String> getCanonUnknownKeys()
-//    {
-//      // TODO Auto-generated method stub
-//      return null;
-//    }
     
-    /**
-     * Populate the given JsonObject.Builder with all attributes.
-     * 
-     * This method is called from generated code by super.populateJson(builder).
-     * 
-     * @param builder a JsonObject.Builder.
-     */
-    protected void populateJson(JsonObject.Builder builder)
-    {
-    }
+//    /**
+//     * Populate the given JsonObject.Builder with all attributes.
+//     * 
+//     * This method is called from generated code by super.populateJson(builder).
+//     * 
+//     * @param builder a JsonObject.Builder.
+//     */
+//    protected void populateJson(JsonObject.Builder builder)
+//    {
+//    }
   }
   
   /**
@@ -192,106 +113,16 @@ public class Entity implements IJsonDomNodeProvider
    *
    * @param <B> Concrete type of the built class.
    */
-  public static abstract class Factory<B extends Entity>
+  public static abstract class Factory<B extends Entity> extends BaseEntity.Factory<JsonDomNode, B>
   {
-    /**
-     * Return the type identifier (_type JSON attribute) for entities created by this factory.
-     * 
-     * @return The type identifier for entities created by this factory.
-     */
-    public abstract String getCanonType();
-    
-    /**
-     * Return a new entity instance created from the given JSON serialization.
-     * 
-     * @param jsonObject    The JSON serialized form of the required entity.
-     * @param modelRegistry A context which controls validation behaviour and provides factories for deserialization.
-     * 
-     * @return An instance of the entity represented by the given serialized form.
-     * 
-     * @throws ParserException  If the given JSON is not valid.
-     */
-    public abstract B newInstance(JsonDomNode jsonObject, ModelRegistry modelRegistry);
-    
-    /**
-     * a new entity instance created from the given JSON serialization, or null if the given KSON is invalid.
-     * 
-     * @param parserExceptions  A list to which exceptions which would have been thrown if we did not ask for "or null"
-     *                          will be added.
-     * @param jsonObject        The JSON serialized form of the required entity.
-     * @param modelRegistry     A context which controls validation behaviour and provides factories for deserialization.
-     * 
-     * @return An instance of the entity represented by the given serialized form.
-     */
-    public @Nullable B newInstanceOrNull(List<ParserException> parserExceptions, JsonDomNode jsonObject, ModelRegistry modelRegistry)
-    {
-      try
-      {
-         return newInstance(jsonObject, modelRegistry);
-      }
-      catch(IllegalArgumentException | ParserErrorException e)
-      {
-       parserExceptions.add(new ParserWarningException("Failed to match " + getCanonType(), jsonObject.getContext(), e));
-       return null;
-      }
-    }
-    
-    public @Nullable B newInstanceOrNull(JsonDomNode jsonObject, ModelRegistry modelRegistry)
-    {
-      try
-      {
-         return newInstance(jsonObject, modelRegistry);
-      }
-      catch(IllegalArgumentException | ParserErrorException e)
-      {
-       System.err.println("Not valid: " + e);
-       return null;
-      }
-    }
-    
-    /**
-     * Return a new entity instance created from the given JSON serialization.
-     * 
-     * @param json          The JSON serialized form of the required entity.
-     * @param modelRegistry A context which controls validation behaviour and provides factories for deserialization.
-     * 
-     * @return An instance of the entity represented by the given serialized form.
-     * 
-     * @throws ParserResultException  If the given JSON is not valid.
-     * @throws ParserException        If the given JSON is not valid.
-     */
-    public B newInstance(String json, ModelRegistry modelRegistry) throws ParserResultException
-    {
-      return newInstance(new StringReader(json), modelRegistry);
-    }
-//    public B newInstance(JsonDomNode jsonObject, ModelRegistry modelRegistry)
-//    {
-//      return newInstance((JsonObject)jsonObject, modelRegistry);
-//    }
-//    
-//    @Deprecated
-//    public B newInstance(JsonObject jsonObject, ModelRegistry modelRegistry)
-//    {
-//      return null;
-//    }
-
-    /**
-     * Return a new entity instance created from the given JSON serialization.
-     * 
-     * @param reader        A Reader containing the JSON serialized form of the required entity.
-     * @param modelRegistry A context which controls validation behaviour and provides factories for deserialization.
-     * 
-     * @return An instance of the entity represented by the given serialized form.
-     * 
-     * @throws ParserException  If the given JSON is not valid.
-     */
+    @Override
     public B newInstance(StringReader reader, ModelRegistry modelRegistry) throws ParserResultException
     {
 
       return newInstance(new JsonParser.Builder()
                             .withInput(reader)
                             .build()
-                            .parseObject()
+                            .parseDomNode()
                           , modelRegistry);
     }
     

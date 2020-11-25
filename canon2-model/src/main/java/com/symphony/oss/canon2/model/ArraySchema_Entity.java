@@ -267,6 +267,12 @@ public abstract class ArraySchema_Entity extends ObjectEntity
     {
       return TYPE_ID;
     }
+    
+    public ArraySchema newInstance(JsonObject node, ModelRegistry modelRegistry)
+    {
+        return new ArraySchema(new JsonInitialiser(node, modelRegistry));
+
+    }
 
     @Override
     public ArraySchema newInstance(JsonDomNode node, ModelRegistry modelRegistry)

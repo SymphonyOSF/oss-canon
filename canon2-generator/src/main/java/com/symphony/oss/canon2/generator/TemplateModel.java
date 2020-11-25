@@ -86,9 +86,9 @@ implements ITemplateModel<T,M,S>
     json_                 = resolvedEntity.getJson();
   
     camelName_            = toCamelCase(getIdentifier());
-    camelCapitalizedName_ = capitalize(camelName_);
+    camelCapitalizedName_ = capitalize(generatorContext.getCanonIdString(), camelName_);
     snakeName_            = toSnakeCase(getIdentifier());
-    snakeCapitalizedName_ = capitalize(snakeName_);
+    snakeCapitalizedName_ = capitalize(generatorContext.getCanonIdString(), snakeName_);
     snakeUpperCaseName_   = snakeName_.toUpperCase();
   }
   
@@ -221,8 +221,14 @@ implements ITemplateModel<T,M,S>
    * 
    * @return the given name with the initial letter capitalised.
    */
-  public static String capitalize(String name)
+  public static String capitalize(String canonIdString, String name)
   {
+    if(name.startsWith(canonIdString))
+    {
+      int i = canonIdString.length();
+      
+      return canonIdString + name.substring(i, i+1).toUpperCase() + name.substring(i+1);
+    }
     return name.substring(0, 1).toUpperCase() + name.substring(1);
   }
 

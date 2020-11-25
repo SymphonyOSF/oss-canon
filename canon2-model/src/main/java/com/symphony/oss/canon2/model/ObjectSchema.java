@@ -34,8 +34,10 @@ import java.util.function.Consumer;
 import javax.annotation.concurrent.Immutable;
 
 import com.symphony.oss.canon.json.ParserErrorException;
+import com.symphony.oss.canon.json.SyntaxErrorException;
 import com.symphony.oss.canon2.core.CanonModelContext;
 import com.symphony.oss.canon2.core.ResolvedObjectSchema;
+import com.symphony.oss.canon2.core.ResolvedOneOfSchema;
 import com.symphony.oss.canon2.core.ResolvedOpenApiObject.SingletonBuilder;
 import com.symphony.oss.canon2.core.ResolvedPropertiesObject;
 import com.symphony.oss.canon2.core.ResolvedProperty;
@@ -136,28 +138,42 @@ public class ObjectSchema extends ObjectSchema_Entity implements ISchema
       }
     }
 
-//    if(getAdditionalProperties() != null)
-//    {
-//      Object additionalProperies = getAdditionalProperties().canonGetValue();
-//      
-//      if(additionalProperies instanceof Boolean)
-//      {
-//        builder.withAdditionalPropertiesAllowed((boolean)additionalProperies);
-//      }
-//      else if(additionalProperies instanceof SchemaOrRef)
-//      {
-//        SchemaOrRef schemaOrRef = (SchemaOrRef) additionalProperies;
-//        
-//        String name = schemaOrRef.getRef() == null ? "$additionalProperties" : schemaOrRef.getRef().getName();
-//        
-//        ResolvedSchema.SingletonBuilder resolvedAdditionalProperties = schemaOrRef.link(openApiObjectBuilder, modelContext, sourceContext, name, uri, builder);
-//        builder.withResolvedAdditionalProperties(resolvedAdditionalProperties);
-//      }
-//      else if(additionalProperies != null)
-//      {
-//        throw new GenerationException("Unexpected additional properties object of type " + additionalProperies.getClass());
-//      }
-//    }
+    if(getAdditionalProperties() != null)
+    {
+      Object additionalProperies = getAdditionalProperties().canonGetValue();
+      
+      if(additionalProperies instanceof Boolean)
+      {
+        builder.withAdditionalPropertiesAllowed((boolean)additionalProperies);
+      }
+      else if(additionalProperies instanceof SchemaOrRef)
+      {
+        SchemaOrRef schemaOrRef = (SchemaOrRef) additionalProperies;
+        String name;
+        
+        if(schemaOrRef.isReference())
+        {
+          name = schemaOrRef.getReferenceObject().getName();
+        }
+        else
+        {
+          name = "AdditionalProperties";
+          builder.withAdditionalPropertiesIsInnerClass(true);
+        }
+
+        ResolvedSchema.AbstractBuilder<? extends ISchemaInstance,?,?> resolvedAdditionalProperties = schemaOrRef.link(openApiObjectBuilder, modelContext, sourceContext, name, uri, builder);
+
+        if(!schemaOrRef.isReference())
+        {
+          resolvedAdditionalProperties.withCanonPrefix(true);
+        }
+        builder.withResolvedAdditionalProperties(resolvedAdditionalProperties);
+      }
+      else if(additionalProperies != null)
+      {
+        sourceContext.error(new SyntaxErrorException("Unexpected additional properties object of type " + additionalProperies.getClass(), getAdditionalProperties().getJson().getContext()));
+      }
+    }
     
 //    if(getDiscriminator() != null)
 //    {

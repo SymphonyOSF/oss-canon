@@ -11,6 +11,7 @@ import java.util.List;
 import com.symphony.oss.canon2.core.ResolvedPrimitiveSchema;
 import com.symphony.oss.canon2.core.SourceContext;
 import com.symphony.oss.canon2.generator.IPrimitiveSchemaTemplateModel;
+import com.symphony.oss.canon2.generator.java.JavaGenerator.Context;
 import com.symphony.oss.canon2.model.CanonAttributes;
 
 /**
@@ -33,6 +34,7 @@ JavaSchemaTemplateModel>
 //  private final boolean                      exclusiveMaximum_;
 //  private final String                       jsonNodeType_;
   private final String                       constructPrefix_;
+  private final String                       fullyQualifiedConstructPrefix_;
   private final String                       constructSuffix_;
   private final String                       getValuePrefix_;
   private final String                       getValueSuffix_;
@@ -49,17 +51,16 @@ JavaSchemaTemplateModel>
     
     hasLimits_ = resolvedSchema.hasLimits();
     javaType_ = javaType;
-    
 
     String constructPrefix = null;
+    String fullyQualifiedConstructPrefix = null;
     String getValuePrefix = "";
     String getValueSuffix = "";
     
     if(!resolvedSchema.isInnerClass() || hasLimits_ || requiresGeneration) //resolvedSchema.isGenerated())
     {
       primitiveType_ = javaType_;
-      type_ = resolvedSchema.getResolvedContainer() == null ? getCamelCapitalizedName() :
-        capitalize(toCamelCase(resolvedSchema.getResolvedContainer().getName())) + "." + getCamelCapitalizedName();
+      type_ = initType(generatorContext, identifier, resolvedSchema) ;
 //      type_ = getCamelCapitalizedName();
       
 //    if(isExternal())
@@ -68,8 +69,9 @@ JavaSchemaTemplateModel>
 //    }
     
       setImport(packageName,  getCamelCapitalizedName());
-      
+
       constructPrefix = "new " + getType() + "(";
+      fullyQualifiedConstructPrefix = "new " + getImport() + "(";
       getValueSuffix = ".getValue()";
     }
     else
@@ -131,17 +133,28 @@ JavaSchemaTemplateModel>
     
     if(constructPrefix == null)
     {
-      constructPrefix_ = constructSuffix_ = "";
+      fullyQualifiedConstructPrefix_ = constructPrefix_ = constructSuffix_ = "";
     }
     else
     {
-      constructPrefix_ = constructPrefix;
-      constructSuffix_ = ")";
+      fullyQualifiedConstructPrefix_  = fullyQualifiedConstructPrefix;
+      constructPrefix_                = constructPrefix;
+      constructSuffix_                = ")";
     }
     getValuePrefix_ = getValuePrefix;
     getValueSuffix_ = getValueSuffix;
   }
   
+  private String initType(Context generatorContext, String identifier, ResolvedPrimitiveSchema<?> resolvedSchema)
+  {
+    if(resolvedSchema.getResolvedContainer() == null)
+    {
+      return getCamelCapitalizedName();
+    }
+  
+    return capitalize(generatorContext.getCanonIdString(), toCamelCase(resolvedSchema.getResolvedContainer().getName())) + "." + getCamelCapitalizedName();
+  }
+
   @Override
   public void validate(SourceContext sourceContext)
   {
@@ -324,18 +337,29 @@ JavaSchemaTemplateModel>
   {
     return this;
   }
-  
-  @Override
-  public String getConstructPrefix()
-  {
-    return constructPrefix_;
-  }
 
   @Override
-  public String getConstructSuffix()
+  public String getConstructor(boolean fullyQualified, String args)
   {
-    return constructSuffix_;
+    String prefix = fullyQualified ? fullyQualifiedConstructPrefix_ : constructPrefix_;
+    
+    if(prefix.length()==0)
+      return args;
+    
+    return prefix + args + constructSuffix_;
   }
+  
+//  @Override
+//  public String getConstructPrefix()
+//  {
+//    return constructPrefix_;
+//  }
+//
+//  @Override
+//  public String getConstructSuffix()
+//  {
+//    return constructSuffix_;
+//  }
 
   public String getGetValueSuffix()
   {

@@ -56,7 +56,7 @@ public enum ParserValidation
    * 
    * @return true iff unknown additional attributes should be ignored.
    */
-  public boolean isAllowUnnownAttributes()
+  public boolean isAllowUnknownAttributes()
   {
     return allowUnnownAttributes_;
   }

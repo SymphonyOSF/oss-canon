@@ -660,11 +660,11 @@ C extends CanonGenerator<T,M,S,O,A,P,F,C>.AbstractContext>
       {
         S additionalPropertiesSchema = generateSchema(resolvedSchema.getResolvedAdditionalProperties(), model);
         
-        entity.setAdditionalProperties(additionalPropertiesSchema);
+        entity.setAdditionalProperties(additionalPropertiesSchema, resolvedSchema.isAdditionalPropertiesInnerClass());
       }
-      else if(resolvedSchema.isAdditionalPropertiesAllowed())
+      else
       {
-        entity.setAdditionalPropertiesAllowed(true);
+        entity.setAdditionalPropertiesAllowed(resolvedSchema.isAdditionalPropertiesAllowed());
       }
       
       return entity.asSchemaTemplateModel();

@@ -51,6 +51,8 @@ JavaFieldTemplateModel
   private final String initialiserType_;
   private final String jsonNodeType_;
   private final boolean objectType_;
+
+  private boolean additionalPropertiesIsInnerClass_;
   
   
   JavaObjectSchemaTemplateModel(JavaGenerator.Context generatorContext, ResolvedPropertyContainerSchema<?> resolvedSchema,  String packageName, JavaOpenApiTemplateModel model)
@@ -59,7 +61,7 @@ JavaFieldTemplateModel
     
     
     type_ = resolvedSchema.getResolvedContainer() == null ? getCamelCapitalizedName() :
-      capitalize(toCamelCase(resolvedSchema.getResolvedContainer().getName())) + "." + getCamelCapitalizedName();
+      capitalize(generatorContext.getCanonIdString(), toCamelCase(resolvedSchema.getResolvedContainer().getName())) + "." + getCamelCapitalizedName();
     
     
 //  if(isExternal())
@@ -117,6 +119,7 @@ JavaFieldTemplateModel
     new NameCollisionDetector(getInnerClasses()).logCollisions(sourceContext, this);
   }
 
+  @Override
   public boolean getIsObjectType()
   {
     return objectType_;
@@ -173,9 +176,10 @@ JavaFieldTemplateModel
   }
 
   @Override
-  public void setAdditionalProperties(JavaSchemaTemplateModel additionalProperties)
+  public void setAdditionalProperties(JavaSchemaTemplateModel additionalProperties, boolean isInnerClass)
   {
     additionalProperties_ = additionalProperties;
+    additionalPropertiesIsInnerClass_ = isInnerClass;
     additionalPropertiesAllowed_ = true;
   }
 
@@ -194,7 +198,10 @@ JavaFieldTemplateModel
   @Override
   public String getFullyQualifiedJsonNodeType()
   {
-    return "com.symphony.oss.canon.json.model.JsonObject";
+    if(objectType_)
+      return "com.symphony.oss.canon.json.model.JsonObject";
+    else
+      return null;
   }
 
   @Override
@@ -269,6 +276,11 @@ JavaFieldTemplateModel
   public boolean getAdditionalPropertiesAllowed()
   {
     return additionalPropertiesAllowed_;
+  }
+
+  public boolean getAdditionalPropertiesIsInnerClass()
+  {
+    return additionalPropertiesIsInnerClass_;
   }
 
   public JavaSchemaTemplateModel getAdditionalProperties()

@@ -60,6 +60,11 @@ implements IJavaTemplateModel
   public void validate(SourceContext sourceContext)
   {
   }
+  
+  public boolean getIsObjectType()
+  {
+    return false;
+  }
 
   /**
    * Return the nullness annotation name for this field.

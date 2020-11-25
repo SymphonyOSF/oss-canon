@@ -138,7 +138,7 @@ ${indent}
 ${indent}  /**
 ${indent}   * Builder.
 ${indent}   *
-${indent}   * @deprecated use new ${className}(${entity.javaType} value)
+${indent}   * @deprecated use new ${entity.type}(${entity.javaType} value)
 ${indent}   *
 ${indent}   */
 ${indent}  @Deprecated
@@ -153,7 +153,7 @@ ${indent}     * Return a new instance.
 ${indent}     *
 ${indent}     * @param value The value for the new instance.
 ${indent}     *
-${indent}     * @deprecated use new ${className}(${entity.javaType} value)
+${indent}     * @deprecated use new ${entity.type}(${entity.javaType} value)
 ${indent}     *
 ${indent}     * @return A new instance.
 ${indent}     */

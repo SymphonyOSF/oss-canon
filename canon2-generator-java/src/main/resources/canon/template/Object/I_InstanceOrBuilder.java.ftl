@@ -3,6 +3,37 @@
 <#assign imports = entity.imports + [
   "com.symphony.oss.canon2.runtime.java.I${entity.initialiserType}"
   ]>
+<#if entity.isObjectType>
+  <#assign hasUnknownProperties = true/>
+  <#if entity.additionalPropertiesAllowed>
+    <#if entity.additionalProperties??>
+    //tr 1
+      <#if entity.additionalPropertiesIsInnerClass>
+      //tr 2
+        <#assign additionalType = "${entity.camelCapitalizedName}.${c}AdditionalProperties"/>
+      <#else>
+      // tr 3
+        <#assign additionalType = "${entity.additionalProperties.type}"/>
+        // add ${entity.additionalProperties.import}
+        <#assign imports = imports + [
+          "${entity.additionalProperties.import}"
+          ]>
+      </#if>
+    <#else>
+      <#assign hasUnknownProperties = false/>
+      <#assign additionalType = "Entity"/>
+    </#if>
+  </#if>
+<#else>
+  <#assign hasUnknownProperties = false/>
+</#if>
+
+<#if hasUnknownProperties || entity.additionalPropertiesAllowed>
+  <#assign imports = imports + [
+    "java.util.Map",
+    "com.symphony.oss.canon2.runtime.java.Entity"
+    ]>
+</#if>
 <#macro importType schema>
   <#if schema.externalType??>
     <#assign imports = imports + [
