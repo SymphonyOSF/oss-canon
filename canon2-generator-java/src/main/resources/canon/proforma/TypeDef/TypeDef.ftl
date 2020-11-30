@@ -1,16 +1,8 @@
 <#include "/copyrightHeader.ftl"/>
 <#include "/macros.ftl"/>
-<#assign imports = entity.imports + [
-  "javax.annotation.concurrent.Immutable",
-  "javax.annotation.Nonnull",
-    "com.symphony.oss.canon.json.model.JsonDomNode"
-  ]>
-
-package ${genPackage};
-
-<#list entity.sortImports(imports, genPackage) as import>
-${import}
-</#list>
+<@namespace name="javaType" import=entity.fullyQualifiedJavaType/>
+<@namespace name="Nonnull" import="javax.annotation.Nonnull"/>
+<@namespace name="JsonDomNode" import="com.symphony.oss.canon.json.model.JsonDomNode"/>
 /**
  * TypeDef facade for ${model.name}.${entity.name}
 <#if entity.summary??>
@@ -25,15 +17,15 @@ ${import}
 </#if>
  * Generated from ${entity} at {entity.context.path}
  */
-@Immutable
+@<@namespace import="javax.annotation.concurrent.Immutable"/>
 public class ${entity.type} extends ${entity.type}${c}TypeDef
 {
   /**
-   * Constructor from a ${entity.javaType} value.
+   * Constructor from a ${javaType} value.
    *
    * @param value the value of the required instance.
    */
-  public ${entity.type}(@Nonnull ${entity.javaType} value)
+  public ${entity.type}(@${Nonnull} ${javaType} value)
   {
     super(value);
   }
@@ -43,7 +35,7 @@ public class ${entity.type} extends ${entity.type}${c}TypeDef
    *
    * @param node the value of the required instance.
    */
-  ${entity.type}(@Nonnull JsonDomNode node)
+  ${entity.type}(@${Nonnull} ${JsonDomNode} node)
   {
     super(node);
   }

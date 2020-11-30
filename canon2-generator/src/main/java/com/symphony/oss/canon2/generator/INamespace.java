@@ -16,21 +16,13 @@
  * limitations under the License.
  */
 
-package com.symphony.oss.canon.json.model;
+package com.symphony.oss.canon2.generator;
 
-/**
- * An entity which was instantiated from a JsonObject or which provides one.
- * 
- * @author Bruce Skingle
- *
- */
-public interface IJsonObjectProvider extends IJsonDomNodeProvider
+import java.io.Writer;
+
+public interface INamespace
 {
-  /**
-   * Return the JsonObject from which this entity was created.
-   * 
-   * @return the JsonObject from which this entity was created.
-   */
-  @Override
-  JsonObject getJson();
+
+  String resolveImport(String importName, Writer writer);
+
 }

@@ -1,9 +1,17 @@
 <#if entity.generateFacade>
 <#include "/copyrightHeader.ftl"/>
-<#include "/macros.ftl"/>
 /**
- * Facade for Object  ${entity.name} ${model.name}
- * Object ${entity}
+ * Facade for ${entity.name} ${model.name}
+<#if model.description??>
+<#list model.description as description>
+ * ${description}
+</#list>
+</#if>
+ */
+<#assign subTemplateName="${.current_template_name!''}"><#include "/template/java/canon-template-java-SubEpilogue.ftl">
+<@setJavaType model.baseSchema/>
+/**
+ * Facade for Array ${model}
 <#if entity.summary??>
  *
  * ${entity.summary}
@@ -17,7 +25,7 @@
  * Generated from ${entity}
  */
 @<@namespace import="javax.annotation.concurrent.Immutable"/>
-public class ${entity.type} extends ${entity.type}${c}Entity
+public class ${entity.type} extends ${entity.type}${c}Array
 {
 <#if entity.generateBuilderFacade>
 //  /*

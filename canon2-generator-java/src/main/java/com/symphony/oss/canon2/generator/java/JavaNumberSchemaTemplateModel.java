@@ -34,7 +34,7 @@ JavaSchemaTemplateModel>
       String javaTypePackageName, String javaType, JavaOpenApiTemplateModel model,
       boolean isComparable)
   { 
-    super(generatorContext, initIdentifier(generatorContext, resolvedSchema), resolvedSchema, false, packageName, javaType, model, initTemplates(resolvedSchema));
+    super(generatorContext, initIdentifier(generatorContext, resolvedSchema), resolvedSchema, false, packageName, javaTypePackageName, javaType, model, initTemplates(resolvedSchema));
 
     minimum_ = resolvedSchema.getMinimum() == null ? null : resolvedSchema.getMinimum().toString();
     maximum_ = resolvedSchema.getMaximum() == null ? null : resolvedSchema.getMaximum().toString();
@@ -77,9 +77,9 @@ JavaSchemaTemplateModel>
   }
 
   @Override
-  public String getJsonNodeType()
+  public String getFullyQualifiedJsonNodeType()
   {
-    return "JsonParsedNumber";
+    return "com.symphony.oss.canon.json.model.JsonParsedNumber";
   }
 
   @Override

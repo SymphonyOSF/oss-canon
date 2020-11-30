@@ -1,45 +1,35 @@
 <#include "/copyrightHeader.ftl"/>
 <#include "/macros.ftl"/>
-<#assign imports = entity.imports + [
-  "${entity.externalPackage}.${entity.externalType}",
-  "javax.annotation.concurrent.Immutable",
-  "javax.annotation.Nonnull"
-  ]>
+<@namespace name="javaType" import=entity.fullyQualifiedJavaType/>
+<@namespace name="externalType" import=entity.fullyQualifiedExternalType/>
+<@namespace name="Nonnull" import="javax.annotation.Nonnull"/>
 
-package ${genPackage};
-
-<#list entity.sortImports(imports, genPackage) as import>
-${import}
-</#list>
-
-// entity.class ${entity.class}
-// entity.name ${entity.name}
 /**
- * Builder helper function for the external type ${entity.externalType}.
+ * Builder helper function for the external type ${externalType}.
  */
-@Immutable
-public class ${entity.externalType}${c}Builder
+@<@namespace import="javax.annotation.concurrent.Immutable"/>
+public class ${entity.type}${c}Builder
 {
   /**
-   * Constructor from a ${entity.javaType} value.
+   * Constructor from a ${javaType} value.
    *
    * @param value the value of the required instance.
    * 
-   * @return A ${entity.externalType} deserialized from the given ${entity.javaType} value.
+   * @return A ${externalType} deserialized from the given ${javaType} value.
    */
-  public static ${entity.externalType} build(@Nonnull ${entity.javaType} value)
+  public static ${externalType} build(@${Nonnull} ${javaType} value)
   {
-    return ${entity.externalType}.parse(value);
+    return ${externalType}.parse(value);
   }
   
   /**
-   * Return the serialized form of the given ${entity.externalType} value.
+   * Return the serialized form of the given ${externalType} value.
    * 
    * @param instance An Instant value.
    * 
-   * @return The serialized form of the given ${entity.externalType} value.
+   * @return The serialized form of the given ${externalType} value.
    */
-  public static String to${entity.javaType}(${entity.externalType} instance)
+  public static String to${javaType}(${externalType} instance)
   {
     return instance.toString();
   }

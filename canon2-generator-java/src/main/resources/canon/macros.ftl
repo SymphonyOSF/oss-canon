@@ -82,7 +82,7 @@ UNEXPECTED SCHEMA TYPE ${schema.schemaType} in generateCreateJsonDomNodeFromFiel
 </#macro>
 
 <#macro generateCreateFieldFromJsonDomNodePrivate indent cnt node objectSchemaType schema name var ifValidation fullyQualified>
-//A2
+<@namespace name="jsonNodeType" import=schema.fullyQualifiedJsonNodeType/>
   <#switch schema.schemaType>
     <#case "OBJECT">
     //A3
@@ -91,15 +91,15 @@ UNEXPECTED SCHEMA TYPE ${schema.schemaType} in generateCreateJsonDomNodeFromFiel
     <#case "ONE_OF">
     
     
-${indent}if(${node} instanceof ${schema.jsonNodeType})
+${indent}if(${node} instanceof ${jsonNodeType})
 ${indent}{
 //A6a
       <#switch objectSchemaType>
         <#case "ONE_OF">
-${indent}  ${var} = ${schema.type}.FACTORY.newInstanceOrNull(parserExceptions, (${schema.jsonNodeType})${node}, modelRegistry);
+${indent}  ${var} = ${schema.type}.FACTORY.newInstanceOrNull(parserExceptions, (${jsonNodeType})${node}, modelRegistry);
            <#break>
           <#default>
-${indent}  ${var} = ${schema.type}.FACTORY.newInstance((${schema.jsonNodeType})${node}, modelRegistry);
+${indent}  ${var} = ${schema.type}.FACTORY.newInstance((${jsonNodeType})${node}, modelRegistry);
            <#break>
        </#switch>
 ${indent}}
@@ -110,7 +110,7 @@ ${indent}{
 ${indent}  ${var} = null;
            <#break>
           <#default>
-${indent}  throw new ParserErrorException("${name} must be an instance of ${schema.jsonNodeType} not " + ${node}.getClass().getName(), ${node}.getContext());
+${indent}  throw new ParserErrorException("${name} must be an instance of ${jsonNodeType} not " + ${node}.getClass().getName(), ${node}.getContext());
            <#break>
        </#switch>
 ${indent}}
@@ -171,10 +171,12 @@ UNEXPECTED SCHEMA TYPE ${schema.schemaType} in generateCreateFieldFromJsonDomNod
  # @param ifValidation  If set then an if statement which guards validation checks
  #----------------------------------------------------------------------------------------------------->
 <#macro generateCreatePrimitiveFieldFromJsonDomNode indent node objectSchemaType schema name var ifValidation fullyQualified>
-${indent}if(${node} instanceof ${schema.jsonNodeType})
+<@namespace name="jsonNodeType" import=schema.fullyQualifiedJsonNodeType/>
+<@namespace name="javaType" import=schema.fullyQualifiedJavaType/>
+${indent}if(${node} instanceof ${jsonNodeType})
 ${indent}{
 //A6
-${indent}  ${var} = ${schema.getConstructor(fullyQualified, "((${schema.jsonNodeType})${node}).as${schema.javaType}()")};
+${indent}  ${var} = ${schema.getConstructor(fullyQualified, "((${jsonNodeType})${node}).getValue()")}; // was as${javaType}()
 ${indent}}
 ${indent}else ${ifValidation}
 ${indent}{
@@ -183,7 +185,7 @@ ${indent}{
 ${indent}  ${var} = null;
            <#break>
           <#default>
-${indent}  throw new ParserErrorException("${name} must be an instance of ${schema.jsonNodeType} not " + ${node}.getClass().getName(), ${node}.getContext());
+${indent}  throw new ParserErrorException("${name} must be an instance of ${jsonNodeType} not " + ${node}.getClass().getName(), ${node}.getContext());
            <#break>
        </#switch>
 ${indent}}

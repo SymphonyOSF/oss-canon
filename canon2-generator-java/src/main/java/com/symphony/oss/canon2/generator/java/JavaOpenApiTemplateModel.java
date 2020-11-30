@@ -18,13 +18,17 @@
 
 package com.symphony.oss.canon2.generator.java;
 
+import java.io.Writer;
 import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
 
+import org.checkerframework.checker.signature.qual.FullyQualifiedName;
+
 import com.google.common.collect.ImmutableList;
 import com.symphony.oss.canon2.core.ResolvedOpenApiObject;
 import com.symphony.oss.canon2.core.SourceContext;
+import com.symphony.oss.canon2.generator.INamespace;
 import com.symphony.oss.canon2.generator.NameCollisionDetector;
 import com.symphony.oss.canon2.generator.OpenApiTemplateModel;
 
@@ -44,11 +48,46 @@ implements IJavaTemplateModel
   private static final List<String> MODEL_TEMPLATES              = ImmutableList.of("Model");
   
   Set<String> imports_ = new TreeSet<>();
+
+  private final String packageName_;
+  private final String fullyQualifiedType_;
+
+  private String type_;
   
-  JavaOpenApiTemplateModel(JavaGenerator.Context generatorContext, ResolvedOpenApiObject resolvedOpenApiObject)
+  JavaOpenApiTemplateModel(JavaGenerator.Context generatorContext, ResolvedOpenApiObject resolvedOpenApiObject, String packageName)
   {
-    super(generatorContext, generatorContext.getJavaIdentifier(resolvedOpenApiObject, false, false), resolvedOpenApiObject, MODEL_TEMPLATES);
+    super(generatorContext, generatorContext.getJavaIdentifier(resolvedOpenApiObject, false, false) + generatorContext.getCanonIdString() + "Model",
+        resolvedOpenApiObject, MODEL_TEMPLATES);
     
+    packageName_ = packageName;
+    type_ = fullyQualifiedType_ = packageName_ + "." + getIdentifier();
+  }
+  
+  @Override
+  public String getPackageName()
+  {
+    return packageName_;
+  }
+
+  public String getFullyQualifiedType()
+  {
+    return fullyQualifiedType_;
+  }
+  
+  @Override
+  public String getType()
+  {
+    return type_;
+  }
+
+  @Override
+  public void resolve(INamespace namespace, Writer writer)
+  {
+    type_ = namespace.resolveImport(fullyQualifiedType_, writer);
+    for(JavaSchemaTemplateModel child : getSchemas())
+    {
+      namespace.resolveImport(packageName_ + "." + child.getIdentifier(), writer);
+    }
   }
   
   @Override
@@ -75,11 +114,5 @@ implements IJavaTemplateModel
   public Set<String> getImports()
   {
     return imports_;
-  }
-
-  @Override
-  public String getType()
-  {
-    return getCamelCapitalizedName() + "Model";
   }
 }

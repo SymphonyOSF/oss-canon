@@ -18,6 +18,7 @@
 
 package com.symphony.oss.canon2.generator.java;
 
+import java.io.Writer;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
@@ -26,6 +27,7 @@ import java.util.Map;
 import com.google.common.collect.ImmutableList;
 import com.symphony.oss.canon2.core.ResolvedPropertyContainerSchema;
 import com.symphony.oss.canon2.core.SourceContext;
+import com.symphony.oss.canon2.generator.INamespace;
 import com.symphony.oss.canon2.generator.IObjectSchemaTemplateModel;
 import com.symphony.oss.canon2.generator.NameCollisionDetector;
 import com.symphony.oss.canon2.generator.java.JavaGenerator.Context;
@@ -38,30 +40,46 @@ JavaSchemaTemplateModel,
 JavaFieldTemplateModel
 >
 {
-  private static final List<String> OBJECT_TEMPLATES             = ImmutableList.of("Object");
-  
-  private Map<String, JavaFieldTemplateModel> fieldMap_ = new HashMap<>();
-  private Map<String, JavaSchemaTemplateModel> innerClassMap_ = new HashMap<>();
-  private boolean hasLimits_;
-  private JavaSchemaTemplateModel superType_;
-  private final String baseSuperType_;
-  private final String type_;
-  private boolean additionalPropertiesAllowed_;
-  private JavaSchemaTemplateModel additionalProperties_;
-  private final String initialiserType_;
-  private final String jsonNodeType_;
-  private final boolean objectType_;
+  private static final List<String>            OBJECT_TEMPLATES = ImmutableList.of("Object");
 
-  private boolean additionalPropertiesIsInnerClass_;
+  private Map<String, JavaFieldTemplateModel>  fieldMap_        = new HashMap<>();
+  private Map<String, JavaSchemaTemplateModel> innerClassMap_   = new HashMap<>();
+  private boolean                              hasLimits_;
+  private JavaSchemaTemplateModel              superType_;
+  
+  private final String                         fullyQualifiedType_;
+  private final String                         fullyQualifiedInitialiserType_;
+  private final String                         fullyQualifiedJsonInitialiserType_;
+  private final String                         fullyQualifiedJsonNodeType_;
+  private final String                         fullyQualifiedBaseSuperType_;
+  
+  private String                               type_;
   
   
-  JavaObjectSchemaTemplateModel(JavaGenerator.Context generatorContext, ResolvedPropertyContainerSchema<?> resolvedSchema,  String packageName, JavaOpenApiTemplateModel model)
+  private boolean                        objectType_;
+  
+  private boolean                              additionalPropertiesAllowed_;
+  private JavaSchemaTemplateModel              additionalProperties_;
+
+  private boolean                              additionalPropertiesIsInnerClass_;
+  
+  
+  JavaObjectSchemaTemplateModel(JavaGenerator.Context generatorContext, ResolvedPropertyContainerSchema<?> resolvedSchema,
+      String packageName, JavaOpenApiTemplateModel model, IJavaTemplateModel outerClass)
   {
-    super(generatorContext, initIdentifier(generatorContext, resolvedSchema), resolvedSchema, resolvedSchema.getSchemaType(), model, initTemplates(resolvedSchema));
+    super(generatorContext, initIdentifier(generatorContext, resolvedSchema), resolvedSchema, packageName, resolvedSchema.getSchemaType(), model, initTemplates(resolvedSchema));
     
-    
-    type_ = resolvedSchema.getResolvedContainer() == null ? getCamelCapitalizedName() :
-      capitalize(generatorContext.getCanonIdString(), toCamelCase(resolvedSchema.getResolvedContainer().getName())) + "." + getCamelCapitalizedName();
+    if(outerClass == null)
+    {
+      fullyQualifiedType_ = getPackageName() + "." + getIdentifier();
+    }
+    else
+    {
+      fullyQualifiedType_ = outerClass.getFullyQualifiedType() + "." + getIdentifier();
+    }
+        
+//        resolvedSchema.getResolvedContainer() == null ? getCamelCapitalizedName() :
+//      capitalize(generatorContext.getCanonIdString(), toCamelCase(resolvedSchema.getResolvedContainer().getName())) + "." + getCamelCapitalizedName();
     
     
 //  if(isExternal())
@@ -74,18 +92,20 @@ JavaFieldTemplateModel
     switch(resolvedSchema.getSchemaType())
     {
       case ONE_OF:
-        initialiserType_ = "EntityInitialiser";
-        baseSuperType_ = "Entity";
-        jsonNodeType_ = "JsonDomNode";
+        fullyQualifiedJsonInitialiserType_ = "com.symphony.oss.canon2.runtime.java.JsonEntityInitialiser";
+        fullyQualifiedInitialiserType_ = "com.symphony.oss.canon2.runtime.java.IEntityInitialiser";
+        fullyQualifiedBaseSuperType_ = "com.symphony.oss.canon2.runtime.java.Entity";
+        fullyQualifiedJsonNodeType_ = "com.symphony.oss.canon.json.model.JsonDomNode";
         objectType_ = false;
         break;
         
       default:
-        initialiserType_ = "ObjectEntityInitialiser";
-        baseSuperType_ = "ObjectEntity";
-        jsonNodeType_ = "JsonObject";
+        fullyQualifiedJsonInitialiserType_ = "com.symphony.oss.canon2.runtime.java.JsonObjectEntityInitialiser";
+        fullyQualifiedInitialiserType_ = "com.symphony.oss.canon2.runtime.java.IObjectEntityInitialiser";
+        fullyQualifiedBaseSuperType_ = "com.symphony.oss.canon2.runtime.java.ObjectEntity";
+        fullyQualifiedJsonNodeType_ = "com.symphony.oss.canon.json.model.JsonObject";
         objectType_ = true;
-    }
+    }    
   }
 
   private static List<String> initTemplates(ResolvedPropertyContainerSchema<?> resolvedSchema)
@@ -113,10 +133,31 @@ JavaFieldTemplateModel
   }
   
   @Override
+  public void resolve(INamespace namespace, Writer writer)
+  {
+    type_             = namespace.resolveImport(fullyQualifiedType_, writer);
+//    initialiserType_  = namespace.resolveImport(fullyQualifiedInitialiserType_, writer);
+//    jsonNodeType_     = namespace.resolveImport(fullyQualifiedJsonNodeType_, writer);
+//    baseSuperType_    = namespace.resolveImport(fullyQualifiedBaseSuperType_, writer);
+    
+    for(JavaFieldTemplateModel child : getFields())
+      child.resolve(namespace, writer);
+    
+    for(JavaSchemaTemplateModel child : getInnerClasses())
+      child.resolve(namespace, writer);
+  }
+
+  @Override
   public void validate(SourceContext sourceContext)
   {
     new NameCollisionDetector(getFields()).logCollisions(sourceContext, this);
     new NameCollisionDetector(getInnerClasses()).logCollisions(sourceContext, this);
+  }
+
+  @Override
+  public String getFullyQualifiedType()
+  {
+    return fullyQualifiedType_;
   }
 
   @Override
@@ -125,25 +166,22 @@ JavaFieldTemplateModel
     return objectType_;
   }
 
-  public String getFullyQualifiedSuperTypeName()
+  public String getFullyQualifiedInitialiserType()
   {
-    if(superType_ == null)
-      return "com.symphony.oss.canon2.runtime.java." + baseSuperType_;
-    
-    return superType_.getPackageName() + "." + superType_.getType();
-  }
-  
-  public String getSuperTypeName()
-  {
-    if(superType_ == null)
-      return baseSuperType_;
-    
-    return superType_.getType();
+    return fullyQualifiedInitialiserType_;
   }
 
-  public String getInitialiserType()
+  public String getFullyQualifiedJsonInitialiserType()
   {
-    return initialiserType_;
+    return fullyQualifiedJsonInitialiserType_;
+  }
+
+  public String getFullyQualifiedSuperType()
+  {
+    if(superType_ == null)
+      return fullyQualifiedBaseSuperType_;
+    
+    return superType_.getFullyQualifiedType();
   }
 
   @Override
@@ -157,7 +195,7 @@ JavaFieldTemplateModel
   {
     fieldMap_.put(name, field);
     
-    if(field.getTypeSchema().getPackageName() != null && !getPackageName().equals(field.getTypeSchema().getPackageName()))
+    if(field.getTypeSchema().getLEGACYPackageName() != null && !getLEGACYPackageName().equals(field.getTypeSchema().getLEGACYPackageName()))
       addImport(field.getTypeSchema().getImport());
     
     if(field.getHasLimits())
@@ -189,19 +227,9 @@ JavaFieldTemplateModel
     additionalPropertiesAllowed_ = additionalPropertiesAllowed;
   }
 
-  @Override
-  public String getJsonNodeType()
-  {
-    return jsonNodeType_;
-  }
-
-  @Override
   public String getFullyQualifiedJsonNodeType()
   {
-    if(objectType_)
-      return "com.symphony.oss.canon.json.model.JsonObject";
-    else
-      return null;
+    return fullyQualifiedJsonNodeType_;
   }
 
   @Override

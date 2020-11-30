@@ -37,11 +37,11 @@ import com.symphony.oss.canon.json.ParserErrorException;
 import com.symphony.oss.canon.json.SyntaxErrorException;
 import com.symphony.oss.canon2.core.CanonModelContext;
 import com.symphony.oss.canon2.core.ResolvedObjectSchema;
-import com.symphony.oss.canon2.core.ResolvedOneOfSchema;
 import com.symphony.oss.canon2.core.ResolvedOpenApiObject.SingletonBuilder;
 import com.symphony.oss.canon2.core.ResolvedPropertiesObject;
 import com.symphony.oss.canon2.core.ResolvedProperty;
 import com.symphony.oss.canon2.core.ResolvedSchema;
+import com.symphony.oss.canon2.core.ResolvedSchemasObject;
 import com.symphony.oss.canon2.core.SchemaTemplateModelType;
 import com.symphony.oss.canon2.core.SourceContext;
 
@@ -94,7 +94,7 @@ public class ObjectSchema extends ObjectSchema_Entity implements ISchema
   {
     ResolvedObjectSchema.SingletonBuilder       builder = new ResolvedObjectSchema.SingletonBuilder();
     ResolvedPropertiesObject.SingletonBuilder   resolvedPropertiesBuilder = new ResolvedPropertiesObject.SingletonBuilder();
-    ResolvedPropertiesObject.SingletonBuilder   innerClassesBuilder       = new ResolvedPropertiesObject.SingletonBuilder();
+    ResolvedSchemasObject.SingletonBuilder      innerClassesBuilder       = new ResolvedSchemasObject.SingletonBuilder();
     
     builder
       .withResolvedProperties(resolvedPropertiesBuilder)
@@ -122,7 +122,7 @@ public class ObjectSchema extends ObjectSchema_Entity implements ISchema
               .withJson(schema.getJson());
           resolvedPropertiesBuilder.with(entry.getKey(), resolvedProperty);
 
-          innerClassesBuilder.with(entry.getKey(), resolvedProperty);
+          innerClassesBuilder.with(entry.getKey(), resolvedPropertySchema);
         }
         else
         {
@@ -166,6 +166,7 @@ public class ObjectSchema extends ObjectSchema_Entity implements ISchema
         if(!schemaOrRef.isReference())
         {
           resolvedAdditionalProperties.withCanonPrefix(true);
+          innerClassesBuilder.with(name, resolvedAdditionalProperties);
         }
         builder.withResolvedAdditionalProperties(resolvedAdditionalProperties);
       }

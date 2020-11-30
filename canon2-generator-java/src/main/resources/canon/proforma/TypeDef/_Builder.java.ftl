@@ -1,3 +1,3 @@
-<#if entity.externalType??>
+<#if entity.fullyQualifiedExternalType??>
     <#include "TypeDefBuilder.ftl"/>
 </#if>

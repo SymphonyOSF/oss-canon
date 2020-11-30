@@ -1,3 +1,6 @@
+<@namespace clear=true append=false baseClass="${genPackage}.${entity.camelCapitalizedName}">
+<@namespace model=model/>
+<@namespace model=entity/>
 /**
 <#switch templateType>
   <#case "TEMPLATE">
@@ -41,3 +44,6 @@ ${license}
  *    At                   ${date}
  *----------------------------------------------------------------------------------------------------
  */
+
+package ${genPackage};
+</@namespace>

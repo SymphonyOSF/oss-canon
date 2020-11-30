@@ -19,6 +19,9 @@
 package com.symphony.oss.canon2.generator;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
@@ -136,7 +139,7 @@ C extends CanonGenerator<T,M,S,O,A,P,F,C>.AbstractContext>
   
   protected abstract F generateField(C generatorContext, M model, ResolvedProperty resolvedProperty, S typeSchema, boolean required);
 
-  protected abstract O generateObjectSchema(C generatorContext, M model, ResolvedPropertyContainerSchema<?> resolvedSchema);
+  protected abstract O generateObjectSchema(C generatorContext, M model, ResolvedPropertyContainerSchema<?> resolvedSchema, T outerClass);
 
   protected abstract P generateBigDecimalSchema(C generatorContext, M model, ResolvedBigDecimalSchema resolvedSchema);
 
@@ -462,7 +465,7 @@ C extends CanonGenerator<T,M,S,O,A,P,F,C>.AbstractContext>
 //      return identifier;
 //    }
 
-    S generateSchema(ResolvedSchema<?> resolvedSchema, M model)
+    S generateSchema(ResolvedSchema<?> resolvedSchema, M model, T outerClass)
     {
       S existingSchema = schemaModelMap_.get(resolvedSchema.getUri());
       
@@ -471,11 +474,11 @@ C extends CanonGenerator<T,M,S,O,A,P,F,C>.AbstractContext>
       
       if(resolvedSchema instanceof ResolvedObjectSchema)
       {
-        return generateObjectSchema((ResolvedObjectSchema)resolvedSchema, model);
+        return generateObjectSchema((ResolvedObjectSchema)resolvedSchema, model, outerClass);
       }
       if(resolvedSchema instanceof ResolvedOneOfSchema)
       {
-        return generateOneOfSchema((ResolvedOneOfSchema)resolvedSchema, model);
+        return generateOneOfSchema((ResolvedOneOfSchema)resolvedSchema, model, outerClass);
       }
       if(resolvedSchema instanceof ResolvedArraySchema)
       {
@@ -600,16 +603,16 @@ C extends CanonGenerator<T,M,S,O,A,P,F,C>.AbstractContext>
       
       schemaModelMap_.put(resolvedSchema.getUri(), arraySchema.asSchemaTemplateModel());
       
-      S itemsModel = generateSchema(resolvedSchema.getResolvedItems(), model);
+      S itemsModel = generateSchema(resolvedSchema.getResolvedItems(), model, arraySchema.asTemplateModel());
       
       arraySchema.setElementType(itemsModel);
       
       return arraySchema.asSchemaTemplateModel();
     }
 
-    private O generatePropertyContainerSchema(ResolvedPropertyContainerSchema<?> resolvedSchema, M model, Set<String> requiredSet)
+    private O generatePropertyContainerSchema(ResolvedPropertyContainerSchema<?> resolvedSchema, M model, Set<String> requiredSet, T outerClass)
     {
-      O entity = CanonGenerator.this.generateObjectSchema(self(), model, resolvedSchema);
+      O entity = CanonGenerator.this.generateObjectSchema(self(), model, resolvedSchema, outerClass);
       schemaModelMap_.put(resolvedSchema.getUri(), entity.asSchemaTemplateModel());
       
       if(!resolvedSchema.getResolvedProperties().isEmpty())
@@ -619,7 +622,8 @@ C extends CanonGenerator<T,M,S,O,A,P,F,C>.AbstractContext>
           //String propertyIdentifier = getIdentifierName(propertyEntry.getKey(), propertyEntry.getValue().getSchema(), false);
           ResolvedProperty resolvedPropertySchema = propertyEntry.getValue();
           
-          S typeSchema = generateSchema(resolvedPropertySchema.getResolvedSchema(), model);
+          S typeSchema = generateSchema(resolvedPropertySchema.getResolvedSchema(), model, 
+              resolvedPropertySchema.getResolvedSchema().isInnerClass() ? entity.asTemplateModel() : null);
           boolean required = requiredSet != null && requiredSet.contains(propertyEntry.getKey());
         
           entity.addField(propertyEntry.getKey(),
@@ -627,9 +631,9 @@ C extends CanonGenerator<T,M,S,O,A,P,F,C>.AbstractContext>
           
         }
         
-        for(Entry<String, ResolvedProperty> innerClassEntry : resolvedSchema.getInnerClasses().getResolvedProperties().entrySet())
+        for(Entry<String, ResolvedSchema<?>> innerClassEntry : resolvedSchema.getInnerClasses().getResolvedProperties().entrySet())
         {
-          S innerClass = generateSchema(innerClassEntry.getValue().getResolvedSchema(), model);
+          S innerClass = generateSchema(innerClassEntry.getValue(), model, entity.asTemplateModel());
           entity.addInnerClass(innerClassEntry.getKey(), innerClass);
         }
       }
@@ -639,26 +643,26 @@ C extends CanonGenerator<T,M,S,O,A,P,F,C>.AbstractContext>
       return entity;
     }
 
-    private S generateOneOfSchema(ResolvedOneOfSchema resolvedSchema, M model)
+    private S generateOneOfSchema(ResolvedOneOfSchema resolvedSchema, M model, T outerClass)
     {
-      O entity = generatePropertyContainerSchema(resolvedSchema, model, null);
+      O entity = generatePropertyContainerSchema(resolvedSchema, model, null, outerClass);
       
       return entity.asSchemaTemplateModel();
     }
 
-    private S generateObjectSchema(ResolvedObjectSchema resolvedSchema, M model)
+    private S generateObjectSchema(ResolvedObjectSchema resolvedSchema, M model, T outerClass)
     {
       ObjectSchema schema = resolvedSchema.getSchema();
-      O entity = generatePropertyContainerSchema(resolvedSchema, model, schema.getRequired());
+      O entity = generatePropertyContainerSchema(resolvedSchema, model, schema.getRequired(), outerClass);
 
       if(schema.getXCanonExtends() != null)
       {
-        entity.setExtends(generateSchema(resolvedSchema.getResolvedExtends(), model));
+        entity.setExtends(generateSchema(resolvedSchema.getResolvedExtends(), model, outerClass));
       }
       
       if(resolvedSchema.getResolvedAdditionalProperties() != null)
       {
-        S additionalPropertiesSchema = generateSchema(resolvedSchema.getResolvedAdditionalProperties(), model);
+        S additionalPropertiesSchema = generateSchema(resolvedSchema.getResolvedAdditionalProperties(), model, outerClass);
         
         entity.setAdditionalProperties(additionalPropertiesSchema, resolvedSchema.isAdditionalPropertiesInnerClass());
       }
@@ -681,7 +685,7 @@ C extends CanonGenerator<T,M,S,O,A,P,F,C>.AbstractContext>
       
       for(ResolvedProperty resolvedSchema : sourceContext_.getSchemas().values())
       {
-        S model = generateSchema(resolvedSchema.getResolvedSchema(), parentModel);
+        S model = generateSchema(resolvedSchema.getResolvedSchema(), parentModel, null);
         
         parentModel.addSchema(model);
       }
@@ -862,7 +866,14 @@ C extends CanonGenerator<T,M,S,O,A,P,F,C>.AbstractContext>
       
       genPath.getParentFile().mkdirs();
       
-      try(FileWriter writer = new FileWriter(genPath))
+      
+      
+      File bodyPath = new File(genPath.getAbsolutePath() + ".BODY");
+      File headerPath = new File(genPath.getAbsolutePath() + ".HEADER");
+      
+      model.put("headerPath", headerPath.getAbsolutePath());
+      
+      try(FileWriter writer = new FileWriter(bodyPath))
       {
         template.process(model, writer);
       } 
@@ -873,31 +884,61 @@ C extends CanonGenerator<T,M,S,O,A,P,F,C>.AbstractContext>
         throw new ParserErrorException(e);
       }
       
-      if(genPath.length() == 0L)
+      if(bodyPath.length() == 0L)
       {
         genPath.delete();
       }
-      else if(templateType == TemplateType.PROFORMA && generationContext.getCopyDir() != null)
+      else 
       {
-        File copyPath = new File(generationContext.getCopyDir(), targetFileName);
-      
-        if(copyPath.exists())
+        try(FileOutputStream out = new FileOutputStream(genPath))
         {
-          log_.info("Proforma " + copyPath.getAbsolutePath() + " exists, not copying");
+          copyFile(headerPath, out);
+          copyFile(bodyPath, out);
         }
-        else
+        catch (IOException e)
         {
-          copyPath.getParentFile().mkdirs();
-          try
+          throw new ParserErrorException(e);
+        }
+        
+        if(templateType == TemplateType.PROFORMA && generationContext.getCopyDir() != null)
+        {
+          File copyPath = new File(generationContext.getCopyDir(), targetFileName);
+        
+          if(copyPath.exists())
           {
-            Files.copy(genPath, copyPath);
+            log_.info("Proforma " + copyPath.getAbsolutePath() + " exists, not copying");
           }
-          catch (IOException e)
+          else
           {
-            throw new ParserErrorException(e);
+            copyPath.getParentFile().mkdirs();
+            try
+            {
+              Files.copy(genPath, copyPath);
+            }
+            catch (IOException e)
+            {
+              throw new ParserErrorException(e);
+            }
           }
         }
       }
+
+      bodyPath.delete();
+      headerPath.delete();
     }
 //  }
+
+    private void copyFile(File inPath, FileOutputStream out) throws IOException
+    {
+      try(FileInputStream in = new FileInputStream(inPath))
+      {
+        byte  buf[] = new byte[1024];
+        int   nbytes;
+        
+        while((nbytes = in.read(buf)) > 0)
+        {
+          out.write(buf, 0, nbytes);
+        }
+      }
+    }
 }

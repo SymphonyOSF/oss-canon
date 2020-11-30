@@ -16,21 +16,32 @@
  * limitations under the License.
  */
 
-package com.symphony.oss.canon.json.model;
+package com.symphony.oss.canon2.runtime.java;
+
+import com.google.common.collect.ImmutableList;
 
 /**
- * An entity which was instantiated from a JsonObject or which provides one.
+ * An initialiser for a canon generated object.
+ * 
+ * @param <T> Element type of this array type. 
  * 
  * @author Bruce Skingle
- *
  */
-public interface IJsonObjectProvider extends IJsonDomNodeProvider
-{
+public interface IListArrayEntityInitialiser<T>
+extends IArrayEntityInitialiser
+{ 
   /**
-   * Return the JsonObject from which this entity was created.
+   * The set of elements present in the JSON from which this object was deserialized which are not defined by
+   * the schema. 
    * 
-   * @return the JsonObject from which this entity was created.
+   * @return The set of unknown elements in the JSON from which this object was deserialized;
    */
-  @Override
-  JsonObject getJson();
+  ImmutableList<Entity> getCanonUnknownElements();
+
+  /**
+   * Return the elements of this array.
+   * 
+   * @return the elements of this array.
+   */
+  ImmutableList<T> getElements();
 }

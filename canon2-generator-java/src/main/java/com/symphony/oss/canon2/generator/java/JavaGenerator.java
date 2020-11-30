@@ -49,6 +49,7 @@ import com.symphony.oss.canon2.generator.CanonGenerationContext;
 import com.symphony.oss.canon2.generator.CanonGenerator;
 import com.symphony.oss.canon2.generator.IGroupSchemaTemplateModel;
 import com.symphony.oss.canon2.generator.IPathNameConstructor;
+import com.symphony.oss.canon2.generator.NamespaceDirective;
 import com.symphony.oss.canon2.generator.CanonGenerator.AbstractContext;
 import com.symphony.oss.canon2.model.CanonCardinality;
 import com.symphony.oss.canon2.model.OpenApiObject;
@@ -361,22 +362,24 @@ JavaGenerator.Context
   {
     
     map.put(JavaGenerator.GEN_PACKAGE, getJavaGenerationPackage(generatorContext.getSourceContext()));
+    map.put("namespace", new NamespaceDirective());
   }
 
   @Override
   public JavaOpenApiTemplateModel generateOpenApiObject(JavaGenerator.Context generatorContext, ResolvedOpenApiObject resolvedOpenApiObject)
   {
-    return new JavaOpenApiTemplateModel(generatorContext, resolvedOpenApiObject);
+    return new JavaOpenApiTemplateModel(generatorContext, resolvedOpenApiObject,
+        getJavaGenerationPackage(resolvedOpenApiObject.getModel()));
   }
 
   
   @Override
-  public JavaObjectSchemaTemplateModel generateObjectSchema(JavaGenerator.Context generatorContext, JavaOpenApiTemplateModel model, ResolvedPropertyContainerSchema<?> resolvedSchema)
+  public JavaObjectSchemaTemplateModel generateObjectSchema(JavaGenerator.Context generatorContext, JavaOpenApiTemplateModel model, ResolvedPropertyContainerSchema<?> resolvedSchema, IJavaTemplateModel outerClass)
   {
     return new JavaObjectSchemaTemplateModel(generatorContext, resolvedSchema, 
 
         getJavaGenerationPackage(resolvedSchema.getResolvedOpenApiObject().getModel()),
-        model);
+        model, outerClass);
   }
 
   @Override
@@ -453,7 +456,7 @@ JavaGenerator.Context
       ResolvedDoubleSchema resolvedSchema)
   {
     return new JavaNumberSchemaTemplateModel(generatorContext, resolvedSchema,
-         getJavaGenerationPackage(resolvedSchema.getResolvedOpenApiObject().getModel()) ,null, "Double",  model,
+         getJavaGenerationPackage(resolvedSchema.getResolvedOpenApiObject().getModel()) ,"java.lang", "Double",  model,
         false);
   }
 
@@ -462,7 +465,7 @@ JavaGenerator.Context
       ResolvedFloatSchema resolvedSchema)
   {
     return new JavaNumberSchemaTemplateModel(generatorContext, resolvedSchema,
-        getJavaGenerationPackage(resolvedSchema.getResolvedOpenApiObject().getModel()), null, "Float", model,
+        getJavaGenerationPackage(resolvedSchema.getResolvedOpenApiObject().getModel()), "java.lang", "Float", model,
         false);
   }
 
@@ -471,7 +474,7 @@ JavaGenerator.Context
       ResolvedIntegerSchema resolvedSchema)
   {
     return new JavaNumberSchemaTemplateModel(generatorContext, resolvedSchema,
-         getJavaGenerationPackage(resolvedSchema.getResolvedOpenApiObject().getModel()), null, "Integer", model,
+         getJavaGenerationPackage(resolvedSchema.getResolvedOpenApiObject().getModel()), "java.lang", "Integer", model,
        false);
   }
 
@@ -480,7 +483,7 @@ JavaGenerator.Context
       ResolvedLongSchema resolvedSchema)
   {
     return new JavaNumberSchemaTemplateModel(generatorContext, resolvedSchema,
-         getJavaGenerationPackage(resolvedSchema.getResolvedOpenApiObject().getModel()), null, "Long",  model,
+         getJavaGenerationPackage(resolvedSchema.getResolvedOpenApiObject().getModel()), "java.lang", "Long",  model,
         false);
   }
 

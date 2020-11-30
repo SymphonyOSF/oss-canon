@@ -25,27 +25,27 @@ import java.util.Map.Entry;
 import javax.annotation.Nonnull;
 
 import com.google.common.collect.ImmutableMap;
-import com.symphony.oss.canon2.core.ResolvedProperty.AbstractBuilder;
+import com.symphony.oss.canon2.core.ResolvedSchema.AbstractBuilder;
 
 /**
- * A map of resolved properties.
+ * A map of resolved schemas.
  * 
  * @author Bruce Skingle
  *
  */
-public class ResolvedPropertiesObject
+public class ResolvedSchemasObject
 {
-  private final Map<String, ResolvedProperty> properties_;
+  private final Map<String, ResolvedSchema<?>> schemas_;
   
-  private ResolvedPropertiesObject(SingletonBuilder builder)
+  private ResolvedSchemasObject(SingletonBuilder builder)
   {
-    ImmutableMap.Builder<String, ResolvedProperty> b = new ImmutableMap.Builder<String, ResolvedProperty>();
+    ImmutableMap.Builder<String, ResolvedSchema<?>> b = new ImmutableMap.Builder<String, ResolvedSchema<?>>();
     
-    for(Entry<String, AbstractBuilder<?, ?>> entry : builder.propertyBuilders_.entrySet())
+    for(Entry<String, AbstractBuilder<?,?,?>> entry : builder.propertyBuilders_.entrySet())
     {
       b.put(entry.getKey(), entry.getValue().build());
     }
-    properties_ = b.build();
+    schemas_ = b.build();
   }
   
   /**
@@ -53,8 +53,8 @@ public class ResolvedPropertiesObject
    */
   public static class SingletonBuilder
   {
-    Map<String, ResolvedProperty.AbstractBuilder<?,?>> propertyBuilders_ = new HashMap<>();
-    ResolvedPropertiesObject built_;
+    Map<String, ResolvedSchema.AbstractBuilder<?,?,?>> propertyBuilders_ = new HashMap<>();
+    ResolvedSchemasObject built_;
     
     /**
      * Add the given property.
@@ -64,7 +64,7 @@ public class ResolvedPropertiesObject
      * 
      * @return this (fluent method).
      */
-    public SingletonBuilder with(String name, ResolvedProperty.AbstractBuilder<?,?> property)
+    public SingletonBuilder with(String name, ResolvedSchema.AbstractBuilder<?,?,?> property)
     {
       if(built_ != null)
         throw new IllegalStateException("SingletonBuilder has already been built");
@@ -79,10 +79,10 @@ public class ResolvedPropertiesObject
      * 
      * @return the one and only instance.
      */
-    public ResolvedPropertiesObject build()
+    public ResolvedSchemasObject build()
     {
       if(built_ == null)
-        built_ = new ResolvedPropertiesObject(this);
+        built_ = new ResolvedSchemasObject(this);
       
       return built_;
     }
@@ -95,19 +95,19 @@ public class ResolvedPropertiesObject
    */
   public void validate(SourceContext context)
   {
-    for(ResolvedProperty schema : properties_.values())
+    for(ResolvedSchema<?> schema : schemas_.values())
     {
       schema.validate(context);
     }
   }
 
   /**
-   * Return all properties.
+   * Return all schemas.
    * 
-   * @return all properties.
+   * @return all schemas.
    */
-  public @Nonnull Map<String, ResolvedProperty> getResolvedProperties()
+  public @Nonnull Map<String, ResolvedSchema<?>> getResolvedProperties()
   {
-    return properties_;
+    return schemas_;
   }
 }

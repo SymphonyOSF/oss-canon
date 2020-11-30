@@ -37,6 +37,7 @@ import com.symphony.oss.canon2.core.ResolvedOpenApiObject;
 import com.symphony.oss.canon2.core.ResolvedPropertiesObject;
 import com.symphony.oss.canon2.core.ResolvedProperty;
 import com.symphony.oss.canon2.core.ResolvedSchema;
+import com.symphony.oss.canon2.core.ResolvedSchemasObject;
 import com.symphony.oss.canon2.core.SchemaTemplateModelType;
 import com.symphony.oss.canon2.core.SourceContext;
 
@@ -65,7 +66,7 @@ public class OneOfSchema extends OneOfSchema_Entity implements ISchemaInstance
     
     ResolvedOneOfSchema.SingletonBuilder        builder = new ResolvedOneOfSchema.SingletonBuilder();
     ResolvedPropertiesObject.SingletonBuilder   resolvedPropertiesBuilder = new ResolvedPropertiesObject.SingletonBuilder();
-    ResolvedPropertiesObject.SingletonBuilder   innerClassesBuilder       = new ResolvedPropertiesObject.SingletonBuilder();
+    ResolvedSchemasObject.SingletonBuilder      innerClassesBuilder       = new ResolvedSchemasObject.SingletonBuilder();
     
     builder
       .withResolvedProperties(resolvedPropertiesBuilder)
@@ -89,7 +90,7 @@ public class OneOfSchema extends OneOfSchema_Entity implements ISchemaInstance
       resolvedPropertiesBuilder.with(name, resolvedProperty);
       
       if(subSchema.getSchema() != null && resolvedSubSchema.build().getSchemaType().getIsObject())
-        innerClassesBuilder.with(name, resolvedProperty);
+        innerClassesBuilder.with(name, resolvedSubSchema);
       i++;
     }
   }

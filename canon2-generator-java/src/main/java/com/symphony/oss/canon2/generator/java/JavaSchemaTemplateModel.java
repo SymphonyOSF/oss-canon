@@ -62,26 +62,32 @@ implements IJavaTemplateModel
       "java.util"
   };
   
-  
+
+  private final String packageName_;
 
   /** Set of imports any class implementing this schema needs */
+  @Deprecated
   private Set<String> imports_ = new TreeSet<>();
   
   /** Package Name of import */
-  private String packageName_;
+  @Deprecated
+  private String LEGACYpackageName_;
   /** import needed by classes which reference this schema */
+  @Deprecated
   private String import_;
 
   private final boolean generateFacade_;
   private final boolean generateBuilderFacade_;
   
   JavaSchemaTemplateModel(JavaGenerator.Context generatorContext, 
-      String identifier, ResolvedSchema<?> resolvedSchema, SchemaTemplateModelType schemaType, JavaOpenApiTemplateModel model, List<String> templates)
+      String identifier, ResolvedSchema<?> resolvedSchema,  String packageName,
+      SchemaTemplateModelType schemaType, JavaOpenApiTemplateModel model, List<String> templates)
   {
     super(generatorContext, identifier, resolvedSchema, schemaType, model, templates);
     
-    generateFacade_ = resolvedSchema.getSchema().getXCanonFacade() == null ? false : resolvedSchema.getSchema().getXCanonFacade();
-    generateBuilderFacade_ = resolvedSchema.getSchema().getXCanonBuilderFacade() == null ? false : resolvedSchema.getSchema().getXCanonBuilderFacade();
+    packageName_            = packageName;
+    generateFacade_         = resolvedSchema.getSchema().getXCanonFacade() == null ? false : resolvedSchema.getSchema().getXCanonFacade();
+    generateBuilderFacade_  = resolvedSchema.getSchema().getXCanonBuilderFacade() == null ? false : resolvedSchema.getSchema().getXCanonBuilderFacade();
   }
   
 //  static class IdentifierAndImport
@@ -108,6 +114,12 @@ implements IJavaTemplateModel
 ////    }
 //  }
   
+  @Override
+  public String getPackageName()
+  {
+    return packageName_;
+  }
+
   public boolean getIsObjectType()
   {
     return false;
@@ -138,12 +150,14 @@ implements IJavaTemplateModel
     setImport(fullyQualifiedName.substring(0, i), fullyQualifiedName.substring(i+1));
   }
   
+  @Deprecated
   void setImport(String packageName, String camelCapitalizedName)
   {
-    packageName_ = packageName;
+    LEGACYpackageName_ = packageName;
     import_ = packageName + "." + camelCapitalizedName;
   }
 
+  @Deprecated
   void addImport(String fullyQualifiedImport)
   {
     if(fullyQualifiedImport != null)
@@ -155,9 +169,9 @@ implements IJavaTemplateModel
    * 
    * @return the fully qualified Java package name of this type.
    */
-  public String getPackageName()
+  public String getLEGACYPackageName()
   {
-    return packageName_;
+    return LEGACYpackageName_;
   }
 
   // not called as far as I can tell
@@ -278,8 +292,6 @@ implements IJavaTemplateModel
 //  {
 //    return "";
 //  }
-
-  public abstract String getJsonNodeType();
 
   public abstract String getFullyQualifiedJsonNodeType();
   

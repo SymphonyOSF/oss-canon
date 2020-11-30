@@ -28,7 +28,7 @@ import com.symphony.oss.canon2.model.ISchemaInstance;
  */
 public abstract class ResolvedObjectOrArraySchema<S extends ISchemaInstance> extends ResolvedSchema<S>
 {
-  private final ResolvedPropertiesObject.SingletonBuilder innerClassesBuilder_;
+  private final ResolvedSchemasObject.SingletonBuilder innerClassesBuilder_;
   
   ResolvedObjectOrArraySchema(AbstractBuilder<S,?,?> builder)
   {
@@ -39,14 +39,14 @@ public abstract class ResolvedObjectOrArraySchema<S extends ISchemaInstance> ext
   
   public abstract static class AbstractBuilder<S extends ISchemaInstance, T extends AbstractBuilder<S,T,B>, B extends ResolvedObjectOrArraySchema<S>> extends ResolvedSchema.AbstractBuilder<S,T,B>
   {
-    private ResolvedPropertiesObject.SingletonBuilder innerClassesBuilder_;
+    private ResolvedSchemasObject.SingletonBuilder innerClassesBuilder_;
     
     AbstractBuilder(Class<T> type)
     {
       super(type);
     }
     
-    public T withInnerClasses(ResolvedPropertiesObject.SingletonBuilder innerClassesBuilder)
+    public T withInnerClasses(ResolvedSchemasObject.SingletonBuilder innerClassesBuilder)
     {
       if(isBuilt())
         throw new IllegalStateException("SingletonBuilder has already been built");
@@ -57,7 +57,7 @@ public abstract class ResolvedObjectOrArraySchema<S extends ISchemaInstance> ext
     }
   }
 
-  public ResolvedPropertiesObject getInnerClasses()
+  public ResolvedSchemasObject getInnerClasses()
   {
     if(innerClassesBuilder_ == null)
       return null;

@@ -6,14 +6,17 @@
 
 package com.symphony.oss.canon2.generator.java;
 
+import java.io.Writer;
 import java.math.BigInteger;
 import java.util.List;
 
 import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableSet;
 import com.symphony.oss.canon2.core.ResolvedArraySchema;
 import com.symphony.oss.canon2.core.SchemaTemplateModelType;
 import com.symphony.oss.canon2.core.SourceContext;
 import com.symphony.oss.canon2.generator.IArraySchemaTemplateModel;
+import com.symphony.oss.canon2.generator.INamespace;
 import com.symphony.oss.canon2.generator.java.JavaGenerator.Context;
 import com.symphony.oss.canon2.model.ArraySchema_Entity.MaxItems;
 import com.symphony.oss.canon2.model.ArraySchema_Entity.MinItems;
@@ -34,23 +37,52 @@ JavaSchemaTemplateModel>
 {
   private static final List<String> ARRAY_TEMPLATES              = ImmutableList.of("Array");
   
-  private JavaSchemaTemplateModel elementType_;
+  private final String              fullyQualifiedCollectionType_;
+  private final String              fullyQualifiedCollectionImplType_;
+  private final String              fullyQualifiedInitialiserType_;
+  private final String              fullyQualifiedCollectionImmutableType_;
   
-  private final CanonCardinality  cardinality_;
-  
-  private String                  type_;
-  private String                  copyPrefix_;
-  private final MinItems          minItems_;
-  private final MaxItems          maxItems_;
-  private String                  typeNew_;
+  private JavaSchemaTemplateModel   elementType_;
+
+  private final CanonCardinality    cardinality_;
+
+  private final String              fullyQualifiedType_;
+  private String                    type_;
+  private String                    copyPrefix_;
+  private final MinItems            minItems_;
+  private final MaxItems            maxItems_;
+  private String                    typeNew_;
+
+
+
+
   
   JavaArraySchemaTemplateModel(JavaGenerator.Context generatorContext, ResolvedArraySchema resolvedSchema, String packageName, CanonCardinality cardinality, JavaOpenApiTemplateModel model)
   {
-    super(generatorContext, initIdentifier(generatorContext, resolvedSchema), resolvedSchema, SchemaTemplateModelType.ARRAY, model, initTemplates(resolvedSchema));
+    super(generatorContext, initIdentifier(generatorContext, resolvedSchema), resolvedSchema, packageName, SchemaTemplateModelType.ARRAY, model, initTemplates(resolvedSchema));
     
     cardinality_ = cardinality;
-    
-    
+    fullyQualifiedType_ = getPackageName() + "." + getCamelCapitalizedName();
+
+    switch(cardinality_)
+    {
+      case SET:
+        fullyQualifiedCollectionType_ = "java.util.Set";
+        fullyQualifiedCollectionImplType_ = "java.util.HashSet";
+        fullyQualifiedCollectionImmutableType_ = "com.google.common.collect.ImmutableSet";
+        fullyQualifiedInitialiserType_ = "com.symphony.oss.canon2.runtime.java.IListArrayEntityInitialiser";
+        break;
+        
+      case LIST:
+        fullyQualifiedCollectionType_ = "java.util.List";
+        fullyQualifiedCollectionImplType_ = "java.util.LinkedList";
+        fullyQualifiedCollectionImmutableType_ = "com.google.common.collect.ImmutableList";
+        fullyQualifiedInitialiserType_ = "com.symphony.oss.canon2.runtime.java.ISetArrayEntityInitialiser";
+        break;
+        
+      default:
+        throw new CodingFault("Unknown cardinality " + cardinality_);
+    }
 //    if(isExternal())
 //    {
 //      addImport(packageName + "." + getCamelCapitalizedName());
@@ -91,6 +123,25 @@ JavaSchemaTemplateModel>
   {
   }
   
+  @Override
+  public String getFullyQualifiedType()
+  {
+    return fullyQualifiedType_;
+  }
+
+  public String getFullyQualifiedInitialiserType()
+  {
+    return fullyQualifiedInitialiserType_;
+  }
+
+  @Override
+  public void resolve(INamespace namespace, Writer writer)
+  {
+    type_               = namespace.resolveImport(fullyQualifiedType_, writer);
+    
+    elementType_.resolve(namespace, writer);
+  }
+
   /**
    * Return the super class name in cases where this entity does not extend another entity in the model.
    * 
@@ -101,13 +152,35 @@ JavaSchemaTemplateModel>
     return "Entity";
   }
 
+  public String getFullyQualifiedElementType()
+  {
+    return elementType_.getFullyQualifiedType();
+  }
+
+  public String getFullyQualifiedCollectionType()
+  {
+    return fullyQualifiedCollectionType_;
+  }
+
+  public String getFullyQualifiedCollectionImplType()
+  {
+    return fullyQualifiedCollectionImplType_;
+  }
+
+  public String getFullyQualifiedCollectionImmutableType()
+  {
+    return fullyQualifiedCollectionImmutableType_;
+  }
+
   @Override
   public void setElementType(JavaSchemaTemplateModel elementType)
   {
     elementType_ = elementType;
     
+//    fullyQualifiedElementType_ = 
+    
     setImport(elementType.getImport());
-    if(elementType.getPackageName() != null && !getPackageName().equals(elementType.getPackageName()))
+    if(elementType.getLEGACYPackageName() != null && !getLEGACYPackageName().equals(elementType.getLEGACYPackageName()))
       addImport(elementType.getImport());
     
     switch(cardinality_)
@@ -133,12 +206,6 @@ JavaSchemaTemplateModel>
       default:
         throw new CodingFault("Unknown cardinality " + cardinality_);
     }
-  }
-
-  @Override
-  public String getJsonNodeType()
-  {
-    return "JsonArray";
   }
 
   @Override

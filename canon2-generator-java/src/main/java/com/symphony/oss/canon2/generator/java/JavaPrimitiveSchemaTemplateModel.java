@@ -6,10 +6,12 @@
 
 package com.symphony.oss.canon2.generator.java;
 
+import java.io.Writer;
 import java.util.List;
 
 import com.symphony.oss.canon2.core.ResolvedPrimitiveSchema;
 import com.symphony.oss.canon2.core.SourceContext;
+import com.symphony.oss.canon2.generator.INamespace;
 import com.symphony.oss.canon2.generator.IPrimitiveSchemaTemplateModel;
 import com.symphony.oss.canon2.generator.java.JavaGenerator.Context;
 import com.symphony.oss.canon2.model.CanonAttributes;
@@ -26,8 +28,9 @@ IJavaTemplateModel,
 JavaOpenApiTemplateModel,
 JavaSchemaTemplateModel>
 {
-  private final String                       javaType_;
-  private final String                       type_;
+  private final String                       fullyQualifiedJavaType_;
+  private final String                       fullyQualifiedType_;
+  private String                             type_;
 //  private final BigInteger                   minimum_;
 //  private final BigInteger                   maximum_;
 //  private final boolean                      exclusiveMinimum_;
@@ -38,19 +41,18 @@ JavaSchemaTemplateModel>
   private final String                       constructSuffix_;
   private final String                       getValuePrefix_;
   private final String                       getValueSuffix_;
-  private final String                       externalPackage_;
-  private final String                       externalType_;
+  private final String                       fullyQualifiedExternalType_;
 
   private final boolean hasLimits_;
 
-  private final String primitiveType_;
-
-  JavaPrimitiveSchemaTemplateModel(JavaGenerator.Context generatorContext, String identifier, ResolvedPrimitiveSchema<?> resolvedSchema, boolean requiresGeneration, String packageName, String javaType, JavaOpenApiTemplateModel model, List<String> templates)
+  JavaPrimitiveSchemaTemplateModel(JavaGenerator.Context generatorContext, String identifier, ResolvedPrimitiveSchema<?> resolvedSchema,
+      boolean requiresGeneration, String packageName, String javaTypePackageName, String javaType, JavaOpenApiTemplateModel model,
+      List<String> templates)
   { 
-    super(generatorContext, identifier, resolvedSchema, resolvedSchema.getSchemaType(), model, templates);
+    super(generatorContext, identifier, resolvedSchema, packageName, resolvedSchema.getSchemaType(), model, templates);
     
     hasLimits_ = resolvedSchema.hasLimits();
-    javaType_ = javaType;
+    fullyQualifiedJavaType_ = javaTypePackageName + "." + javaType;
 
     String constructPrefix = null;
     String fullyQualifiedConstructPrefix = null;
@@ -59,16 +61,7 @@ JavaSchemaTemplateModel>
     
     if(!resolvedSchema.isInnerClass() || hasLimits_ || requiresGeneration) //resolvedSchema.isGenerated())
     {
-      primitiveType_ = javaType_;
-      type_ = initType(generatorContext, identifier, resolvedSchema) ;
-//      type_ = getCamelCapitalizedName();
-      
-//    if(isExternal())
-//    {
-//      addImport(packageName + "." + getCamelCapitalizedName());
-//    }
-    
-      setImport(packageName,  getCamelCapitalizedName());
+      fullyQualifiedType_ = packageName + "." + initType(generatorContext, resolvedSchema);
 
       constructPrefix = "new " + getType() + "(";
       fullyQualifiedConstructPrefix = "new " + getImport() + "(";
@@ -76,8 +69,7 @@ JavaSchemaTemplateModel>
     }
     else
     {
-      primitiveType_ = null;
-      type_ = getJavaType();
+      fullyQualifiedType_ = javaTypePackageName + "." + javaType;
     }
     
 
@@ -103,17 +95,14 @@ JavaSchemaTemplateModel>
     
     if(attr != null)
     {
-      externalPackage_ = attr.getJson().getString("javaExternalPackage", "");
-      externalType_ = attr.getJson().getString("javaExternalType", null);
+      fullyQualifiedExternalType_ = attr.getJson().getString("javaExternalType", null);
       constructPrefix = getCamelCapitalizedName() + getCanonIdString() + "Builder.build(";
-      getValuePrefix = getCamelCapitalizedName() + getCanonIdString() + "Builder.to" + javaType_ + "(";
+      getValuePrefix = getCamelCapitalizedName() + getCanonIdString() + "Builder.to" + javaType + "(";
       getValueSuffix = ")";
-      setAndAddImport(externalPackage_, externalType_);
     }
     else
     {
-      externalPackage_ = "";
-      externalType_ = null;
+      fullyQualifiedExternalType_ = null;
     }
     
 //    if(!valueMap.isEmpty())
@@ -145,7 +134,7 @@ JavaSchemaTemplateModel>
     getValueSuffix_ = getValueSuffix;
   }
   
-  private String initType(Context generatorContext, String identifier, ResolvedPrimitiveSchema<?> resolvedSchema)
+  private String initType(Context generatorContext, ResolvedPrimitiveSchema<?> resolvedSchema)
   {
     if(resolvedSchema.getResolvedContainer() == null)
     {
@@ -156,14 +145,14 @@ JavaSchemaTemplateModel>
   }
 
   @Override
-  public void validate(SourceContext sourceContext)
+  public void resolve(INamespace namespace, Writer writer)
   {
+    type_ = namespace.resolveImport(fullyQualifiedType_, writer);
   }
 
   @Override
-  public String getQuotedName()
+  public void validate(SourceContext sourceContext)
   {
-    return javaType_;
   }
   
   @Override
@@ -177,27 +166,9 @@ JavaSchemaTemplateModel>
    * 
    * @return the Java type of this schema.
    */
-  public final String getJavaType()
+  public final String getFullyQualifiedJavaType()
   {
-    return javaType_;
-  }
-
-  /**
-   * Return the primitive type.
-   * 
-   * The Primitive Type is the Java type if this is an inline checked type, otherwise it is null.
-   * 
-   * @return the primitive type.
-   */
-  public String getPrimitiveType()
-  {
-    return primitiveType_;
-  }
-
-  @Override
-  public String getFullyQualifiedJsonNodeType()
-  {
-    return "com.symphony.oss.canon.json.model." + getJsonNodeType();
+    return fullyQualifiedJavaType_;
   }
 
 //  private String initType(Schema entity)
@@ -321,6 +292,12 @@ JavaSchemaTemplateModel>
 //  }
 
   @Override
+  public String getFullyQualifiedType()
+  {
+    return fullyQualifiedType_;
+  }
+
+  @Override
   public String getType()
   {
     return type_;
@@ -407,14 +384,9 @@ JavaSchemaTemplateModel>
 //    return exclusiveMaximum_;
 //  }
 
-  public String getExternalPackage()
+  public String getFullyQualifiedExternalType()
   {
-    return externalPackage_;
-  }
-
-  public String getExternalType()
-  {
-    return externalType_;
+    return fullyQualifiedExternalType_;
   }
   
   /**
@@ -426,13 +398,13 @@ JavaSchemaTemplateModel>
    */
   public String constructConstant(String value)
   {
-    switch(javaType_)
+    switch(fullyQualifiedJavaType_)
     {
-      case "BigInteger":
-      case "BigDecimal":
-        return "new " + javaType_ + "(\"" + value + "\")";
+      case "java.math.BigInteger":
+      case "java.math.BigDecimal":
+        return "new " + fullyQualifiedJavaType_ + "(\"" + value + "\")";
       
-      case "Long":
+      case "java.lang.Long":
         return value + "L";
       
       default:

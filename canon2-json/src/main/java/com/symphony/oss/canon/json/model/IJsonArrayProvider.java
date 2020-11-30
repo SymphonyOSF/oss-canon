@@ -19,18 +19,18 @@
 package com.symphony.oss.canon.json.model;
 
 /**
- * An entity which was instantiated from a JsonObject or which provides one.
+ * An entity which was instantiated from a JsonArray or which provides one.
  * 
  * @author Bruce Skingle
  *
  */
-public interface IJsonObjectProvider extends IJsonDomNodeProvider
+public interface IJsonArrayProvider extends IJsonDomNodeProvider
 {
   /**
-   * Return the JsonObject from which this entity was created.
+   * Return the JsonArray from which this entity was created.
    * 
-   * @return the JsonObject from which this entity was created.
+   * @return the JsonArray from which this entity was created.
    */
   @Override
-  JsonObject getJson();
+  JsonArray getJson();
 }

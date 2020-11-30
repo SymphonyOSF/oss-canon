@@ -41,7 +41,7 @@ JavaSchemaTemplateModel>
   JavaStringSchemaTemplateModel(JavaGenerator.Context generatorContext, ResolvedStringSchema resolvedSchema, String packageName, JavaOpenApiTemplateModel model)
   { 
     super(generatorContext, initIdentifier(generatorContext, resolvedSchema), resolvedSchema, !resolvedSchema.getEnum().isEmpty(),
-        packageName, initType(resolvedSchema), model, initTemplates(resolvedSchema));
+        packageName, initTypePackage(resolvedSchema), initType(resolvedSchema), model, initTemplates(resolvedSchema));
     
     StringSchema entity = resolvedSchema.getSchema();
     if(entity.getFormat() != null)
@@ -79,7 +79,7 @@ JavaSchemaTemplateModel>
         String value = toSnakeCase(v.toString()).toUpperCase();
         String quotedValue;
         
-        if("String".equals(getJavaType()))
+        if("java.lang.String".equals(getFullyQualifiedJavaType()))
         {
           quotedValue = "\"" + v + "\"";
         }
@@ -143,7 +143,21 @@ JavaSchemaTemplateModel>
     }
       
     return "String";
-    
+  }
+
+  private static String initTypePackage(ResolvedStringSchema resolvedSchema)
+  {
+    StringSchema entity = resolvedSchema.getSchema();
+    if(entity.getFormat() != null)
+    {
+      switch(entity.getFormat())
+      {
+        case "byte":
+          return "com.symphony.oss.commons.immutable";
+      }
+    }
+      
+    return "java.lang";
   }
 
   @Override
@@ -168,9 +182,9 @@ JavaSchemaTemplateModel>
   }
 
   @Override
-  public String getJsonNodeType()
+  public String getFullyQualifiedJsonNodeType()
   {
-    return "JsonString";
+    return "com.symphony.oss.canon.json.model.JsonString";
   }
 
   @Override

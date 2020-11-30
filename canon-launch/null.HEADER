@@ -1,0 +1,86 @@
+// About to Resolve type-check
+/* resolve com.symphony.oss.canon.test.typeCheck.TypeCheck_Model to TypeCheck_Model */
+
+/* resolve com.symphony.oss.canon.test.typeCheck.StringTypeDef to StringTypeDef */
+
+/* resolve com.symphony.oss.canon.test.typeCheck.ObjectWithInts to ObjectWithInts */
+
+/* resolve com.symphony.oss.canon.test.typeCheck.ListOfTwo to ListOfTwo */
+
+/* resolve com.symphony.oss.canon.test.typeCheck.Colour to Colour */
+
+/* resolve com.symphony.oss.canon.test.typeCheck.ListOfInts to ListOfInts */
+
+/* resolve com.symphony.oss.canon.test.typeCheck.LongTypedef to LongTypedef */
+
+/* resolve com.symphony.oss.canon.test.typeCheck.AllTheLists to AllTheLists */
+
+/* resolve com.symphony.oss.canon.test.typeCheck.SetOfInts to SetOfInts */
+
+/* resolve com.symphony.oss.canon.test.typeCheck.DoubleTypedef to DoubleTypedef */
+
+/* resolve com.symphony.oss.canon.test.typeCheck.AnotherObject to AnotherObject */
+
+/* resolve com.symphony.oss.canon.test.typeCheck.AllTheTypes to AllTheTypes */
+
+/* resolve com.symphony.oss.canon.test.typeCheck.VersionedObject to VersionedObject */
+
+/* resolve com.symphony.oss.canon.test.typeCheck.SimpleObject to SimpleObject */
+
+/* resolve com.symphony.oss.canon.test.typeCheck.ListOfExternal to ListOfExternal */
+
+/* resolve com.symphony.oss.canon.test.typeCheck.Instant to Instant */
+
+/* resolve com.symphony.oss.canon.test.typeCheck.ExternalObject to ExternalObject */
+
+/* resolve com.symphony.oss.canon.test.typeCheck.BigDecimalTypedef to BigDecimalTypedef */
+
+/* resolve com.symphony.oss.canon.test.typeCheck.FundamentalObject to FundamentalObject */
+
+/* resolve com.symphony.oss.canon.test.typeCheck.Two to Two */
+
+/* resolve com.symphony.oss.canon.test.typeCheck.NestedArray to NestedArray */
+
+/* resolve com.symphony.oss.canon.test.typeCheck.Hyphen to Hyphen */
+
+/* resolve com.symphony.oss.canon.test.typeCheck.ListOfObjects to ListOfObjects */
+
+/* resolve com.symphony.oss.canon.test.typeCheck.ListOfEnums to ListOfEnums */
+
+/* resolve com.symphony.oss.canon.test.typeCheck.BasicObject to BasicObject */
+
+/* resolve com.symphony.oss.canon.test.typeCheck.IntTypedef to IntTypedef */
+
+/* resolve com.symphony.oss.canon.test.typeCheck.MessageId to MessageId */
+// Resolved type-check// About to Resolve Colour// Resolved Colour/**
+ * GENERATED CODE - DO NOT EDIT OR CHECK IN TO SOURCE CODE CONTROL
+ *
+ * Copyright 2020 Symphony Communication Services, LLC.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *
+ *----------------------------------------------------------------------------------------------------
+ * Generated from
+ *    Input source         type-check.json
+ *    Generator groupId    org.symphonyoss.s2.canon
+ *              artifactId canon2-generator-java
+ *    Template name        template/Enum/_.java.ftl
+ *    At                   2020-11-27 11:57:28 GMT
+ *----------------------------------------------------------------------------------------------------
+ */
+
+package com.symphony.oss.canon.test.typeCheck;
+
+ 
+import javax.annotation.concurrent.Immutable;
+

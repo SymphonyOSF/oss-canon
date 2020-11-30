@@ -20,13 +20,20 @@ package com.symphony.oss.canon2.generator.java;
 
 import java.util.Set;
 
+import com.symphony.oss.canon2.generator.INamespaceResolveable;
 import com.symphony.oss.canon2.generator.ITemplateModel;
 
+/**
+ * Interface implemented by all template models in the Java generator.
+ * 
+ * @author Bruce Skingle
+ *
+ */
 public interface IJavaTemplateModel extends ITemplateModel<
 IJavaTemplateModel,
 JavaOpenApiTemplateModel,
 JavaSchemaTemplateModel
->
+>, INamespaceResolveable
 {
   /**
    * Return the target language type of this class.
@@ -34,6 +41,20 @@ JavaSchemaTemplateModel
    * @return the target language type of this class.
    */
   String getType();
+
+  /**
+   * Return the fully qualified type of this class.
+   * 
+   * @return the fully qualified type of this class.
+   */
+  String getFullyQualifiedType();
+  
+  /**
+   * Return the package name for the generated type.
+   * 
+   * @return the package name for the generated type.
+   */
+  String getPackageName();
   
   /**
    * Return the set of imports needed for this class.

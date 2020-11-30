@@ -16,21 +16,23 @@
  * limitations under the License.
  */
 
-package com.symphony.oss.canon.json.model;
+package com.symphony.oss.canon2.runtime.java;
+
+import com.symphony.oss.canon.json.model.JsonArray;
 
 /**
- * An entity which was instantiated from a JsonObject or which provides one.
+ * An initialiser for a canon generated object.
  * 
  * @author Bruce Skingle
- *
  */
-public interface IJsonObjectProvider extends IJsonDomNodeProvider
-{
+public interface IArrayEntityInitialiser
+extends IEntityInitialiser
+{ 
   /**
-   * Return the JsonObject from which this entity was created.
+   * Return a JSON serialised form for the array to be initialised.
    * 
-   * @return the JsonObject from which this entity was created.
+   * @return a JSON serialised form for the array to be initialised.
    */
   @Override
-  JsonObject getJson();
+  JsonArray getJson();
 }

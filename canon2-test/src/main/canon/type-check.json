@@ -71,8 +71,7 @@
           "so I have as much space as I need."
         ],
         "x-canon-attributes": {
-          "javaExternalPackage": "java.time",
-          "javaExternalType": "Instant"
+          "javaExternalType": "java.time.Instant"
         }
       },
       "2": {
@@ -467,7 +466,7 @@
               "$ref": "#/components/schemas/Instant"
             }
           },
-          "IntTypedef": {
+          "FundamentalIntTypedef": {
             "description": "An integer typedef.",
             "type": "integer",
             "format": "int32",

@@ -27,7 +27,7 @@ JavaSchemaTemplateModel>
 {
   JavaBooleanSchemaTemplateModel(JavaGenerator.Context generatorContext, ResolvedBooleanSchema resolvedSchema, String packageName, JavaOpenApiTemplateModel model)
   { 
-    super(generatorContext, initIdentifier(generatorContext, resolvedSchema), resolvedSchema, false, packageName, "Boolean", model, initTemplates(resolvedSchema));
+    super(generatorContext, initIdentifier(generatorContext, resolvedSchema), resolvedSchema, false, packageName, "java.lang", "Boolean", model, initTemplates(resolvedSchema));
   }
 
   private static List<String> initTemplates(ResolvedBooleanSchema resolvedSchema)
@@ -55,9 +55,9 @@ JavaSchemaTemplateModel>
   }
 
   @Override
-  public String getJsonNodeType()
+  public String getFullyQualifiedJsonNodeType()
   {
-    return "JsonBoolean";
+    return "com.symphony.oss.canon.json.model.JsonBoolean";
   }
 
   @Override

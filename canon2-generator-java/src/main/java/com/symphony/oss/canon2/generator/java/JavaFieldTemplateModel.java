@@ -6,12 +6,14 @@
 
 package com.symphony.oss.canon2.generator.java;
 
+import java.io.Writer;
 import java.util.Set;
 import java.util.TreeSet;
 
 import com.symphony.oss.canon2.core.ResolvedProperty;
 import com.symphony.oss.canon2.core.SourceContext;
 import com.symphony.oss.canon2.generator.FieldTemplateModel;
+import com.symphony.oss.canon2.generator.INamespace;
 import com.symphony.oss.canon2.generator.java.JavaGenerator.Context;
 
 /**
@@ -48,14 +50,20 @@ implements IJavaTemplateModel
     super(generatorContext, initIdentifier(generatorContext, resolvedProperty), resolvedProperty, model, typeSchema, required, EMPTY_TEMPLATES);
     
     imports_.addAll(typeSchema.getImports());
-    nullable_ = required ? "Nonnull" : "Nullable";
+    nullable_ = "javax.annotation." + (required ? "Nonnull" : "Nullable");
   }
-
+  
   private static String initIdentifier(Context generatorContext, ResolvedProperty resolvedSchema)
   {
     return generatorContext.getJavaIdentifier(resolvedSchema, false, false);
   }
   
+  @Override
+  public void resolve(INamespace namespace, Writer writer)
+  {
+    getTypeSchema().resolve(namespace, writer);
+  }
+
   @Override
   public void validate(SourceContext sourceContext)
   {
@@ -92,6 +100,18 @@ implements IJavaTemplateModel
   public Set<String> getImports()
   {
     return imports_;
+  }
+
+  @Override
+  public String getFullyQualifiedType()
+  {
+    return getTypeSchema().getFullyQualifiedType();
+  }
+
+  @Override
+  public String getPackageName()
+  {
+    return getTypeSchema().getPackageName();
   }
 
   @Override
