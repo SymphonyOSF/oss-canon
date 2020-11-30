@@ -150,4 +150,18 @@ public class ServletRequestContext extends AbstractRequestContext implements IAs
   {
     response_.reset();
   }
+
+  @Override
+  public boolean isStreamResponse()
+  {
+    // TODO Auto-generated method stub
+    return false;
+  }
+
+  @Override
+  public void setStreamResponse(boolean b)
+  {
+    // TODO Auto-generated method stub
+    
+  }
 }
