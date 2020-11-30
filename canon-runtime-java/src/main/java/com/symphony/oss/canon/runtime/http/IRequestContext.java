@@ -131,8 +131,9 @@ public interface IRequestContext
   Integer asInteger(String parameterName, String value);
 
   ImmutableByteArray asImmutableByteArray(String parameterName, String value);
-
-  boolean isStreamResponse();
-
-  void setStreamResponse(boolean b);
+  
+  OutputStream startStreaming() throws IOException;
+  
+  void streamHead() throws IOException;
+  void streamTail() throws IOException;
 }

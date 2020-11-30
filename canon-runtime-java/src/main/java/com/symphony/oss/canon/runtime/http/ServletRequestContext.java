@@ -25,6 +25,7 @@ package com.symphony.oss.canon.runtime.http;
 
 import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.util.HashMap;
 import java.util.Map;
@@ -152,16 +153,25 @@ public class ServletRequestContext extends AbstractRequestContext implements IAs
   }
 
   @Override
-  public boolean isStreamResponse()
+  public OutputStream startStreaming() throws IOException
   {
-    // TODO Auto-generated method stub
-    return false;
+    return getOutputStream();
+  }
+  
+  @Override
+  public void streamHead() throws IOException
+  {
+    new PrintWriter(response_.getOutputStream()).write("{ \"statusCode\":\"200\", \"body\":\"");
+    
   }
 
   @Override
-  public void setStreamResponse(boolean b)
+  public void streamTail() throws IOException
   {
-    // TODO Auto-generated method stub
+    PrintWriter pw = new PrintWriter(response_.getOutputStream());
+    pw.write("\", \"isBase64Encoded\":\"false\"}");
+    pw.flush();
     
   }
+
 }
