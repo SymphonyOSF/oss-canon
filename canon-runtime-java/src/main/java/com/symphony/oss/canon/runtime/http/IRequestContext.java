@@ -109,6 +109,8 @@ public interface IRequestContext
    * 
    */
   OutputStream getOutputStream() throws IOException;
+  
+  void resetOutputStream();
 
   void setContentType(String type);
 

@@ -144,4 +144,10 @@ public class ServletRequestContext extends AbstractRequestContext implements IAs
   {
     return request_.startAsync();
   }
+
+  @Override
+  public void resetOutputStream()
+  {
+    response_.reset();
+  }
 }
