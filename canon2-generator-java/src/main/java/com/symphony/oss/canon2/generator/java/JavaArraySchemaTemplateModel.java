@@ -40,6 +40,7 @@ JavaSchemaTemplateModel>
   private final String              fullyQualifiedCollectionType_;
   private final String              fullyQualifiedCollectionImplType_;
   private final String              fullyQualifiedInitialiserType_;
+  private final String              fullyQualifiedJsonInitialiserType_;
   private final String              fullyQualifiedCollectionImmutableType_;
   
   private JavaSchemaTemplateModel   elementType_;
@@ -63,6 +64,7 @@ JavaSchemaTemplateModel>
     
     cardinality_ = cardinality;
     fullyQualifiedType_ = getPackageName() + "." + getCamelCapitalizedName();
+    fullyQualifiedJsonInitialiserType_ = "com.symphony.oss.canon2.runtime.java.JsonEntityInitialiser";
 
     switch(cardinality_)
     {
@@ -170,6 +172,11 @@ JavaSchemaTemplateModel>
   public String getFullyQualifiedCollectionImmutableType()
   {
     return fullyQualifiedCollectionImmutableType_;
+  }
+
+  public String getFullyQualifiedJsonInitialiserType()
+  {
+    return fullyQualifiedJsonInitialiserType_;
   }
 
   @Override

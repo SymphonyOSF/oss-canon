@@ -28,7 +28,8 @@
 
 
 <@namespace name="elementType" import=entity.fullyQualifiedElementType/>
-<@namespace name="jsonInitialiserType" import="com.symphony.oss.canon.json.model.JsonArray"/>
+<@namespace name="jsonInitialiserType" import=entity.fullyQualifiedJsonInitialiserType/>
+<@namespace name="jsonNodeType" import="com.symphony.oss.canon.json.model.JsonArray"/>
 <@namespace name="initialiserType" import=entity.fullyQualifiedInitialiserType/>
 <@namespace name="collectionType" import=entity.fullyQualifiedCollectionType/>
 <@namespace name="collectionImplType_" import=entity.fullyQualifiedCollectionImplType/>
@@ -72,6 +73,54 @@ ${indent}   */
 ${indent}  public ${className}(Initialiser initialiser)
 ${indent}  {
 ${indent}    super(initialiser);
+
+
+
+
+
+
+
+${indent}    if(initialiser instanceof ${jsonInitialiserType})
+${indent}    {
+${indent}      ${jsonInitialiserType} jsonInitialiser = (${jsonInitialiserType})initialiser;
+${indent}      ${ModelRegistry} modelRegistry = jsonInitialiser.getModelRegistry();
+
+
+${indent}      for(JsonDomNode node : json)
+${indent}      {
+${indent}      ${elementType} element;
+
+    <@generateCreateFieldFromJsonDomNode "${indent}        " "node" entity.schemaType entity.elementType "element" "element" "" false/>
+${indent}      }
+
+
+
+${indent}    }
+${indent}    else
+${indent}    {
+${indent}      I${c}${entity.camelCapitalizedName}${c}InstanceOrBuilder builder =  initialiser.getInstanceOrBuilder();
+
+${indent}      if(builder == null)
+${indent}      {
+${indent}        throw new IllegalArgumentException("Initializer is not an JsonObjectEntityInitialiser but getInstanceOrBuilder() returns null");
+${indent}      }
+
+
+${indent}    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 ${indent}  }
 
 <#------------------------------------------------------------------------------------------------------------------------------
@@ -133,21 +182,44 @@ ${indent}   * JSON Initialiser for ${entity.type}
 ${indent}   */
 ${indent}  public static class JsonInitialiser extends ${jsonInitialiserType} implements Initialiser
 ${indent}  {
+${indent}    private ${jsonNodeType} json_;
+
 ${indent}      /**
 ${indent}       * Constructor.
 ${indent}       * 
 ${indent}       * @param json            JSON serialised form.
 ${indent}       * @param modelRegistry   A parser context for deserialisation.
 ${indent}       */
-${indent}    public JsonInitialiser(${jsonInitialiserType} json, ${ModelRegistry} modelRegistry)
+${indent}    public JsonInitialiser(${jsonNodeType} json, ${ModelRegistry} modelRegistry)
 ${indent}    {
 ${indent}      super(json, modelRegistry);
+
+${indent}      json_ = json;
 ${indent}    }
 
 ${indent}    @Override
 ${indent}    public ${initialiserType}<${elementType}> getInstanceOrBuilder()
 ${indent}    {
 ${indent}      return null;
+${indent}    }
+
+${indent}    @Override
+${indent}    public ImmutableSet<Entity> getCanonUnknownElements()
+${indent}    {
+${indent}      return ImmutableSet.of();
+${indent}    }
+
+${indent}    @Override
+${indent}    public ImmutableSet<Two> getElements()
+${indent}    {
+${indent}      // TODO Auto-generated method stub
+${indent}      return null;
+${indent}    }
+
+${indent}    @Override
+${indent}    public JsonArray getJson()
+${indent}    {
+${indent}      return json_;
 ${indent}    }
 ${indent}  }
 
