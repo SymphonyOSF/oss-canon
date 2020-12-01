@@ -274,13 +274,14 @@ public abstract class AbstractRequestContext implements IRequestContext
   public void sendOKResponse(IBaseEntity response) throws IOException
   {
     setStatus(HttpServletResponse.SC_OK);
-    
+    System.out.println(new String(response.serialize().toByteArray()));
     getWriter().println(response.serialize());
   }
 
   @Override
   public void sendOKResponse(List<? extends IBaseEntity> response) throws IOException
   {
+ 
     setStatus(HttpServletResponse.SC_OK);
     PrintWriter out = getWriter();
     boolean first = true;
@@ -288,6 +289,7 @@ public abstract class AbstractRequestContext implements IRequestContext
     out.print("[");
     for(IBaseEntity entity : response)
     {
+      System.out.println(new String(entity.serialize().toByteArray()));
       if(first)
         first=false;
       else
