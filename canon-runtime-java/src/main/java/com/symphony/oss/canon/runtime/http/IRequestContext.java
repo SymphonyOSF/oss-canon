@@ -109,8 +109,6 @@ public interface IRequestContext
    * 
    */
   OutputStream getOutputStream() throws IOException;
-  
-  void resetOutputStream();
 
   void setContentType(String type);
 
@@ -133,9 +131,9 @@ public interface IRequestContext
   ImmutableByteArray asImmutableByteArray(String parameterName, String value);
   
   OutputStream startStreaming() throws IOException;
-  
-  void streamHead() throws IOException;
-  void streamTail() throws IOException;
 
-  boolean isLambda();
+  boolean isStreaming();
+
+  void stopStreaming();
+  
 }

@@ -47,6 +47,8 @@ public class ServletRequestContext extends AbstractRequestContext implements IAs
  
   private Map<String, Cookie>       cookieMap_;
   private Map<String, String>       pathMap_;
+  
+  private boolean streaming_;
 
 
   public ServletRequestContext(HttpMethod method, ITraceContext trace, IModelRegistry modelRegistry, HttpServletRequest request, HttpServletResponse response)
@@ -147,37 +149,21 @@ public class ServletRequestContext extends AbstractRequestContext implements IAs
   }
 
   @Override
-  public void resetOutputStream()
-  {
-    response_.reset();
-  }
-
-  @Override
   public OutputStream startStreaming() throws IOException
   {
     return getOutputStream();
   }
-  
+
   @Override
-  public void streamHead() throws IOException
+  public boolean isStreaming()
   {
-    new PrintWriter(response_.getOutputStream()).write("{ \"statusCode\":\"200\", \"body\":\"");
-    
+    return streaming_;
   }
 
   @Override
-  public void streamTail() throws IOException
+  public void stopStreaming()
   {
-    PrintWriter pw = new PrintWriter(response_.getOutputStream());
-    pw.write("\", \"isBase64Encoded\":\"false\"}");
-    pw.flush();
-    
+    streaming_ = false;
+    response_.reset();  
   }
-
-  @Override
-  public boolean isLambda()
-  {
-    return false;
-  }
-
 }
