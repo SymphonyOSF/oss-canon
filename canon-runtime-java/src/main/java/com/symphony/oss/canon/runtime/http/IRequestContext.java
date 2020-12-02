@@ -136,4 +136,6 @@ public interface IRequestContext
   
   void streamHead() throws IOException;
   void streamTail() throws IOException;
+
+  boolean isLambda();
 }

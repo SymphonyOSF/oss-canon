@@ -174,4 +174,10 @@ public class ServletRequestContext extends AbstractRequestContext implements IAs
     
   }
 
+  @Override
+  public boolean isLambda()
+  {
+    return false;
+  }
+
 }
