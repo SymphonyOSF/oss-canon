@@ -285,10 +285,12 @@ public abstract class AbstractRequestContext implements IRequestContext
     setStatus(HttpServletResponse.SC_OK);
     PrintWriter out = getWriter();
     boolean first = true;
-    
+ 
     out.print("[");
+    int k =0;
     for(IBaseEntity entity : response)
     {
+      System.out.println("SERIALIZING : "+k++);
       System.out.println(new String(entity.serialize().toByteArray()));
       if(first)
         first=false;
