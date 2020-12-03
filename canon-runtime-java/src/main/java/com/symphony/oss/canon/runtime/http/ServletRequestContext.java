@@ -26,7 +26,9 @@ package com.symphony.oss.canon.runtime.http;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
+import java.io.Writer;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -47,8 +49,6 @@ public class ServletRequestContext extends AbstractRequestContext implements IAs
  
   private Map<String, Cookie>       cookieMap_;
   private Map<String, String>       pathMap_;
-  
-  private boolean streaming_;
 
 
   public ServletRequestContext(HttpMethod method, ITraceContext trace, IModelRegistry modelRegistry, HttpServletRequest request, HttpServletResponse response)
@@ -149,9 +149,9 @@ public class ServletRequestContext extends AbstractRequestContext implements IAs
   }
 
   @Override
-  public OutputStream startStreaming() throws IOException
+  public Writer startStreaming() throws IOException
   {
-    return getOutputStream();
+    return new OutputStreamWriter(getOutputStream());
   }
 
   @Override
