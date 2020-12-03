@@ -155,12 +155,6 @@ public class ServletRequestContext extends AbstractRequestContext implements IAs
   }
 
   @Override
-  public boolean isStreaming()
-  {
-    return streaming_;
-  }
-
-  @Override
   public void stopStreaming()
   {
     streaming_ = false;

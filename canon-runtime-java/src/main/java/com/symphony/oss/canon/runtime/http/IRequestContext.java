@@ -132,8 +132,6 @@ public interface IRequestContext
   
   OutputStream startStreaming() throws IOException;
 
-  boolean isStreaming();
-
   void stopStreaming();
   
 }

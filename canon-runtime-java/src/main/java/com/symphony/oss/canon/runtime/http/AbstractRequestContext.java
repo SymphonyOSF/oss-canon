@@ -276,7 +276,6 @@ public abstract class AbstractRequestContext implements IRequestContext
   public void sendOKResponse(IBaseEntity response) throws IOException
   {
     setStatus(HttpServletResponse.SC_OK);
-    System.out.println(new String(response.serialize().toByteArray()));
     getWriter().println(response.serialize());
   }
 
@@ -292,8 +291,6 @@ public abstract class AbstractRequestContext implements IRequestContext
     int k =0;
     for(IBaseEntity entity : response)
     {
-      System.out.println("SERIALIZING : "+k++);
-      System.out.println(new String(entity.serialize().toByteArray()));
       if(first)
         first=false;
       else
@@ -483,11 +480,5 @@ public abstract class AbstractRequestContext implements IRequestContext
   public void stopStreaming()
   {
     streaming_ = false;
-  }
-
-  @Override
-  public boolean isStreaming()
-  {
-    return streaming_;
   }
 }
