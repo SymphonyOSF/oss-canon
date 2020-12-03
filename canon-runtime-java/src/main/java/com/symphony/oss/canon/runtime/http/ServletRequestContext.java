@@ -151,7 +151,7 @@ public class ServletRequestContext extends AbstractRequestContext implements IAs
   @Override
   public Writer startStreaming() throws IOException
   {
-    return new OutputStreamWriter(getOutputStream());
+    return getWriter();
   }
 
   @Override

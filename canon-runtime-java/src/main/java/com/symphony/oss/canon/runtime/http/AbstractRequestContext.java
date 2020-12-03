@@ -276,6 +276,7 @@ public abstract class AbstractRequestContext implements IRequestContext
   public void sendOKResponse(IBaseEntity response) throws IOException
   {
     setStatus(HttpServletResponse.SC_OK);
+    
     getWriter().println(response.serialize());
   }
 
@@ -286,9 +287,9 @@ public abstract class AbstractRequestContext implements IRequestContext
     setStatus(HttpServletResponse.SC_OK);
     PrintWriter out = getWriter();
     boolean first = true;
- 
+    
     out.print("[");
-    int k =0;
+    
     for(IBaseEntity entity : response)
     {
       if(first)
