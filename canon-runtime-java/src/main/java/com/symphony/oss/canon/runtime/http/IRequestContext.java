@@ -27,6 +27,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.PrintWriter;
+import java.io.Writer;
 import java.util.List;
 
 import com.symphony.oss.canon.runtime.IBaseEntity;
@@ -129,4 +130,9 @@ public interface IRequestContext
   Integer asInteger(String parameterName, String value);
 
   ImmutableByteArray asImmutableByteArray(String parameterName, String value);
+  
+  Writer startStreaming() throws IOException;
+
+  void stopStreaming();
+  
 }
