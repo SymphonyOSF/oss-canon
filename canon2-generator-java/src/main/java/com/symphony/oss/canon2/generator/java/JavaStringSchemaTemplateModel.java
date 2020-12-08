@@ -32,16 +32,15 @@ IJavaTemplateModel,
 JavaOpenApiTemplateModel,
 JavaSchemaTemplateModel>
 {
+  private final boolean                      isEnum_;
   private final Set<String>                  quotedEnumValues_;
   private final Set<String>                  enumValues_;
   private final ImmutableMap<String, String> enumMap_;
-  private final String                       constructPrefix_;
-  private final String                       getValueSuffix_;
   
-  JavaStringSchemaTemplateModel(JavaGenerator.Context generatorContext, ResolvedStringSchema resolvedSchema, String packageName, JavaOpenApiTemplateModel model)
+  JavaStringSchemaTemplateModel(JavaGenerator.Context generatorContext, ResolvedStringSchema resolvedSchema, String packageName, JavaOpenApiTemplateModel model, IJavaTemplateModel outerClass)
   { 
     super(generatorContext, initIdentifier(generatorContext, resolvedSchema), resolvedSchema, !resolvedSchema.getEnum().isEmpty(),
-        packageName, initTypePackage(resolvedSchema), initType(resolvedSchema), model, initTemplates(resolvedSchema));
+        packageName, initTypePackage(resolvedSchema), initType(resolvedSchema), model, outerClass, initTemplates(resolvedSchema));
     
     StringSchema entity = resolvedSchema.getSchema();
     if(entity.getFormat() != null)
@@ -62,14 +61,14 @@ JavaSchemaTemplateModel>
     
     if(enumList==null || enumList.isEmpty())
     {
+      isEnum_ = false;
       enumValues_ = ImmutableSet.of();
       quotedEnumValues_ = ImmutableSet.of();
       enumMap_ = ImmutableMap.of();
-      constructPrefix_ = null;
-      getValueSuffix_ = super.getGetValueSuffix();
     }
     else
     {
+      isEnum_ = true;
       Set<String> quotedValues = new HashSet<>(enumList.size());
       Set<String> values = new HashSet<>(enumList.size());
       Map<String, String> valueMap = new HashMap<>();
@@ -96,8 +95,7 @@ JavaSchemaTemplateModel>
       enumValues_ = ImmutableSet.copyOf(values);
       quotedEnumValues_ = ImmutableSet.copyOf(quotedValues);
       enumMap_ = ImmutableMap.copyOf(valueMap);
-      constructPrefix_ = getType() + ".deserialize(";
-      getValueSuffix_ = ".getValue()";
+      
     }
   }
 
@@ -163,22 +161,19 @@ JavaSchemaTemplateModel>
   @Override
   public String getConstructor(boolean fullyQualified, String args)
   {
-    if(constructPrefix_ == null)
-      return super.getConstructor(fullyQualified, args);
-    
-    return constructPrefix_ + args + ")";
+    if(isEnum_)
+      return "/* string getConstructor " + fullyQualified + " */" + getType() + ".deserialize(" + args + ")"; 
+    else
+      return "/* string getConstructor " + fullyQualified + " */" + super.getConstructor(fullyQualified, args);
   }
   
-//  @Override
-//  public String getConstructPrefix()
-//  {
-//    return constructPrefix_;
-//  }
-
   @Override
-  public String getGetValueSuffix()
+  public String getValue(boolean fullyQualified, String args)
   {
-    return getValueSuffix_;
+    if(isEnum_)
+      return "/* string getValue " + fullyQualified + " */" + args + ".getValue()";
+    else
+      return "/* string getValue " + fullyQualified + " */" + args;
   }
 
   @Override

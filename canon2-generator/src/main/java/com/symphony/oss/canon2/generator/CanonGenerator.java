@@ -20,7 +20,6 @@ package com.symphony.oss.canon2.generator;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -131,7 +130,7 @@ C extends CanonGenerator<T,M,S,O,A,P,F,C>.AbstractContext>
   
   protected abstract M generateOpenApiObject(C generatorContext, ResolvedOpenApiObject resolvedOpenApiObject);
 
-  protected abstract A generateArraySchema(C generatorContext, M model, ResolvedArraySchema resolvedSchema, CanonCardinality cardinality);
+  protected abstract A generateArraySchema(C generatorContext, M model, ResolvedArraySchema resolvedSchema, T outerClass, CanonCardinality cardinality);
 
   protected abstract IPathNameConstructor<T> createPathBuilder(AbstractContext generatorContext);
 
@@ -141,21 +140,21 @@ C extends CanonGenerator<T,M,S,O,A,P,F,C>.AbstractContext>
 
   protected abstract O generateObjectSchema(C generatorContext, M model, ResolvedPropertyContainerSchema<?> resolvedSchema, T outerClass);
 
-  protected abstract P generateBigDecimalSchema(C generatorContext, M model, ResolvedBigDecimalSchema resolvedSchema);
+  protected abstract P generateBigDecimalSchema(C generatorContext, M model, ResolvedBigDecimalSchema resolvedSchema, T outerClass);
 
-  protected abstract P generateBigIntegerSchema(C generatorContext, M model, ResolvedBigIntegerSchema resolvedSchema);
+  protected abstract P generateBigIntegerSchema(C generatorContext, M model, ResolvedBigIntegerSchema resolvedSchema, T outerClass);
 
-  protected abstract P generateDoubleSchema(C generatorContext, M model, ResolvedDoubleSchema resolvedSchema);
+  protected abstract P generateDoubleSchema(C generatorContext, M model, ResolvedDoubleSchema resolvedSchema, T outerClass);
 
-  protected abstract P generateFloatSchema(C generatorContext, M model, ResolvedFloatSchema resolvedSchema);
+  protected abstract P generateFloatSchema(C generatorContext, M model, ResolvedFloatSchema resolvedSchema, T outerClass);
 
-  protected abstract P generateIntegerSchema(C generatorContext, M model, ResolvedIntegerSchema resolvedSchema);
+  protected abstract P generateIntegerSchema(C generatorContext, M model, ResolvedIntegerSchema resolvedSchema, T outerClass);
 
-  protected abstract P generateLongSchema(C generatorContext, M model, ResolvedLongSchema resolvedSchema);
+  protected abstract P generateLongSchema(C generatorContext, M model, ResolvedLongSchema resolvedSchema, T outerClass);
 
-  protected abstract P generateStringSchema(C generatorContext, M model, ResolvedStringSchema resolvedSchema);
+  protected abstract P generateStringSchema(C generatorContext, M model, ResolvedStringSchema resolvedSchema, T outerClass);
 
-  protected abstract P generateBooleanSchema(C generatorContext, M model, ResolvedBooleanSchema resolvedSchema);
+  protected abstract P generateBooleanSchema(C generatorContext, M model, ResolvedBooleanSchema resolvedSchema, T outerClass);
 
   
   
@@ -482,11 +481,11 @@ C extends CanonGenerator<T,M,S,O,A,P,F,C>.AbstractContext>
       }
       if(resolvedSchema instanceof ResolvedArraySchema)
       {
-        return generateArraySchema((ResolvedArraySchema)resolvedSchema, model);
+        return generateArraySchema((ResolvedArraySchema)resolvedSchema, outerClass, model);
       }
       if(resolvedSchema instanceof ResolvedPrimitiveSchema)
       {
-        return generatePrimitiveSchema((ResolvedPrimitiveSchema<?>)resolvedSchema, model);
+        return generatePrimitiveSchema((ResolvedPrimitiveSchema<?>)resolvedSchema, outerClass, model);
       }
       throw new SyntaxErrorException("Invalid schema", resolvedSchema.getSchema().getJson().getContext());
       
@@ -559,38 +558,38 @@ C extends CanonGenerator<T,M,S,O,A,P,F,C>.AbstractContext>
 //      }
     }
 
-    private S generatePrimitiveSchema(ResolvedPrimitiveSchema<?> resolvedSchema, M model)
+    private S generatePrimitiveSchema(ResolvedPrimitiveSchema<?> resolvedSchema, T outerClass, M model)
     {
-      S primitiveSchema = doGeneratePrimativeSchema(model, resolvedSchema).asSchemaTemplateModel();
+      S primitiveSchema = doGeneratePrimativeSchema(model, resolvedSchema, outerClass).asSchemaTemplateModel();
       schemaModelMap_.put(resolvedSchema.getUri(), primitiveSchema);
       
       return primitiveSchema;
     }
 
     private P doGeneratePrimativeSchema(M model,
-        ResolvedPrimitiveSchema<?> resolvedSchema)
+        ResolvedPrimitiveSchema<?> resolvedSchema, T outerClass)
     {
       if(resolvedSchema instanceof ResolvedBigDecimalSchema)
-        return generateBigDecimalSchema(self(), model, (ResolvedBigDecimalSchema)resolvedSchema);
+        return generateBigDecimalSchema(self(), model, (ResolvedBigDecimalSchema)resolvedSchema, outerClass);
       if(resolvedSchema instanceof ResolvedBigIntegerSchema)
-        return generateBigIntegerSchema(self(), model, (ResolvedBigIntegerSchema)resolvedSchema);
+        return generateBigIntegerSchema(self(), model, (ResolvedBigIntegerSchema)resolvedSchema, outerClass);
       if(resolvedSchema instanceof ResolvedDoubleSchema)
-        return generateDoubleSchema(self(), model, (ResolvedDoubleSchema)resolvedSchema);
+        return generateDoubleSchema(self(), model, (ResolvedDoubleSchema)resolvedSchema, outerClass);
       if(resolvedSchema instanceof ResolvedFloatSchema)
-        return generateFloatSchema(self(), model, (ResolvedFloatSchema)resolvedSchema);
+        return generateFloatSchema(self(), model, (ResolvedFloatSchema)resolvedSchema, outerClass);
       if(resolvedSchema instanceof ResolvedIntegerSchema)
-        return generateIntegerSchema(self(), model, (ResolvedIntegerSchema)resolvedSchema);
+        return generateIntegerSchema(self(), model, (ResolvedIntegerSchema)resolvedSchema, outerClass);
       if(resolvedSchema instanceof ResolvedLongSchema)
-        return generateLongSchema(self(), model, (ResolvedLongSchema)resolvedSchema);
+        return generateLongSchema(self(), model, (ResolvedLongSchema)resolvedSchema, outerClass);
       if(resolvedSchema instanceof ResolvedStringSchema)
-        return generateStringSchema(self(), model, (ResolvedStringSchema)resolvedSchema);
+        return generateStringSchema(self(), model, (ResolvedStringSchema)resolvedSchema, outerClass);
       if(resolvedSchema instanceof ResolvedBooleanSchema)
-        return generateBooleanSchema(self(), model, (ResolvedBooleanSchema)resolvedSchema);
+        return generateBooleanSchema(self(), model, (ResolvedBooleanSchema)resolvedSchema, outerClass);
       
       throw new CodingFault("Unknown ResolvedPrimitiveSchema subtype " + resolvedSchema.getClass());
     }
 
-    private S generateArraySchema(ResolvedArraySchema resolvedSchema, M model)
+    private S generateArraySchema(ResolvedArraySchema resolvedSchema, T outerClass, M model)
     {
       ArraySchema schema = resolvedSchema.getSchema();
       CanonCardinality cardinality = schema.getXCanonCardinality();
@@ -599,7 +598,7 @@ C extends CanonGenerator<T,M,S,O,A,P,F,C>.AbstractContext>
         cardinality = CanonCardinality.LIST; 
       }
       
-      A arraySchema = CanonGenerator.this.generateArraySchema(self(), model, resolvedSchema, cardinality);
+      A arraySchema = CanonGenerator.this.generateArraySchema(self(), model, resolvedSchema, outerClass, cardinality);
       
       schemaModelMap_.put(resolvedSchema.getUri(), arraySchema.asSchemaTemplateModel());
       

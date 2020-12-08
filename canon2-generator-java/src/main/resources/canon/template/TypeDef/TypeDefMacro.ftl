@@ -2,7 +2,6 @@
 <@namespace name="jsonNodeType" import=entity.fullyQualifiedJsonNodeType/>
 <@namespace name="javaType" import=entity.fullyQualifiedJavaType/>
 <@namespace name="Nonnull" import="javax.annotation.Nonnull"/>
-<@namespace name="ParserErrorException" import="com.symphony.oss.canon.json.ParserErrorException"/>
 ${indent}/**
 ${indent} * TypeDef implementation for ${model.name}.${entity.name}
 <#if entity.summary??>
@@ -69,7 +68,10 @@ ${indent}    Objects.requireNonNull(node);
 ${indent}    if(node instanceof ${jsonNodeType})
 ${indent}    {
 ${indent}      value_ = ((${jsonNodeType})node).as${javaType}();
-      <@checkLimits "    " entity "value" "value_" "new ${ParserErrorException}" ", node.getContext()"/>
+      <#if entity.hasLimits>
+        <@namespace name="ParserErrorException" import="com.symphony.oss.canon.json.ParserErrorException"/>
+        <@checkLimits "    " entity "value" "value_" "new ${ParserErrorException}" ", node.getContext()"/>
+      </#if>
 ${indent}    }
 ${indent}    else
 ${indent}    {
@@ -157,14 +159,14 @@ ${indent}     * Return a new instance.
 ${indent}     *
 ${indent}     * @param value The value for the new instance.
 ${indent}     *
-${indent}     * @deprecated use new ${entity.type}(${javaType} value)
+${indent}     * @deprecated use new ${className}(${javaType} value)
 ${indent}     *
 ${indent}     * @return A new instance.
 ${indent}     */
 ${indent}    @Deprecated
-${indent}    public ${entity.type} build(@${Nonnull} ${javaType} value)
+${indent}    public ${className} build(@${Nonnull} ${javaType} value)
 ${indent}    {
-${indent}      return new ${entity.type}(value);
+${indent}      return new ${className}(value);
 ${indent}    }
 ${indent}    
 ${indent}    /**

@@ -329,6 +329,15 @@
           "enumsField": {
               "$ref": "#/components/schemas/Colour"
           },
+          "colour": {
+              "type": "string",
+              "enum": [
+                "cyan",
+                "magenta",
+                "yellow",
+                "black"
+              ]
+          },
           "inlineEenumField": {
               "type": "string",
               "enum": [

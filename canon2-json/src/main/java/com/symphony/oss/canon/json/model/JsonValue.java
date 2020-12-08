@@ -52,6 +52,13 @@ public abstract class JsonValue extends JsonDomNode
     }
   }
   
+  /**
+   * Return a JsonValue deserialised from the given string input.
+   * 
+   * @param stringValue The serialised form of a value.
+   * 
+   * @return a JsonValue deserialised from the given string input.
+   */
   public static JsonValue valueOf(String stringValue)
   {
 
@@ -101,8 +108,6 @@ public abstract class JsonValue extends JsonDomNode
       Float       floatValue        = Float.parseFloat(stringValue);
       String      floatString       = new BigDecimal(floatValue.toString()).toString();
       
-      BigDecimal bd = new BigDecimal(floatValue.toString());
-      
       if(floatString.equals(bigDecimalString))
       {
         return new JsonFloat.Builder()
@@ -113,14 +118,6 @@ public abstract class JsonValue extends JsonDomNode
       
       Double      doubleValue       = Double.parseDouble(stringValue);
       String      doubleString      = new BigDecimal(doubleValue.toString()).toString();
-      
-      double debug = -765547723.033303;
-      BigDecimal dd = new BigDecimal(doubleValue);
-      double ddd = bigDecimalValue.doubleValue();
-      float fff = bigDecimalValue.floatValue();
-      
-      boolean dde = ddd == doubleValue;
-      boolean ffe = fff == floatValue;
       
       if(doubleString.equals(bigDecimalString))
       {

@@ -63,7 +63,10 @@ implements IJavaTemplateModel
   };
   
 
-  private final String packageName_;
+  private final String                               packageName_;
+  private final boolean                              generateFacade_;
+  private final boolean                              generateBuilderFacade_;
+  private final IJavaTemplateModel                   outerClass_;
 
   /** Set of imports any class implementing this schema needs */
   @Deprecated
@@ -76,18 +79,17 @@ implements IJavaTemplateModel
   @Deprecated
   private String import_;
 
-  private final boolean generateFacade_;
-  private final boolean generateBuilderFacade_;
   
   JavaSchemaTemplateModel(JavaGenerator.Context generatorContext, 
       String identifier, ResolvedSchema<?> resolvedSchema,  String packageName,
-      SchemaTemplateModelType schemaType, JavaOpenApiTemplateModel model, List<String> templates)
+      SchemaTemplateModelType schemaType, JavaOpenApiTemplateModel model, IJavaTemplateModel outerClass, List<String> templates)
   {
     super(generatorContext, identifier, resolvedSchema, schemaType, model, templates);
     
     packageName_            = packageName;
     generateFacade_         = resolvedSchema.getSchema().getXCanonFacade() == null ? false : resolvedSchema.getSchema().getXCanonFacade();
     generateBuilderFacade_  = resolvedSchema.getSchema().getXCanonBuilderFacade() == null ? false : resolvedSchema.getSchema().getXCanonBuilderFacade();
+    outerClass_ = outerClass;
   }
   
 //  static class IdentifierAndImport
@@ -118,6 +120,11 @@ implements IJavaTemplateModel
   public String getPackageName()
   {
     return packageName_;
+  }
+
+  public IJavaTemplateModel getOuterClass()
+  {
+    return outerClass_;
   }
 
   public boolean getIsObjectType()
@@ -282,6 +289,16 @@ implements IJavaTemplateModel
   {
     return args;
   }
+  
+  public String getValue(boolean fullyQualified, String args)
+  {
+    return args;
+  }
+  
+  public String getCopy(boolean fullyQualified, String args)
+  {
+    return args;
+  }
 
 //  public final String getConstructPrefix()
 //  {
@@ -295,9 +312,9 @@ implements IJavaTemplateModel
 
   public abstract String getFullyQualifiedJsonNodeType();
   
-  public abstract String getCopyPrefix();
-
-  public abstract String getCopySuffix();
+//  public abstract String getCopyPrefix();
+//
+//  public abstract String getCopySuffix();
 
   public String getBuilderTypeNew()
   {

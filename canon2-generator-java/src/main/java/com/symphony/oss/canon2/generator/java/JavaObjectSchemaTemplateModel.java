@@ -52,6 +52,7 @@ JavaFieldTemplateModel
   private final String                         fullyQualifiedJsonInitialiserType_;
   private final String                         fullyQualifiedJsonNodeType_;
   private final String                         fullyQualifiedBaseSuperType_;
+  private final boolean                        isInnerClass_;
   
   private String                               type_;
   
@@ -62,20 +63,23 @@ JavaFieldTemplateModel
   private JavaSchemaTemplateModel              additionalProperties_;
 
   private boolean                              additionalPropertiesIsInnerClass_;
+
   
   
   JavaObjectSchemaTemplateModel(JavaGenerator.Context generatorContext, ResolvedPropertyContainerSchema<?> resolvedSchema,
       String packageName, JavaOpenApiTemplateModel model, IJavaTemplateModel outerClass)
   {
-    super(generatorContext, initIdentifier(generatorContext, resolvedSchema), resolvedSchema, packageName, resolvedSchema.getSchemaType(), model, initTemplates(resolvedSchema));
+    super(generatorContext, initIdentifier(generatorContext, resolvedSchema), resolvedSchema, packageName, resolvedSchema.getSchemaType(), model, outerClass, initTemplates(resolvedSchema));
     
-    if(outerClass == null)
+    if(resolvedSchema.isInnerClass() && outerClass != null)
     {
-      fullyQualifiedType_ = getPackageName() + "." + getIdentifier();
+      fullyQualifiedType_ = outerClass.getFullyQualifiedType() + "." + getIdentifier();
+      isInnerClass_ = true;
     }
     else
     {
-      fullyQualifiedType_ = outerClass.getFullyQualifiedType() + "." + getIdentifier();
+      fullyQualifiedType_ = getPackageName() + "." + getIdentifier();
+      isInnerClass_ = false;
     }
         
 //        resolvedSchema.getResolvedContainer() == null ? getCamelCapitalizedName() :
@@ -135,10 +139,14 @@ JavaFieldTemplateModel
   @Override
   public void resolve(INamespace namespace, Writer writer)
   {
-    type_             = namespace.resolveImport(fullyQualifiedType_, writer);
-//    initialiserType_  = namespace.resolveImport(fullyQualifiedInitialiserType_, writer);
-//    jsonNodeType_     = namespace.resolveImport(fullyQualifiedJsonNodeType_, writer);
-//    baseSuperType_    = namespace.resolveImport(fullyQualifiedBaseSuperType_, writer);
+    if(isInnerClass_)
+    {
+      type_ = getOuterClass().getType() + "." + getCamelCapitalizedName();
+    }
+    else
+    {
+      type_ = namespace.resolveImport(fullyQualifiedType_, writer);
+    }
     
     for(JavaFieldTemplateModel child : getFields())
       child.resolve(namespace, writer);
@@ -281,18 +289,6 @@ JavaFieldTemplateModel
   public String getType()
   {
     return type_;
-  }
-
-  @Override
-  public String getCopyPrefix()
-  {
-    return "";
-  }
-
-  @Override
-  public String getCopySuffix()
-  {
-    return "";
   }
 
   @Override

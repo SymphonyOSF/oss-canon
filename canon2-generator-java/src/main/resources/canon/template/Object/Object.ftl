@@ -155,7 +155,7 @@ ${indent}      ${"JsonDomNode"?right_pad(25)} node;
     <#assign  fullyQualified  = false/>
 
 ${indent}      node = jsonInitialiser.get("${field.quotedName}");
-${indent}      if(node == null || node instanceof JsonNull)
+${indent}      if(node == null || node instanceof <@namespace import="com.symphony.oss.canon.json.model.JsonNull"/>)
 ${indent}      {
     <#if field.required>
 ${indent}        throw new ParserErrorException("${field.name} is required.", jsonInitialiser.getJson().getContext());

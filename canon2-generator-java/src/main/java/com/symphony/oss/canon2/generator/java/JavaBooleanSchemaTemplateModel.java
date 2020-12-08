@@ -9,7 +9,6 @@ package com.symphony.oss.canon2.generator.java;
 import java.util.List;
 
 import com.symphony.oss.canon2.core.ResolvedBooleanSchema;
-import com.symphony.oss.canon2.core.ResolvedPropertyContainerSchema;
 import com.symphony.oss.canon2.generator.IPrimitiveSchemaTemplateModel;
 import com.symphony.oss.canon2.generator.java.JavaGenerator.Context;
 
@@ -25,9 +24,11 @@ IJavaTemplateModel,
 JavaOpenApiTemplateModel,
 JavaSchemaTemplateModel>
 {
-  JavaBooleanSchemaTemplateModel(JavaGenerator.Context generatorContext, ResolvedBooleanSchema resolvedSchema, String packageName, JavaOpenApiTemplateModel model)
+  JavaBooleanSchemaTemplateModel(JavaGenerator.Context generatorContext, ResolvedBooleanSchema resolvedSchema, String packageName,
+      JavaOpenApiTemplateModel model, IJavaTemplateModel outerClass)
   { 
-    super(generatorContext, initIdentifier(generatorContext, resolvedSchema), resolvedSchema, false, packageName, "java.lang", "Boolean", model, initTemplates(resolvedSchema));
+    super(generatorContext, initIdentifier(generatorContext, resolvedSchema), resolvedSchema, false, packageName,
+        "java.lang", "Boolean", model, outerClass, initTemplates(resolvedSchema));
   }
 
   private static List<String> initTemplates(ResolvedBooleanSchema resolvedSchema)

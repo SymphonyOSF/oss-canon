@@ -1,4 +1,4 @@
 <#if !entity.fullyQualifiedExternalType?? && entity.generateFacade>
-<#assign className = "${entity.type}">
+<#assign className = "${entity.camelCapitalizedName}">
   <#include "TypeDef.ftl"/>
 </#if>

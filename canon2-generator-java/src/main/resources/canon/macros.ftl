@@ -175,8 +175,8 @@ UNEXPECTED SCHEMA TYPE ${schema.schemaType} in generateCreateFieldFromJsonDomNod
 <@namespace name="javaType" import=schema.fullyQualifiedJavaType/>
 ${indent}if(${node} instanceof ${jsonNodeType})
 ${indent}{
-//A6
-${indent}  ${var} = ${schema.getConstructor(fullyQualified, "((${jsonNodeType})${node}).getValue()")}; // was as${javaType}()
+//A6 schema.class ${schema.class} name ${schema.name}
+${indent}  ${var} = ${schema.getConstructor(fullyQualified, "((${jsonNodeType})${node}).as${schema.simpleJavaType}()")};
 ${indent}}
 ${indent}else ${ifValidation}
 ${indent}{

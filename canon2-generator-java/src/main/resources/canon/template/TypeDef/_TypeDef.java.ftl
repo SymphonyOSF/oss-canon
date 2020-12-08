@@ -1,4 +1,4 @@
-<#if entity.generateFacade && !entity.externalType??>
+<#if entity.generateFacade && !entity.fullyQualifiedExternalType??>
 <#include "/copyrightHeader.ftl"/>
 <#assign className = "${entity.type}${c}TypeDef">
 <#assign classModifier = "abstract ">

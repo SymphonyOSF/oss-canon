@@ -20,7 +20,6 @@ package com.symphony.oss.canon2.generator.java;
 
 import java.util.List;
 import java.util.Map;
-import java.util.function.Function;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -47,10 +46,8 @@ import com.symphony.oss.canon2.core.SourceContext;
 import com.symphony.oss.canon2.generator.Canon2;
 import com.symphony.oss.canon2.generator.CanonGenerationContext;
 import com.symphony.oss.canon2.generator.CanonGenerator;
-import com.symphony.oss.canon2.generator.IGroupSchemaTemplateModel;
 import com.symphony.oss.canon2.generator.IPathNameConstructor;
 import com.symphony.oss.canon2.generator.NamespaceDirective;
-import com.symphony.oss.canon2.generator.CanonGenerator.AbstractContext;
 import com.symphony.oss.canon2.model.CanonCardinality;
 import com.symphony.oss.canon2.model.OpenApiObject;
 
@@ -383,11 +380,11 @@ JavaGenerator.Context
   }
 
   @Override
-  public JavaArraySchemaTemplateModel generateArraySchema(JavaGenerator.Context generatorContext, JavaOpenApiTemplateModel model, ResolvedArraySchema resolvedSchema, CanonCardinality cardinality)
+  public JavaArraySchemaTemplateModel generateArraySchema(JavaGenerator.Context generatorContext, JavaOpenApiTemplateModel model, ResolvedArraySchema resolvedSchema, IJavaTemplateModel outerClass, CanonCardinality cardinality)
   {
     return new JavaArraySchemaTemplateModel(generatorContext, resolvedSchema,
         getJavaGenerationPackage(resolvedSchema.getResolvedOpenApiObject().getModel()),
-        cardinality, model);
+        cardinality, model, outerClass);
   }
   
   
@@ -435,55 +432,55 @@ JavaGenerator.Context
   
   @Override
   public JavaPrimitiveSchemaTemplateModel generateBigDecimalSchema(JavaGenerator.Context generatorContext, JavaOpenApiTemplateModel model,
-      ResolvedBigDecimalSchema resolvedSchema)
+      ResolvedBigDecimalSchema resolvedSchema, IJavaTemplateModel outerClass)
   {
     return new JavaNumberSchemaTemplateModel(generatorContext, resolvedSchema,
-         getJavaGenerationPackage(resolvedSchema.getResolvedOpenApiObject().getModel()), "java.math", "BigDecimal",  model,
+         getJavaGenerationPackage(resolvedSchema.getResolvedOpenApiObject().getModel()), "java.math", "BigDecimal",  model, outerClass,
          true);
   }
 
   @Override
   public JavaPrimitiveSchemaTemplateModel generateBigIntegerSchema(JavaGenerator.Context generatorContext, JavaOpenApiTemplateModel model,
-      ResolvedBigIntegerSchema resolvedSchema)
+      ResolvedBigIntegerSchema resolvedSchema, IJavaTemplateModel outerClass)
   {
     return new JavaNumberSchemaTemplateModel(generatorContext, resolvedSchema,
-         getJavaGenerationPackage(resolvedSchema.getResolvedOpenApiObject().getModel()), "java.math", "BigInteger",  model,
+         getJavaGenerationPackage(resolvedSchema.getResolvedOpenApiObject().getModel()), "java.math", "BigInteger",  model, outerClass,
         true);
   }
 
   @Override
   public JavaPrimitiveSchemaTemplateModel generateDoubleSchema(JavaGenerator.Context generatorContext, JavaOpenApiTemplateModel model,
-      ResolvedDoubleSchema resolvedSchema)
+      ResolvedDoubleSchema resolvedSchema, IJavaTemplateModel outerClass)
   {
     return new JavaNumberSchemaTemplateModel(generatorContext, resolvedSchema,
-         getJavaGenerationPackage(resolvedSchema.getResolvedOpenApiObject().getModel()) ,"java.lang", "Double",  model,
+         getJavaGenerationPackage(resolvedSchema.getResolvedOpenApiObject().getModel()) ,"java.lang", "Double",  model, outerClass,
         false);
   }
 
   @Override
   public JavaPrimitiveSchemaTemplateModel generateFloatSchema(JavaGenerator.Context generatorContext, JavaOpenApiTemplateModel model,
-      ResolvedFloatSchema resolvedSchema)
+      ResolvedFloatSchema resolvedSchema, IJavaTemplateModel outerClass)
   {
     return new JavaNumberSchemaTemplateModel(generatorContext, resolvedSchema,
-        getJavaGenerationPackage(resolvedSchema.getResolvedOpenApiObject().getModel()), "java.lang", "Float", model,
+        getJavaGenerationPackage(resolvedSchema.getResolvedOpenApiObject().getModel()), "java.lang", "Float", model, outerClass,
         false);
   }
 
   @Override
   public JavaPrimitiveSchemaTemplateModel generateIntegerSchema(JavaGenerator.Context generatorContext, JavaOpenApiTemplateModel model,
-      ResolvedIntegerSchema resolvedSchema)
+      ResolvedIntegerSchema resolvedSchema, IJavaTemplateModel outerClass)
   {
     return new JavaNumberSchemaTemplateModel(generatorContext, resolvedSchema,
-         getJavaGenerationPackage(resolvedSchema.getResolvedOpenApiObject().getModel()), "java.lang", "Integer", model,
+         getJavaGenerationPackage(resolvedSchema.getResolvedOpenApiObject().getModel()), "java.lang", "Integer", model, outerClass,
        false);
   }
 
   @Override
   public JavaPrimitiveSchemaTemplateModel generateLongSchema(JavaGenerator.Context generatorContext, JavaOpenApiTemplateModel model,
-      ResolvedLongSchema resolvedSchema)
+      ResolvedLongSchema resolvedSchema, IJavaTemplateModel outerClass)
   {
     return new JavaNumberSchemaTemplateModel(generatorContext, resolvedSchema,
-         getJavaGenerationPackage(resolvedSchema.getResolvedOpenApiObject().getModel()), "java.lang", "Long",  model,
+         getJavaGenerationPackage(resolvedSchema.getResolvedOpenApiObject().getModel()), "java.lang", "Long",  model, outerClass,
         false);
   }
 
@@ -517,20 +514,20 @@ JavaGenerator.Context
 
   @Override
   public JavaPrimitiveSchemaTemplateModel generateStringSchema(JavaGenerator.Context generatorContext, JavaOpenApiTemplateModel model,
-      ResolvedStringSchema resolvedSchema)
+      ResolvedStringSchema resolvedSchema, IJavaTemplateModel outerClass)
   {
     return new JavaStringSchemaTemplateModel(generatorContext, resolvedSchema,
         getJavaGenerationPackage(resolvedSchema.getResolvedOpenApiObject().getModel()),
-        model);
+        model, outerClass);
   }
 
   @Override
   public JavaPrimitiveSchemaTemplateModel generateBooleanSchema(JavaGenerator.Context generatorContext, JavaOpenApiTemplateModel model,
-      ResolvedBooleanSchema resolvedSchema)
+      ResolvedBooleanSchema resolvedSchema, IJavaTemplateModel outerClass)
   {
     return new JavaBooleanSchemaTemplateModel(generatorContext, resolvedSchema,
          getJavaGenerationPackage(resolvedSchema.getResolvedOpenApiObject().getModel()),
-        model);
+        model, outerClass);
   }
 
 //  public JavaPrimitiveSchemaTemplateModel generatePrimativeSchema(

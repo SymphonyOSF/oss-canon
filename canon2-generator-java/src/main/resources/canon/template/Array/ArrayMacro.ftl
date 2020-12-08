@@ -16,27 +16,17 @@
 // end check needed
 
 
-
-<#switch entity.cardinality>
-  <#case "SET">
-    <#assign javaCardinality = "Set">
-    <#break>
-
-  <#default>
-    <#assign javaCardinality = "List">
-</#switch>
-
-
 <@namespace name="elementType" import=entity.fullyQualifiedElementType/>
 <@namespace name="jsonInitialiserType" import=entity.fullyQualifiedJsonInitialiserType/>
+<@namespace name="JsonDomNode" import="com.symphony.oss.canon.json.model.JsonDomNode"/>
 <@namespace name="jsonNodeType" import="com.symphony.oss.canon.json.model.JsonArray"/>
 <@namespace name="initialiserType" import=entity.fullyQualifiedInitialiserType/>
 <@namespace name="collectionType" import=entity.fullyQualifiedCollectionType/>
-<@namespace name="collectionImplType_" import=entity.fullyQualifiedCollectionImplType/>
+<@namespace name="collectionImplType" import=entity.fullyQualifiedCollectionImplType/>
 <@namespace name="collectionImmutableType" import=entity.fullyQualifiedCollectionImmutableType/>
 // collectionImmutableType = ${collectionImmutableType}
 <@namespace name="RuntimeEntity" import="com.symphony.oss.canon2.runtime.java.Entity"/>
-<@namespace name="superType" import="com.symphony.oss.canon2.runtime.java.${javaCardinality}ArrayEntity"/>
+<@namespace name="superType" import="com.symphony.oss.canon2.runtime.java.ArrayEntity"/>
 <@namespace name="ModelRegistry" import="com.symphony.oss.canon2.runtime.java.ModelRegistry"/>
 ${indent}/**
 ${indent} * Implementation for Array ${entity}
@@ -65,6 +55,8 @@ ${indent}  public static final String  TYPE_VERSION = "${model.canonVersion}";
 ${indent}  /** Factory instance */
 ${indent}  public static final Factory FACTORY = new Factory();
 
+${indent}  private ${collectionType}<${elementType}> elements_;
+
 ${indent}  /**
 ${indent}   * Constructor.
 ${indent}   *
@@ -78,33 +70,24 @@ ${indent}    super(initialiser);
 
 
 
+${indent}    I${c}${entity.camelCapitalizedName}${c}InstanceOrBuilder builder =  initialiser.getInstanceOrBuilder();
 
-
-${indent}    if(initialiser instanceof ${jsonInitialiserType})
+${indent}    if(builder == null)
 ${indent}    {
-${indent}      ${jsonInitialiserType} jsonInitialiser = (${jsonInitialiserType})initialiser;
-${indent}      ${ModelRegistry} modelRegistry = jsonInitialiser.getModelRegistry();
+${indent}      ${ModelRegistry} modelRegistry = initialiser.getModelRegistry();
+${indent}      ${collectionType}<${elementType}> elements = new ${collectionImplType}<>();
 
-
-${indent}      for(JsonDomNode node : json)
+${indent}      for(${JsonDomNode} node : initialiser.getJson())
 ${indent}      {
-${indent}      ${elementType} element;
+${indent}        ${elementType} element;
 
     <@generateCreateFieldFromJsonDomNode "${indent}        " "node" entity.schemaType entity.elementType "element" "element" "" false/>
 ${indent}      }
 
-
-
+${indent}      elements_ = ${collectionImmutableType}.copyOf(elements);
 ${indent}    }
 ${indent}    else
 ${indent}    {
-${indent}      I${c}${entity.camelCapitalizedName}${c}InstanceOrBuilder builder =  initialiser.getInstanceOrBuilder();
-
-${indent}      if(builder == null)
-${indent}      {
-${indent}        throw new IllegalArgumentException("Initializer is not an JsonObjectEntityInitialiser but getInstanceOrBuilder() returns null");
-${indent}      }
-
 
 ${indent}    }
 
@@ -285,9 +268,9 @@ ${indent}      return (${className}.Builder)this;
 ${indent}    }
 
 ${indent}    @Override 
-${indent}    public ImmutableJson${javaCardinality} getJson${javaCardinality}()
+${indent}    public ImmutableJson${collectionType} getJson${collectionType}()
 ${indent}    {
-${indent}      MutableJson${javaCardinality} jsonArray = new MutableJson${javaCardinality}();
+${indent}      MutableJson${collectionType} jsonArray = new MutableJson${collectionType}();
 
 ${indent}      for(${elementType} value : elements__)
 // entity.class ${entity.class}
@@ -305,7 +288,7 @@ ${indent}    }
 ${indent}    @Override
 ${indent}    public IImmutableJsonDomNode getJsonDomNode()
 ${indent}    {
-${indent}      return getJson${javaCardinality}();
+${indent}      return getJson${collectionType}();
 ${indent}    }
 
 ${indent}    public abstract ${className} build();

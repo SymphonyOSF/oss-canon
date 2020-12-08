@@ -11,7 +11,6 @@ import java.math.BigInteger;
 import java.util.List;
 
 import com.google.common.collect.ImmutableList;
-import com.google.common.collect.ImmutableSet;
 import com.symphony.oss.canon2.core.ResolvedArraySchema;
 import com.symphony.oss.canon2.core.SchemaTemplateModelType;
 import com.symphony.oss.canon2.core.SourceContext;
@@ -49,7 +48,8 @@ JavaSchemaTemplateModel>
 
   private final String              fullyQualifiedType_;
   private String                    type_;
-  private String                    copyPrefix_;
+  private String                    collectionImmutableType_;
+  private String                    collectionImplType_;
   private final MinItems            minItems_;
   private final MaxItems            maxItems_;
   private String                    typeNew_;
@@ -58,13 +58,13 @@ JavaSchemaTemplateModel>
 
 
   
-  JavaArraySchemaTemplateModel(JavaGenerator.Context generatorContext, ResolvedArraySchema resolvedSchema, String packageName, CanonCardinality cardinality, JavaOpenApiTemplateModel model)
+  JavaArraySchemaTemplateModel(JavaGenerator.Context generatorContext, ResolvedArraySchema resolvedSchema, String packageName, CanonCardinality cardinality, JavaOpenApiTemplateModel model, IJavaTemplateModel outerClass)
   {
-    super(generatorContext, initIdentifier(generatorContext, resolvedSchema), resolvedSchema, packageName, SchemaTemplateModelType.ARRAY, model, initTemplates(resolvedSchema));
+    super(generatorContext, initIdentifier(generatorContext, resolvedSchema), resolvedSchema, packageName, SchemaTemplateModelType.ARRAY, model, outerClass, initTemplates(resolvedSchema));
     
     cardinality_ = cardinality;
     fullyQualifiedType_ = getPackageName() + "." + getCamelCapitalizedName();
-    fullyQualifiedJsonInitialiserType_ = "com.symphony.oss.canon2.runtime.java.JsonEntityInitialiser";
+    fullyQualifiedJsonInitialiserType_ = "com.symphony.oss.canon2.runtime.java.IArrayEntityInitialiser";
 
     switch(cardinality_)
     {
@@ -72,14 +72,14 @@ JavaSchemaTemplateModel>
         fullyQualifiedCollectionType_ = "java.util.Set";
         fullyQualifiedCollectionImplType_ = "java.util.HashSet";
         fullyQualifiedCollectionImmutableType_ = "com.google.common.collect.ImmutableSet";
-        fullyQualifiedInitialiserType_ = "com.symphony.oss.canon2.runtime.java.IListArrayEntityInitialiser";
+        fullyQualifiedInitialiserType_ = "com.symphony.oss.canon2.runtime.java.ISetArrayEntityInitialiser";
         break;
         
       case LIST:
         fullyQualifiedCollectionType_ = "java.util.List";
         fullyQualifiedCollectionImplType_ = "java.util.LinkedList";
         fullyQualifiedCollectionImmutableType_ = "com.google.common.collect.ImmutableList";
-        fullyQualifiedInitialiserType_ = "com.symphony.oss.canon2.runtime.java.ISetArrayEntityInitialiser";
+        fullyQualifiedInitialiserType_ = "com.symphony.oss.canon2.runtime.java.IListArrayEntityInitialiser";
         break;
         
       default:
@@ -126,6 +126,18 @@ JavaSchemaTemplateModel>
   }
   
   @Override
+  public String getConstructor(boolean fullyQualified, String args)
+  {
+    return "new " + collectionImplType_ + "(" + args + ")";
+  }
+
+  @Override
+  public String getCopy(boolean fullyQualified, String args)
+  {
+    return collectionImmutableType_ + ".copyOf(" + args + ")";
+  }
+
+  @Override
   public String getFullyQualifiedType()
   {
     return fullyQualifiedType_;
@@ -139,7 +151,9 @@ JavaSchemaTemplateModel>
   @Override
   public void resolve(INamespace namespace, Writer writer)
   {
-    type_               = namespace.resolveImport(fullyQualifiedType_, writer);
+    type_                     = namespace.resolveImport(fullyQualifiedType_, writer);
+    collectionImmutableType_  = namespace.resolveImport(fullyQualifiedCollectionImmutableType_, writer);
+    collectionImplType_       = namespace.resolveImport(fullyQualifiedCollectionImplType_, writer);
     
     elementType_.resolve(namespace, writer);
   }
@@ -190,29 +204,29 @@ JavaSchemaTemplateModel>
     if(elementType.getLEGACYPackageName() != null && !getLEGACYPackageName().equals(elementType.getLEGACYPackageName()))
       addImport(elementType.getImport());
     
-    switch(cardinality_)
-    {
-      case SET:
-//        imports_.add("java.util.Set");
-//        imports_.add("java.util.HashSet");
-//        imports_.add("com.google.common.collect.ImmutableSet");
-        type_ = "Set<" + elementType_.getType() + ">";
-        typeNew_ = " = new Hash" + type_ + "()";
-        copyPrefix_ = "ImmutableSet.copyOf(";
-        break;
-        
-      case LIST:
-//        imports_.add("java.util.List");
-//        imports_.add("com.google.common.collect.ImmutableList");
-//        imports_.add("java.util.LinkedList");
-        type_ = "List<" + elementType_.getType() + ">";
-        typeNew_ = " = new Linked" + type_ + "()";
-        copyPrefix_ = "ImmutableList.copyOf(";
-        break;
-        
-      default:
-        throw new CodingFault("Unknown cardinality " + cardinality_);
-    }
+//    switch(cardinality_)
+//    {
+//      case SET:
+////        imports_.add("java.util.Set");
+////        imports_.add("java.util.HashSet");
+////        imports_.add("com.google.common.collect.ImmutableSet");
+//        type_ = "Set<" + elementType_.getType() + ">";
+//        typeNew_ = " = new Hash" + type_ + "()";
+//        copyPrefix_ = "ImmutableSet.copyOf(";
+//        break;
+//        
+//      case LIST:
+////        imports_.add("java.util.List");
+////        imports_.add("com.google.common.collect.ImmutableList");
+////        imports_.add("java.util.LinkedList");
+//        type_ = "List<" + elementType_.getType() + ">";
+//        typeNew_ = " = new Linked" + type_ + "()";
+//        copyPrefix_ = "ImmutableList.copyOf(";
+//        break;
+//        
+//      default:
+//        throw new CodingFault("Unknown cardinality " + cardinality_);
+//    }
   }
 
   @Override
@@ -289,15 +303,15 @@ JavaSchemaTemplateModel>
     return type_;
   }
   
-  @Override
-  public String getCopyPrefix()
-  {
-    return copyPrefix_;
-  }
-
-  @Override
-  public String getCopySuffix()
-  {
-    return ")";
-  }
+//  @Override
+//  public String getCopyPrefix()
+//  {
+//    return copyPrefix_;
+//  }
+//
+//  @Override
+//  public String getCopySuffix()
+//  {
+//    return ")";
+//  }
 }
