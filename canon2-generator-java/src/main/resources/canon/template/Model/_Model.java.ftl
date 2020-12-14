@@ -1,9 +1,5 @@
 <#include "/copyrightHeader.ftl">
 
-package ${genPackage};
-
-import com.symphony.oss.canon2.runtime.java.BaseEntity;
-
 /**
  * Model class for ${model.name}
 <#if entity.summary??>
@@ -19,8 +15,9 @@ import com.symphony.oss.canon2.runtime.java.BaseEntity;
  */
 public class ${model.camelCapitalizedName}${c}Model
 {
+<@namespace name="BaseEntity" import="com.symphony.oss.canon2.runtime.java.BaseEntity"/>
   /** Factories for every object in the model. */
-  public static final BaseEntity.Factory<?,?>[] FACTORIES = new BaseEntity.Factory<?,?>[]
+  public static final ${BaseEntity}.Factory<?,?>[] FACTORIES = new ${BaseEntity}.Factory<?,?>[]
   {
 <#macro generateFactories indent object prefix>
 <#t>${separator}${indent}${prefix}${object.camelCapitalizedName}.FACTORY<#assign separator = ",\n"/><#list object.innerClasses as innerClass>
