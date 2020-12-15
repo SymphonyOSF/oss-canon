@@ -69,6 +69,7 @@ implements IJavaTemplateModel
     return packageName_;
   }
 
+  @Override
   public String getFullyQualifiedType()
   {
     return fullyQualifiedType_;
@@ -78,6 +79,24 @@ implements IJavaTemplateModel
   public String getType()
   {
     return type_;
+  }
+
+  @Override
+  public String getConstructor(String args)
+  {
+    return args;
+  }
+
+  @Override
+  public String getValue(String args)
+  {
+    return args;
+  }
+
+  @Override
+  public String getCopy(String args)
+  {
+    return args;
   }
 
   @Override

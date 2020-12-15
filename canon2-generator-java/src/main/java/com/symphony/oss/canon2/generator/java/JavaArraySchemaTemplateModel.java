@@ -52,7 +52,6 @@ JavaSchemaTemplateModel>
   private String                    collectionImplType_;
   private final MinItems            minItems_;
   private final MaxItems            maxItems_;
-  private String                    typeNew_;
 
 
 
@@ -126,13 +125,13 @@ JavaSchemaTemplateModel>
   }
   
   @Override
-  public String getConstructor(boolean fullyQualified, String args)
+  public String getConstructor(String args)
   {
     return "new " + collectionImplType_ + "(" + args + ")";
   }
 
   @Override
-  public String getCopy(boolean fullyQualified, String args)
+  public String getCopy(String args)
   {
     return collectionImmutableType_ + ".copyOf(" + args + ")";
   }
@@ -238,7 +237,7 @@ JavaSchemaTemplateModel>
   @Override
   public String getBuilderTypeNew()
   {
-    return typeNew_;
+    return "new " + collectionImplType_ + "<" + type_ + ">()";
   }
 
   @Override

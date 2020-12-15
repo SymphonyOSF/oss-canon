@@ -53,7 +53,7 @@ JavaFieldTemplateModel
   private final String                         fullyQualifiedJsonNodeType_;
   private final String                         fullyQualifiedBaseSuperType_;
   private final boolean                        isInnerClass_;
-  
+
   private String                               type_;
   
   

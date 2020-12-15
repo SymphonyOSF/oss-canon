@@ -119,7 +119,25 @@ implements IJavaTemplateModel
   {
     return getTypeSchema().getType();
   }
+
+  @Override
+  public String getConstructor(String args)
+  {
+    return getTypeSchema().getConstructor(args);
+  }
   
+  @Override
+  public String getValue(String args)
+  {
+    return getTypeSchema().getValue(args);
+  }
+
+  @Override
+  public String getCopy(String args)
+  {
+    return getTypeSchema().getCopy(args);
+  }
+
   /**
    * Return the fully qualified class name of the Json node type which represents the serialised value of this field.
    * 

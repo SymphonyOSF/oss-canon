@@ -90,4 +90,31 @@ JavaSchemaTemplateModel
 //   * @return The name of this model entity in Snake_case with an upper case initial letter.
 //   */
 //  String getSnakeCapitalizedName();
+  
+  /**
+   * Return a construction statement with the given arguments.
+   * 
+   * @param args            The parameters for the constructor call.
+   * 
+   * @return A statement to construct an instance of this type.
+   */
+  String getConstructor(String args);;
+  
+  /**
+   * Return a getValue statement with the given arguments.
+   * 
+   * @param args            The parameters for the constructor call.
+   * 
+   * @return A statement to extract the primitive value from an instance of this type.
+   */
+  String getValue(String args);
+  
+  /**
+   * Return a copy statement with the given arguments.
+   * 
+   * @param args            The parameters for the constructor call.
+   * 
+   * @return A statement to copy an instance of this type.
+   */
+  String getCopy(String args);
 }

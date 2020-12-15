@@ -81,7 +81,7 @@ ${indent}      for(${JsonDomNode} node : initialiser.getJson())
 ${indent}      {
 ${indent}        ${elementType} element;
 
-    <@generateCreateFieldFromJsonDomNode "${indent}        " "node" entity.schemaType entity.elementType "element" "element" "" false/>
+    <@generateCreateFieldFromJsonDomNode "${indent}        " "node" entity.schemaType entity.elementType "element" "element" ""/>
 ${indent}      }
 
 ${indent}      elements_ = ${collectionImmutableType}.copyOf(elements);

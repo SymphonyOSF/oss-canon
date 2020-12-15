@@ -101,11 +101,8 @@ JavaSchemaTemplateModel>
 
 
 //  @Override
-  public String getValue(boolean fullyQualified, String args)
+  public String getValue(String args)
   {
-    if(fullyQualified)
-      System.err.println("HERE");
-    
     switch(primitiveType_)
     {
       case GENERATED:
@@ -124,11 +121,8 @@ JavaSchemaTemplateModel>
       
 
   @Override
-  public String getConstructor(boolean fullyQualified, String args)
+  public String getConstructor(String args)
   {
-    if(fullyQualified)
-      System.err.println("HERE");
-    
     switch(primitiveType_)
     {
       case GENERATED:

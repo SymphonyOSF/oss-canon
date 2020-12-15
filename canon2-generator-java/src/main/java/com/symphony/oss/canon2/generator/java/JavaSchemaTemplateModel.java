@@ -280,22 +280,22 @@ implements IJavaTemplateModel
   /**
    * Return a construction statement with the given arguments.
    * 
-   * @param fullyQualified  If true then use the classes fully qualified name.
    * @param args            The parameters for the constructor call.
    * 
    * @return A statement to construct an instance of this type.
    */
-  public String getConstructor(boolean fullyQualified, String args)
+  @Override
+  public String getConstructor(String args)
   {
     return args;
   }
   
-  public String getValue(boolean fullyQualified, String args)
+  public String getValue(String args)
   {
     return args;
   }
   
-  public String getCopy(boolean fullyQualified, String args)
+  public String getCopy(String args)
   {
     return args;
   }

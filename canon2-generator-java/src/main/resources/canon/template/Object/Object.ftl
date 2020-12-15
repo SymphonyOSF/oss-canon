@@ -2,6 +2,7 @@
 <#include "InstanceOrBuilder.ftl">
 <#include "../TypeDef/TypeDefMacro.ftl"/>
 <#include "../Enum/EnumMacro.ftl"/>
+<#include "../Array/ArrayMacro.ftl"/>
 <#macro generateInnerClass indent innerClass className classModifier nested>
   <#if innerClass.schemaType.isObject>
     <#if nested>
@@ -17,9 +18,9 @@
       <@generateTypeDef "  ${indent}" model innerClass className "static "/>
     </#if>
   <#else>
-  // INNER NON OBJECT ${innerClass.schemaType}
+  // INNER NON OBJECT ${innerClass.schemaType} ${innerClass.camelCapitalizedName}
   
-  WE NEED TO GENERATE ARRAYS NOW
+    <@generateArray "  ${indent}" model innerClass className "static " true/>
   
   </#if>
 </#macro>
@@ -36,20 +37,14 @@ ${indent}}
 <#macro generateObject indent entity className classModifier nested>
 <#if entity.isObjectType>
   <#assign hasUnknownProperties = true/>
-  <#assign additionalPropertiesFullyQualified = false/>
-  <#assign additionalTypeCopyPrefix = ""/>
-  <#assign additionalTypeCopySuffix = ""/>
   <#if entity.additionalPropertiesAllowed>
     <#if entity.additionalProperties??>
-      <#assign additionalTypeCopyPrefix = entity.additionalProperties.copyPrefix/>
-      <#assign additionalTypeCopySuffix = entity.additionalProperties.copySuffix/>
       <#if entity.additionalPropertiesIsInnerClass>
         <#assign additionalType = "${c}AdditionalProperties"/>
       <#else>
         <@namespace name="additionalType" import=entity.additionalProperties.fullyQualifiedType/>
         <#--  --list entity.innerClasses as innerClass>
           <#-if innerClass.name == additionalType>
-            <#assign additionalPropertiesFullyQualified = true/>
             <@namespace name="additionalType" import=entity.additionalProperties.fullyQualifiedType/>
           </#if>
         </#list -->
@@ -133,8 +128,7 @@ ${indent}      List<ParserException> parserExceptions = new LinkedList<>();
 ${indent}      List<String>          matches = new LinkedList<>();
 ${indent}      JsonDomNode           node = jsonInitialiser.getJson();
   <#list entity.fields as field>
-    <#assign  fullyQualified  = false/>
-    <@generateCreateFieldFromJsonDomNode "${indent}       " "node" entity.schemaType field.typeSchema field.quotedName "${c}${field.camelName}_" "" fullyQualified/>
+    <@generateCreateFieldFromJsonDomNode "${indent}       " "node" entity.schemaType field.typeSchema field.quotedName "${c}${field.camelName}_" ""/>
 ${indent}      if(${c}${field.camelName}_ != null)
 ${indent}      {
 ${indent}        matches.add("${field.typeSchema.name}");
@@ -152,7 +146,6 @@ ${indent}      }
 
 ${indent}      ${"JsonDomNode"?right_pad(25)} node;
   <#list entity.fields as field>
-    <#assign  fullyQualified  = false/>
 
 ${indent}      node = jsonInitialiser.get("${field.quotedName}");
 ${indent}      if(node == null || node instanceof <@namespace import="com.symphony.oss.canon.json.model.JsonNull"/>)
@@ -165,7 +158,7 @@ ${indent}        ${c}${field.camelName}_ = null;
 ${indent}      }
 ${indent}      else
 ${indent}      {
-    <@generateCreateFieldFromJsonDomNode "${indent}        " "node" entity.schemaType field.typeSchema field.quotedName "${c}${field.camelName}_" "" fullyQualified/>
+    <@generateCreateFieldFromJsonDomNode "${indent}        " "node" entity.schemaType field.typeSchema field.quotedName "${c}${field.camelName}_" ""/>
 ${indent}      }
   </#list>
 <#if entity.additionalPropertiesAllowed>
@@ -188,7 +181,7 @@ ${indent}        entity = null;
 ${indent}        node   = jsonInitialiser.get(name);
 <#if entity.additionalPropertiesAllowed>
   <#if entity.additionalProperties??>
-    <@generateCreateFieldFromJsonDomNode "${indent}        " "node" additionalType entity.additionalProperties "additionalProperties" "prop" "if(!initialiser.getModelRegistry().getParserValidation().isAllowUnknownAttributes())" additionalPropertiesFullyQualified/>
+    <@generateCreateFieldFromJsonDomNode "${indent}        " "node" additionalType entity.additionalProperties "additionalProperties" "prop" "if(!initialiser.getModelRegistry().getParserValidation().isAllowUnknownAttributes())"/>
 ${indent}        else
 ${indent}        {
     <@generateUnknownAttribute "${indent}          " "entity"/>
@@ -228,7 +221,8 @@ ${indent}      {
 ${indent}        throw new IllegalArgumentException("Initializer is not an JsonObjectEntityInitialiser but getInstanceOrBuilder() returns null");
 ${indent}      }
 <#list entity.fields as field>
-${indent}      ${c}${field.camelName}_ = ${field.typeSchema.copyPrefix}builder.get${field.camelCapitalizedName}()${field.typeSchema.copySuffix};
+//field.typeSchema is ${field.typeSchema.class}
+${indent}      ${c}${field.camelName}_ = ${field.typeSchema.getCopy("builder.get${field.camelCapitalizedName}()$")};
     <@checkFieldLimits "${indent}      " field "${c}${field.camelName}_"/>
 </#list>
 <#if entity.additionalPropertiesAllowed>
@@ -339,6 +333,7 @@ ${indent}    extends ${superType}.AbstractBuilder<T,B>
 ${indent}    implements I${c}${entity.camelCapitalizedName}${c}InstanceOrBuilder, Initialiser
 ${indent}  {
   <#list entity.fields as field>
+  // field.typeSchema is ${field.typeSchema.class}
 ${indent}    protected ${field.type?right_pad(25)}  ${c}${field.camelName}_${field.typeSchema.builderTypeNew};
   </#list>
   <#if entity.additionalPropertiesAllowed>
@@ -364,7 +359,7 @@ ${indent}    {
 ${indent}      super(type, initial);
 
   <#list entity.fields as field>
-${indent}      ${c}${field.camelName}_ = ${field.typeSchema.copyPrefix}initial.get${field.camelCapitalizedName}()${field.typeSchema.copySuffix};
+${indent}      ${c}${field.camelName}_ = ${field.typeSchema.getCopy("initial.get${field.camelCapitalizedName}()")};
   </#list>
 ${indent}    }
 
@@ -383,8 +378,7 @@ ${indent}    {
 ${indent}      List<ParserException> parserExceptions = new LinkedList<>();
 ${indent}      List<String>          matches = new LinkedList<>();
   <#list entity.fields as field>
-    <#assign  fullyQualified  = false/>
-    <@generateCreateFieldFromJsonDomNode "${indent}       " "json" entity.schemaType field.typeSchema field.quotedName "${c}${field.camelName}_" "if(!modelRegistry.getParserValidation().isIgnoreInvalidAttributes())" fullyQualified/>
+    <@generateCreateFieldFromJsonDomNode "${indent}       " "json" entity.schemaType field.typeSchema field.quotedName "${c}${field.camelName}_" "if(!modelRegistry.getParserValidation().isIgnoreInvalidAttributes())"/>
 ${indent}      if(${c}${field.camelName}_ != null)
 ${indent}      {
 ${indent}        matches.add("${field.typeSchema.name}");
@@ -402,11 +396,10 @@ ${indent}      }
 ${indent}    public T withValues(JsonObject json, ${ModelRegistry} modelRegistry)
 ${indent}    {
     <#list entity.fields as field>
-    <#assign  fullyQualified  = false/>
 ${indent}      if(json.containsKey("${field.quotedName}"))
 ${indent}      {
 ${indent}        JsonDomNode  node = json.get("${field.quotedName}");
-  <@generateCreateFieldFromJsonDomNode "        " "node" entity.schemaType field.typeSchema field.quotedName "${c}${field.camelName}_" "if(!modelRegistry.getParserValidation().isIgnoreInvalidAttributes())" fullyQualified/>
+  <@generateCreateFieldFromJsonDomNode "        " "node" entity.schemaType field.typeSchema field.quotedName "${c}${field.camelName}_" "if(!modelRegistry.getParserValidation().isIgnoreInvalidAttributes())"/>
 ${indent}      }
 </#list>
       <#break>
@@ -429,7 +422,11 @@ ${indent}     * @return This (fluent method).
 ${indent}     */
 ${indent}    public T with(String name, ${additionalType} value)
 ${indent}    {
-${indent}      additionalProperties_.put(name, ${additionalTypeCopyPrefix}value${additionalTypeCopySuffix});
+  <#if entity.additionalProperties??>
+${indent}      additionalProperties_.put(name, ${entity.additionalProperties.getCopy("value")}); //WAS additionalTypeCopyPrefix
+  <#else>
+${indent}      additionalProperties_.put(name, value);
+  </#if>
 
 ${indent}      return self();
 ${indent}    }
@@ -475,7 +472,7 @@ ${indent}     */
 ${indent}    public T with${field.camelCapitalizedName}(${field.typeSchema.type} value)
 ${indent}    {
     <@checkFieldLimits "        " field "value"/>
-${indent}      ${c}${field.camelName}_ = ${field.typeSchema.copyPrefix}value${field.typeSchema.copySuffix};
+${indent}      ${c}${field.camelName}_ = ${field.typeSchema.getCopy("value")};
 ${indent}      return self();
 ${indent}    }
 <#if field.typeSchema.schemaType == "ARRAY">

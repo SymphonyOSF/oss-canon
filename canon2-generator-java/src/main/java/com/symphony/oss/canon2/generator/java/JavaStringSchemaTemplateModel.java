@@ -159,21 +159,21 @@ JavaSchemaTemplateModel>
   }
 
   @Override
-  public String getConstructor(boolean fullyQualified, String args)
+  public String getConstructor(String args)
   {
     if(isEnum_)
-      return "/* string getConstructor " + fullyQualified + " */" + getType() + ".deserialize(" + args + ")"; 
+      return getType() + ".deserialize(" + args + ")"; 
     else
-      return "/* string getConstructor " + fullyQualified + " */" + super.getConstructor(fullyQualified, args);
+      return super.getConstructor(args);
   }
   
   @Override
-  public String getValue(boolean fullyQualified, String args)
+  public String getValue(String args)
   {
     if(isEnum_)
-      return "/* string getValue " + fullyQualified + " */" + args + ".getValue()";
+      return args + ".getValue()";
     else
-      return "/* string getValue " + fullyQualified + " */" + args;
+      return args;
   }
 
   @Override

@@ -137,7 +137,8 @@ JavaGenerator.Context
   Context
   >.AbstractContext
   {
-
+    private NamespaceDirective namespace_ = new NamespaceDirective();
+    
     Context(CanonGenerationContext generationContext,
         SourceContext sourceContext)
     {
@@ -199,6 +200,11 @@ JavaGenerator.Context
       }
       
       return true;
+    }
+
+    public NamespaceDirective getNamespace()
+    {
+      return namespace_;
     }
   }
   
@@ -359,7 +365,7 @@ JavaGenerator.Context
   {
     
     map.put(JavaGenerator.GEN_PACKAGE, getJavaGenerationPackage(generatorContext.getSourceContext()));
-    map.put("namespace", new NamespaceDirective());
+    map.put("namespace", generatorContext.getNamespace());
   }
 
   @Override
