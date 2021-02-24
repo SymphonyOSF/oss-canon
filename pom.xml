@@ -27,7 +27,7 @@
 
   <groupId>com.symphony.oss.canon</groupId>
 	<artifactId>oss-canon</artifactId>
-	<version>0.4.0</version>
+	<version>0.4.1-SNAPSHOT</version>
 	<packaging>pom</packaging>
 
 	<url>https://github.com/SymphonyOSF/oss-canon</url>
@@ -45,7 +45,7 @@
 		<connection>scm:git:git://github.com/SymphonyOSF/oss-canon.git</connection>
 		<developerConnection>scm:git:git@github.com:SymphonyOSF/oss-canon.git</developerConnection>
 		<url>https://github.com/SymphonyOSF/oss-canon</url>
-	  <tag>oss-canon-0.4.0</tag>
+	  <tag>HEAD</tag>
   </scm>
 
 	<developers>
