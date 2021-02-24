@@ -61,6 +61,8 @@ public abstract class AbstractRequestContext implements IRequestContext
 
   private Map<String, String>       pathMap_;
   private List<String>              errors_           = new LinkedList<>();
+  
+  protected boolean streaming_;
 
 
 
@@ -471,5 +473,11 @@ public abstract class AbstractRequestContext implements IRequestContext
     }
     
     return result;
+  }
+  
+  @Override
+  public void stopStreaming()
+  {
+    streaming_ = false;
   }
 }

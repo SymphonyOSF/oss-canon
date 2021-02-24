@@ -1,0 +1,24 @@
+{
+  "canon": "0.0.1",
+  "info": {
+    "title": "typedef example",
+    "license": {
+      "name": "Apache2"
+    }
+  },
+  "x-canon-id": "com.symphony.oss.canon2.test.typedef",
+  "x-canon-version": "1.0",
+  "x-canon-generators": {
+    "java": {
+      "genPackage":  "com.symphony.oss.canon2.test.typedef"
+    }
+  },
+  "components": {
+    "schemas": {   
+      "UserId": {
+        "type": "integer",
+        "format": "int64"
+      }
+    }
+  }
+}

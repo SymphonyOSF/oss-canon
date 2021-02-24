@@ -1,7 +1,7 @@
 /*
  *
  *
- * Copyright 2019 Symphony Communication Services, LLC.
+ * Copyright 2019-2020 Symphony Communication Services, LLC.
  *
  * Licensed to The Symphony Software Foundation (SSF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -23,7 +23,33 @@
 
 package com.symphony.oss.canon.runtime;
 
+import com.symphony.oss.canon.runtime.http.ICorsHandler;
+
+/**
+ * A container for request handlers.
+ * 
+ * Existing implementations are ModelServlet and AwsLambdaHandlerContainer.
+ * 
+ * @author Bruce Skingle
+ *
+ */
 public interface IHandlerContainer
 {
+  /**
+   * Add the given method handler.
+   * 
+   * @param handler A method handler.
+   * 
+   * @return This (fluent method).
+   */
   IHandlerContainer withHandler(IEntityHandler handler);
+
+  /**
+   * Set the CORS handler.
+   * 
+   * @param corsHandler A CORS Handler.
+   * 
+   * @return This (fluent method).
+   */
+  IHandlerContainer withCorsHandler(ICorsHandler corsHandler);
 }

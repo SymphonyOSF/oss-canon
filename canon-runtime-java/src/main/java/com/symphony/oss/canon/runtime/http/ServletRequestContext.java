@@ -25,7 +25,10 @@ package com.symphony.oss.canon.runtime.http;
 
 import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
+import java.io.Writer;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -143,5 +146,24 @@ public class ServletRequestContext extends AbstractRequestContext implements IAs
   public AsyncContext startAsync()
   {
     return request_.startAsync();
+  }
+
+  @Override
+  public Writer startStreaming() throws IOException
+  {
+    return getWriter();
+  }
+
+  @Override
+  public void stopStreaming()
+  {
+    streaming_ = false;
+    response_.reset();  
+  }
+
+  @Override
+  public Map<String, String> getStageVariables()
+  {
+    return null;
   }
 }
