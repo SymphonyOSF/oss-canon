@@ -54,17 +54,14 @@
     <dependency>
       <groupId>com.github.java-json-tools</groupId>
       <artifactId>json-schema-core</artifactId>
-      <version>1.2.8</version>
     </dependency>
     <dependency>
       <groupId>com.github.java-json-tools</groupId>
       <artifactId>json-schema-validator</artifactId>
-      <version>2.2.8</version>
     </dependency>
     <dependency>
       <groupId>org.freemarker</groupId>
       <artifactId>freemarker</artifactId>
-      <version>2.3.30</version>
     </dependency>
     
     <dependency>
