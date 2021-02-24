@@ -604,7 +604,13 @@ C extends CanonGenerator<T,M,S,O,A,P,F,C>.AbstractContext>
       
       S itemsModel = generateSchema(resolvedSchema.getResolvedItems(), model, arraySchema.asTemplateModel());
       
-      arraySchema.setElementType(itemsModel);
+      arraySchema.setElement(itemsModel);
+      
+      for(Entry<String, ResolvedSchema<?>> innerClassEntry : resolvedSchema.getInnerClasses().getResolvedProperties().entrySet())
+      {
+        S innerClass = generateSchema(innerClassEntry.getValue(), model, arraySchema.asTemplateModel());
+        arraySchema.addInnerClass(innerClassEntry.getKey(), innerClass);
+      }
       
       return arraySchema.asSchemaTemplateModel();
     }

@@ -175,6 +175,21 @@ public class JsonArray extends JsonDomNode implements Iterable<JsonDomNode>, IJs
      * 
      * @return This (fluent method).
      */
+    public T with(IJsonDomNodeProvider ...children)
+    {
+      for(IJsonDomNodeProvider child : children)
+        children_.add(child.getJson());
+      
+      return self();
+    }
+    
+    /**
+     * Add the given elements to the array.
+     * 
+     * @param children One or more elements to be added to the array.
+     * 
+     * @return This (fluent method).
+     */
     public T with(String ...children)
     {
       for(String child : children)

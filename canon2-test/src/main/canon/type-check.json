@@ -34,7 +34,8 @@
         "description": "An integer typedef.",
         "type": "integer",
         "minimum": 0,
-        "maximum": 7
+        "maximum": 7,
+        "exclusiveMaximum": true
       },
       "MessageId": {
         "type": "string",
@@ -49,7 +50,8 @@
         "type": "number",
         "format": "double",
         "minimum": -765546546547723.03330025,
-        "maximum": 7665465456464550000.00333025
+        "maximum": 7665465456464550000.00333025,
+        "exclusiveMaximum": true
       },
       "Colour": {
         "description": "An enumeration.",
@@ -127,6 +129,24 @@
         "items": {
           "description": "An integer element.",
           "type": "integer"
+        }
+      },
+      
+      "ListOfListOfInts": {
+        "description": "A list of lists of integers.",
+        "type": "array",
+        "x-canon-cardinality": "LIST",
+        "minItems": 1,
+        "maxItems": 5,
+        "items": {
+          "type": "array",
+          "x-canon-cardinality": "LIST",
+          "minItems": 1,
+          "maxItems": 5,
+          "items": {
+            "description": "An integer element.",
+            "type": "integer"
+          }
         }
       },
       
@@ -474,6 +494,15 @@
             "items": {
               "$ref": "#/components/schemas/Instant"
             }
+          },
+          "coordinates": {
+            "type": "array",
+            "items": {
+              "type": "number",
+              "format": "double"
+            },
+            "minItems": 2,
+            "maxItems": 2
           },
           "FundamentalIntTypedef": {
             "description": "An integer typedef.",

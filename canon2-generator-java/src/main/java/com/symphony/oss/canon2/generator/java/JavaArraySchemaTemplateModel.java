@@ -8,7 +8,10 @@ package com.symphony.oss.canon2.generator.java;
 
 import java.io.Writer;
 import java.math.BigInteger;
+import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import com.google.common.collect.ImmutableList;
 import com.symphony.oss.canon2.core.ResolvedArraySchema;
@@ -35,39 +38,60 @@ JavaOpenApiTemplateModel,
 JavaSchemaTemplateModel>
 {
   private static final List<String> ARRAY_TEMPLATES              = ImmutableList.of("Array");
+
+  private final String              simpleCollectionType_;
+  private final boolean             isInnerClass_;
+  private final boolean             isPrimitive_;
+  private final CanonCardinality    cardinality_;
+  private final String              fullyQualifiedType_;
+  private final MinItems            minItems_;
+  private final MaxItems            maxItems_;
+  private Map<String, JavaSchemaTemplateModel> innerClassMap_   = new HashMap<>();
   
   private final String              fullyQualifiedCollectionType_;
   private final String              fullyQualifiedCollectionImplType_;
   private final String              fullyQualifiedInitialiserType_;
   private final String              fullyQualifiedJsonInitialiserType_;
   private final String              fullyQualifiedCollectionImmutableType_;
-  
-  private JavaSchemaTemplateModel   elementType_;
 
-  private final CanonCardinality    cardinality_;
-
-  private final String              fullyQualifiedType_;
-  private String                    type_;
-  private String                    collectionImmutableType_;
+  private String                    collectionType_;
   private String                    collectionImplType_;
-  private final MinItems            minItems_;
-  private final MaxItems            maxItems_;
-
-
-
-
+  private String                    initialiserType_;
+  private String                    jsonInitialiserType_;
+  private String                    collectionImmutableType_;
+  
+  private String                    type_;
+  private JavaSchemaTemplateModel   element_;
+  
   
   JavaArraySchemaTemplateModel(JavaGenerator.Context generatorContext, ResolvedArraySchema resolvedSchema, String packageName, CanonCardinality cardinality, JavaOpenApiTemplateModel model, IJavaTemplateModel outerClass)
   {
     super(generatorContext, initIdentifier(generatorContext, resolvedSchema), resolvedSchema, packageName, SchemaTemplateModelType.ARRAY, model, outerClass, initTemplates(resolvedSchema));
     
     cardinality_ = cardinality;
-    fullyQualifiedType_ = getPackageName() + "." + getCamelCapitalizedName();
+    minItems_ = resolvedSchema.getSchema().getMinItems();
+    maxItems_ = resolvedSchema.getSchema().getMaxItems();
+//    fullyQualifiedType_ = getPackageName() + "." + getCamelCapitalizedName();
+    
+    if(resolvedSchema.isInnerClass() && outerClass != null)
+    {
+      fullyQualifiedType_ = outerClass.getFullyQualifiedType() + "." + getCamelCapitalizedName();
+      isInnerClass_ = true;
+    }
+    else
+    {
+      fullyQualifiedType_ = getPackageName() + "." + getCamelCapitalizedName();
+      isInnerClass_ = false;
+    }
+    
+    isPrimitive_ = getHasLimits() == false && Boolean.TRUE != resolvedSchema.getSchema().getXCanonFacade(); 
+    
     fullyQualifiedJsonInitialiserType_ = "com.symphony.oss.canon2.runtime.java.IArrayEntityInitialiser";
 
     switch(cardinality_)
     {
       case SET:
+        simpleCollectionType_ = "Set";
         fullyQualifiedCollectionType_ = "java.util.Set";
         fullyQualifiedCollectionImplType_ = "java.util.HashSet";
         fullyQualifiedCollectionImmutableType_ = "com.google.common.collect.ImmutableSet";
@@ -75,6 +99,7 @@ JavaSchemaTemplateModel>
         break;
         
       case LIST:
+        simpleCollectionType_ = "List";
         fullyQualifiedCollectionType_ = "java.util.List";
         fullyQualifiedCollectionImplType_ = "java.util.LinkedList";
         fullyQualifiedCollectionImmutableType_ = "com.google.common.collect.ImmutableList";
@@ -91,13 +116,15 @@ JavaSchemaTemplateModel>
     
     setImport(packageName,  getCamelCapitalizedName());
     
-    minItems_ = resolvedSchema.getSchema().getMinItems();
-    maxItems_ = resolvedSchema.getSchema().getMaxItems();
   }
 
   private static List<String> initTemplates(ResolvedArraySchema resolvedSchema)
   {
-    if(resolvedSchema.isInnerClass() || resolvedSchema.getResolvedOpenApiObject().isReferencedModel())
+    if(
+        (resolvedSchema.getSchema().getMinItems() == null && 
+            resolvedSchema.getSchema().getMinItems() == null && 
+            Boolean.TRUE != resolvedSchema.getSchema().getXCanonFacade()) ||
+        resolvedSchema.isInnerClass() || resolvedSchema.getResolvedOpenApiObject().isReferencedModel())
     {
       return EMPTY_TEMPLATES;
     }
@@ -109,7 +136,9 @@ JavaSchemaTemplateModel>
 
   private static String initIdentifier(Context generatorContext, ResolvedArraySchema resolvedSchema)
   {
-    if(resolvedSchema.isInnerClass() || resolvedSchema.getResolvedOpenApiObject().isReferencedModel())
+    if(
+        //resolvedSchema.isInnerClass() ||
+        resolvedSchema.getResolvedOpenApiObject().isReferencedModel())
     {
       return resolvedSchema.getName(); // not generating for this so we don't care if the identifier is valid.
     }
@@ -123,17 +152,38 @@ JavaSchemaTemplateModel>
   public void validate(SourceContext sourceContext)
   {
   }
+
+  @Override
+  public void addInnerClass(String name, JavaSchemaTemplateModel innerClass)
+  {
+    innerClassMap_.put(name, innerClass);
+  }
   
   @Override
   public String getConstructor(String args)
   {
-    return "new " + collectionImplType_ + "(" + args + ")";
+    if(getHasLimits())
+    {
+      return "new " + getType() + "(" + args + ") /* ARRAY_CONSTRUCT */";
+    }
+    else
+    {
+      return getCollectionImmutableType() + ".copyOf(" + args + ") /* ARRAY_CONSTRUCT */";
+    }
+    //return "new " + getCollectionImplType() + "(" + args + ") /* ARRAY_CONSTRUCT */";
   }
 
   @Override
   public String getCopy(String args)
   {
-    return collectionImmutableType_ + ".copyOf(" + args + ")";
+    if(getHasLimits())
+    {
+      return args;
+    }
+    else
+    {
+      return getCollectionImmutableType() + ".copyOf(" + args + ")";
+    }
   }
 
   @Override
@@ -150,11 +200,17 @@ JavaSchemaTemplateModel>
   @Override
   public void resolve(INamespace namespace, Writer writer)
   {
-    type_                     = namespace.resolveImport(fullyQualifiedType_, writer);
-    collectionImmutableType_  = namespace.resolveImport(fullyQualifiedCollectionImmutableType_, writer);
-    collectionImplType_       = namespace.resolveImport(fullyQualifiedCollectionImplType_, writer);
+    super.resolve(namespace, writer);
     
-    elementType_.resolve(namespace, writer);
+    type_ = null;
+    
+    collectionType_           = null;
+    collectionImplType_       = null;
+    initialiserType_          = null;
+    jsonInitialiserType_      = null;
+    collectionImmutableType_  = null;
+    
+    element_.resolve(namespace, writer);
   }
 
   /**
@@ -167,41 +223,41 @@ JavaSchemaTemplateModel>
     return "Entity";
   }
 
-  public String getFullyQualifiedElementType()
-  {
-    return elementType_.getFullyQualifiedType();
-  }
-
-  public String getFullyQualifiedCollectionType()
-  {
-    return fullyQualifiedCollectionType_;
-  }
-
-  public String getFullyQualifiedCollectionImplType()
-  {
-    return fullyQualifiedCollectionImplType_;
-  }
-
-  public String getFullyQualifiedCollectionImmutableType()
-  {
-    return fullyQualifiedCollectionImmutableType_;
-  }
-
-  public String getFullyQualifiedJsonInitialiserType()
-  {
-    return fullyQualifiedJsonInitialiserType_;
-  }
+//  public String getFullyQualifiedElementType()
+//  {
+//    return element_.getFullyQualifiedType();
+//  }
+//
+//  public String getFullyQualifiedCollectionType()
+//  {
+//    return fullyQualifiedCollectionType_;
+//  }
+//
+//  public String getFullyQualifiedCollectionImplType()
+//  {
+//    return fullyQualifiedCollectionImplType_;
+//  }
+//
+//  public String getFullyQualifiedCollectionImmutableType()
+//  {
+//    return fullyQualifiedCollectionImmutableType_;
+//  }
+//
+//  public String getFullyQualifiedJsonInitialiserType()
+//  {
+//    return fullyQualifiedJsonInitialiserType_;
+//  }
 
   @Override
-  public void setElementType(JavaSchemaTemplateModel elementType)
+  public void setElement(JavaSchemaTemplateModel element)
   {
-    elementType_ = elementType;
+    element_ = element;
     
 //    fullyQualifiedElementType_ = 
     
-    setImport(elementType.getImport());
-    if(elementType.getLEGACYPackageName() != null && !getLEGACYPackageName().equals(elementType.getLEGACYPackageName()))
-      addImport(elementType.getImport());
+    setImport(element.getImport());
+    if(element.getLEGACYPackageName() != null && !getLEGACYPackageName().equals(element.getLEGACYPackageName()))
+      addImport(element.getImport());
     
 //    switch(cardinality_)
 //    {
@@ -229,7 +285,7 @@ JavaSchemaTemplateModel>
   }
 
   @Override
-  public String getFullyQualifiedJsonNodeType()
+  protected String getFullyQualifiedJsonNodeType()
   {
     return "com.symphony.oss.canon.json.model.JsonArray";
   }
@@ -237,7 +293,10 @@ JavaSchemaTemplateModel>
   @Override
   public String getBuilderTypeNew()
   {
-    return "new " + collectionImplType_ + "<" + type_ + ">()";
+    if(isPrimitive_)
+      return " = new " + getCollectionImplType() + "<" + getElement().getType() + ">()";
+    else
+      return "";
   }
 
   @Override
@@ -285,9 +344,9 @@ JavaSchemaTemplateModel>
   }
 
   @Override
-  public JavaSchemaTemplateModel getElementType()
+  public JavaSchemaTemplateModel getElement()
   {
-    return elementType_;
+    return element_;
   }
 
   @Override
@@ -299,7 +358,86 @@ JavaSchemaTemplateModel>
   @Override
   public String getType()
   {
+    if(type_ == null)
+    {
+      if(isPrimitive_)
+      {
+        type_ = getCollectionType() + "<" + getElement().getType() + ">";
+      }
+      else
+      {
+        if(isInnerClass_)
+        {
+          type_ = getOuterClass().getType() + "." + getCamelCapitalizedName();
+        }
+        else
+        {
+          type_ = namespace_.resolveImport(fullyQualifiedType_, namespaceWriter_);
+        }
+      }
+    }
     return type_;
+  }
+  
+  public String getCollectionImmutableType()
+  {
+    if(collectionImmutableType_ == null)
+      collectionImmutableType_ = namespace_.resolveImport(fullyQualifiedCollectionImmutableType_, namespaceWriter_);
+    
+    return collectionImmutableType_;
+  }
+
+  public String getCollectionImplType()
+  {
+    if(collectionImplType_ == null)
+      collectionImplType_ = namespace_.resolveImport(fullyQualifiedCollectionImplType_, namespaceWriter_);
+    
+    return collectionImplType_;
+  }
+
+  public String getCollectionType()
+  {
+    if(collectionType_ == null)
+      collectionType_ = namespace_.resolveImport(fullyQualifiedCollectionType_, namespaceWriter_);
+    
+    return collectionType_;
+  }
+
+  public String getJsonInitialiserType()
+  {
+    if(jsonInitialiserType_ == null)
+      jsonInitialiserType_ = namespace_.resolveImport(fullyQualifiedJsonInitialiserType_, namespaceWriter_);
+    
+    return jsonInitialiserType_;
+  }
+
+  public String getInitialiserType()
+  {
+    if(initialiserType_ == null)
+      initialiserType_ = namespace_.resolveImport(fullyQualifiedInitialiserType_, namespaceWriter_);
+    
+    return initialiserType_;
+  }
+
+  public String getSimpleCollectionType()
+  {
+    return simpleCollectionType_;
+  }
+
+  public boolean getAdditionalPropertiesAllowed()
+  {
+    return false;
+  }
+
+  public boolean getIsPrimitive()
+  {
+    return isPrimitive_;
+  }
+
+  @Override
+  public Collection<JavaSchemaTemplateModel> getInnerClasses()
+  {
+    return innerClassMap_.values();
   }
   
 //  @Override

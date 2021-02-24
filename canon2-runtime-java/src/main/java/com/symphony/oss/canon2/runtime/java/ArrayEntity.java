@@ -25,6 +25,7 @@ package com.symphony.oss.canon2.runtime.java;
 
 import java.io.StringReader;
 
+import com.google.common.collect.ImmutableList;
 import com.symphony.oss.canon.json.JsonParser;
 import com.symphony.oss.canon.json.ParserResultException;
 import com.symphony.oss.canon.json.model.IJsonArrayProvider;
@@ -110,6 +111,8 @@ public class ArrayEntity extends Entity implements IJsonArrayProvider
     extends BaseEntity.AbstractBuilder<JsonArray, T,B>
     implements IArrayEntityInitialiser
   {
+//    private static final ImmutableList<Entity> UNKNOWN_ELEMENTS = ImmutableList.of();
+
     /**
      * Constructor.
      * 
@@ -175,8 +178,15 @@ public class ArrayEntity extends Entity implements IJsonArrayProvider
 //      return 0;
 //    }
 
-//    @Override
-//    public abstract JsonArray getJsonArray();
+    @Override
+    public JsonArray getJson()
+    {
+      JsonArray.Builder builder = new JsonArray.Builder();
+      
+      populateJson(builder);
+      
+      return builder.build();
+    }
 
     /**
      * Populate the given JsonArray.Builder with all attributes.
@@ -185,9 +195,12 @@ public class ArrayEntity extends Entity implements IJsonArrayProvider
      * 
      * @param builder a JsonArray.Builder.
      */
-    protected void populateJson(JsonArray.Builder builder)
-    {
-    }
+    protected abstract void populateJson(JsonArray.Builder builder);
+
+//    public ImmutableList<Entity> getCanonUnknownElements()
+//    {
+//      return UNKNOWN_ELEMENTS;
+//    }
     
 //    /**
 //     * Initialize this builder with the values from the given serialized form.

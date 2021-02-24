@@ -15,7 +15,6 @@ import com.symphony.oss.canon2.generator.INamespace;
 import com.symphony.oss.canon2.generator.IPrimitiveSchemaTemplateModel;
 import com.symphony.oss.canon2.generator.java.JavaGenerator.Context;
 import com.symphony.oss.canon2.model.CanonAttributes;
-import com.symphony.oss.commons.fault.CodingFault;
 
 /**
  * Java template model for primitive types number, integer, boolean, string.
@@ -29,23 +28,24 @@ IJavaTemplateModel,
 JavaOpenApiTemplateModel,
 JavaSchemaTemplateModel>
 {
-  enum PrimitiveType {GENERATED, EXTERNAL, PRIMITIVE};
-  
-  private final String  fullyQualifiedJavaType_;
-  private final String  simpleJavaType_;
+  private final String  fullyQualifiedExternalType_;
+  private final String  fullyQualifiedPersistedType_;
+  private final String  simplePersistedType_;
   private final String  fullyQualifiedType_;
 //  private final String  constructPrefix_;
 //  private final String  fullyQualifiedConstructPrefix_;
 //  private final String  constructSuffix_;
 //  private final String  getValuePrefix_;
 //  private final String  getValueSuffix_;
-  private final String  fullyQualifiedExternalType_;
+//  private final String  fullyQualifiedExternalType_;
   private final String fullyQualifiedBuilderType_;
   private final boolean hasLimits_;
   private final boolean isInnerClass_;
-  private final PrimitiveType primitiveType_;
+  private final boolean isGenerated_;
 
   private String        type_;
+  private String        externalType_;
+  private String        persistedType_;
   private String        builderType_;
 
   JavaPrimitiveSchemaTemplateModel(JavaGenerator.Context generatorContext, String identifier, ResolvedPrimitiveSchema<?> resolvedSchema,
@@ -55,67 +55,69 @@ JavaSchemaTemplateModel>
     super(generatorContext, identifier, resolvedSchema, packageName, resolvedSchema.getSchemaType(), model, outerClass, templates);
     
     hasLimits_ = resolvedSchema.hasLimits();
-    fullyQualifiedJavaType_ = javaTypePackageName + "." + javaType;
-    simpleJavaType_ = javaType;
+    fullyQualifiedPersistedType_ = javaTypePackageName + "." + javaType;
+    simplePersistedType_ = javaType;
 
     CanonAttributes attr = resolvedSchema.getSchema().getXCanonAttributes();
     
     if(attr != null)
     {
       fullyQualifiedExternalType_ = attr.getJson().getString("javaExternalType", null);
+      fullyQualifiedBuilderType_ = packageName + "." + getCamelCapitalizedName() + getCanonIdString() + "Builder";
     }
     else
     {
       fullyQualifiedExternalType_ = null;
+      fullyQualifiedBuilderType_ = null;
     }
     
     isInnerClass_ = resolvedSchema.isInnerClass();
     
-    if(hasLimits_ || requiresGeneration || !isInnerClass_)
+    isGenerated_ = hasLimits_ || requiresGeneration || !isInnerClass_;
+    
+    if(isGenerated_)
     {
-      primitiveType_ = PrimitiveType.GENERATED;
       fullyQualifiedType_ = packageName + "." + initType(generatorContext, resolvedSchema);
-      fullyQualifiedBuilderType_ = null;
-      
-//      fullyQualifiedConstructPrefix = "new " + packageName + "." + getCamelCapitalizedName() + "(";
-//      getValueSuffix = ".getValue()";
     }
-    else if(fullyQualifiedExternalType_ == null)
+    else if(fullyQualifiedExternalType_ != null)
     {
-      primitiveType_ = PrimitiveType.PRIMITIVE;
-      fullyQualifiedType_ = fullyQualifiedJavaType_;
-      fullyQualifiedBuilderType_ = null;
-      
-//      getValueSuffix = ".to" + javaType + "()";
+      fullyQualifiedType_ =  fullyQualifiedExternalType_;
     }
     else
     {
-      primitiveType_ = PrimitiveType.EXTERNAL;
-      fullyQualifiedType_ =  fullyQualifiedExternalType_;
-      fullyQualifiedBuilderType_ = packageName + "." + getCamelCapitalizedName() + getCanonIdString() + "Builder";
-//      getValuePrefix = getCamelCapitalizedName() + getCanonIdString() + "Builder.to" + javaType + "(";
-//      getValueSuffix = ")";
+      fullyQualifiedType_ = fullyQualifiedPersistedType_;
     }
   }
   
 
 
-//  @Override
+  @Override
   public String getValue(String args)
   {
-    switch(primitiveType_)
+    if(isGenerated_)
     {
-      case GENERATED:
-        return args + ".getValue()";
-        
-      case PRIMITIVE:
-        return args + ".to" + simpleJavaType_ + "()";
-        
-      case EXTERNAL:
-        return builderType_ + ".to" + simpleJavaType_ + "(" + args + ")";
-        
-      default:
-        throw new CodingFault("Unknown primitive type " + primitiveType_);
+      return args + ".getValue()";
+    }
+    else if(fullyQualifiedExternalType_ != null)
+    {
+      return getBuilderType() + ".to" + simplePersistedType_ + "(" + args + ")";
+    }
+    else
+    {
+      return args;
+    }
+  }
+  
+  @Override
+  public String getPersistedValue(String args)
+  {
+    if(isGenerated_ && fullyQualifiedExternalType_ != null)
+    {
+      return getBuilderType() + ".to" + simplePersistedType_ + "(" + args + ".getValue())";
+    }
+    else
+    {
+      return getValue(args);
     }
   }
       
@@ -123,117 +125,27 @@ JavaSchemaTemplateModel>
   @Override
   public String getConstructor(String args)
   {
-    switch(primitiveType_)
+    if(isGenerated_)
     {
-      case GENERATED:
-        return "new " + getType() + "(" + args + ")";
-        
-      case PRIMITIVE:
-        return args;
-        
-      case EXTERNAL:
-        return builderType_ + ".build(" + args + ")";
-        
-      default:
-        throw new CodingFault("Unknown primitive type " + primitiveType_);
+      return "new " + getType() + "(" + args + ")";
+    }
+    else if(fullyQualifiedExternalType_ != null)
+    {
+      return getBuilderType() + ".build(" + args + ")";
+    }
+    else
+    {
+      return args;
     }
   }
       
-      
-      
-      
-      
-      
-
-//      if(resolvedSchema.isInnerClass())
-//      {
-//
-//        fullyQualifiedType_ = 
-//        constructPrefix = getCamelCapitalizedName() + getCanonIdString() + "Builder.build(";
-//        getValuePrefix = getCamelCapitalizedName() + getCanonIdString() + "Builder.to" + javaType + "(";
-//        getValueSuffix = ")";
-//      }
-//      else
-//      {
-//      }
-//    }
-//    
-//    
-//    
-//    
-//    
-//    
-//    else
-//    {
-//      if(
-////          !resolvedSchema.isInnerClass() || 
-//          hasLimits_ || requiresGeneration) //resolvedSchema.isGenerated())
-//      {
-//        isInnerClass_ = resolvedSchema.isInnerClass();
-//        fullyQualifiedType_ = packageName + "." + initType(generatorContext, resolvedSchema);
-//
-//        constructPrefix = "new " + getType() + "(";
-//        fullyQualifiedConstructPrefix = "new " + getImport() + "(";
-//        getValueSuffix = ".getValue()";
-//      }
-//      else
-//      {
-//        isInnerClass_ = false;
-//        fullyQualifiedType_ = javaTypePackageName + "." + javaType;
-//      }
-//      fullyQualifiedExternalType_ = null;
-//    }
-    
-    
-
-    
-//    imports_.add("com.symphony.oss.commons.type.provider.I" + javaType_ + "Provider");
-//    switch(resolvedSchema.getSchema().getType())
-//    {
-//      case "string":
-//        jsonNodeType_ = "JsonString";
-//        break;
-//        
-//      case "boolean":
-//        jsonNodeType_ = "JsonBoolean";
-//        break;
-//        
-//      default:
-//        jsonNodeType_ = "JsonParsedNumber";
-//    }
-    
-    
-    
-
-    
-//    if(!valueMap.isEmpty())
-//      constructPrefix = "new " + getType() + "(";
-    
-//    for(String template : templates)
-//    {
-//      switch(template)
-//      {
-//        case "TypeDef":
-////          imports_.add("com.symphony.oss.canon2.runtime.java.TypeDef");
-//          constructPrefix = "new " + getType() + "(";
-//          break;
-//      }
-//    }
-    
-    
-//    if(constructPrefix == null)
-//    {
-//      fullyQualifiedConstructPrefix_ = constructPrefix_ = constructSuffix_ = "";
-//    }
-//    else
-//    {
-//      fullyQualifiedConstructPrefix_  = fullyQualifiedConstructPrefix;
-//      constructPrefix_                = constructPrefix;
-//      constructSuffix_                = ")";
-//    }
-//    getValuePrefix_ = getValuePrefix;
-//    getValueSuffix_ = getValueSuffix;
-//  }
+  public String getValueConstructor(String args)
+  {
+    if(fullyQualifiedExternalType_ != null)
+      return getBuilderType() + ".build(" + args + ")" + " /* trace 1 */";
+    else
+      return args + " /* trace 2 */";
+  }
   
   private String initType(Context generatorContext, ResolvedPrimitiveSchema<?> resolvedSchema)
   {
@@ -248,16 +160,71 @@ JavaSchemaTemplateModel>
   @Override
   public void resolve(INamespace namespace, Writer writer)
   {
-    if(isInnerClass_)
+    super.resolve(namespace, writer);
+    
+    type_ = null;
+    builderType_ = null;
+  }
+
+  @Override
+  public String getType()
+  {
+    if(type_ == null)
     {
-      type_ = getOuterClass().getType() + "." + getCamelCapitalizedName();
+      if(isInnerClass_ && isGenerated_)
+      {
+        type_ = getOuterClass().getType() + "." + getCamelCapitalizedName();
+      }
+      else
+      {
+        type_ = namespace_.resolveImport(fullyQualifiedType_, namespaceWriter_);
+      }
     }
+    return type_;
+  }
+  
+  @Override
+  public boolean getIsTypedef()
+  {
+    return isGenerated_;
+  }
+  
+  public String getExternalType()
+  {
+    if(externalType_ == null && fullyQualifiedExternalType_ != null)
+    {
+      externalType_ = namespace_.resolveImport(fullyQualifiedExternalType_, namespaceWriter_);
+    }
+    
+    return externalType_;
+  }
+  
+  public String getPersistedType()
+  {
+    if(persistedType_ == null)
+    {
+      persistedType_ = namespace_.resolveImport(fullyQualifiedPersistedType_, namespaceWriter_);
+    }
+    
+    return persistedType_;
+  }
+  
+  public String getJavaType()
+  {
+    if(fullyQualifiedExternalType_ != null)
+      return getExternalType();
     else
+      return getPersistedType();
+  }
+  
+  private String getBuilderType()
+  {
+    if(builderType_ == null && fullyQualifiedBuilderType_ != null)
     {
-      type_ = namespace.resolveImport(fullyQualifiedType_, writer);
+      builderType_ = namespace_.resolveImport(fullyQualifiedBuilderType_, namespaceWriter_);
     }
-    if(fullyQualifiedBuilderType_ != null)
-      builderType_ = namespace.resolveImport(fullyQualifiedBuilderType_, writer);
+    
+    return builderType_;
   }
 
   @Override
@@ -270,16 +237,15 @@ JavaSchemaTemplateModel>
   {
     return hasLimits_;
   }
-  
 
   /**
    * Return the Java type of this schema.
    * 
    * @return the Java type of this schema.
    */
-  public String getSimpleJavaType()
+  public String getSimplePersistedType()
   {
-    return simpleJavaType_;
+    return simplePersistedType_;
   }
 
   /**
@@ -289,7 +255,7 @@ JavaSchemaTemplateModel>
    */
   public final String getFullyQualifiedJavaType()
   {
-    return fullyQualifiedJavaType_;
+    return fullyQualifiedPersistedType_;
   }
 
 //  private String initType(Schema entity)
@@ -411,17 +377,10 @@ JavaSchemaTemplateModel>
 //    
 //    return false;
 //  }
-
   @Override
   public String getFullyQualifiedType()
   {
     return fullyQualifiedType_;
-  }
-
-  @Override
-  public String getType()
-  {
-    return type_;
   }
 
   @Override
@@ -494,10 +453,10 @@ JavaSchemaTemplateModel>
 //    return exclusiveMaximum_;
 //  }
 
-  public String getFullyQualifiedExternalType()
-  {
-    return fullyQualifiedExternalType_;
-  }
+//  public String getFullyQualifiedExternalType()
+//  {
+//    return fullyQualifiedExternalType_;
+//  }
   
   /**
    * Construct an instance of javaType from a string constant.
@@ -508,11 +467,11 @@ JavaSchemaTemplateModel>
    */
   public String constructConstant(String value)
   {
-    switch(fullyQualifiedJavaType_)
+    switch(fullyQualifiedPersistedType_)
     {
       case "java.math.BigInteger":
       case "java.math.BigDecimal":
-        return "new " + fullyQualifiedJavaType_ + "(\"" + value + "\")";
+        return "new " + fullyQualifiedPersistedType_ + "(\"" + value + "\")";
       
       case "java.lang.Long":
         return value + "L";

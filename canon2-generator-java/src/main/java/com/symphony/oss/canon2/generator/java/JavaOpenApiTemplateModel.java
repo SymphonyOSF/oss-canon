@@ -56,7 +56,9 @@ implements IJavaTemplateModel
   
   JavaOpenApiTemplateModel(JavaGenerator.Context generatorContext, ResolvedOpenApiObject resolvedOpenApiObject, String packageName)
   {
-    super(generatorContext, generatorContext.getJavaIdentifier(resolvedOpenApiObject, false, false) + generatorContext.getCanonIdString() + "Model",
+    super(generatorContext, generatorContext.getJavaIdentifier(resolvedOpenApiObject, false, false)
+        //+ generatorContext.getCanonIdString() + "Model"
+        ,
         resolvedOpenApiObject, MODEL_TEMPLATES);
     
     packageName_ = packageName;

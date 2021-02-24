@@ -22,7 +22,6 @@ import java.util.Collection;
 import java.util.Collections;
 
 import com.symphony.oss.canon2.model.CanonCardinality;
-import com.symphony.oss.canon2.model.SchemaType;
 
 public interface IArraySchemaTemplateModel<
   T extends ITemplateModel<T,M,S>,
@@ -41,13 +40,15 @@ public interface IArraySchemaTemplateModel<
    */
   S asSchemaTemplateModel();
 
-  void setElementType(S elementType);
-  S getElementType();
+  void setElement(S elementType);
+  S getElement();
+  
+  void addInnerClass(String name, S innerClass);
   
   @Override
   default Collection<T> getChildren()
   {
-    return (Collection<T>) Collections.singleton(getElementType());
+    return (Collection<T>) Collections.singleton(getElement());
   }
 
 //  @Override

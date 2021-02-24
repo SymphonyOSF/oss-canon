@@ -67,7 +67,7 @@ public class NumberSchema extends NumberSchema_Entity implements IPrimitiveSchem
 
   @Override
   public void link(SingletonBuilder openApiObjectBuilder, CanonModelContext modelContext, SourceContext sourceContext,
-      Consumer<ResolvedSchema.AbstractBuilder<? extends ISchemaInstance,?,?>> builderConsumer, String uri)
+      Consumer<ResolvedSchema.AbstractBuilder<? extends ISchemaInstance,?,?>> builderConsumer, String uri, int depth)
   {
     switch(getType())
     {
@@ -144,7 +144,7 @@ public class NumberSchema extends NumberSchema_Entity implements IPrimitiveSchem
     builder
       .withSchema(this)
       .withMinimum(getJson().get("minimum"))
-      //.withExclusiveMinimum(getExclusiveMinimum())
+      //.withExclusiveMinimum(getExclusiveMinimum()) TODO: add exclusiveMin and Max to canon.json NumberSchema and then put this back
       .withMaximum(getJson().get("maximum"))
       //.withExclusiveMaximum(getExclusiveMaximum())
       ;

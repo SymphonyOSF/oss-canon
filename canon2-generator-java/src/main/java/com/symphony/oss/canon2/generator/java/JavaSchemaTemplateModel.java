@@ -18,6 +18,7 @@
 
 package com.symphony.oss.canon2.generator.java;
 
+import java.io.Writer;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -29,6 +30,7 @@ import java.util.TreeSet;
 import com.google.common.collect.ImmutableList;
 import com.symphony.oss.canon2.core.ResolvedSchema;
 import com.symphony.oss.canon2.core.SchemaTemplateModelType;
+import com.symphony.oss.canon2.generator.INamespace;
 import com.symphony.oss.canon2.generator.SchemaTemplateModel;
 
 /**
@@ -62,6 +64,8 @@ implements IJavaTemplateModel
       "java.util"
   };
   
+  protected INamespace                namespace_;
+  protected Writer                    namespaceWriter_;
 
   private final String                               packageName_;
   private final boolean                              generateFacade_;
@@ -78,6 +82,7 @@ implements IJavaTemplateModel
   /** import needed by classes which reference this schema */
   @Deprecated
   private String import_;
+  private String jsonNodeType_;
 
   
   JavaSchemaTemplateModel(JavaGenerator.Context generatorContext, 
@@ -295,9 +300,19 @@ implements IJavaTemplateModel
     return args;
   }
   
+  public String getPersistedValue(String args)
+  {
+      return getValue(args);
+  }
+  
   public String getCopy(String args)
   {
     return args;
+  }
+  
+  public boolean getIsTypedef()
+  {
+    return false;
   }
 
 //  public final String getConstructPrefix()
@@ -309,13 +324,40 @@ implements IJavaTemplateModel
 //  {
 //    return "";
 //  }
+  
+  @Override
+  public void resolve(INamespace namespace, Writer writer)
+  {
+    namespace_ = namespace;
+    namespaceWriter_ = writer;
+    
+    jsonNodeType_  = null;
+  }
 
-  public abstract String getFullyQualifiedJsonNodeType();
+  protected abstract String getFullyQualifiedJsonNodeType();
+  
+  /**
+   * Return the imported Json Node type for the serialised form of this entity.
+   * 
+   * @return the imported Json Node type for the serialised form of this entity.
+   */
+  public String getJsonNodeType()
+  {
+    if(jsonNodeType_ == null)
+      jsonNodeType_ = namespace_.resolveImport(getFullyQualifiedJsonNodeType(), namespaceWriter_);
+    
+    return jsonNodeType_;
+  }
   
 //  public abstract String getCopyPrefix();
 //
 //  public abstract String getCopySuffix();
 
+  /**
+   * Return the statement to create an empty instance of the mutable form of this type for use in a builder.
+   * 
+   * @return the statement to create an empty instance of the mutable form of this type for use in a builder.
+   */
   public String getBuilderTypeNew()
   {
     return "";

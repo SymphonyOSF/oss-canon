@@ -65,13 +65,13 @@ public class ComponentsObject extends ComponentsObject_Entity
     throw new IllegalArgumentException("No path element " + parts[index]);
   }
 
-  public ResolvedComponentsObject.SingletonBuilder link(ResolvedOpenApiObject.SingletonBuilder openApiObjectBuilder, CanonModelContext modelContext, SourceContext sourceContext, String uri)
+  public ResolvedComponentsObject.SingletonBuilder link(ResolvedOpenApiObject.SingletonBuilder openApiObjectBuilder, CanonModelContext modelContext, SourceContext sourceContext, String uri, int depth)
   {
     ResolvedComponentsObject.SingletonBuilder builder = new ResolvedComponentsObject.SingletonBuilder();
     
     if(getSchemas() != null)
     {
-      builder.withSchemas(getSchemas().link(openApiObjectBuilder, modelContext, sourceContext, uri + "/schemas"));
+      builder.withSchemas(getSchemas().link(openApiObjectBuilder, modelContext, sourceContext, uri + "/schemas", depth));
     }
     
     return builder;

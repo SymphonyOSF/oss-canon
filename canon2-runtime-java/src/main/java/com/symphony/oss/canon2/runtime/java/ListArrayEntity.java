@@ -24,6 +24,9 @@
 package com.symphony.oss.canon2.runtime.java;
 
 import java.io.StringReader;
+import java.util.Iterator;
+import java.util.Spliterator;
+import java.util.function.Consumer;
 
 import com.google.common.collect.ImmutableList;
 import com.symphony.oss.canon.json.ParserResultException;
@@ -39,7 +42,7 @@ import com.symphony.oss.canon.json.model.JsonDomNode;
  * @author Bruce Skingle
  *
  */
-public class ListArrayEntity<E> extends ArrayEntity implements IJsonArrayProvider
+public class ListArrayEntity<E> extends ArrayEntity implements IJsonArrayProvider, Iterable<E>
 {
   private final ImmutableList<E>      elements_;
   private final ImmutableList<Entity> unknownElements_;
@@ -67,6 +70,24 @@ public class ListArrayEntity<E> extends ArrayEntity implements IJsonArrayProvide
     return elements_;
   }
   
+  @Override
+  public Iterator<E> iterator()
+  {
+    return elements_.iterator();
+  }
+
+  @Override
+  public void forEach(Consumer<? super E> action)
+  {
+    elements_.forEach(action);
+  }
+
+  @Override
+  public Spliterator<E> spliterator()
+  {
+    return elements_.spliterator();
+  }
+
   /**
    * The set of keys present in the JSON from which this object was deserialized which are not defined by
    * the schema. In the case where an object extends some other object the super-class unknown keys will include
@@ -109,8 +130,10 @@ public class ListArrayEntity<E> extends ArrayEntity implements IJsonArrayProvide
    */
   public static abstract class AbstractBuilder<E, T extends AbstractBuilder<E,T,B>, B extends ListArrayEntity<E>>
     extends ArrayEntity.AbstractBuilder<T,B>
-    implements IListArrayEntityInitialiser<T>
+    //implements IListArrayEntityInitialiser<T>
   {
+    private static final ImmutableList<Entity> UNKNOWN_ELEMENTS = ImmutableList.of();
+
     /**
      * Constructor.
      * 
@@ -133,23 +156,23 @@ public class ListArrayEntity<E> extends ArrayEntity implements IJsonArrayProvide
     }
 
     // TODO: perhaps if withValues has been set this should return a non-empty set, if there were unknown keys in the object given.
-    @Override
+    //@Override
     public ImmutableList<Entity> getCanonUnknownElements()
     {
-      return ImmutableList.of();
+      return UNKNOWN_ELEMENTS;
     }
     
-    /**
-     * Populate the given JsonArray.Builder with all attributes.
-     * 
-     * This method is called from generated code by super.populateJson(builder).
-     * 
-     * @param builder a JsonArray.Builder.
-     */
-    @Override
-    protected void populateJson(JsonArray.Builder builder)
-    {
-      super.populateJson(builder);
-    }
+//    /**
+//     * Populate the given JsonArray.Builder with all attributes.
+//     * 
+//     * This method is called from generated code by super.populateJson(builder).
+//     * 
+//     * @param builder a JsonArray.Builder.
+//     */
+//    @Override
+//    protected void populateJson(JsonArray.Builder builder)
+//    {
+//      super.populateJson(builder);
+//    }
   }
 }

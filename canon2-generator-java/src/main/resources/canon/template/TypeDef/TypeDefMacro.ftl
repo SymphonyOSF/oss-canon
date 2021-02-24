@@ -1,6 +1,4 @@
 <#macro generateTypeDef indent model entity className classModifier>
-<@namespace name="jsonNodeType" import=entity.fullyQualifiedJsonNodeType/>
-<@namespace name="javaType" import=entity.fullyQualifiedJavaType/>
 <@namespace name="Nonnull" import="javax.annotation.Nonnull"/>
 ${indent}/**
 ${indent} * TypeDef implementation for ${model.name}.${entity.name}
@@ -21,7 +19,7 @@ ${indent}public ${classModifier}class ${className} extends <@namespace import="c
 ${indent}{
   <#if entity.minimum??>
 ${indent}  /** Minimum value */
-${indent}  public static final ${javaType?right_pad(20)} MINIMUM           = ${entity.constructConstant(entity.minimum)};
+${indent}  public static final ${entity.javaType?right_pad(20)} MINIMUM           = ${entity.constructConstant(entity.minimum)};
 ${indent}  /** Minimum value is exclusive */
     <#if entity.exclusiveMinimum>
 ${indent}  public static final boolean              EXCLUSIVE_MINIMUM = true;
@@ -31,7 +29,7 @@ ${indent}  public static final boolean              EXCLUSIVE_MINIMUM = false;
   </#if>
   <#if entity.maximum??>
 ${indent}  /** Maximum value */
-${indent}  public static final ${javaType?right_pad(20)} MAXIMUM           = ${entity.constructConstant(entity.maximum)};
+${indent}  public static final ${entity.javaType?right_pad(20)} MAXIMUM           = ${entity.constructConstant(entity.maximum)};
 ${indent}  /** Maximum value is exclusive */
     <#if entity.exclusiveMaximum>
 ${indent}  public static final boolean              EXCLUSIVE_MAXIMUM = true;
@@ -42,15 +40,15 @@ ${indent}
   </#if>
 ${indent}  @Deprecated
 ${indent}  private static Builder theBuilder = new Builder();
-${indent}  
-${indent}  private final ${javaType} value_;
+
+${indent}  private final ${entity.javaType} value_;
 
 ${indent}  /**
-${indent}   * Constructor from a ${javaType} value.
+${indent}   * Constructor from a ${entity.javaType} value.
 ${indent}   *
 ${indent}   * @param value the value of the required instance.
 ${indent}   */
-${indent}  public ${className}(@${Nonnull} ${javaType} value)
+${indent}  public ${className}(@${Nonnull} ${entity.javaType} value)
 ${indent}  {
 ${indent}    value_ = <@namespace import="java.util.Objects"/>.requireNonNull(value);
     <@checkLimits "    " entity "value" "value" "new IllegalArgumentException" ""/>
@@ -65,17 +63,18 @@ ${indent}  ${className}(@${Nonnull} <@namespace import="com.symphony.oss.canon.j
 ${indent}  {
 ${indent}    Objects.requireNonNull(node);
 
-${indent}    if(node instanceof ${jsonNodeType})
+${indent}    if(node instanceof ${entity.jsonNodeType})
 ${indent}    {
-${indent}      value_ = ((${jsonNodeType})node).as${javaType}();
+${indent}      value_ = ${entity.getValueConstructor("((${entity.jsonNodeType})node).as${entity.simplePersistedType}()")};
       <#if entity.hasLimits>
+
         <@namespace name="ParserErrorException" import="com.symphony.oss.canon.json.ParserErrorException"/>
-        <@checkLimits "    " entity "value" "value_" "new ${ParserErrorException}" ", node.getContext()"/>
+        <@checkLimits "${indent}      " entity "value" "value_" "new ${ParserErrorException}" ", node.getContext()"/>
       </#if>
 ${indent}    }
 ${indent}    else
 ${indent}    {
-${indent}      throw new IllegalArgumentException("value must be an instance of ${jsonNodeType} not " + node.getClass().getName());
+${indent}      throw new IllegalArgumentException("value must be an instance of ${entity.jsonNodeType} not " + node.getClass().getName());
 ${indent}    }
 ${indent}  }
 ${indent}  
@@ -84,7 +83,7 @@ ${indent}   * Return the wrapped value.
 ${indent}   * 
 ${indent}   * @return the wrapped value.
 ${indent}   */
-${indent}  public ${javaType} getValue()
+${indent}  public ${entity.javaType} getValue()
 ${indent}  {
 ${indent}    return value_;
 ${indent}  }
@@ -102,11 +101,11 @@ ${indent}    return value_.hashCode();
 ${indent}  }
 ${indent}  
 ${indent}  /**
-${indent}   * Return the value as a ${javaType}.
+${indent}   * Return the value as a ${entity.javaType}.
 ${indent}   * 
-${indent}   * @return the value as a ${javaType}.
+${indent}   * @return the value as a ${entity.javaType}.
 ${indent}   */
-${indent}  public @${Nonnull} ${javaType} as${javaType}()
+${indent}  public @${Nonnull} ${entity.javaType} as${entity.simplePersistedType}()
 ${indent}  {
 ${indent}    return value_;
 ${indent}  }
@@ -131,7 +130,7 @@ ${indent}
 ${indent}  /**
 ${indent}   * Return a new Builder.
 ${indent}   *
-${indent}   * @deprecated use new ${className}(${javaType} value)
+${indent}   * @deprecated use new ${className}(${entity.javaType} value)
 ${indent}   *
 ${indent}   * @return A new Builder.
 ${indent}   */
@@ -144,7 +143,7 @@ ${indent}
 ${indent}  /**
 ${indent}   * Builder.
 ${indent}   *
-${indent}   * @deprecated use new ${entity.type}(${javaType} value)
+${indent}   * @deprecated use new ${entity.type}(${entity.javaType} value)
 ${indent}   *
 ${indent}   */
 ${indent}  @Deprecated
@@ -159,14 +158,14 @@ ${indent}     * Return a new instance.
 ${indent}     *
 ${indent}     * @param value The value for the new instance.
 ${indent}     *
-${indent}     * @deprecated use new ${className}(${javaType} value)
+${indent}     * @deprecated use new ${entity.type}(${entity.javaType} value)
 ${indent}     *
 ${indent}     * @return A new instance.
 ${indent}     */
 ${indent}    @Deprecated
-${indent}    public ${className} build(@${Nonnull} ${javaType} value)
+${indent}    public ${entity.type} build(@${Nonnull} ${entity.javaType} value)
 ${indent}    {
-${indent}      return new ${className}(value);
+${indent}      return new ${entity.type}(value);
 ${indent}    }
 ${indent}    
 ${indent}    /**
@@ -179,7 +178,7 @@ ${indent}     *
 ${indent}     * @return the value from an instance.
 ${indent}     */
 ${indent}    @Deprecated
-${indent}    public ${javaType} toValue(${className} instance)
+${indent}    public ${entity.javaType} toValue(${className} instance)
 ${indent}    {
 ${indent}      return instance.getValue();
 ${indent}    }

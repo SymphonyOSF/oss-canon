@@ -59,7 +59,7 @@ public class StringSchema extends StringSchema_Entity implements IPrimitiveSchem
 
   @Override
   public void link(SingletonBuilder openApiObjectBuilder, CanonModelContext modelContext, SourceContext sourceContext,
-      Consumer<ResolvedSchema.AbstractBuilder<? extends ISchemaInstance,?,?>> builderConsumer, String uri)
+      Consumer<ResolvedSchema.AbstractBuilder<? extends ISchemaInstance,?,?>> builderConsumer, String uri, int depth)
   {
     ResolvedStringSchema.SingletonBuilder       builder = new ResolvedStringSchema.SingletonBuilder()
         .withSchema(this);

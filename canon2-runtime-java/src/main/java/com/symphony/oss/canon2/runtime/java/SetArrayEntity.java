@@ -109,8 +109,10 @@ public class SetArrayEntity<E> extends ArrayEntity implements IJsonArrayProvider
    */
   public static abstract class AbstractBuilder<E, T extends AbstractBuilder<E,T,B>, B extends SetArrayEntity<E>>
     extends ArrayEntity.AbstractBuilder<T,B>
-    implements ISetArrayEntityInitialiser<T>
+   // implements ISetArrayEntityInitialiser<T>
   {
+    private static final ImmutableSet<Entity> UNKNOWN_ELEMENTS = ImmutableSet.of();
+
     /**
      * Constructor.
      * 
@@ -133,23 +135,23 @@ public class SetArrayEntity<E> extends ArrayEntity implements IJsonArrayProvider
     }
 
     // TODO: perhaps if withValues has been set this should return a non-empty set, if there were unknown keys in the object given.
-    @Override
+    //@Override
     public ImmutableSet<Entity> getCanonUnknownElements()
     {
-      return ImmutableSet.of();
+      return UNKNOWN_ELEMENTS;
     }
     
-    /**
-     * Populate the given JsonArray.Builder with all attributes.
-     * 
-     * This method is called from generated code by super.populateJson(builder).
-     * 
-     * @param builder a JsonArray.Builder.
-     */
-    @Override
-    protected void populateJson(JsonArray.Builder builder)
-    {
-      super.populateJson(builder);
-    }
+//    /**
+//     * Populate the given JsonArray.Builder with all attributes.
+//     * 
+//     * This method is called from generated code by super.populateJson(builder).
+//     * 
+//     * @param builder a JsonArray.Builder.
+//     */
+//    @Override
+//    protected void populateJson(JsonArray.Builder builder)
+//    {
+//      super.populateJson(builder);
+//    }
   }
 }

@@ -24,6 +24,7 @@ import java.math.BigInteger;
 import org.junit.Test;
 
 import com.symphony.oss.canon.json.ParserResultException;
+import com.symphony.oss.canon.test.typeCheck.AllTheTypes.Colour;
 import com.symphony.oss.canon.test.typeCheck.AllTheTypes.InlineObjectField;
 import com.symphony.oss.canon.test.typeCheck.AllTheTypes.InlineObjectField.NestedObjectField;
 import com.symphony.oss.canon2.runtime.java.ModelRegistry;
@@ -107,7 +108,7 @@ public class TestAllTheTypes
         .withIntField(bigIntegerValue)
         .withCollideField(3.141f)
         .withDoubleField(bigDecimalValue)
-        .withEnumsField(Colour.BLUE)
+        .withEnumsField(Colour.BLACK)
         .withInlineObjectField(inlineObject)
         .withInt64Field(123L)
         .build();

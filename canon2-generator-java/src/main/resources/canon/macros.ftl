@@ -17,9 +17,9 @@ ${indent}${var}.addIfNotNull(${name}, ${source}.getJson());
     <#break>
     <#case "ARRAY">
 ${indent}JsonArray.Builder arrayBuilder = new JsonArray.Builder();
-${indent}for(${schema.elementType.type} item : ${source})
+${indent}for(${schema.element.type} item : ${source})
 ${indent}{
-      <@generateCreateArrayJsonDomNode "${indent}  " 1 schema.elementType "item" "arrayBuilder"/>
+      <@generateCreateArrayJsonDomNode "${indent}  " 1 schema.element "item" "arrayBuilder"/>
 ${indent}}
 ${indent}${var}.with(${name}, arrayBuilder.build());
     <#break>
@@ -27,7 +27,7 @@ ${indent}${var}.with(${name}, arrayBuilder.build());
     <#case "NUMBER">
     <#case "INTEGER">
     <#case "BOOLEAN">
-${indent}${var}.addIfNotNull(${name}, ${schema.getValue(source)});
+${indent}${var}.addIfNotNull(${name}, ${schema.getPersistedValue(source)});
     <#break>
     
     <#default>
@@ -47,9 +47,9 @@ ${indent}${var}.with(${source}.getJson());
     <#case "ARRAY">
 ${indent}JsonArray.Builder arrayBuilder${cnt} = new JsonArray.Builder();
 
-${indent}for(${schema.elementType.type} item${cnt} : ${source})
+${indent}for(${schema.element.type} item${cnt} : ${source})
 ${indent}{
-      <@generateCreateArrayJsonDomNode "${indent}  " cnt+1 schema.elementType "item${cnt}" "arrayBuilder${cnt}"/>
+      <@generateCreateArrayJsonDomNode "${indent}  " cnt+1 schema.element "item${cnt}" "arrayBuilder${cnt}"/>
 ${indent}}
 ${indent}${var}.with(arrayBuilder${cnt}.build());
     <#break>
@@ -57,7 +57,9 @@ ${indent}${var}.with(arrayBuilder${cnt}.build());
     <#case "NUMBER">
     <#case "INTEGER">
     <#case "BOOLEAN">
-${indent}${var}.with(${schema.getValue(source)});
+    // schema.class ${schema.class}
+    // schema.name ${schema.name}
+${indent}${var}.with(${schema.getPersistedValue(source)});
     <#break>
     <#default>
 UNEXPECTED SCHEMA TYPE ${schema.schemaType} in generateCreateJsonDomNodeFromField
@@ -77,12 +79,11 @@ UNEXPECTED SCHEMA TYPE ${schema.schemaType} in generateCreateJsonDomNodeFromFiel
  # @param ifValidation  If set then an if statement which guards validation checks
  #----------------------------------------------------------------------------------------------------->
 <#macro generateCreateFieldFromJsonDomNode indent node objectSchemaType schema name var ifValidation>
-// A1
+// A1 schema ${schema}
 <@generateCreateFieldFromJsonDomNodePrivate indent 0 node objectSchemaType schema name var ifValidation/>
 </#macro>
 
 <#macro generateCreateFieldFromJsonDomNodePrivate indent cnt node objectSchemaType schema name var ifValidation>
-<@namespace name="jsonNodeType" import=schema.fullyQualifiedJsonNodeType/>
   <#switch schema.schemaType>
     <#case "OBJECT">
     //A3
@@ -91,15 +92,15 @@ UNEXPECTED SCHEMA TYPE ${schema.schemaType} in generateCreateJsonDomNodeFromFiel
     <#case "ONE_OF">
     
     
-${indent}if(${node} instanceof ${jsonNodeType})
+${indent}if(${node} instanceof ${schema.jsonNodeType})
 ${indent}{
 //A6a
       <#switch objectSchemaType>
         <#case "ONE_OF">
-${indent}  ${var} = ${schema.type}.FACTORY.newInstanceOrNull(parserExceptions, (${jsonNodeType})${node}, modelRegistry);
+${indent}  ${var} = ${schema.type}.FACTORY.newInstanceOrNull(parserExceptions, (${schema.jsonNodeType})${node}, modelRegistry);
            <#break>
           <#default>
-${indent}  ${var} = ${schema.type}.FACTORY.newInstance((${jsonNodeType})${node}, modelRegistry);
+${indent}  ${var} = ${schema.type}.FACTORY.newInstance((${schema.jsonNodeType})${node}, modelRegistry);
            <#break>
        </#switch>
 ${indent}}
@@ -110,7 +111,7 @@ ${indent}{
 ${indent}  ${var} = null;
            <#break>
           <#default>
-${indent}  throw new ParserErrorException("${name} must be an instance of ${jsonNodeType} not " + ${node}.getClass().getName(), ${node}.getContext());
+${indent}  throw new <@namespace import="com.symphony.oss.canon.json.ParserErrorException"/>("${name} must be an instance of ${schema.jsonNodeType} not " + ${node}.getClass().getName(), ${node}.getContext());
            <#break>
        </#switch>
 ${indent}}
@@ -119,30 +120,24 @@ ${indent}}
     <#case "ARRAY">
 ${indent}if(${node} instanceof JsonArray)
 ${indent}{
-      <#if schema.cardinality == "LIST">
-${indent}  ${schema.type} itemList${cnt} = new LinkedList<>();
+      <#if schema.isPrimitive>
+// BRUCE7 schema ${schema.name}
+${indent}  ${schema.collectionType}<${schema.element.type}> itemList${cnt} = new ${schema.collectionImplType}<>();
 ${indent}  for(JsonDomNode item${cnt} : (JsonArray)${node})
 ${indent}  {
-${indent}    ${schema.elementType.type} itemValue${cnt} = null;
-        <@generateCreateFieldFromJsonDomNodePrivate "${indent}    " cnt+1 "item${cnt}" objectSchemaType schema.elementType "${name} items" "itemValue${cnt}" ifValidation/>
+${indent}    ${schema.element.type} itemValue${cnt} = null;
+        <@generateCreateFieldFromJsonDomNodePrivate "${indent}    " cnt+1 "item${cnt}" objectSchemaType schema.element "${name} items" "itemValue${cnt}" ifValidation/>
 ${indent}    itemList${cnt}.add(itemValue${cnt});
 ${indent}  }
-${indent}  ${var} = ImmutableList.copyOf(itemList${cnt});
-      <#else>
-${indent}  Set<${schema.elementType.type}> itemSet${cnt} = new HashSet<>();
-${indent}  for(JsonDomNode item${cnt} : (JsonArray)${node})
-${indent}  {
-${indent}    ${schema.elementType.type} itemValue${cnt} = null;
-        <@generateCreateFieldFromJsonDomNode "${indent}    " "item${cnt}" objectSchemaType schema.elementType "${name} items" "itemValue${cnt}" ifValidation/>
-${indent}    itemSet${cnt}.add(itemValue${cnt});
-${indent}  }
-${indent}  ${var} = ImmutableSet.copyOf(itemSet${cnt});
-      </#if>
+${indent}  ${var} = ${schema.getCopy("itemList${cnt}")}; //${schema.collectionImmutableType}.copyOf(itemList${cnt}); // HERE4
         <@checkItemLimits "${indent}  " schema name var/>
+      <#else>
+${indent}  ${var} = ${schema.type}.FACTORY.newInstance(node, modelRegistry);
+      </#if>
 ${indent}}
 ${indent}else ${ifValidation}
 ${indent}{
-${indent}  throw new ParserErrorException("${name} must be a JsonArray node not " + ${node}.getClass().getName(), ${node}.getContext());
+${indent}  throw new <@namespace import="com.symphony.oss.canon.json.ParserErrorException"/>("${name} must be a JsonArray node not " + ${node}.getClass().getName(), ${node}.getContext());
 ${indent}}
     <#break>
     
@@ -171,12 +166,10 @@ UNEXPECTED SCHEMA TYPE ${schema.schemaType} in generateCreateFieldFromJsonDomNod
  # @param ifValidation  If set then an if statement which guards validation checks
  #----------------------------------------------------------------------------------------------------->
 <#macro generateCreatePrimitiveFieldFromJsonDomNode indent node objectSchemaType schema name var ifValidation>
-<@namespace name="jsonNodeType" import=schema.fullyQualifiedJsonNodeType/>
-<@namespace name="javaType" import=schema.fullyQualifiedJavaType/>
-${indent}if(${node} instanceof ${jsonNodeType})
+${indent}if(${node} instanceof ${schema.jsonNodeType})
 ${indent}{
 //A6 schema.class ${schema.class} name ${schema.name}
-${indent}  ${var} = ${schema.getConstructor("((${jsonNodeType})${node}).as${schema.simpleJavaType}()")};
+${indent}  ${var} = ${schema.getConstructor(schema.getValueConstructor("((${schema.jsonNodeType})${node}).as${schema.simplePersistedType}()"))};
 ${indent}}
 ${indent}else ${ifValidation}
 ${indent}{
@@ -185,7 +178,7 @@ ${indent}{
 ${indent}  ${var} = null;
            <#break>
           <#default>
-${indent}  throw new ParserErrorException("${name} must be an instance of ${jsonNodeType} not " + ${node}.getClass().getName(), ${node}.getContext());
+${indent}  throw new <@namespace import="com.symphony.oss.canon.json.ParserErrorException"/>("${name} must be an instance of ${schema.jsonNodeType} not " + ${node}.getClass().getName(), ${node}.getContext());
            <#break>
        </#switch>
 ${indent}}
@@ -259,4 +252,34 @@ ${indent}{
 ${indent}  throw new IllegalArgumentException("${name} has " + ${var}.size() + " items but at most ${model.maxItems} are allowed");
 ${indent}}
   </#if>
+</#macro>
+
+
+<#macro generateInnerClass indent innerClass className classModifier nested>
+// INNER T1 ${innerClass.name} ${innerClass.class}
+  <#if innerClass.schemaType.isObject>
+// INNER T2
+    <#if nested>
+      <#assign modifier = classModifier/>
+    <#else>
+      <#assign modifier = "static ${classModifier}"/>
+    </#if>
+    <@generateObject "  ${indent}" innerClass className modifier true/>
+  <#elseif innerClass.schemaType.isPrimitive>
+// INNER T3
+    <#if innerClass.isEnum>
+      <@generateEnum "  ${indent}" model innerClass className "static "/>
+    <#elseif innerClass.hasLimits>
+      <@generateTypeDef "  ${indent}" model innerClass className "static "/>
+    </#if>
+  <#else>
+// INNER T4
+  // INNER NON OBJECT ${innerClass.schemaType} ${innerClass.camelCapitalizedName} ${innerClass.identifier}
+    <#if innerClass.hasLimits>
+// INNER T5
+      <@generateArray "  ${indent}" model innerClass className "static " true/>
+    </#if>
+// INNER T6
+  </#if>
+// INNER T7 ${innerClass.name} ${innerClass.class}
 </#macro>

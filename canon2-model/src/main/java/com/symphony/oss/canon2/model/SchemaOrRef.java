@@ -66,11 +66,11 @@ public class SchemaOrRef extends SchemaOrRef_Entity
   }
 
   public ResolvedSchema.AbstractBuilder<? extends ISchemaInstance,?,?> link(ResolvedOpenApiObject.SingletonBuilder openApiObjectBuilder, CanonModelContext modelContext, SourceContext sourceContext,
-      String name, String parentUri, ResolvedObjectOrArraySchema.AbstractBuilder<?,?,?> outerClassBuilder)
+      String name, String parentUri, ResolvedObjectOrArraySchema.AbstractBuilder<?,?,?> outerClassBuilder, int depth)
   {
     if(getSchema() != null)
     {
-      return modelContext.link(openApiObjectBuilder, sourceContext, name, parentUri + "/" + name, getSchema(), outerClassBuilder);
+      return modelContext.link(openApiObjectBuilder, sourceContext, name, parentUri + "/" + name, getSchema(), outerClassBuilder, depth);
     }
     else
     {

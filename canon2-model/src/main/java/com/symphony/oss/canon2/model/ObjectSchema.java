@@ -90,7 +90,7 @@ public class ObjectSchema extends ObjectSchema_Entity implements ISchema
   
   @Override
   public void link(
-      SingletonBuilder openApiObjectBuilder, CanonModelContext modelContext, SourceContext sourceContext, Consumer<ResolvedSchema.AbstractBuilder<? extends ISchemaInstance,?,?>> builderConsumer, String uri)
+      SingletonBuilder openApiObjectBuilder, CanonModelContext modelContext, SourceContext sourceContext, Consumer<ResolvedSchema.AbstractBuilder<? extends ISchemaInstance,?,?>> builderConsumer, String uri, int depth)
   {
     ResolvedObjectSchema.SingletonBuilder       builder = new ResolvedObjectSchema.SingletonBuilder();
     ResolvedPropertiesObject.SingletonBuilder   resolvedPropertiesBuilder = new ResolvedPropertiesObject.SingletonBuilder();
@@ -114,7 +114,7 @@ public class ObjectSchema extends ObjectSchema_Entity implements ISchema
         {
           ISchemaInstance schema = (ISchemaInstance)entry.getValue();
           
-          ResolvedSchema.AbstractBuilder<? extends ISchemaInstance,?,?> resolvedPropertySchema = modelContext.link(openApiObjectBuilder, sourceContext, entry.getKey(), uri + "/" + entry.getKey(), schema, builder);
+          ResolvedSchema.AbstractBuilder<? extends ISchemaInstance,?,?> resolvedPropertySchema = modelContext.link(openApiObjectBuilder, sourceContext, entry.getKey(), uri + "/" + entry.getKey(), schema, builder, depth);
           ResolvedProperty.SingletonBuilder resolvedProperty = new ResolvedProperty.SingletonBuilder()
               .withName(entry.getKey())
               .withNameContext(propertiesObject.getNameContext(entry.getKey()))
@@ -161,7 +161,7 @@ public class ObjectSchema extends ObjectSchema_Entity implements ISchema
           builder.withAdditionalPropertiesIsInnerClass(true);
         }
 
-        ResolvedSchema.AbstractBuilder<? extends ISchemaInstance,?,?> resolvedAdditionalProperties = schemaOrRef.link(openApiObjectBuilder, modelContext, sourceContext, name, uri, builder);
+        ResolvedSchema.AbstractBuilder<? extends ISchemaInstance,?,?> resolvedAdditionalProperties = schemaOrRef.link(openApiObjectBuilder, modelContext, sourceContext, name, uri, builder, depth);
 
         if(!schemaOrRef.isReference())
         {

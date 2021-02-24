@@ -85,11 +85,11 @@ public class OpenApiObject extends OpenApiObject_Entity implements ICanonModelEn
     }
   }
 
-  public void link(ResolvedOpenApiObject.SingletonBuilder builder, CanonModelContext modelContext, SourceContext sourceContext, String uri)
+  public void link(ResolvedOpenApiObject.SingletonBuilder builder, CanonModelContext modelContext, SourceContext sourceContext, String uri, int depth)
   {
     if(getComponents() != null)
     {
-      builder.withComponents(getComponents().link(builder, modelContext, sourceContext, uri + "/components"));
+      builder.withComponents(getComponents().link(builder, modelContext, sourceContext, uri + "/components", depth));
     }
   }
 

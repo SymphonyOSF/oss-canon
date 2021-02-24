@@ -71,43 +71,43 @@ public class Schema extends Schema_Entity implements ISchema
   @Override
   public void link(ResolvedOpenApiObject.SingletonBuilder openApiObjectBuilder, CanonModelContext modelContext, SourceContext sourceContext, 
       Consumer<ResolvedSchema.AbstractBuilder<? extends ISchemaInstance,?,?>> builderConsumer,
-      String uri)
+      String uri, int depth)
   {
     int typeIndicatorCnt = 0;
     
     if(getOneOfSchema() != null)
     {
-      getOneOfSchema().link(openApiObjectBuilder, modelContext, sourceContext, builderConsumer, uri);
+      getOneOfSchema().link(openApiObjectBuilder, modelContext, sourceContext, builderConsumer, uri, depth);
       typeIndicatorCnt++;
     }
 
     if(getObjectSchema() != null)
     {
-      getObjectSchema().link(openApiObjectBuilder, modelContext, sourceContext, builderConsumer, uri);
+      getObjectSchema().link(openApiObjectBuilder, modelContext, sourceContext, builderConsumer, uri, depth);
       typeIndicatorCnt++;
     }
     
     if(getArraySchema() != null)
     {
-      getArraySchema().link(openApiObjectBuilder, modelContext, sourceContext, builderConsumer, uri);
+      getArraySchema().link(openApiObjectBuilder, modelContext, sourceContext, builderConsumer, uri, depth);
       typeIndicatorCnt++;
     }
     
     if(getBooleanSchema() != null)
     {
-      getBooleanSchema().link(openApiObjectBuilder, modelContext, sourceContext, builderConsumer, uri);
+      getBooleanSchema().link(openApiObjectBuilder, modelContext, sourceContext, builderConsumer, uri, depth);
       typeIndicatorCnt++;
     }
     
     if(getNumberSchema() != null)
     {
-      getNumberSchema().link(openApiObjectBuilder, modelContext, sourceContext, builderConsumer, uri);
+      getNumberSchema().link(openApiObjectBuilder, modelContext, sourceContext, builderConsumer, uri, depth);
       typeIndicatorCnt++;
     }
     
     if(getStringSchema() != null)
     {
-      getStringSchema().link(openApiObjectBuilder, modelContext, sourceContext, builderConsumer, uri);
+      getStringSchema().link(openApiObjectBuilder, modelContext, sourceContext, builderConsumer, uri, depth);
       typeIndicatorCnt++;
     }
     

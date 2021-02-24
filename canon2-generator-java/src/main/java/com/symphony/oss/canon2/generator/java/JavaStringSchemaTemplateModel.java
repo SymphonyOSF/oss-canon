@@ -173,7 +173,7 @@ JavaSchemaTemplateModel>
     if(isEnum_)
       return args + ".getValue()";
     else
-      return args;
+      return super.getValue(args);
   }
 
   @Override

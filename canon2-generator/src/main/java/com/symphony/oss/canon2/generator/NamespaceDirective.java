@@ -128,7 +128,7 @@ public class NamespaceDirective implements TemplateDirectiveModel, INamespace
         
         ((INamespaceResolveable)w).resolve(this, env.getOut());
         
-        env.getOut().write("/* Resolved " + w + " */\n");
+        //env.getOut().write("/* Resolved " + w + " */\n");
       }
       
 //      Set names = env.getKnownVariableNames();
@@ -147,7 +147,7 @@ public class NamespaceDirective implements TemplateDirectiveModel, INamespace
     
     if(getBooleanParam(params, "clear"))
     {
-      env.getOut().write("/* Clear Namespace */\n");
+//      env.getOut().write("/* Clear Namespace */\n");
       forwardMap_.clear();
       reverseMap_.clear();
       importMap_.clear();

@@ -1,29 +1,7 @@
 <#include "/macros.ftl"/>
-<#include "InstanceOrBuilder.ftl">
 <#include "../TypeDef/TypeDefMacro.ftl"/>
 <#include "../Enum/EnumMacro.ftl"/>
 <#include "../Array/ArrayMacro.ftl"/>
-<#macro generateInnerClass indent innerClass className classModifier nested>
-  <#if innerClass.schemaType.isObject>
-    <#if nested>
-      <#assign modifier = classModifier/>
-    <#else>
-      <#assign modifier = "static ${classModifier}"/>
-    </#if>
-    <@generateObject "  ${indent}" innerClass className modifier true/>
-  <#elseif innerClass.schemaType.isPrimitive>
-    <#if innerClass.isEnum>
-      <@generateEnum "  ${indent}" model innerClass className "static "/>
-    <#elseif innerClass.hasLimits>
-      <@generateTypeDef "  ${indent}" model innerClass className "static "/>
-    </#if>
-  <#else>
-  // INNER NON OBJECT ${innerClass.schemaType} ${innerClass.camelCapitalizedName}
-  
-    <@generateArray "  ${indent}" model innerClass className "static " true/>
-  
-  </#if>
-</#macro>
 <#macro generateUnknownAttribute indent name>
 ${indent}if(node instanceof JsonObject)
 ${indent}{
@@ -31,7 +9,7 @@ ${indent}  ${name} = new ObjectEntity(new JsonObjectEntityInitialiser((JsonObjec
 ${indent}}
 ${indent}else 
 ${indent}{
-${indent}  ${name} = new <@namespace import="com.symphony.oss.canon2.runtime.java.Entity"/>(new JsonEntityInitialiser(node, initialiser.getModelRegistry()));
+${indent}  ${name} = new <@namespace import="com.symphony.oss.canon2.runtime.java.Entity"/>(new <@namespace import="com.symphony.oss.canon2.runtime.java.JsonEntityInitialiser"/>(node, initialiser.getModelRegistry()));
 ${indent}}
 </#macro>
 <#macro generateObject indent entity className classModifier nested>
@@ -57,14 +35,11 @@ ${indent}}
 <#else>
   <#assign hasUnknownProperties = false/>
 </#if>
-<#if nested>
-<@generateInstanceOrBuilder "${indent}" entity/>
-
-</#if>
 <@namespace name="initialiserType" import=entity.fullyQualifiedInitialiserType/>
 <@namespace name="jsonInitialiserType" import=entity.fullyQualifiedJsonInitialiserType/>
 <@namespace name="superType" import=entity.fullyQualifiedSuperType/>
 <@namespace name="jsonNodeType" import=entity.fullyQualifiedJsonNodeType/>
+<@namespace name="JsonDomNode" import="com.symphony.oss.canon.json.model.JsonDomNode"/>
 <#if hasUnknownProperties || entity.additionalPropertiesAllowed>
 <@namespace name="Map" import="java.util.Map"/>
 <@namespace name="HashMap" import="java.util.HashMap"/>
@@ -91,7 +66,7 @@ ${indent}@<@namespace import="javax.annotation.concurrent.Immutable"/>
 ${indent}public ${classModifier}class ${className} extends <@namespace import=entity.fullyQualifiedSuperType/>
 ${indent}{
 ${indent}  /** Type ID */
-${indent}  public static final String  TYPE_ID = "${model.canonId}.${entity.name}";
+${indent}  public static final String  TYPE_ID = "${model.canonId}.${entity.camelCapitalizedName}";
 ${indent}  /** Type version */
 ${indent}  public static final String  TYPE_VERSION = "${model.canonVersion}";
 ${indent}  /** Factory instance */
@@ -118,15 +93,21 @@ ${indent}  public ${className}(Initialiser initialiser)
 ${indent}  {
 ${indent}    super(initialiser);
 
-${indent}    if(initialiser instanceof ${jsonInitialiserType})
+${indent}    if(initialiser.getBuilder() == null)
 ${indent}    {
-${indent}      ${jsonInitialiserType} jsonInitialiser = (${jsonInitialiserType})initialiser;
+${indent}      JsonInitialiser jsonInitialiser = initialiser.getJsonInitialiser();
+
+${indent}      if(jsonInitialiser == null)
+${indent}      {
+${indent}        throw new IllegalArgumentException("Initializer returns null for getBuilder() as well as .getJsonInitialiser()");
+${indent}      }
+
 ${indent}      ${ModelRegistry} modelRegistry = jsonInitialiser.getModelRegistry();
 <#switch entity.schemaType>
     <#case "ONE_OF">
 ${indent}      List<ParserException> parserExceptions = new LinkedList<>();
 ${indent}      List<String>          matches = new LinkedList<>();
-${indent}      JsonDomNode           node = jsonInitialiser.getJson();
+${indent}      ${JsonDomNode}           node = jsonInitialiser.getJson();
   <#list entity.fields as field>
     <@generateCreateFieldFromJsonDomNode "${indent}       " "node" entity.schemaType field.typeSchema field.quotedName "${c}${field.camelName}_" ""/>
 ${indent}      if(${c}${field.camelName}_ != null)
@@ -144,7 +125,7 @@ ${indent}      }
       <#break>
     <#case "OBJECT">
 
-${indent}      ${"JsonDomNode"?right_pad(25)} node;
+${indent}      ${"${JsonDomNode}"?right_pad(25)} node;
   <#list entity.fields as field>
 
 ${indent}      node = jsonInitialiser.get("${field.quotedName}");
@@ -204,25 +185,21 @@ ${indent}        }
 </#if>
 ${indent}      }
 <#if entity.additionalPropertiesAllowed>
-${indent}      additionalProperties_ =  ImmutableSortedMap.copyOf(additionalProperties);
+${indent}      additionalProperties_ = <@namespace import="com.google.common.collect.ImmutableSortedMap"/>.copyOf(additionalProperties);
 </#if>
 <#if hasUnknownProperties>
-${indent}      unknownProperties_ =  ImmutableSortedMap.copyOf(unknownProperties);
+${indent}      unknownProperties_ =  <@namespace import="com.google.common.collect.ImmutableSortedMap"/>.copyOf(unknownProperties);
 </#if>
       <#break>
 </#switch>
 ${indent}    }
 ${indent}    else
 ${indent}    {
-${indent}      I${c}${entity.camelCapitalizedName}${c}InstanceOrBuilder builder =  initialiser.getInstanceOrBuilder();
+${indent}      AbstractBuilder<?,?> builder =  initialiser.getBuilder();
 
-${indent}      if(builder == null)
-${indent}      {
-${indent}        throw new IllegalArgumentException("Initializer is not an JsonObjectEntityInitialiser but getInstanceOrBuilder() returns null");
-${indent}      }
 <#list entity.fields as field>
 //field.typeSchema is ${field.typeSchema.class}
-${indent}      ${c}${field.camelName}_ = ${field.typeSchema.getCopy("builder.get${field.camelCapitalizedName}()$")};
+${indent}      ${c}${field.camelName}_ = ${field.typeSchema.getCopy("builder.get${field.camelCapitalizedName}()")};
     <@checkFieldLimits "${indent}      " field "${c}${field.camelName}_"/>
 </#list>
 <#if entity.additionalPropertiesAllowed>
@@ -252,7 +229,7 @@ ${indent}      return TYPE_ID;
 ${indent}    }
 
 ${indent}    @Override
-${indent}    public ${entity.type} newInstance(JsonDomNode node, ${ModelRegistry} modelRegistry)
+${indent}    public ${entity.type} newInstance(${JsonDomNode} node, ${ModelRegistry} modelRegistry)
 ${indent}    {
 <#switch entity.schemaType>
     <#case "ONE_OF">
@@ -283,15 +260,24 @@ ${indent}  }
 ------------------------------------------------------------------------------------------------------------------------------->
 ${indent}  /**
 ${indent}   * Abstract Initialiser for ${entity.type}
+${indent}   *
+${indent}   * One of these methods must return non-null.
 ${indent}   */
-${indent}  public interface Initialiser extends ${initialiserType}
+${indent}  public static interface Initialiser extends ${initialiserType}
 ${indent}  {
 ${indent}    /**
-${indent}     * Return an instance or builder containing the values for a new instance.
+${indent}     * Return a JsonInitialiser containing the values for a new instance.
 ${indent}     * 
-${indent}     * @return an instance or builder containing the values for a new instance.
+${indent}     * @return a JsonInitialiser containing the values for a new instance.
 ${indent}     */
-${indent}    I${c}${entity.camelCapitalizedName}${c}InstanceOrBuilder getInstanceOrBuilder();
+${indent}    JsonInitialiser getJsonInitialiser();
+
+${indent}    /**
+${indent}     * Return a builder containing the values for a new instance.
+${indent}     * 
+${indent}     * @return a builder containing the values for a new instance.
+${indent}     */
+${indent}    AbstractBuilder<?,?> getBuilder();
 ${indent}  }
 
 ${indent}  /**
@@ -311,7 +297,13 @@ ${indent}      super(json, modelRegistry);
 ${indent}    }
 
 ${indent}    @Override
-${indent}    public I${c}${entity.camelCapitalizedName}${c}InstanceOrBuilder getInstanceOrBuilder()
+${indent}    public JsonInitialiser getJsonInitialiser()
+${indent}    {
+${indent}      return this;
+${indent}    }
+
+${indent}    @Override
+${indent}    public AbstractBuilder<?,?> getBuilder()
 ${indent}    {
 ${indent}      return null;
 ${indent}    }
@@ -330,7 +322,7 @@ ${indent}   * @param <B> The concrete type of the built object.
 ${indent}   */
 ${indent}  public static abstract class AbstractBuilder<T extends AbstractBuilder<T,B>, B extends ${className}>
 ${indent}    extends ${superType}.AbstractBuilder<T,B>
-${indent}    implements I${c}${entity.camelCapitalizedName}${c}InstanceOrBuilder, Initialiser
+${indent}    implements Initialiser
 ${indent}  {
   <#list entity.fields as field>
   // field.typeSchema is ${field.typeSchema.class}
@@ -340,18 +332,12 @@ ${indent}    protected ${field.type?right_pad(25)}  ${c}${field.camelName}_${fie
 ${indent}    protected ${"${Map}<String, ${additionalType}>"?right_pad(25)}  additionalProperties_ = new ${HashMap}<>();
   </#if>
 <#if hasUnknownProperties>
-${indent}    protected ${"${Map}<String, ${RuntimeEntity}>"?right_pad(25)}  unknownProperties_ = ImmutableSortedMap.of(); 
+${indent}    protected ${"${Map}<String, ${RuntimeEntity}>"?right_pad(25)}  unknownProperties_ = <@namespace import="com.google.common.collect.ImmutableSortedMap"/>.of(); 
 </#if>
 
 ${indent}    protected AbstractBuilder(Class<T> type)
 ${indent}    {
 ${indent}      super(type);
-${indent}    }
-
-${indent}    @Override
-${indent}    public I${c}${entity.camelCapitalizedName}${c}InstanceOrBuilder getInstanceOrBuilder()
-${indent}    {
-${indent}      return this;
 ${indent}    }
 
 ${indent}    protected AbstractBuilder(Class<T> type, B initial)
@@ -361,6 +347,18 @@ ${indent}      super(type, initial);
   <#list entity.fields as field>
 ${indent}      ${c}${field.camelName}_ = ${field.typeSchema.getCopy("initial.get${field.camelCapitalizedName}()")};
   </#list>
+${indent}    }
+
+${indent}    @Override
+${indent}    public JsonInitialiser getJsonInitialiser()
+${indent}    {
+${indent}      return null;
+${indent}    }
+
+${indent}    @Override
+${indent}    public AbstractBuilder<?,?> getBuilder()
+${indent}    {
+${indent}      return this;
 ${indent}    }
 
 ${indent}    /**
@@ -373,7 +371,7 @@ ${indent}     * @return This (fluent method).
 ${indent}     */
 <#switch entity.schemaType>
     <#case "ONE_OF">
-${indent}    public T withValues(JsonDomNode json, ${ModelRegistry} modelRegistry)
+${indent}    public T withValues(${JsonDomNode} json, ${ModelRegistry} modelRegistry)
 ${indent}    {
 ${indent}      List<ParserException> parserExceptions = new LinkedList<>();
 ${indent}      List<String>          matches = new LinkedList<>();
@@ -398,7 +396,7 @@ ${indent}    {
     <#list entity.fields as field>
 ${indent}      if(json.containsKey("${field.quotedName}"))
 ${indent}      {
-${indent}        JsonDomNode  node = json.get("${field.quotedName}");
+${indent}        ${JsonDomNode}  node = json.get("${field.quotedName}");
   <@generateCreateFieldFromJsonDomNode "        " "node" entity.schemaType field.typeSchema field.quotedName "${c}${field.camelName}_" "if(!modelRegistry.getParserValidation().isIgnoreInvalidAttributes())"/>
 ${indent}      }
 </#list>
@@ -452,7 +450,6 @@ ${indent}     *
     </#if>
 ${indent}     * @return the value of the ${field.name} attribute.
 ${indent}     */
-${indent}    @Override
 ${indent}    public @${field.nullable} ${field.type} get${field.camelCapitalizedName}()
 ${indent}    {
 <#if field.required>
@@ -462,6 +459,91 @@ ${indent}        throw new IllegalStateException("Unexpected null value encounte
 ${indent}      return ${c}${field.camelName}_;
 ${indent}    }
 
+    <#if field.typeSchema.schemaType == "ARRAY">
+// Array setters
+${indent}    /**
+${indent}     * Clear all values from the ${field.name} attribute.
+${indent}     *
+${indent}     * @return This (fluent method).
+${indent}     */
+${indent}    public T clear${field.camelCapitalizedName}()
+${indent}    {
+${indent}      ${c}${field.camelName}_.clear();
+${indent}      return self();
+${indent}    }
+
+//basic setter
+${indent}    /**
+${indent}     * Add all of the given values to the ${field.name} attribute.
+${indent}     *
+${indent}     * @param values The values to be added.
+${indent}     *
+${indent}     * @return This (fluent method).
+${indent}     */
+${indent}    public T with${field.camelCapitalizedName}(${field.typeSchema.type} values)
+${indent}    {
+${indent}      ${c}${field.camelName}_.addAll(values);
+${indent}      return self();
+${indent}    }
+
+//element setter
+${indent}    /**
+${indent}     * Add the given value to the ${field.name} attribute.
+${indent}     *
+${indent}     * @param values The values to be added.
+${indent}     *
+${indent}     * @return This (fluent method).
+${indent}     */
+${indent}    public T with${field.camelCapitalizedName}(${field.typeSchema.element.type} value)
+${indent}    {
+${indent}      if(value == null)
+${indent}        throw new IllegalArgumentException("A value is required.");
+
+${indent}      ${c}${field.camelName}_add(value);
+${indent}      return self();
+${indent}    }
+
+//externalType? field.typeSchema.element ${field.typeSchema.element.class}
+    <#if field.typeSchema.element.externalType??>
+//externalType
+${indent}    /**
+${indent}     * Add the given value to the ${field.name} attribute.
+${indent}     *
+${indent}     * @param value The value to be added.
+${indent}     *
+${indent}     * @return This (fluent method).
+${indent}     */
+${indent}    public T with${field.camelCapitalizedName}(${field.typeSchema.element.externalType} value)
+${indent}    {
+${indent}      if(value == null)
+${indent}        throw new IllegalArgumentException("A value is required.");
+
+${indent}      ${c}${field.camelName}_ = ${field.typeSchema.element.getConstructor("value")};
+${indent}      return self();
+${indent}    }
+
+    <#elseif field.typeSchema.element.isTypedef>
+//typedef
+${indent}    /**
+${indent}     * Add the given value to the ${field.name} attribute.
+${indent}     *
+${indent}     * @param value The value to be set.
+${indent}     *
+${indent}     * @return This (fluent method).
+${indent}     */
+${indent}    public T with${field.camelCapitalizedName}(${field.typeSchema.element.persistedType} value)
+${indent}    {
+${indent}      if(value == null)
+${indent}        throw new IllegalArgumentException("A value is required.");
+
+${indent}      ${c}${field.camelName}_ = ${field.typeSchema.element.getConstructor("value")};
+${indent}      return self();
+${indent}    }
+
+    </#if>
+    <#else>
+// Non-array setters
+//basic setter
 ${indent}    /**
 ${indent}     * Set the value of the ${field.name} attribute.
 ${indent}     *
@@ -475,10 +557,10 @@ ${indent}    {
 ${indent}      ${c}${field.camelName}_ = ${field.typeSchema.getCopy("value")};
 ${indent}      return self();
 ${indent}    }
-<#if field.typeSchema.schemaType == "ARRAY">
-</#if>
-    <#if field.typeSchema.schemaType == "ARRAY" && field.typeSchema.elementType.schemaType == "PRIMITIVE" && field.typeSchema.elementType.primitiveType??>
 
+//externalType? field.typeSchema ${field.typeSchema.class}
+    <#if field.typeSchema.externalType??>
+//externalType
 ${indent}    /**
 ${indent}     * Set the value of the ${field.name} attribute.
 ${indent}     *
@@ -486,15 +568,15 @@ ${indent}     * @param value The value to be set.
 ${indent}     *
 ${indent}     * @return This (fluent method).
 ${indent}     */
-${indent}    public T with${field.camelCapitalizedName}(${field.typeSchema.type} value)
+${indent}    public T with${field.camelCapitalizedName}(${field.typeSchema.externalType} value)
 ${indent}    {
-    <@checkFieldLimits "    " field "value"/>
-${indent}      ${c}${field.camelName}_.add(value);
+    <@checkFieldLimits "        " field "value"/>
+${indent}      ${c}${field.camelName}_ = ${field.typeSchema.getConstructor("value")};
 ${indent}      return self();
 ${indent}    }
-    </#if>
 
-    <#if field.typeSchema.schemaType.isPrimitive && field.typeSchema.primitiveType??>
+    <#elseif field.typeSchema.isTypedef>
+//typedef
 ${indent}    /**
 ${indent}     * Set the value of the ${field.name} attribute.
 ${indent}     *
@@ -502,18 +584,16 @@ ${indent}     * @param value The value to be set.
 ${indent}     *
 ${indent}     * @return This (fluent method).
 ${indent}     */
-${indent}    public T with${field.camelCapitalizedName}(${field.typeSchema.primitiveType} value)
+${indent}    public T with${field.camelCapitalizedName}(${field.typeSchema.persistedType} value)
 ${indent}    {
-    <#if field.required>
-${indent}      if(value == null)
-${indent}        throw new IllegalArgumentException("${field.camelName} is required.");
-
-    </#if>
-${indent}      ${c}${field.camelName}_ = ${field.typeSchema.getConstructor(false, "value")};
+    <@checkFieldLimits "        " field "value"/>
+${indent}      ${c}${field.camelName}_ = ${field.typeSchema.getConstructor("value")};
 ${indent}      return self();
 ${indent}    }
 
     </#if>
+    </#if>
+
   </#list>
 
   <#switch entity.schemaType>
@@ -558,14 +638,14 @@ ${indent}    }
        <#break>
     <#case "ONE_OF">
 ${indent}    @Override
-${indent}    public JsonDomNode getJson()
+${indent}    public ${JsonDomNode} getJson()
 ${indent}    {
   <#list entity.fields as field>
 
 ${indent}      if(get${field.camelCapitalizedName}() != null)
 ${indent}      {
     <#if field.typeSchema.schemaType.isPrimitive>
-${indent}        return JsonDomNode.newInstance(get${field.camelCapitalizedName}());
+${indent}        return ${JsonDomNode}.newInstance(get${field.camelCapitalizedName}());
     <#else>
 ${indent}        return get${field.camelCapitalizedName}().getJson();
     </#if>
@@ -578,15 +658,23 @@ ${indent}    }
   </#switch>
 
 <#if entity.additionalPropertiesAllowed>
-${indent}    @Override
+${indent}    /**
+${indent}     * Return any additional attributes.
+${indent}     * 
+${indent}     * @return any additional attributes.
+${indent}     */
 ${indent}    public ${Map}<String, ${additionalType}> canonGetAdditionalProperties()
 ${indent}    {
-${indent}       return ImmutableSortedMap.copyOf(additionalProperties_);
+${indent}       return <@namespace import="com.google.common.collect.ImmutableSortedMap"/>.copyOf(additionalProperties_);
 ${indent}    }
 
 </#if>
 <#if hasUnknownProperties>
-${indent}    @Override
+${indent}    /**
+${indent}     * Return any unknown attributes.
+${indent}     * 
+${indent}     * @return any unknown attributes.
+${indent}     */
 ${indent}    public ${Map}<String, ${RuntimeEntity}> canonGetUnknownProperties()
 ${indent}    {
 ${indent}       return unknownProperties_;
@@ -594,7 +682,7 @@ ${indent}    }
 
 </#if>
 ${indent}    @Override
-${indent}    public void validate(FaultAccumulator faultAccumulator)
+${indent}    public void validate(<@namespace import="com.symphony.oss.commons.fault.FaultAccumulator"/> faultAccumulator)
 ${indent}    {
 ${indent}      super.validate(faultAccumulator);
   <#switch entity.schemaType>

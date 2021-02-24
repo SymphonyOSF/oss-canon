@@ -389,7 +389,7 @@ public class SourceContext
       .withName(getInputSourceName())
       .withModel(model_)
       .withReferencedModel(referencedModel_);
-    model_.link(resolvedOpenApiObjectBuilder_, canonModelContext, this, getUrl() + "#");
+    model_.link(resolvedOpenApiObjectBuilder_, canonModelContext, this, getUrl() + "#", 1);
   }
 
   public ResolvedOpenApiObject getResolvedOpenApiObject()

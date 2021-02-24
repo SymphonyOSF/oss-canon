@@ -73,12 +73,12 @@ JavaFieldTemplateModel
     
     if(resolvedSchema.isInnerClass() && outerClass != null)
     {
-      fullyQualifiedType_ = outerClass.getFullyQualifiedType() + "." + getIdentifier();
+      fullyQualifiedType_ = outerClass.getFullyQualifiedType() + "." + getCamelCapitalizedName();
       isInnerClass_ = true;
     }
     else
     {
-      fullyQualifiedType_ = getPackageName() + "." + getIdentifier();
+      fullyQualifiedType_ = getPackageName() + "." + getCamelCapitalizedName();
       isInnerClass_ = false;
     }
         
@@ -139,20 +139,38 @@ JavaFieldTemplateModel
   @Override
   public void resolve(INamespace namespace, Writer writer)
   {
-    if(isInnerClass_)
-    {
-      type_ = getOuterClass().getType() + "." + getCamelCapitalizedName();
-    }
-    else
-    {
-      type_ = namespace.resolveImport(fullyQualifiedType_, writer);
-    }
+    super.resolve(namespace, writer);
+    
+    type_ = null;
+    
     
     for(JavaFieldTemplateModel child : getFields())
       child.resolve(namespace, writer);
     
     for(JavaSchemaTemplateModel child : getInnerClasses())
       child.resolve(namespace, writer);
+    
+    if(additionalProperties_ != null)
+    {
+      additionalProperties_.resolve(namespace, writer);
+    }
+  }
+
+  @Override
+  public String getType()
+  {
+    if(type_ == null)
+    {
+      if(isInnerClass_)
+      {
+        type_ = getOuterClass().getType() + "." + getCamelCapitalizedName();
+      }
+      else
+      {
+        type_ = namespace_.resolveImport(fullyQualifiedType_, namespaceWriter_);
+      }
+    }
+    return type_;
   }
 
   @Override
@@ -283,12 +301,6 @@ JavaFieldTemplateModel
   public Collection<JavaFieldTemplateModel> getFields()
   {
     return fieldMap_.values();
-  }
-
-  @Override
-  public String getType()
-  {
-    return type_;
   }
 
   @Override

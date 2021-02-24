@@ -194,7 +194,7 @@ public abstract class CanonModelContext
   }
 
   public synchronized ResolvedSchema.AbstractBuilder<?,?,?> link(ResolvedOpenApiObject.SingletonBuilder openApiObjectBuilder, SourceContext sourceContext,
-      String name, String uri, ISchemaInstance schema, ResolvedObjectOrArraySchema.AbstractBuilder<?,?,?> outerClassBuilder)
+      String name, String uri, ISchemaInstance schema, ResolvedObjectOrArraySchema.AbstractBuilder<?,?,?> outerClassBuilder, int depth)
   {
     ResolvedSchema.AbstractBuilder<?,?,?> builder = schemaMap_.get(uri);
     
@@ -204,7 +204,11 @@ public abstract class CanonModelContext
       
       schema.link(openApiObjectBuilder, this, sourceContext,
           c,
-          uri);
+          uri,
+          depth);
+      
+      if(outerClassBuilder != null && Boolean.TRUE == schema.getXCanonFacade())
+        sourceContext.error(new ParserErrorException("Only top level entities can have a facade", schema));
       
       builder = c.builder_;
     }

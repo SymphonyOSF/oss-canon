@@ -195,7 +195,7 @@ public class ReferenceObject extends ReferenceObject_Entity
      }
    }
    
-   return modelContext.link(openApiObjectBuilder, sourceContext, getName(), uri, schema, null);
+   return modelContext.link(openApiObjectBuilder, sourceContext, getName(), uri, schema, null, 1);
  }
 }
 /*----------------------------------------------------------------------------------------------------

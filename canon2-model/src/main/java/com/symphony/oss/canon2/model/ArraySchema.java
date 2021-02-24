@@ -37,6 +37,7 @@ import com.symphony.oss.canon2.core.CanonModelContext;
 import com.symphony.oss.canon2.core.ResolvedArraySchema;
 import com.symphony.oss.canon2.core.ResolvedOpenApiObject.SingletonBuilder;
 import com.symphony.oss.canon2.core.ResolvedSchema;
+import com.symphony.oss.canon2.core.ResolvedSchemasObject;
 import com.symphony.oss.canon2.core.SchemaTemplateModelType;
 import com.symphony.oss.canon2.core.SourceContext;
 
@@ -77,20 +78,28 @@ public class ArraySchema extends ArraySchema_Entity implements ISchemaInstance
 
   @Override
   public void link(
-      SingletonBuilder openApiObjectBuilder, CanonModelContext modelContext, SourceContext sourceContext, Consumer<ResolvedSchema.AbstractBuilder<? extends ISchemaInstance,?,?>> builderConsumer, String uri)
+      SingletonBuilder openApiObjectBuilder, CanonModelContext modelContext, SourceContext sourceContext, Consumer<ResolvedSchema.AbstractBuilder<? extends ISchemaInstance,?,?>> builderConsumer, String uri, int depth)
   {
+    ResolvedSchemasObject.SingletonBuilder      innerClassesBuilder       = new ResolvedSchemasObject.SingletonBuilder();
     ResolvedArraySchema.SingletonBuilder       builder = new ResolvedArraySchema.SingletonBuilder()
+        .withInnerClasses(innerClassesBuilder)
         .withSchema(this);
+    
 
     builderConsumer.accept(builder);
     // if(getA)
 
      if(getItems().getSchema() != null)
-     { 
-       builder.withResolvedItems(
-           modelContext.link(openApiObjectBuilder, sourceContext, "items BRUCE 001", uri + "/items", getItems().getSchema(), builder)
+     {
+       String name = depth > 1 ? "items" + depth : "items";
+       
+       ResolvedSchema.AbstractBuilder<?, ?, ?> resolvedItemsSchema = modelContext.link(openApiObjectBuilder, sourceContext, name, uri + "/" + name, getItems().getSchema(), builder, depth+1);
+       builder.withResolvedItems(resolvedItemsSchema
+           
            //itemsSchema_.link(modelContext, sourceContext, uri + "/items", true)
            );
+       
+       innerClassesBuilder.with("items", resolvedItemsSchema);
      }
      else if(getItems().getReferenceObject() != null)
      {

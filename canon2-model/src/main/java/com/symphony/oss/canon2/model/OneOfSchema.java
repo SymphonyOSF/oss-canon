@@ -61,7 +61,7 @@ public class OneOfSchema extends OneOfSchema_Entity implements ISchemaInstance
   }
 
   @Override
-  public void link(ResolvedOpenApiObject.SingletonBuilder openApiObjectBuilder, CanonModelContext modelContext, SourceContext sourceContext, Consumer<ResolvedSchema.AbstractBuilder<? extends ISchemaInstance,?,?>> builderConsumer, String uri)
+  public void link(ResolvedOpenApiObject.SingletonBuilder openApiObjectBuilder, CanonModelContext modelContext, SourceContext sourceContext, Consumer<ResolvedSchema.AbstractBuilder<? extends ISchemaInstance,?,?>> builderConsumer, String uri, int depth)
   {
     
     ResolvedOneOfSchema.SingletonBuilder        builder = new ResolvedOneOfSchema.SingletonBuilder();
@@ -81,7 +81,7 @@ public class OneOfSchema extends OneOfSchema_Entity implements ISchemaInstance
     {
       String name = subSchema.getReferenceObject() == null ? "$" + i : subSchema.getReferenceObject().getName();
       
-      ResolvedSchema.AbstractBuilder<? extends ISchemaInstance,?,?> resolvedSubSchema = subSchema.link(openApiObjectBuilder, modelContext, sourceContext, name, uri, builder);
+      ResolvedSchema.AbstractBuilder<? extends ISchemaInstance,?,?> resolvedSubSchema = subSchema.link(openApiObjectBuilder, modelContext, sourceContext, name, uri, builder, depth);
       ResolvedProperty.SingletonBuilder resolvedProperty = new ResolvedProperty.SingletonBuilder()
           .withName(name)
           .withNameContext(subSchema.getJson().getContext())

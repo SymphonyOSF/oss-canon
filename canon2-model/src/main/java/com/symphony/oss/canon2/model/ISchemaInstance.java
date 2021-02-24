@@ -41,7 +41,7 @@ public interface ISchemaInstance extends ICanonModelEntity
   SchemaTemplateModelType getSchemaType();
 
   void link(SingletonBuilder openApiObjectBuilder, CanonModelContext modelContext, SourceContext sourceContext,
-      Consumer<AbstractBuilder<? extends ISchemaInstance, ?, ?>> builderConsumer, String uri);
+      Consumer<AbstractBuilder<? extends ISchemaInstance, ?, ?>> builderConsumer, String uri, int depth);
   
   /**
    * Return the value of the x-canon-builderFacade attribute.

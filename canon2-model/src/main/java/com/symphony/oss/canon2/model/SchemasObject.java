@@ -92,13 +92,13 @@ public class SchemasObject extends SchemasObject_Entity
       return schema;
   }
 
-  public ResolvedPropertiesObject.SingletonBuilder link(ResolvedOpenApiObject.SingletonBuilder openApiObjectBuilder, CanonModelContext modelContext, SourceContext sourceContext, String uri)
+  public ResolvedPropertiesObject.SingletonBuilder link(ResolvedOpenApiObject.SingletonBuilder openApiObjectBuilder, CanonModelContext modelContext, SourceContext sourceContext, String uri, int depth)
   {
     ResolvedPropertiesObject.SingletonBuilder builder = new ResolvedPropertiesObject.SingletonBuilder();
     
     for(Entry<String, ? extends ISchema> entry : getSchemas().entrySet())
     {
-      ResolvedSchema.AbstractBuilder<?,?,?> resolvedPropertySchema = modelContext.link(openApiObjectBuilder, sourceContext, entry.getKey(), uri + "/" + entry.getKey(), entry.getValue(), null);
+      ResolvedSchema.AbstractBuilder<?,?,?> resolvedPropertySchema = modelContext.link(openApiObjectBuilder, sourceContext, entry.getKey(), uri + "/" + entry.getKey(), entry.getValue(), null, depth);
       ResolvedProperty.SingletonBuilder resolvedProperty = new ResolvedProperty.SingletonBuilder()
           .withName(entry.getKey())
           .withNameContext(getNameContext(entry.getKey()))

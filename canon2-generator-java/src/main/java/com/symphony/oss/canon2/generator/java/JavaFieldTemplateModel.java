@@ -29,8 +29,11 @@ JavaSchemaTemplateModel>
 implements IJavaTemplateModel
 {
   Set<String> imports_ = new TreeSet<>();
-  private final String nullable_;
-  
+  private final String fullyQualifiedNullable_;
+
+  private String nullable_;
+  private INamespace namespace_;
+  private Writer namespaceWriter_;
 
   /**
    * Constructor.
@@ -50,7 +53,7 @@ implements IJavaTemplateModel
     super(generatorContext, initIdentifier(generatorContext, resolvedProperty), resolvedProperty, model, typeSchema, required, EMPTY_TEMPLATES);
     
     imports_.addAll(typeSchema.getImports());
-    nullable_ = "javax.annotation." + (required ? "Nonnull" : "Nullable");
+    fullyQualifiedNullable_ = "javax.annotation." + (required ? "Nonnull" : "Nullable");
   }
   
   private static String initIdentifier(Context generatorContext, ResolvedProperty resolvedSchema)
@@ -61,6 +64,9 @@ implements IJavaTemplateModel
   @Override
   public void resolve(INamespace namespace, Writer writer)
   {
+    namespace_ = namespace;
+    namespaceWriter_ = writer;
+    
     getTypeSchema().resolve(namespace, writer);
   }
 
@@ -81,6 +87,10 @@ implements IJavaTemplateModel
    */
   public String getNullable()
   {
+    if(nullable_ == null)
+    {
+      nullable_ = namespace_.resolveImport(fullyQualifiedNullable_, namespaceWriter_);
+    }
     return nullable_;
   }
 

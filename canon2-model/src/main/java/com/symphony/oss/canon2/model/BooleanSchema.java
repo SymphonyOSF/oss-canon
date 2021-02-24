@@ -59,7 +59,7 @@ public class BooleanSchema extends BooleanSchema_Entity implements IPrimitiveSch
 
   @Override
   public void link(SingletonBuilder openApiObjectBuilder, CanonModelContext modelContext, SourceContext sourceContext,
-      Consumer<ResolvedSchema.AbstractBuilder<? extends ISchemaInstance,?,?>> builderConsumer, String uri)
+      Consumer<ResolvedSchema.AbstractBuilder<? extends ISchemaInstance,?,?>> builderConsumer, String uri, int depth)
   {
     builderConsumer.accept(new ResolvedBooleanSchema.SingletonBuilder()
         .withSchema(this));
