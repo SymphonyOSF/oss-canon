@@ -18,6 +18,8 @@
 
 package com.symphony.oss.canon.json.model;
 
+import java.text.Normalizer;
+
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -25,6 +27,17 @@ import org.junit.Test;
 @SuppressWarnings("javadoc")
 public class TestJsonDom
 {
+  @Test
+  public void testNormalization()
+  {
+    String a = "schön";
+    String b = "scho\u0308n";
+    String c = Normalizer.normalize(b, Normalizer.Form.NFC);
+
+    Assert.assertEquals(a, c);
+    Assert.assertNotEquals(a, b);
+  }
+  
   @Test
   public void testEmptyObject()
   {
@@ -37,10 +50,15 @@ public class TestJsonDom
   @Test
   public void testBuiltObject()
   {
+    JsonObject emptyObject = new JsonObject.Builder()
+        .build();
+    
+    test("{}\n", emptyObject.toString());
+    
     JsonObject builtObject = new JsonObject.Builder()
         .with("Bruce", "Skingle")
         .with("Mike", "Harmon")
-        .with("MauritzioVeryLongNameDude", "Green")
+        .with("MauritzioVeryLongNameDude", "scho\u0308n")
         .build();
     
 //    JsonArray builtArray = new JsonArray.Builder()
@@ -49,9 +67,80 @@ public class TestJsonDom
     
     test("{\n" + 
         "  \"Bruce\":\"Skingle\",\n" + 
-        "  \"MauritzioVeryLongNameDude\":\"Green\",\n" + 
+        "  \"MauritzioVeryLongNameDude\":\"schön\",\n" + 
         "  \"Mike\":\"Harmon\"\n" + 
         "}\n", builtObject.toString());
+    
+    JsonArray builtArray = new JsonArray.Builder()
+        .with(builtObject)
+        .with(builtObject)
+        .with(builtObject)
+        .build();
+    
+    
+    test("[\n" + 
+        "  {\n" + 
+        "    \"Bruce\":\"Skingle\",\n" + 
+        "    \"MauritzioVeryLongNameDude\":\"schön\",\n" + 
+        "    \"Mike\":\"Harmon\"\n" + 
+        "  },\n" + 
+        "  {\n" + 
+        "    \"Bruce\":\"Skingle\",\n" + 
+        "    \"MauritzioVeryLongNameDude\":\"schön\",\n" + 
+        "    \"Mike\":\"Harmon\"\n" + 
+        "  },\n" + 
+        "  {\n" + 
+        "    \"Bruce\":\"Skingle\",\n" + 
+        "    \"MauritzioVeryLongNameDude\":\"schön\",\n" + 
+        "    \"Mike\":\"Harmon\"\n" + 
+        "  }\n" + 
+        "]\n", builtArray.toString());
+    
+    JsonObject nestedObject = new JsonObject.Builder()
+        .with("John", "Jones")
+        .with("Mike", builtArray)
+        .with("MauritzioVeryLongNameDude", "scho\u0308n")
+        .with("Dave", builtArray)
+        .build();
+    
+    test("{\n" + 
+        "  \"Dave\":[\n" + 
+        "    {\n" + 
+        "      \"Bruce\":\"Skingle\",\n" + 
+        "      \"MauritzioVeryLongNameDude\":\"schön\",\n" + 
+        "      \"Mike\":\"Harmon\"\n" + 
+        "    },\n" + 
+        "    {\n" + 
+        "      \"Bruce\":\"Skingle\",\n" + 
+        "      \"MauritzioVeryLongNameDude\":\"schön\",\n" + 
+        "      \"Mike\":\"Harmon\"\n" + 
+        "    },\n" + 
+        "    {\n" + 
+        "      \"Bruce\":\"Skingle\",\n" + 
+        "      \"MauritzioVeryLongNameDude\":\"schön\",\n" + 
+        "      \"Mike\":\"Harmon\"\n" + 
+        "    }\n" + 
+        "  ],\n" + 
+        "  \"John\":\"Jones\",\n" + 
+        "  \"MauritzioVeryLongNameDude\":\"schön\",\n" + 
+        "  \"Mike\":[\n" + 
+        "    {\n" + 
+        "      \"Bruce\":\"Skingle\",\n" + 
+        "      \"MauritzioVeryLongNameDude\":\"schön\",\n" + 
+        "      \"Mike\":\"Harmon\"\n" + 
+        "    },\n" + 
+        "    {\n" + 
+        "      \"Bruce\":\"Skingle\",\n" + 
+        "      \"MauritzioVeryLongNameDude\":\"schön\",\n" + 
+        "      \"Mike\":\"Harmon\"\n" + 
+        "    },\n" + 
+        "    {\n" + 
+        "      \"Bruce\":\"Skingle\",\n" + 
+        "      \"MauritzioVeryLongNameDude\":\"schön\",\n" + 
+        "      \"Mike\":\"Harmon\"\n" + 
+        "    }\n" + 
+        "  ]\n" + 
+        "}\n", nestedObject.toString());
   }
   
   

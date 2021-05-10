@@ -20,6 +20,7 @@ package com.symphony.oss.canon.json.model;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.text.Normalizer;
 
 import org.apache.commons.codec.binary.Base64;
 
@@ -46,7 +47,7 @@ public class JsonString extends JsonValue implements IStringProvider
   {
     super(builder);
     
-    value_ = builder.value_;
+    value_ = Normalizer.normalize(builder.value_, Normalizer.Form.NFC);
   }
 
   /**
