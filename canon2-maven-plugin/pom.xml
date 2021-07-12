@@ -63,6 +63,12 @@
 	    <artifactId>maven-shared-utils</artifactId>
 	    <version>3.3.3</version>
 	  </dependency>
+    <!--  maven-shared-utils depends on a vulnerable version of this -->
+    <dependency>
+      <groupId>commons-io</groupId>
+      <artifactId>commons-io</artifactId>
+      <version>2.10.0</version>
+   </dependency>
 	    
     <dependency>
       <groupId>org.apache.maven.plugin-tools</groupId>

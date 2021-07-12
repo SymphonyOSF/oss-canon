@@ -30,6 +30,7 @@ import java.util.Map.Entry;
 
 import org.apache.http.client.methods.RequestBuilder;
 
+import com.google.common.collect.ImmutableMap;
 import com.symphony.oss.canon.runtime.http.client.IJwtAuthenticationProvider;
 import com.symphony.oss.commons.fluent.Fluent;
 
@@ -61,6 +62,7 @@ public abstract class JwtGenerator<T extends JwtGenerator<T>> extends Fluent<T> 
 
   private String  subject_;
   private Long    ttl_ = 5 * 60 * 1000L;  // default 5 minutes.
+  private String  kid_;
   private String  issuer_;
   private Map<String, Object> claims_ = new HashMap<>();
   
@@ -77,6 +79,9 @@ public abstract class JwtGenerator<T extends JwtGenerator<T>> extends Fluent<T> 
     
     JwtBuilder jwt = Jwts.builder().setIssuedAt(now);
     
+    if(kid_ != null)
+      jwt.setHeader(ImmutableMap.of("kid", kid_));
+      
     if(issuer_ != null)
       jwt.setIssuer(issuer_);
     
@@ -106,6 +111,20 @@ public abstract class JwtGenerator<T extends JwtGenerator<T>> extends Fluent<T> 
     issuer_ = issuer;
     return self();
   }
+  
+  /**
+   * Set the value for the kid header.
+   * 
+   * @param kid the value for the kid header.
+   * 
+   * @return This (fluent method).
+   */
+  public T withKeyId(String kid)
+  {
+    kid_ = kid;
+    return self();
+  }
+  
   /**
    * Set the value for the subject claim.
    * 
